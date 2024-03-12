@@ -26,3 +26,4 @@ gradle-app.setting
 
 # 企业版代码，不提交
 flink-yun-vip/**
+flink-yun-vip
