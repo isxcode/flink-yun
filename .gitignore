@@ -23,3 +23,6 @@ gradle-app.setting
 .gradle
 !gradle-wrapper.jar
 !gradle-wrapper.properties
+
+# 企业版代码，不提交
+flink-yun-vip/**
