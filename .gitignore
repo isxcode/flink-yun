@@ -1,15 +1,8 @@
-.gradle
 **/build/
 !src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Avoid ignore Gradle wrappper properties
-!gradle-wrapper.properties
 
 # Cache of project
 .gradletasknamecache
@@ -19,3 +12,17 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# .idea不提交
+.idea
+*/.idea
+!.idea/icon.svg
+*/.idea/icon.svg
+
+# gradle不提交
+.gradle
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# 企业版代码，不提交
+flink-yun-vip/**
