@@ -1,0 +1,7 @@
+dependencies {
+
+}
+
+bootJar {
+  archiveFileName = 'zhiliuyun-agent.jar'
+}
