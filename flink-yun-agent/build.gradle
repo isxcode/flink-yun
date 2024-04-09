@@ -1,7 +1,23 @@
 dependencies {
 
+    api(project(':flink-yun-backend:flink-yun-api'))
+    api(project(':flink-yun-backend:flink-yun-common'))
+
+    implementation "org.apache.flink:flink-java:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-clients:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-yarn:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-kubernetes:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-streaming-java:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-table-planner_${FLINK_SCALA_VERSION}:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-table-api-java-bridge:${FLINK_VERSION}"
 }
 
 bootJar {
-  archiveFileName = 'zhiliuyun-agent.jar'
+    archiveFileName = 'zhiliuyun-agent.jar'
 }
