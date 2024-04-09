@@ -108,3 +108,13 @@ tasks.register('format', GradleBuild) {
 
   tasks = [":spotlessApply", ":checkstyleMain"]
 }
+
+// gradle install，安装项目依赖
+tasks.register('install', Exec) {
+
+  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
+    commandLine 'sh', '-c', 'bash install.sh'
+  } else {
+    commandLine 'cmd', '/c', 'install.bat'
+  }
+}

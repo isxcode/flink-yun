@@ -27,3 +27,9 @@ gradle-app.setting
 # 企业版代码，不提交
 flink-yun-vip/**
 flink-yun-vip
+
+# flink-min不提交
+flink-yun-dist/flink-min
+
+# 资源文件不提交
+resources/**
