@@ -63,7 +63,7 @@ public class SyncWorkConfig {
 	@Schema(title = "根目录jsonPath", example = "$..")
 	private String rootJsonPath;
 
-    private KafkaConfig kafkaConfig;
+	private KafkaConfig kafkaConfig;
 
 	private DatasourceConfig sourceDatabase;
 

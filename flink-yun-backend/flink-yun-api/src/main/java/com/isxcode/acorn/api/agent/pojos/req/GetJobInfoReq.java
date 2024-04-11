@@ -17,5 +17,5 @@ public class GetJobInfoReq {
 
 	private String agentType;
 
-    private String clusterId;
+	private String clusterId;
 }

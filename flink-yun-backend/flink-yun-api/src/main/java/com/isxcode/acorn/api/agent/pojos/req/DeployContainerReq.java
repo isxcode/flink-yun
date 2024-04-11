@@ -9,7 +9,7 @@ public class DeployContainerReq {
 
 	private String agentHomePath;
 
-    private SparkSubmit sparkSubmit;
+	private SparkSubmit sparkSubmit;
 
 	private String agentType;
 
