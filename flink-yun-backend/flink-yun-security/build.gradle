@@ -1,0 +1,5 @@
+dependencies {
+
+  api(project(':flink-yun-backend:flink-yun-common'))
+}
+

@@ -1,35 +1,75 @@
-**/build/
-!src/**/build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Cache of project
-.gradletasknamecache
-
-# Eclipse Gradle plugin generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
-
-# .idea不提交
-.idea
-*/.idea
+# idea配置，不提交
+.idea/**
+*/.idea/**
 !.idea/icon.svg
-*/.idea/icon.svg
+!*/.idea/icon.svg
 
-# gradle不提交
+# gradle缓存，不提交
 .gradle
 !gradle-wrapper.jar
-!gradle-wrapper.properties
+
+# 后端打包文件，不提交
+**/build
+**/bin
+
+# 前端打包文件，不提交
+flink-yun-website/dist
+flink-yun-frontend/dist
+
+# 前端嵌入后端内容，不提交
+flink-yun-backend/flink-yun-main/src/main/resources/templates/**
+flink-yun-backend/flink-yun-main/src/main/resources/static/**
+
+# 代理压缩包
+flink-yun-backend/flink-yun-main/src/main/resources/agent/**
 
 # 企业版代码，不提交
 flink-yun-vip/**
+
+# 资源文件
+resources/**
+flink-yun-backend/flink-yun-main/resources/**
+
+# 不提交spark-min
+flink-yun-dist/flink-min
+!flink-yun-dist/zhiqingyun/bin
+!flink-yun-dist/zhiqingyun-agent/bin
+
+# isx工具不提交
+isx
+
+# 个人配置不提交
+flink-yun-backend/flink-yun-main/src/main/resources/application-ispong.yml
+
+# 临时目录不提交
+tmp
+
+# 前端.idea不提交
+flink-yun-frontend/.idea
+
+# derby.log不提交
+derby.log
+
+# 许可证不提交
+flink-yun-backend/flink-yun-main/resources/license/*
+
+# 自动化测试报告不提交
+flink-yun-autotest/Reports
+
+# 不提交flink-yun-vip文件夹
 flink-yun-vip
 
-# flink-min不提交
-flink-yun-dist/flink-min
+# 日志不提交
+logs
 
-# 资源文件不提交
-resources/**
+# spark本地运行日志不提交
+metastore_db
+
+# .DS_Store不提交
+*/**/.DS_Store
+flink-yun-backend/flink-yun-main/src/.DS_Store
+flink-yun-backend/flink-yun-main/src/main/.DS_Store
+
+# prql二进制文件
+flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
+flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so

@@ -22,7 +22,7 @@ public class UserActionEntity {
 
 	@Id
 	@GeneratedValue(generator = "sy-id-generator")
-	@GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.star.config.GeneratedValueConfig")
+	@GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.acorn.config.GeneratedValueConfig")
 	private String id;
 
 	private String userId;
