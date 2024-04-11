@@ -21,7 +21,7 @@ public class PluginReq {
 
 	private String flinkSql;
 
-    private String sql;
+	private String sql;
 
 	private String database;
 
