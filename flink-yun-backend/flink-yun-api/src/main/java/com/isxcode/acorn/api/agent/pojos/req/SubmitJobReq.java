@@ -20,4 +20,6 @@ public class SubmitJobReq {
 	private String entryClass;
 
 	private String appResource;
+
+    private String appName;
 }

@@ -32,8 +32,8 @@ cd "${BASE_PATH}" || exit
 
 # 创建tmp目录
 TMP_DIR="${BASE_PATH}"/resources/tmp
-FLINK_MIN_FILE=flink-1.19.0-bin-scala_2.12.tgz
-FLINK_MIN_DOWNLOAD_URL=https://archive.apache.org/dist/flink/flink-1.19.0/flink-1.19.0-bin-scala_2.12.tgz
+FLINK_MIN_FILE=flink-1.18.1-bin-scala_2.12.tgz
+FLINK_MIN_DOWNLOAD_URL=https://archive.apache.org/dist/flink/flink-1.18.1/flink-1.18.1-bin-scala_2.12.tgz
 FLINK_MIN_DIR="${BASE_PATH}"/flink-yun-dist/flink-min
 
 # 如果TMP_DIR目录不存在则新建
