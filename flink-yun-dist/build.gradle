@@ -1,0 +1,107 @@
+// 构建lib文件夹
+tasks.register('build_agent_lib', Copy) {
+
+  dependsOn(":flink-yun-agent:bootJar")
+  dependsOn(":flink-yun-backend:flink-yun-api:jar")
+
+  def dependencies = configurations.runtimeClasspath.findAll {
+    it.name.contains('fastjson2') ||
+      it.name.contains('fastjson') ||
+      it.name.contains('flink-yun-api') ||
+      it.name.contains('log4j-api')
+  }
+  dependencies.each { dependency ->
+    from dependency
+    into 'build/zhiliuyun_agent/lib'
+  }
+
+  from rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-api/build/libs'
+  from rootDir.getAbsolutePath() + '/flink-yun-agent/build/libs'
+  from rootDir.getAbsolutePath() + '/resources/jdbc/system'
+  into 'build/zhiliuyun-agent/lib'
+}
+
+// 构建plugins文件夹
+tasks.register('build_agent_plugins', Copy) {
+
+  dependsOn(':flink-yun-plugins:flink-sql-execute-plugin:jar')
+
+  from rootDir.getAbsolutePath() + '/flink-yun-plugins/flink-sql-execute-plugin/build/libs'
+  into 'build/zhiliuyun-agent/plugins'
+}
+
+// 构建至轻云代理
+tasks.register('build_agent', Tar) {
+
+  mustRunAfter(":flink-yun-frontend:make")
+
+  dependsOn('build_agent_lib')
+  dependsOn('build_agent_plugins')
+
+  compression = Compression.GZIP
+  archiveFileName = 'zhiliuyun-agent.tar.gz'
+
+  from(rootDir.getAbsolutePath() + "/flink-yun-dist/flink-min") {
+    into 'zhiliuyun-agent/flink-min'
+  }
+  from('zhiliuyun-agent/bin') {
+    into 'zhiliuyun-agent/bin'
+  }
+  from(rootDir.getAbsolutePath() + "/flink-yun-agent/src/main/resources/application.yml") {
+    into 'zhiliuyun-agent/conf'
+  }
+  from('zhiliuyun-agent/logs') {
+    into 'zhiliuyun-agent/logs'
+  }
+  from('build/zhiliuyun-agent/plugins') {
+    into 'zhiliuyun-agent/plugins'
+  }
+  from('zhiliuyun-agent/works') {
+    into 'zhiliuyun-agent/works'
+  }
+  from('zhiliuyun-agent/file') {
+    into 'zhiliuyun-agent/file'
+  }
+  from('build/zhiliuyun-agent/lib') {
+    into 'zhiliuyun-agent/lib'
+  }
+  from('../README.md') {
+    into 'zhiliuyun-agent/'
+  }
+}
+
+// 构建至轻云
+tasks.register('build_zhiliuyun', Tar) {
+
+  mustRunAfter(":flink-yun-backend:make")
+
+  compression = Compression.GZIP
+  archiveFileName = 'zhiliuyun.tar.gz'
+
+  from('zhiliuyun/bin') {
+    into 'zhiliuyun/bin'
+  }
+  from(rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-main/src/main/resources/application-local.yml') {
+    into 'zhiliuyun/conf'
+  }
+  from(rootDir.getAbsolutePath() + '/resources/jdbc/system') {
+    into 'zhiliuyun/resources/jdbc/system'
+  }
+  from(rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-main/build/libs/zhiliuyun.jar') {
+    into 'zhiliuyun/lib'
+  }
+  from(rootDir.getAbsolutePath() + '/README.md') {
+    into 'zhiliuyun/'
+  }
+}
+
+// 打包
+tasks.register('make', GradleBuild) {
+
+  tasks = [":flink-yun-frontend:make", "build_agent", ":flink-yun-backend:make", "build_zhiliuyun"]
+}
+
+// 添加依赖
+dependencies {
+
+}

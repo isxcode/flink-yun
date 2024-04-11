@@ -118,3 +118,9 @@ tasks.register('install', Exec) {
     commandLine 'cmd', '/c', 'install.bat'
   }
 }
+
+// gradle package，打包项目
+tasks.register('package', GradleBuild) {
+
+  tasks = [":flink-yun-dist:make"]
+}

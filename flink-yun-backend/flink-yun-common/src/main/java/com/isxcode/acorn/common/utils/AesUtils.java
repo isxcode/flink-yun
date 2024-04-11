@@ -2,13 +2,12 @@ package com.isxcode.acorn.common.utils;
 
 import cn.hutool.crypto.SecureUtil;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
-
-import java.util.Arrays;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * 对称加密工具类.
