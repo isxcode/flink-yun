@@ -41,7 +41,7 @@ public class PythonExecutor extends WorkExecutor {
     private final ClusterRepository clusterRepository;
 
     public PythonExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, ClusterNodeRepository clusterNodeRepository,
-            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.clusterNodeRepository = clusterNodeRepository;
@@ -103,7 +103,7 @@ public class PythonExecutor extends WorkExecutor {
 
             // 执行命令获取pid
             String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
-                    + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
+                + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
 
             // 保存pid
@@ -160,7 +160,7 @@ public class PythonExecutor extends WorkExecutor {
                 // 删除脚本和日志
                 try {
                     String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log && " + "rm -f " + clusterNode.getAgentHomePath()
-                            + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py";
+                        + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py";
                     SshUtils.executeCommand(scpFileEngineNodeDto, clearWorkRunFile, false);
                 } catch (JSchException | InterruptedException | IOException e) {
                     log.error("删除运行脚本失败");

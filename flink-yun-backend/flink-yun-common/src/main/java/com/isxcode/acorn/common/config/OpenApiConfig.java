@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(info = @Info(title = "至轻云", description = "基于spark打造超轻量级批处理大数据平台"),
-        servers = {@Server(url = "http://localhost:8080", description = "本地环境"), @Server(url = "https://zhiqingyun-demo.isxcode.com", description = "远程环境")})
+    servers = {@Server(url = "http://localhost:8080", description = "本地环境"), @Server(url = "https://zhiqingyun-demo.isxcode.com", description = "远程环境")})
 @Configuration
 public class OpenApiConfig {
 
@@ -20,10 +20,10 @@ public class OpenApiConfig {
     public OpenAPI customOpenApi() {
 
         SecurityScheme basicAuthScheme =
-                new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).description("输入用户token").scheme("basic").name(SecurityConstants.HEADER_AUTHORIZATION);
+            new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).description("输入用户token").scheme("basic").name(SecurityConstants.HEADER_AUTHORIZATION);
 
         SecurityScheme basicTenantScheme =
-                new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).description("输入租户tenant").scheme("tenant").name(SecurityConstants.HEADER_TENANT_ID);
+            new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).description("输入租户tenant").scheme("tenant").name(SecurityConstants.HEADER_TENANT_ID);
 
         SecurityRequirement basicAuthRequirement = new SecurityRequirement().addList("tenantAuth").addList("tokenAuth");
         return new OpenAPI().components(new Components().addSecuritySchemes("tokenAuth", basicAuthScheme).addSecuritySchemes("tenantAuth", basicTenantScheme)).addSecurityItem(basicAuthRequirement);

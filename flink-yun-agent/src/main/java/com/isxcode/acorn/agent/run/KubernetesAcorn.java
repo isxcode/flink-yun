@@ -51,7 +51,7 @@ public class KubernetesAcorn implements AcornRun {
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_HOSTNETWORK_ENABLED, true);
 
         ClusterSpecification clusterSpecification =
-                new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024).setSlotsPerTaskManager(2).createClusterSpecification();
+            new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024).setSlotsPerTaskManager(2).createClusterSpecification();
 
         ApplicationConfiguration applicationConfiguration = ApplicationConfiguration.fromConfiguration(flinkConfig);
         applicationConfiguration.applyToConfiguration(flinkConfig);

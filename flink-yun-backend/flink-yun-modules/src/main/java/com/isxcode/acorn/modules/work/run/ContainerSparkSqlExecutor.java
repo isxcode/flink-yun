@@ -24,7 +24,7 @@ public class ContainerSparkSqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public ContainerSparkSqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository,
-            DatasourceService datasourceService) {
+        DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;

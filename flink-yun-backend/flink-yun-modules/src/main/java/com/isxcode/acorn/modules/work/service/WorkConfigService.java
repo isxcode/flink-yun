@@ -74,7 +74,7 @@ public class WorkConfigService {
         }
 
         workConfig.setClusterConfig(JSON.toJSONString(ClusterConfig.builder().setMode(SetMode.SIMPLE).clusterId(clusterId).clusterNodeId(clusterNodeId).enableHive(enableHive).sparkConfig(sparkConfig)
-                .resourceLevel(ResourceLevel.LOW).build()));
+            .resourceLevel(ResourceLevel.LOW).build()));
     }
 
     public void initSyncRule(WorkConfigEntity workConfig) {

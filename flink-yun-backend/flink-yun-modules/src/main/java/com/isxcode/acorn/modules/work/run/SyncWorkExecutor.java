@@ -92,9 +92,9 @@ public class SyncWorkExecutor extends WorkExecutor {
     private final FileRepository fileRepository;
 
     public SyncWorkExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository, ClusterNodeRepository clusterNodeRepository,
-            WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker, HttpUrlUtils httpUrlUtils,
-            AesUtils aesUtils, ClusterNodeMapper clusterNodeMapper, DatasourceService datasourceService, IsxAppProperties isxAppProperties, FuncRepository funcRepository, FuncMapper funcMapper,
-            FileRepository fileRepository) {
+        WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker, HttpUrlUtils httpUrlUtils, AesUtils aesUtils,
+        ClusterNodeMapper clusterNodeMapper, DatasourceService datasourceService, IsxAppProperties isxAppProperties, FuncRepository funcRepository, FuncMapper funcMapper,
+        FileRepository fileRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -160,22 +160,22 @@ public class SyncWorkExecutor extends WorkExecutor {
         // 封装来源Datasource的信息
         DatasourceEntity sourceDatasource = datasourceService.getDatasource(workRunContext.getSyncWorkConfig().getSourceDBId());
         DatasourceConfig sourceConfig = DatasourceConfig.builder().driver(datasourceService.getDriverClass(sourceDatasource.getDbType())).url(sourceDatasource.getJdbcUrl())
-                .dbTable(workRunContext.getSyncWorkConfig().getSourceTable()).user(sourceDatasource.getUsername()).password(aesUtils.decrypt(sourceDatasource.getPasswd())).build();
+            .dbTable(workRunContext.getSyncWorkConfig().getSourceTable()).user(sourceDatasource.getUsername()).password(aesUtils.decrypt(sourceDatasource.getPasswd())).build();
         workRunContext.getSyncWorkConfig().setSourceDatabase(sourceConfig);
 
         // 封装去向Datasource的信息
         DatasourceEntity targetDatasource = datasourceService.getDatasource(workRunContext.getSyncWorkConfig().getTargetDBId());
         DatasourceConfig targetConfig = DatasourceConfig.builder().driver(datasourceService.getDriverClass(targetDatasource.getDbType())).url(targetDatasource.getJdbcUrl())
-                .dbTable(workRunContext.getSyncWorkConfig().getTargetTable()).user(targetDatasource.getUsername()).password(aesUtils.decrypt(targetDatasource.getPasswd())).build();
+            .dbTable(workRunContext.getSyncWorkConfig().getTargetTable()).user(targetDatasource.getUsername()).password(aesUtils.decrypt(targetDatasource.getPasswd())).build();
         workRunContext.getSyncWorkConfig().setTargetDatabase(targetConfig);
 
         // 开始构造SparkSubmit
         SparkSubmit sparkSubmit = SparkSubmit.builder().verbose(true).mainClass("com.isxcode.acorn.plugin.dataSync.jdbc.Execute").appResource("spark-data-sync-jdbc-plugin.jar")
-                .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
+            .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
 
         // 开始构造PluginReq
         PluginReq pluginReq = PluginReq.builder().syncWorkConfig(workRunContext.getSyncWorkConfig()).sparkConfig(genSparkConfig(workRunContext.getClusterConfig().getSparkConfig()))
-                .syncRule(workRunContext.getSyncRule()).build();
+            .syncRule(workRunContext.getSyncRule()).build();
 
         // 导入自定义函数
         ScpFileEngineNodeDto scpFileEngineNodeDto = clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
@@ -186,7 +186,7 @@ public class SyncWorkExecutor extends WorkExecutor {
             allFunc.forEach(e -> {
                 try {
                     scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getFileId(),
-                            engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getFileId() + ".jar");
+                        engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getFileId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + " : jar文件上传失败," + ex.getMessage() + "\n");
                 }
@@ -201,7 +201,7 @@ public class SyncWorkExecutor extends WorkExecutor {
             libFile.forEach(e -> {
                 try {
                     scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
-                            engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
+                        engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
                 }

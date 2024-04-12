@@ -81,7 +81,7 @@ public class UserBizService {
         // 如果是系统管理员直接返回
         if (RoleType.SYS_ADMIN.equals(userEntity.getRoleCode())) {
             return LoginRes.builder().tenantId(userEntity.getCurrentTenantId()).username(userEntity.getUsername()).phone(userEntity.getPhone()).email(userEntity.getEmail())
-                    .remark(userEntity.getRemark()).token(jwtToken).role(userEntity.getRoleCode()).build();
+                .remark(userEntity.getRemark()).token(jwtToken).role(userEntity.getRoleCode()).build();
         }
 
         // 获取用户最近一次租户信息
@@ -270,7 +270,7 @@ public class UserBizService {
     public Page<PageEnableUserRes> pageEnableUser(PageEnableUserReq usrQueryAllEnableUsersReq) {
 
         Page<UserEntity> userEntitiesPage =
-                userRepository.searchAllEnableUser(usrQueryAllEnableUsersReq.getSearchKeyWord(), PageRequest.of(usrQueryAllEnableUsersReq.getPage(), usrQueryAllEnableUsersReq.getPageSize()));
+            userRepository.searchAllEnableUser(usrQueryAllEnableUsersReq.getSearchKeyWord(), PageRequest.of(usrQueryAllEnableUsersReq.getPage(), usrQueryAllEnableUsersReq.getPageSize()));
 
         return userMapper.userEntityToUsrQueryAllEnableUsersResPage(userEntitiesPage);
     }

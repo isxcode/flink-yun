@@ -31,7 +31,7 @@ public class ExecuteSqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public ExecuteSqlExecutor(WorkInstanceRepository workInstanceRepository, DatasourceRepository datasourceRepository, DatasourceBizService datasourceBizService,
-            WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
+        WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;

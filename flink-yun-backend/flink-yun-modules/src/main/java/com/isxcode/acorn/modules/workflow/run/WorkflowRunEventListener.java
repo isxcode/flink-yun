@@ -167,7 +167,7 @@ public class WorkflowRunEventListener {
             List<String> endNodes = WorkflowUtils.getEndNodes(event.getNodeMapping(), event.getNodeList());
             List<WorkInstanceEntity> endNodeInstance = workInstanceRepository.findAllByWorkIdAndWorkflowInstanceId(endNodes, event.getFlowInstanceId());
             boolean flowIsOver = endNodeInstance.stream().allMatch(e -> InstanceStatus.FAIL.equals(e.getStatus()) || InstanceStatus.SUCCESS.equals(e.getStatus())
-                    || InstanceStatus.ABORT.equals(e.getStatus()) || InstanceStatus.BREAK.equals(e.getStatus()));
+                || InstanceStatus.ABORT.equals(e.getStatus()) || InstanceStatus.BREAK.equals(e.getStatus()));
 
             // 判断工作流是否执行完
             if (flowIsOver) {
@@ -175,7 +175,7 @@ public class WorkflowRunEventListener {
                 WorkflowInstanceEntity workflowInstance = workflowInstanceRepository.findById(event.getFlowInstanceId()).get();
                 workflowInstance.setStatus(flowIsError ? InstanceStatus.FAIL : InstanceStatus.SUCCESS);
                 workflowInstance.setRunLog(workflowInstanceRepository.getWorkflowLog(event.getFlowInstanceId()) + "\n" + LocalDateTime.now() + (flowIsError ? WorkLog.ERROR_INFO : WorkLog.SUCCESS_INFO)
-                        + (flowIsError ? "运行失败" : "运行成功"));
+                    + (flowIsError ? "运行失败" : "运行成功"));
                 workflowInstance.setDuration((System.currentTimeMillis() - workflowInstance.getExecStartDateTime().getTime()) / 1000);
                 workflowInstance.setExecEndDateTime(new Date());
                 workflowInstanceRepository.saveAndFlush(workflowInstance);
