@@ -17,5 +17,3 @@ include 'flink-yun-vip'
 include 'flink-yun-vip:flink-yun-backend'
 include 'flink-yun-vip:flink-yun-license'
 include 'flink-yun-frontend'
-
-
