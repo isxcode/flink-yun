@@ -85,7 +85,7 @@ spring:
 logging:
   exception-conversion-word: '%wEx'
   file:
-    name: ./logs/spark-yun.log
+    name: ./logs/flink-yun.log
   pattern:
     level: '%5p'
     dateformat: 'yyyy-MM-dd HH:mm:ss.SSS'
