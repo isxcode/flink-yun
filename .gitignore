@@ -9,6 +9,9 @@
 # 后端打包文件不提交
 **/build
 
+# .DS_Store不提交
+*/**/.DS_Store
+
 # 前端打包不提交
 flink-yun-backend/flink-yun-main/src/main/resources/templates
 flink-yun-backend/flink-yun-main/src/main/resources/static
