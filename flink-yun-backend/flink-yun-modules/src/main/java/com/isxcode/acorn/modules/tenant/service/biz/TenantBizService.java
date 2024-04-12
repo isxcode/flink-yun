@@ -73,8 +73,7 @@ public class TenantBizService {
         TenantEntity tenantEntity = tenantRepository.save(tenant);
 
         // 初始化租户管理员
-        TenantUserEntity tenantUserEntity =
-            TenantUserEntity.builder().userId(tetAddTenantReq.getAdminUserId()).tenantId(tenantEntity.getId()).roleCode(RoleType.TENANT_ADMIN).status(TenantStatus.ENABLE).build();
+        TenantUserEntity tenantUserEntity = TenantUserEntity.builder().userId(tetAddTenantReq.getAdminUserId()).tenantId(tenantEntity.getId()).roleCode(RoleType.TENANT_ADMIN).status(TenantStatus.ENABLE).build();
 
         // 判断管理员是否绑定新租户
         if (Strings.isEmpty(userEntity.getCurrentTenantId())) {

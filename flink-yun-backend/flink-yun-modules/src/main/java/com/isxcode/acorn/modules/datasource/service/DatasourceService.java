@@ -105,8 +105,7 @@ public class DatasourceService {
             DatabaseDriverEntity driverEntity = dataDriverService.getDriver(datasource.getDriverId());
             JPA_TENANT_MODE.set(true);
 
-            String driverPath = "TENANT_DRIVER".equals(driverEntity.getDriverType()) ? driverEntity.getTenantId() + File.separator + driverEntity.getFileName()
-                : "system" + File.separator + driverEntity.getFileName();
+            String driverPath = "TENANT_DRIVER".equals(driverEntity.getDriverType()) ? driverEntity.getTenantId() + File.separator + driverEntity.getFileName() : "system" + File.separator + driverEntity.getFileName();
 
             // 先加载驱动到ALL_EXIST_DRIVER
             try {

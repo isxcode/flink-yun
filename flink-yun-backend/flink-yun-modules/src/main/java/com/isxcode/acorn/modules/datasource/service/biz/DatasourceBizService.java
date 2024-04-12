@@ -121,8 +121,7 @@ public class DatasourceBizService {
             dasQueryDatasourceReq.setDatasourceType(null);
         }
 
-        Page<DatasourceEntity> datasourceEntityPage = datasourceRepository.searchAll(dasQueryDatasourceReq.getSearchKeyWord(), dasQueryDatasourceReq.getDatasourceType(),
-            PageRequest.of(dasQueryDatasourceReq.getPage(), dasQueryDatasourceReq.getPageSize()));
+        Page<DatasourceEntity> datasourceEntityPage = datasourceRepository.searchAll(dasQueryDatasourceReq.getSearchKeyWord(), dasQueryDatasourceReq.getDatasourceType(), PageRequest.of(dasQueryDatasourceReq.getPage(), dasQueryDatasourceReq.getPageSize()));
 
         Page<PageDatasourceRes> pageDatasourceRes = datasourceEntityPage.map(datasourceMapper::datasourceEntityToQueryDatasourceRes);
         pageDatasourceRes.getContent().forEach(e -> {
@@ -209,8 +208,7 @@ public class DatasourceBizService {
         }
 
         // 初始化驱动对象
-        DatabaseDriverEntity databaseDriver =
-            DatabaseDriverEntity.builder().name(name).dbType(dbType).driverType("TENANT_DRIVER").remark(remark).isDefaultDriver(false).fileName(driverFile.getOriginalFilename()).build();
+        DatabaseDriverEntity databaseDriver = DatabaseDriverEntity.builder().name(name).dbType(dbType).driverType("TENANT_DRIVER").remark(remark).isDefaultDriver(false).fileName(driverFile.getOriginalFilename()).build();
 
         // 持久化
         databaseDriverRepository.save(databaseDriver);
@@ -219,8 +217,7 @@ public class DatasourceBizService {
     public Page<PageDatabaseDriverRes> pageDatabaseDriver(PageDatabaseDriverReq pageDatabaseDriverReq) {
 
         JPA_TENANT_MODE.set(false);
-        Page<DatabaseDriverEntity> pageDatabaseDriver =
-            databaseDriverRepository.searchAll(pageDatabaseDriverReq.getSearchKeyWord(), TENANT_ID.get(), PageRequest.of(pageDatabaseDriverReq.getPage(), pageDatabaseDriverReq.getPageSize()));
+        Page<DatabaseDriverEntity> pageDatabaseDriver = databaseDriverRepository.searchAll(pageDatabaseDriverReq.getSearchKeyWord(), TENANT_ID.get(), PageRequest.of(pageDatabaseDriverReq.getPage(), pageDatabaseDriverReq.getPageSize()));
 
         return pageDatabaseDriver.map(datasourceMapper::dataDriverEntityToPageDatabaseDriverRes);
     }

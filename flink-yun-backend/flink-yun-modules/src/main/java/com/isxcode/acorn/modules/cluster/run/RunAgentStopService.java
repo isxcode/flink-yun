@@ -66,8 +66,7 @@ public class RunAgentStopService {
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-stop.sh", sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh");
 
         // 运行停止脚本
-        String stopCommand =
-            "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh" + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
+        String stopCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh" + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果

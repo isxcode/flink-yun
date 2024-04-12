@@ -31,8 +31,7 @@ public class PrqlExecutor extends WorkExecutor {
     private final DatasourceRepository datasourceRepository;
     private final DatasourceService datasourceService;
 
-    public PrqlExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, DatasourceRepository datasourceRepository,
-        DatasourceService datasourceService) {
+    public PrqlExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, DatasourceRepository datasourceRepository, DatasourceService datasourceService) {
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;
         this.datasourceService = datasourceService;

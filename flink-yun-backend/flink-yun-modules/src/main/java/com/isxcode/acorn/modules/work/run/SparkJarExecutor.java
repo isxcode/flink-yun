@@ -80,9 +80,8 @@ public class SparkJarExecutor extends WorkExecutor {
 
     private final FileRepository fileRepository;
 
-    public SparkJarExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository, ClusterNodeRepository clusterNodeRepository,
-        WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, IsxAppProperties isxAppProperties, Locker locker,
-        HttpUrlUtils httpUrlUtils, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, FileService fileService, FileRepository fileRepository) {
+    public SparkJarExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository, ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, IsxAppProperties isxAppProperties, Locker locker, HttpUrlUtils httpUrlUtils, ClusterNodeMapper clusterNodeMapper,
+        AesUtils aesUtils, FileService fileService, FileRepository fileRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -150,8 +149,7 @@ public class SparkJarExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file" + File.separator + TENANT_ID.get();
         try {
-            scpJar(scpFileEngineNodeDto, fileDir + File.separator + jarFile.getId(),
-                engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + jarFile.getId() + ".jar");
+            scpJar(scpFileEngineNodeDto, fileDir + File.separator + jarFile.getId(), engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + jarFile.getId() + ".jar");
         } catch (JSchException | SftpException | InterruptedException | IOException e) {
             log.debug(e.getMessage());
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
@@ -162,8 +160,7 @@ public class SparkJarExecutor extends WorkExecutor {
             List<FileEntity> libFile = fileRepository.findAllById(workRunContext.getLibConfig());
             libFile.forEach(e -> {
                 try {
-                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
-                        engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
+                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(), engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
                 }
@@ -171,8 +168,7 @@ public class SparkJarExecutor extends WorkExecutor {
         }
 
         // 开始构造SparkSubmit
-        SparkSubmit sparkSubmit = SparkSubmit.builder().verbose(true).mainClass(jarJobConfig.getMainClass()).appResource(jarFile.getId() + ".jar").appName(jarJobConfig.getAppName())
-            .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
+        SparkSubmit sparkSubmit = SparkSubmit.builder().verbose(true).mainClass(jarJobConfig.getMainClass()).appResource(jarFile.getId() + ".jar").appName(jarJobConfig.getAppName()).conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
 
         // 开始构造executeReq
         executeReq.setSparkSubmit(sparkSubmit);

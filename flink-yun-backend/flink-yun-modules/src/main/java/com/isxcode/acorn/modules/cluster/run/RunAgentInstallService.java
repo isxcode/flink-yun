@@ -66,8 +66,7 @@ public class RunAgentInstallService {
         scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType), sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType));
 
         // 运行安装脚本
-        String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType) + " --home-path=" + engineNode.getAgentHomePath() + File.separator
-            + PathConstants.AGENT_PATH_NAME + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType) + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + " --agent-port=" + engineNode.getAgentPort();
         log.debug("执行远程命令:{}", envCommand);
 
         // 获取返回结果
@@ -98,8 +97,7 @@ public class RunAgentInstallService {
         log.debug("下载安装脚本成功");
 
         // 运行安装脚本
-        String installCommand =
-            "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh" + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String installCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh" + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         log.debug("执行远程安装命令:{}", installCommand);
 
         executeLog = executeCommand(scpFileEngineNodeDto, installCommand, false);
