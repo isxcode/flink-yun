@@ -124,3 +124,9 @@ tasks.register('package', GradleBuild) {
 
   tasks = [":flink-yun-dist:make"]
 }
+
+// gradle backend，单独启动后端
+tasks.register('backend', GradleBuild) {
+
+  tasks = [":flink-yun-backend:flink-yun-main:bootRun"]
+}
