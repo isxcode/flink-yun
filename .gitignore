@@ -28,7 +28,6 @@ flink-yun-vip/**
 
 # 资源文件
 resources/**
-flink-yun-backend/flink-yun-main/resources/**
 
 # 不提交spark-min
 flink-yun-dist/flink-min
