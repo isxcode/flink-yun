@@ -41,13 +41,18 @@ public class UpdateApiReq {
     @Schema(title = "如果用户使用自定义认证方式，需要填写", example = "")
     private List<HeaderTokenDto> reqHeader;
 
-    @Schema(title = "请求体", example = "{\n" + "    \"age\":\"${age}\",\n" + "    \"page\":\"${page}\",\n" + "    \"pageSize\":\"${pageSize}\"\n" + "}")
+    @Schema(title = "请求体", example = "{\n" + "    \"age\":\"${age}\",\n" + "    \"page\":\"${page}\",\n"
+        + "    \"pageSize\":\"${pageSize}\"\n" + "}")
     private String reqBody;
 
-    @Schema(title = "执行sql", example = "select username, age from ispong_db where age > ${age} limit $[${page}-1)*${pageSize}],${pageSize}")
+    @Schema(title = "执行sql",
+        example = "select username, age from ispong_db where age > ${age} limit $[${page}-1)*${pageSize}],${pageSize}")
     private String apiSql;
 
-    @Schema(title = "响应体", example = "{\n" + "\"code\":\"200\",\n" + "    \"message\":\"返回成功\",\n" + "    \"data\":[\n" + "        ${\n" + "            \"username\":\"${username}\"\n" + "            \"age\":\"${age}\"\n" + "        }$\n" + "    ]\n" + "    \"count\":\"${COUNT}\"\n" + "}")
+    @Schema(title = "响应体",
+        example = "{\n" + "\"code\":\"200\",\n" + "    \"message\":\"返回成功\",\n" + "    \"data\":[\n" + "        ${\n"
+            + "            \"username\":\"${username}\"\n" + "            \"age\":\"${age}\"\n" + "        }$\n"
+            + "    ]\n" + "    \"count\":\"${COUNT}\"\n" + "}")
     private String resBody;
 
     @Schema(title = "备注", example = "备注123")

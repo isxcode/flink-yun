@@ -73,7 +73,8 @@ public class ClusterBizService {
 
     public Page<PageClusterRes> pageCluster(PageClusterReq pageClusterReq) {
 
-        Page<ClusterEntity> clusterPage = clusterRepository.pageCluster(pageClusterReq.getSearchKeyWord(), PageRequest.of(pageClusterReq.getPage(), pageClusterReq.getPageSize()));
+        Page<ClusterEntity> clusterPage = clusterRepository.pageCluster(pageClusterReq.getSearchKeyWord(),
+            PageRequest.of(pageClusterReq.getPage(), pageClusterReq.getPageSize()));
 
         return clusterPage.map(clusterMapper::clusterEntityToPageClusterRes);
     }
@@ -106,7 +107,8 @@ public class ClusterBizService {
         });
 
         // 激活节点
-        List<ClusterNodeEntity> activeNodes = engineNodes.stream().filter(e -> ClusterNodeStatus.RUNNING.equals(e.getStatus())).collect(Collectors.toList());
+        List<ClusterNodeEntity> activeNodes = engineNodes.stream()
+            .filter(e -> ClusterNodeStatus.RUNNING.equals(e.getStatus())).collect(Collectors.toList());
         cluster.setActiveNodeNum(activeNodes.size());
         cluster.setAllNodeNum(engineNodes.size());
 

@@ -40,7 +40,10 @@ public class SparkContainerSqlExecutor extends WorkExecutor {
 
     private final WorkInstanceRepository workInstanceRepository;
 
-    public SparkContainerSqlExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, ContainerRepository containerRepository, ClusterNodeRepository clusterNodeRepository, IsxAppProperties isxAppProperties, WorkInstanceRepository workInstanceRepository1) {
+    public SparkContainerSqlExecutor(WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository, ContainerRepository containerRepository,
+        ClusterNodeRepository clusterNodeRepository, IsxAppProperties isxAppProperties,
+        WorkInstanceRepository workInstanceRepository1) {
         super(workInstanceRepository, workflowInstanceRepository);
         this.containerRepository = containerRepository;
         this.clusterNodeRepository = clusterNodeRepository;
@@ -60,7 +63,8 @@ public class SparkContainerSqlExecutor extends WorkExecutor {
         }
 
         // 检查数据源是否存在
-        Optional<ContainerEntity> containerEntityOptional = containerRepository.findById(workRunContext.getContainerId());
+        Optional<ContainerEntity> containerEntityOptional =
+            containerRepository.findById(workRunContext.getContainerId());
         if (!containerEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测运行环境失败: 有效容器不存在  \n");
         }
@@ -79,13 +83,15 @@ public class SparkContainerSqlExecutor extends WorkExecutor {
 
         // 脚本检查通过
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行作业 \n");
-        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: \n").append(workRunContext.getScript()).append("\n");
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: \n")
+            .append(workRunContext.getScript()).append("\n");
 
         // 调用代理的接口，获取数据
         try {
 
             // 获取集群节点
-            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(containerEntityOptional.get().getClusterId(), ClusterNodeStatus.RUNNING);
+            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository
+                .findAllByClusterIdAndStatus(containerEntityOptional.get().getClusterId(), ClusterNodeStatus.RUNNING);
             if (allEngineNodes.isEmpty()) {
                 throw new IsxAppException("集群不存在可用节点");
             }
@@ -94,15 +100,19 @@ public class SparkContainerSqlExecutor extends WorkExecutor {
             ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
 
             // 再次调用容器的check接口，确认容器是否成功启动
-            ExecuteContainerSqlReq executeContainerSqlReq = ExecuteContainerSqlReq.builder().port(String.valueOf(containerEntityOptional.get().getPort())).sql(workRunContext.getScript()).build();
+            ExecuteContainerSqlReq executeContainerSqlReq = ExecuteContainerSqlReq.builder()
+                .port(String.valueOf(containerEntityOptional.get().getPort())).sql(workRunContext.getScript()).build();
             BaseResponse<?> baseResponse;
             try {
-                baseResponse = HttpUtils.doPost(genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/executeContainerSql"), executeContainerSqlReq, BaseResponse.class);
+                baseResponse = HttpUtils.doPost(
+                    genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/executeContainerSql"),
+                    executeContainerSqlReq, BaseResponse.class);
             } catch (IOException e) {
                 throw new WorkRunException(e.getMessage());
             }
 
-            ContainerGetDataRes containerGetDataRes = JSON.parseObject(JSON.toJSONString(baseResponse), ContainerGetDataRes.class);
+            ContainerGetDataRes containerGetDataRes =
+                JSON.parseObject(JSON.toJSONString(baseResponse), ContainerGetDataRes.class);
             if (!"200".equals(containerGetDataRes.getCode())) {
                 if (containerGetDataRes.getMsg().contains("Connection refused (Connection refused)")) {
                     throw new WorkRunException("运行异常: 请检查容器的运行状态");

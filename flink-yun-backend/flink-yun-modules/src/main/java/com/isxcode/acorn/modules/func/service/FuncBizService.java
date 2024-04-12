@@ -62,7 +62,8 @@ public class FuncBizService {
 
     public Page<PageFuncRes> pageFunc(PageFuncReq pageFuncReq) {
 
-        Page<FuncEntity> funcPage = funcRepository.pageSearch(pageFuncReq.getSearchKeyWord(), PageRequest.of(pageFuncReq.getPage(), pageFuncReq.getPageSize()));
+        Page<FuncEntity> funcPage = funcRepository.pageSearch(pageFuncReq.getSearchKeyWord(),
+            PageRequest.of(pageFuncReq.getPage(), pageFuncReq.getPageSize()));
 
         Page<PageFuncRes> result = funcPage.map(funcMapper::funcEntityToPageFuncRes);
         result.getContent().forEach(e -> {

@@ -25,12 +25,14 @@ public class WorkflowFavourBizService {
         workflowBizService.getWorkflowEntity(workflowId);
 
         // 判断工作流是否被收藏过
-        Optional<WorkflowFavourEntity> workflowFavourEntityOptional = workflowFavourRepository.findByWorkflowIdAndUserId(workflowId, USER_ID.get());
+        Optional<WorkflowFavourEntity> workflowFavourEntityOptional =
+            workflowFavourRepository.findByWorkflowIdAndUserId(workflowId, USER_ID.get());
         if (!workflowFavourEntityOptional.isPresent()) {
             throw new IsxAppException("已收藏");
         }
 
-        WorkflowFavourEntity workflowFavour = WorkflowFavourEntity.builder().workflowId(workflowId).userId(USER_ID.get()).build();
+        WorkflowFavourEntity workflowFavour =
+            WorkflowFavourEntity.builder().workflowId(workflowId).userId(USER_ID.get()).build();
         workflowFavourRepository.save(workflowFavour);
     }
 }

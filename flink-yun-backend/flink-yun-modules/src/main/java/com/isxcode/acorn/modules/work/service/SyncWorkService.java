@@ -36,7 +36,8 @@ public class SyncWorkService {
      * @param tablePattern 表名模式，支持模糊匹配。
      * @return 筛选后的数据库表名。
      */
-    public List<String> tables(DatabaseMetaData metaData, String catalog, String schema, String tablePattern) throws SQLException {
+    public List<String> tables(DatabaseMetaData metaData, String catalog, String schema, String tablePattern)
+        throws SQLException {
         List<String> list = new ArrayList<>();
         if (StringUtils.isBlank(tablePattern)) {
             tablePattern = "%";
@@ -58,7 +59,8 @@ public class SyncWorkService {
      * @param schema 模式名。
      * @return 筛选后的数据库视图名。
      */
-    public List<String> views(DatabaseMetaData metaData, String catalog, String schema, String tablePattern) throws SQLException {
+    public List<String> views(DatabaseMetaData metaData, String catalog, String schema, String tablePattern)
+        throws SQLException {
         List<String> list = new ArrayList<>();
         if (StringUtils.isBlank(tablePattern)) {
             tablePattern = "%";
@@ -81,7 +83,8 @@ public class SyncWorkService {
      * @param table 表名。
      * @return 筛选后的数据表字段信息。
      */
-    public List<ColumnMetaDto> columns(DatabaseMetaData metaData, String catalog, String schema, String table) throws SQLException {
+    public List<ColumnMetaDto> columns(DatabaseMetaData metaData, String catalog, String schema, String table)
+        throws SQLException {
 
         // 获取主键信息
         Set<String> primaryKeys = getPrimaryKeys(metaData, catalog, schema, table);
@@ -115,7 +118,8 @@ public class SyncWorkService {
         return list;
     }
 
-    private Set<String> getPrimaryKeys(DatabaseMetaData metaData, String catalog, String schema, String table) throws SQLException {
+    private Set<String> getPrimaryKeys(DatabaseMetaData metaData, String catalog, String schema, String table)
+        throws SQLException {
 
         Set<String> primaryKeys = new HashSet<>();
         ResultSet primaryKeyResultSet = metaData.getPrimaryKeys(catalog, schema, table);

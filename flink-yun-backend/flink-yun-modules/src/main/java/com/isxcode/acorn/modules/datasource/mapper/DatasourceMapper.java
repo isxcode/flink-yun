@@ -32,7 +32,8 @@ public interface DatasourceMapper {
     @Mapping(source = "dasUpdateDatasourceReq.name", target = "name")
     @Mapping(target = "id", source = "datasourceEntity.id")
     @Mapping(target = "kafkaConfig", ignore = true)
-    DatasourceEntity dasUpdateDatasourceReqToDatasourceEntity(UpdateDatasourceReq dasUpdateDatasourceReq, DatasourceEntity datasourceEntity);
+    DatasourceEntity dasUpdateDatasourceReqToDatasourceEntity(UpdateDatasourceReq dasUpdateDatasourceReq,
+        DatasourceEntity datasourceEntity);
 
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     PageDatasourceRes datasourceEntityToQueryDatasourceRes(DatasourceEntity datasourceEntity);
@@ -40,5 +41,6 @@ public interface DatasourceMapper {
     @Mapping(target = "createDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     PageDatabaseDriverRes dataDriverEntityToPageDatabaseDriverRes(DatabaseDriverEntity databaseDriverEntity);
 
-    GetDefaultDatabaseDriverRes databaseDriverEntityToGetDefaultDatabaseDriverRes(DatabaseDriverEntity databaseDriverEntity);
+    GetDefaultDatabaseDriverRes databaseDriverEntityToGetDefaultDatabaseDriverRes(
+        DatabaseDriverEntity databaseDriverEntity);
 }

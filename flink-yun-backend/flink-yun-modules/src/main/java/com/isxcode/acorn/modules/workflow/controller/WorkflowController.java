@@ -96,7 +96,9 @@ public class WorkflowController {
     @Operation(summary = "作业流导入接口(Swagger有Bug不能使用)")
     @PostMapping("/importWorkflow")
     @SuccessResponse("导入成功")
-    public void importWorkflow(@RequestParam("workflowConfigFile") MultipartFile workflowConfigFile, @Schema(description = "作业流唯一id", example = "sy_ba1f12b5c8154f999a02a5be2373a438") @RequestParam(required = false) String workflowId) {
+    public void importWorkflow(@RequestParam("workflowConfigFile") MultipartFile workflowConfigFile,
+        @Schema(description = "作业流唯一id", example = "sy_ba1f12b5c8154f999a02a5be2373a438")
+        @RequestParam(required = false) String workflowId) {
 
         workflowBizService.importWorkflow(workflowConfigFile, workflowId);
     }
@@ -143,7 +145,8 @@ public class WorkflowController {
     @Operation(summary = "查询作业流运行实例接口")
     @PostMapping("/getRunWorkInstances")
     @SuccessResponse("查询成功")
-    public GetRunWorkInstancesRes getRunWorkInstances(@Valid @RequestBody GetRunWorkInstancesReq getRunWorkInstancesReq) {
+    public GetRunWorkInstancesRes getRunWorkInstances(
+        @Valid @RequestBody GetRunWorkInstancesReq getRunWorkInstancesReq) {
 
         return workflowBizService.getRunWorkInstances(getRunWorkInstancesReq);
     }
@@ -167,7 +170,8 @@ public class WorkflowController {
     @Operation(summary = "获取作业流默认计算引擎")
     @PostMapping("/getWorkflowDefaultCluster")
     @SuccessResponse("查询成功")
-    public GetWorkflowDefaultClusterRes getWorkflowDefaultCluster(@Valid @RequestBody GetWorkflowDefaultClusterReq getWorkflowDefaultClusterReq) {
+    public GetWorkflowDefaultClusterRes getWorkflowDefaultCluster(
+        @Valid @RequestBody GetWorkflowDefaultClusterReq getWorkflowDefaultClusterReq) {
 
         return workflowBizService.getWorkflowDefaultCluster(getWorkflowDefaultClusterReq);
     }
@@ -197,7 +201,8 @@ public class WorkflowController {
     @Operation(summary = "启用外部调用作业流功能")
     @PostMapping("/onExternalCall")
     @SuccessResponse("保存成功")
-    public OnExternalCallRes onExternalCall(@Valid @RequestBody OnExternalCallReq onExternalCallReq, HttpServletRequest request) {
+    public OnExternalCallRes onExternalCall(@Valid @RequestBody OnExternalCallReq onExternalCallReq,
+        HttpServletRequest request) {
 
         return workflowConfigBizService.onExternalCall(onExternalCallReq, request);
     }

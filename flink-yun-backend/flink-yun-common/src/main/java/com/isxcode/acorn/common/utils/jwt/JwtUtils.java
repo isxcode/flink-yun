@@ -67,7 +67,8 @@ public class JwtUtils {
         if (jwtKey == null) {
             jwtParserBuilder = jwtParserBuilder.setSigningKey(key);
         } else {
-            jwtParserBuilder = jwtParserBuilder.setSigningKey(Keys.hmacShaKeyFor(Arrays.copyOf(jwtKey.getBytes(), 1 << 5)));
+            jwtParserBuilder =
+                jwtParserBuilder.setSigningKey(Keys.hmacShaKeyFor(Arrays.copyOf(jwtKey.getBytes(), 1 << 5)));
         }
 
         String claimStr = jwtParserBuilder.build().parseClaimsJws(jwtString).getBody().get("CLAIM", String.class);

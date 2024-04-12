@@ -68,7 +68,8 @@ public class ClusterNodeService {
         return clusterNodeRepository.findById(clusterNodeId).orElseThrow(() -> new IsxAppException("节点不存在"));
     }
 
-    public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath, ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+    public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
+        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();
@@ -77,7 +78,8 @@ public class ClusterNodeService {
             jsch.addIdentity(engineNode.getUsername(), engineNode.getPasswd().getBytes(), null, null);
         }
 
-        Session session = jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
+        Session session =
+            jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
 
         // 连接远程服务器
         if (engineNode.getPasswd().length() < 1000) {
@@ -123,7 +125,8 @@ public class ClusterNodeService {
     }
 
     @Async("sparkYunThreadPool")
-    public void scpAgentFile(ScpFileEngineNodeDto clusterNode, String srcPath, String dstPath) throws JSchException, SftpException, IOException, InterruptedException {
+    public void scpAgentFile(ScpFileEngineNodeDto clusterNode, String srcPath, String dstPath)
+        throws JSchException, SftpException, IOException, InterruptedException {
 
         scpFile(clusterNode, srcPath, dstPath);
     }

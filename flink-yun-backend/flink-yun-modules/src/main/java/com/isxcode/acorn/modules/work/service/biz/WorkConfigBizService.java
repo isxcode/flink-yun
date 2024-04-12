@@ -60,16 +60,21 @@ public class WorkConfigBizService {
 
         // 先转换sparkConfigJson和sqlConfigJson
         try {
-            if (wocConfigWorkReq.getClusterConfig() != null && !Strings.isEmpty(wocConfigWorkReq.getClusterConfig().getSparkConfigJson())) {
-                wocConfigWorkReq.getClusterConfig().setSparkConfig(JSON.parseObject(wocConfigWorkReq.getClusterConfig().getSparkConfigJson(), new TypeReference<Map<String, String>>() {}));
+            if (wocConfigWorkReq.getClusterConfig() != null
+                && !Strings.isEmpty(wocConfigWorkReq.getClusterConfig().getSparkConfigJson())) {
+                wocConfigWorkReq.getClusterConfig()
+                    .setSparkConfig(JSON.parseObject(wocConfigWorkReq.getClusterConfig().getSparkConfigJson(),
+                        new TypeReference<Map<String, String>>() {}));
             }
         } catch (Exception e) {
             throw new IsxAppException("集群spark配置json格式不合法");
         }
 
         try {
-            if (wocConfigWorkReq.getSyncRule() != null && !Strings.isEmpty(wocConfigWorkReq.getSyncRule().getSqlConfigJson())) {
-                wocConfigWorkReq.getSyncRule().setSqlConfig(JSON.parseObject(wocConfigWorkReq.getSyncRule().getSqlConfigJson(), new TypeReference<Map<String, String>>() {}));
+            if (wocConfigWorkReq.getSyncRule() != null
+                && !Strings.isEmpty(wocConfigWorkReq.getSyncRule().getSqlConfigJson())) {
+                wocConfigWorkReq.getSyncRule().setSqlConfig(JSON.parseObject(
+                    wocConfigWorkReq.getSyncRule().getSqlConfigJson(), new TypeReference<Map<String, String>>() {}));
             }
         } catch (Exception e) {
             throw new IsxAppException("数据同步sqlConfig配置json格式不合法");
@@ -99,7 +104,8 @@ public class WorkConfigBizService {
 
             // 如果是等级的模式，需要帮用户默认填充sparkConfig
             if (SetMode.SIMPLE.equals(wocConfigWorkReq.getClusterConfig().getSetMode())) {
-                Map<String, String> sparkConfig = workConfigService.initSparkConfig(wocConfigWorkReq.getClusterConfig().getResourceLevel());
+                Map<String, String> sparkConfig =
+                    workConfigService.initSparkConfig(wocConfigWorkReq.getClusterConfig().getResourceLevel());
                 wocConfigWorkReq.getClusterConfig().setSparkConfig(sparkConfig);
             }
 
@@ -197,7 +203,8 @@ public class WorkConfigBizService {
         // 补上spark.executor.instances
         if (!Strings.isEmpty(workConfig.getSyncRule()) && !Strings.isEmpty(workConfig.getSyncWorkConfig())) {
             SyncRule syncRule = JSON.parseObject(workConfig.getSyncRule(), SyncRule.class);
-            clusterConfig.getSparkConfig().put("spark.executor.instances", String.valueOf(syncRule.getNumConcurrency()));
+            clusterConfig.getSparkConfig().put("spark.executor.instances",
+                String.valueOf(syncRule.getNumConcurrency()));
         }
 
         return clusterConfig;

@@ -60,13 +60,16 @@ public class RunAgentRemoveService {
         }
     }
 
-    public void removeAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode) throws JSchException, IOException, InterruptedException, SftpException {
+    public void removeAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
+        throws JSchException, IOException, InterruptedException, SftpException {
 
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-uninstall.sh", sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-uninstall.sh",
+            sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh");
 
         // 运行停止脚本
-        String removeCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh" + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
+        String removeCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh"
+            + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
         log.debug("执行远程命令:{}", removeCommand);
 
         // 获取返回结果

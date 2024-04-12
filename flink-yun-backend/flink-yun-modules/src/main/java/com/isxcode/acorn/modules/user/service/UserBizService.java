@@ -76,11 +76,14 @@ public class UserBizService {
         }
 
         // 生成token
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), userEntity.getId(), isxAppProperties.getJwtKey(), isxAppProperties.getExpirationMin());
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), userEntity.getId(),
+            isxAppProperties.getJwtKey(), isxAppProperties.getExpirationMin());
 
         // 如果是系统管理员直接返回
         if (RoleType.SYS_ADMIN.equals(userEntity.getRoleCode())) {
-            return LoginRes.builder().tenantId(userEntity.getCurrentTenantId()).username(userEntity.getUsername()).phone(userEntity.getPhone()).email(userEntity.getEmail()).remark(userEntity.getRemark()).token(jwtToken).role(userEntity.getRoleCode()).build();
+            return LoginRes.builder().tenantId(userEntity.getCurrentTenantId()).username(userEntity.getUsername())
+                .phone(userEntity.getPhone()).email(userEntity.getEmail()).remark(userEntity.getRemark())
+                .token(jwtToken).role(userEntity.getRoleCode()).build();
         }
 
         // 获取用户最近一次租户信息
@@ -104,13 +107,15 @@ public class UserBizService {
         }
 
         // 返回用户在租户中的角色
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findByTenantIdAndUserId(currentTenantId, userEntity.getId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findByTenantIdAndUserId(currentTenantId, userEntity.getId());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("无可用租户，请联系管理员");
         }
 
         // 生成token并返回
-        return new LoginRes(userEntity.getUsername(), userEntity.getPhone(), userEntity.getEmail(), userEntity.getRemark(), jwtToken, currentTenantId, tenantUserEntityOptional.get().getRoleCode());
+        return new LoginRes(userEntity.getUsername(), userEntity.getPhone(), userEntity.getEmail(),
+            userEntity.getRemark(), jwtToken, currentTenantId, tenantUserEntityOptional.get().getRoleCode());
     }
 
     public GetUserRes getUser() {
@@ -128,11 +133,13 @@ public class UserBizService {
         }
 
         // 生成token
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), userEntity.getId(), isxAppProperties.getJwtKey(), isxAppProperties.getExpirationMin());
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), userEntity.getId(),
+            isxAppProperties.getJwtKey(), isxAppProperties.getExpirationMin());
 
         // 如果是系统管理员直接返回
         if (RoleType.SYS_ADMIN.equals(userEntity.getRoleCode())) {
-            return GetUserRes.builder().tenantId(userEntity.getCurrentTenantId()).username(userEntity.getUsername()).token(jwtToken).role(userEntity.getRoleCode()).build();
+            return GetUserRes.builder().tenantId(userEntity.getCurrentTenantId()).username(userEntity.getUsername())
+                .token(jwtToken).role(userEntity.getRoleCode()).build();
         }
 
         // 获取用户最近一次租户信息
@@ -156,13 +163,15 @@ public class UserBizService {
         }
 
         // 返回用户在租户中的角色
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findByTenantIdAndUserId(currentTenantId, userEntity.getId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findByTenantIdAndUserId(currentTenantId, userEntity.getId());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("无可用租户，请联系管理员");
         }
 
         // 生成token并返回
-        return new GetUserRes(userEntity.getUsername(), userEntity.getPhone(), userEntity.getEmail(), userEntity.getRemark(), jwtToken, currentTenantId, tenantUserEntityOptional.get().getRoleCode());
+        return new GetUserRes(userEntity.getUsername(), userEntity.getPhone(), userEntity.getEmail(),
+            userEntity.getRemark(), jwtToken, currentTenantId, tenantUserEntityOptional.get().getRoleCode());
     }
 
     public void logout() {
@@ -261,14 +270,17 @@ public class UserBizService {
 
     public Page<PageUserRes> pageUser(PageUserReq usrQueryAllUsersReq) {
 
-        Page<UserEntity> userEntitiesPage = userRepository.searchAllUser(usrQueryAllUsersReq.getSearchKeyWord(), PageRequest.of(usrQueryAllUsersReq.getPage(), usrQueryAllUsersReq.getPageSize()));
+        Page<UserEntity> userEntitiesPage = userRepository.searchAllUser(usrQueryAllUsersReq.getSearchKeyWord(),
+            PageRequest.of(usrQueryAllUsersReq.getPage(), usrQueryAllUsersReq.getPageSize()));
 
         return userEntitiesPage.map(userMapper::userEntityToUsrQueryAllUsersRes);
     }
 
     public Page<PageEnableUserRes> pageEnableUser(PageEnableUserReq usrQueryAllEnableUsersReq) {
 
-        Page<UserEntity> userEntitiesPage = userRepository.searchAllEnableUser(usrQueryAllEnableUsersReq.getSearchKeyWord(), PageRequest.of(usrQueryAllEnableUsersReq.getPage(), usrQueryAllEnableUsersReq.getPageSize()));
+        Page<UserEntity> userEntitiesPage =
+            userRepository.searchAllEnableUser(usrQueryAllEnableUsersReq.getSearchKeyWord(),
+                PageRequest.of(usrQueryAllEnableUsersReq.getPage(), usrQueryAllEnableUsersReq.getPageSize()));
 
         return userMapper.userEntityToUsrQueryAllEnableUsersResPage(userEntitiesPage);
     }
@@ -288,7 +300,8 @@ public class UserBizService {
 
     public GetAnonymousTokenRes getAnonymousToken(GetAnonymousTokenReq getAnonymousTokenReq) {
 
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "sy_anonymous", isxAppProperties.getJwtKey(), getAnonymousTokenReq.getValidDay() * 24 * 60);
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "sy_anonymous", isxAppProperties.getJwtKey(),
+            getAnonymousTokenReq.getValidDay() * 24 * 60);
 
         return GetAnonymousTokenRes.builder().token(jwtToken).build();
     }

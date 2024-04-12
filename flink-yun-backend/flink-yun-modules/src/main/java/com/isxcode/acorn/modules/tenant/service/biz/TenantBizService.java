@@ -73,7 +73,8 @@ public class TenantBizService {
         TenantEntity tenantEntity = tenantRepository.save(tenant);
 
         // 初始化租户管理员
-        TenantUserEntity tenantUserEntity = TenantUserEntity.builder().userId(tetAddTenantReq.getAdminUserId()).tenantId(tenantEntity.getId()).roleCode(RoleType.TENANT_ADMIN).status(TenantStatus.ENABLE).build();
+        TenantUserEntity tenantUserEntity = TenantUserEntity.builder().userId(tetAddTenantReq.getAdminUserId())
+            .tenantId(tenantEntity.getId()).roleCode(RoleType.TENANT_ADMIN).status(TenantStatus.ENABLE).build();
 
         // 判断管理员是否绑定新租户
         if (Strings.isEmpty(userEntity.getCurrentTenantId())) {
@@ -113,7 +114,8 @@ public class TenantBizService {
         // TenantEntity
         // To
         // TetQueryUserTenantRes
-        List<QueryUserTenantRes> userTenantResList = tenantMapper.tenantEntityToTetQueryUserTenantResList(tenantEntityList);
+        List<QueryUserTenantRes> userTenantResList =
+            tenantMapper.tenantEntityToTetQueryUserTenantResList(tenantEntityList);
 
         // 标记当前租户
         userTenantResList.forEach(e -> {
@@ -127,7 +129,8 @@ public class TenantBizService {
 
     public Page<PageTenantRes> pageTenant(PageTenantReq tetQueryTenantReq) {
 
-        Page<TenantEntity> tenantEntityPage = tenantRepository.searchAll(tetQueryTenantReq.getSearchKeyWord(), PageRequest.of(tetQueryTenantReq.getPage(), tetQueryTenantReq.getPageSize()));
+        Page<TenantEntity> tenantEntityPage = tenantRepository.searchAll(tetQueryTenantReq.getSearchKeyWord(),
+            PageRequest.of(tetQueryTenantReq.getPage(), tetQueryTenantReq.getPageSize()));
 
         Page<PageTenantRes> result = tenantEntityPage.map(tenantMapper::tenantEntityToTetQueryTenantRes);
         JPA_TENANT_MODE.set(false);
@@ -141,7 +144,8 @@ public class TenantBizService {
     public void updateTenantForSystemAdmin(UpdateTenantForSystemAdminReq tetUpdateTenantBySystemAdminReq) {
 
         // 判断租户是否存在
-        Optional<TenantEntity> tenantEntityOptional = tenantRepository.findById(tetUpdateTenantBySystemAdminReq.getId());
+        Optional<TenantEntity> tenantEntityOptional =
+            tenantRepository.findById(tetUpdateTenantBySystemAdminReq.getId());
         if (!tenantEntityOptional.isPresent()) {
             throw new IsxAppException("租户不存在");
         }
@@ -149,7 +153,8 @@ public class TenantBizService {
         // TetUpdateTenantBySystemAdminReq
         // To
         // TenantEntity
-        TenantEntity tenantEntity = tenantMapper.tetUpdateTenantBySystemAdminReqToTenantEntity(tetUpdateTenantBySystemAdminReq, tenantEntityOptional.get());
+        TenantEntity tenantEntity = tenantMapper
+            .tetUpdateTenantBySystemAdminReqToTenantEntity(tetUpdateTenantBySystemAdminReq, tenantEntityOptional.get());
 
         // 持久化对象
         tenantRepository.save(tenantEntity);
@@ -158,7 +163,8 @@ public class TenantBizService {
     public void updateTenantForTenantAdmin(UpdateTenantForTenantAdminReq tetUpdateTenantByTenantAdminReq) {
 
         // 判断租户是否存在
-        Optional<TenantEntity> tenantEntityOptional = tenantRepository.findById(tetUpdateTenantByTenantAdminReq.getId());
+        Optional<TenantEntity> tenantEntityOptional =
+            tenantRepository.findById(tetUpdateTenantByTenantAdminReq.getId());
         if (!tenantEntityOptional.isPresent()) {
             throw new IsxAppException("租户不存在");
         }
@@ -166,7 +172,8 @@ public class TenantBizService {
         // TetUpdateTenantByTenantAdminReq
         // To
         // TenantEntity
-        TenantEntity tenantEntity = tenantMapper.tetUpdateTenantByTenantAdminReqToTenantEntity(tetUpdateTenantByTenantAdminReq, tenantEntityOptional.get());
+        TenantEntity tenantEntity = tenantMapper
+            .tetUpdateTenantByTenantAdminReqToTenantEntity(tetUpdateTenantByTenantAdminReq, tenantEntityOptional.get());
 
         // 持久化对象
         tenantRepository.save(tenantEntity);
@@ -270,7 +277,8 @@ public class TenantBizService {
         }
 
         // 判断用户是否在租户中
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findByTenantIdAndUserId(getTenantReq.getTenantId(), USER_ID.get());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findByTenantIdAndUserId(getTenantReq.getTenantId(), USER_ID.get());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("不在租户中");
         }

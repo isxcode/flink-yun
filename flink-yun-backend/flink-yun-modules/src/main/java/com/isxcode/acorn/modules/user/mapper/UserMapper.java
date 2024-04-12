@@ -53,6 +53,7 @@ public interface UserMapper {
     List<PageEnableUserRes> userEntityToUsrQueryAllEnableUsersResList(List<UserEntity> userEntity);
 
     default Page<PageEnableUserRes> userEntityToUsrQueryAllEnableUsersResPage(Page<UserEntity> userEntities) {
-        return new PageImpl<>(userEntityToUsrQueryAllEnableUsersResList(userEntities.getContent()), userEntities.getPageable(), userEntities.getTotalElements());
+        return new PageImpl<>(userEntityToUsrQueryAllEnableUsersResList(userEntities.getContent()),
+            userEntities.getPageable(), userEntities.getTotalElements());
     }
 }

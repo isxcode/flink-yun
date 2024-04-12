@@ -44,25 +44,30 @@ public class SyncWorkBizService {
 
         Connection connection = syncWorkService.getConnection(getDataSourceTablesReq.getDataSourceId(), null, null);
         Map<String, String> transform = getTransform(connection, getDataSourceTablesReq.getTablePattern());
-        List<String> tables = syncWorkService.tables(connection.getMetaData(), transform.get("catalog"), transform.get("schema"), transform.get("tableName"));
-        List<String> views = syncWorkService.views(connection.getMetaData(), transform.get("catalog"), transform.get("schema"), transform.get("tableName"));
+        List<String> tables = syncWorkService.tables(connection.getMetaData(), transform.get("catalog"),
+            transform.get("schema"), transform.get("tableName"));
+        List<String> views = syncWorkService.views(connection.getMetaData(), transform.get("catalog"),
+            transform.get("schema"), transform.get("tableName"));
         tables.addAll(views);
         connection.close();
         return GetDataSourceTablesRes.builder().tables(tables).build();
     }
 
-    public GetDataSourceColumnsRes getDataSourceColumns(GetDataSourceColumnsReq getDataSourceColumnsReq) throws Exception {
+    public GetDataSourceColumnsRes getDataSourceColumns(GetDataSourceColumnsReq getDataSourceColumnsReq)
+        throws Exception {
 
         Connection connection = syncWorkService.getConnection(getDataSourceColumnsReq.getDataSourceId(), null, null);
         Map<String, String> transform = getTransform(connection, getDataSourceColumnsReq.getTableName());
-        List<ColumnMetaDto> columns = syncWorkService.columns(connection.getMetaData(), transform.get("catalog"), transform.get("schema"), transform.get("tableName"));
+        List<ColumnMetaDto> columns = syncWorkService.columns(connection.getMetaData(), transform.get("catalog"),
+            transform.get("schema"), transform.get("tableName"));
         connection.close();
         return GetDataSourceColumnsRes.builder().columns(columns).build();
     }
 
     public GetDataSourceDataRes getDataSourceData(GetDataSourceDataReq getDataSourceDataReq) throws Exception {
 
-        Optional<DatasourceEntity> datasourceEntityOptional = datasourceRepository.findById(getDataSourceDataReq.getDataSourceId());
+        Optional<DatasourceEntity> datasourceEntityOptional =
+            datasourceRepository.findById(getDataSourceDataReq.getDataSourceId());
         if (!datasourceEntityOptional.isPresent()) {
             throw new IsxAppException("数据源异常，请联系开发者");
         }
@@ -70,7 +75,8 @@ public class SyncWorkBizService {
         Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get());
 
         Statement statement = connection.createStatement();
-        String dataPreviewSql = syncWorkService.getDataPreviewSql(datasourceEntityOptional.get().getDbType(), getDataSourceDataReq.getTableName());
+        String dataPreviewSql = syncWorkService.getDataPreviewSql(datasourceEntityOptional.get().getDbType(),
+            getDataSourceDataReq.getTableName());
         ResultSet resultSet = statement.executeQuery(dataPreviewSql);
         List<String> columns = new ArrayList<>();
         List<List<String>> rows = new ArrayList<>();
@@ -97,7 +103,8 @@ public class SyncWorkBizService {
     public GetCreateTableSqlRes getCreateTableSql(GetCreateTableSqlReq getCreateTableSqlReq) throws Exception {
         Connection connection = syncWorkService.getConnection(getCreateTableSqlReq.getDataSourceId(), null, null);
         Map<String, String> transform = getTransform(connection, getCreateTableSqlReq.getTableName());
-        ResultSet columns = connection.getMetaData().getColumns(transform.get("catalog"), transform.get("schema"), transform.get("tableName"), null);
+        ResultSet columns = connection.getMetaData().getColumns(transform.get("catalog"), transform.get("schema"),
+            transform.get("tableName"), null);
         String sql = String.join(" ", "CREATE TABLE", transform.get("tableName"), "(");
         while (columns.next()) {
             sql = String.join(" ", sql, "\n", columns.getString("COLUMN_NAME"), "String,");

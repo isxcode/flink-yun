@@ -30,7 +30,9 @@ public class ExecuteSqlExecutor extends WorkExecutor {
 
     private final DatasourceService datasourceService;
 
-    public ExecuteSqlExecutor(WorkInstanceRepository workInstanceRepository, DatasourceRepository datasourceRepository, DatasourceBizService datasourceBizService, WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
+    public ExecuteSqlExecutor(WorkInstanceRepository workInstanceRepository, DatasourceRepository datasourceRepository,
+        DatasourceBizService datasourceBizService, WorkflowInstanceRepository workflowInstanceRepository,
+        DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;
@@ -51,7 +53,8 @@ public class ExecuteSqlExecutor extends WorkExecutor {
         }
 
         // 检查数据源是否存在
-        Optional<DatasourceEntity> datasourceEntityOptional = datasourceRepository.findById(workRunContext.getDatasourceId());
+        Optional<DatasourceEntity> datasourceEntityOptional =
+            datasourceRepository.findById(workRunContext.getDatasourceId());
         if (!datasourceEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测运行环境失败: 未配置有效数据源  \n");
         }
@@ -70,19 +73,22 @@ public class ExecuteSqlExecutor extends WorkExecutor {
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始执行作业
-        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get()); Statement statement = connection.createStatement()) {
+        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get());
+            Statement statement = connection.createStatement()) {
 
             // 清除注释
             String noCommentSql = workRunContext.getScript().replaceAll("/\\*(?:.|[\\n\\r])*?\\*/|--.*", "");
 
             // 清除脚本中的脏数据
-            List<String> sqls = Arrays.stream(noCommentSql.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
+            List<String> sqls =
+                Arrays.stream(noCommentSql.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
 
             // 逐条执行sql
             for (String sql : sqls) {
 
                 // 记录开始执行时间
-                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: ").append(sql).append(" \n");
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: ").append(sql)
+                    .append(" \n");
                 workInstance = updateInstance(workInstance, logBuilder);
 
                 // 执行sql
