@@ -17,6 +17,7 @@ logs
 .DS_Store
 .fleet
 .idea
+!.idea/icon.svg
 
 # Local env files
 .env
