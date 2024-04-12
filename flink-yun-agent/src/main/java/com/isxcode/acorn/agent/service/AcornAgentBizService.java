@@ -2,6 +2,7 @@ package com.isxcode.acorn.agent.service;
 
 import com.isxcode.acorn.agent.run.FlinkClusterAcorn;
 import com.isxcode.acorn.agent.run.KubernetesAcorn;
+import com.isxcode.acorn.agent.run.YarnAcorn;
 import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
@@ -28,11 +29,13 @@ public class AcornAgentBizService {
 
 	private final KubernetesAcorn kubernetesAcorn;
 
+    private final YarnAcorn yarnAcorn;
+
 	public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
 
 		switch (submitJobReq.getAgentType()) {
 			case AgentType.YARN :
-				break;
+                return yarnAcorn.submitJob(submitJobReq);
 			case AgentType.K8S :
 				return kubernetesAcorn.submitJob(submitJobReq);
 			case AgentType.FlinkCluster :
@@ -40,8 +43,7 @@ public class AcornAgentBizService {
 			default :
 				throw new IsxAppException("agent类型不支持");
 		}
-		return null;
-	}
+    }
 
 	public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
 
