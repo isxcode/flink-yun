@@ -39,11 +39,11 @@ export default defineComponent({
       <div class="zqy-login">
         <div class="zqy-login__header">
           <img class="zqy-login__logo" src={logoURL} alt="logo" />
-          <span class="zqy-login__title">至轻云</span>
+          <span class="zqy-login__title">至流云</span>
         </div>
         <div class="zqy-login__body">
           <div class="zqy-login__playground">
-            <span class="zqy-login__slogan">打造超轻量级批处理大数据平台</span>
+            <span class="zqy-login__slogan">企业级流式大数据平台</span>
           </div>
           <div class="zqy-login__main">
             { renderLoginForm() }
