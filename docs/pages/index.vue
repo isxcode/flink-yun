@@ -164,10 +164,10 @@ definePageMeta({
 });
 
 useSeoMeta({
-    title: "至轻云",
-    ogTitle: "至轻云",
-    description: "打造超轻量级大数据平台",
-    ogDescription: "打造超轻量级大数据平台",
+    title: "至流云",
+    ogTitle: "至流云",
+    description: "打造企业级流式大数据平台",
+    ogDescription: "打造企业级流式大数据平台",
 });
 
 const isMobile = useMediaQuery('(max-width: 767px)')
@@ -307,7 +307,7 @@ $module-intro-img-width: 600px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-0.jpg');
+        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-0.png');
         padding-top: 200px;
         position: relative;
         overflow: hidden;
@@ -614,11 +614,10 @@ $module-intro-img-width: 600px;
 
 .module-end {
     height: $module-end-height;
-    //background-size: cover;
-    //background-position: center;
-    //background-repeat: no-repeat;
-    //background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-1.png');
-    background: $primary-color;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-1.png');
     display: flex;
     align-items: center;
     justify-content: center;
