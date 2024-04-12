@@ -64,8 +64,8 @@ public class KubernetesAcorn implements AcornRun {
 		KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
 		try (KubernetesClusterDescriptor clusterDescriptor = kubernetesClusterClientFactory
 				.createClusterDescriptor(flinkConfig)) {
-			ClusterClientProvider<String> clusterClientProvider = clusterDescriptor
-					.deploySessionCluster(clusterSpecification);
+            ClusterClientProvider<String> clusterClientProvider = clusterDescriptor
+                .deployApplicationCluster(clusterSpecification, applicationConfiguration);
 			System.out.println(clusterClientProvider.getClusterClient().getClusterId());
 			System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
 			return null;
@@ -111,16 +111,4 @@ public class KubernetesAcorn implements AcornRun {
 		return "";
 	}
 
-	public static void main(String[] args) {
-		String flinkSql = "CREATE TABLE from_table(\n" + "    s_name STRING,\n" + "    s_suppkey INT\n" + ") WITH (\n"
-				+ "    'connector'='jdbc',\n" + "    'url'='jdbc:mysql://isxcode:40004/isxcode_db',\n"
-				+ "    'table-name'='supplier',\n" + "    'driver'='com.mysql.cj.jdbc.Driver',\n"
-				+ "    'username'='root',\n" + "    'password'='Zhiqingyun@isxcode');" + "CREATE TABLE to_table(\n"
-				+ "    username STRING,\n" + "    age INT\n" + ") WITH (\n" + "    'connector'='jdbc',\n"
-				+ "    'url'='jdbc:mysql://isxcode:40004/isxcode_db',\n" + "    'table-name'='users2',\n"
-				+ "    'driver'='com.mysql.cj.jdbc.Driver',\n" + "    'username'='root',\n"
-				+ "    'password'='Zhiqingyun@isxcode');"
-				+ "insert into to_table select s_name, s_suppkey from from_table";
-		System.out.println(Base64.getEncoder().encodeToString(flinkSql.getBytes()));
-	}
 }
