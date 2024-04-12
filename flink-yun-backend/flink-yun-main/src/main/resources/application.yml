@@ -80,7 +80,7 @@ spring:
     path: /swagger-ui/api-docs
   swagger-ui:
     path: /swagger-ui.html
-  packages-to-scan: com.isxcode.star
+  packages-to-scan: com.isxcode.acorn
 
 logging:
   exception-conversion-word: '%wEx'
