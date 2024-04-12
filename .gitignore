@@ -32,8 +32,8 @@ flink-yun-backend/flink-yun-main/resources/**
 
 # 不提交spark-min
 flink-yun-dist/flink-min
-!flink-yun-dist/zhiqingyun/bin
-!flink-yun-dist/zhiqingyun-agent/bin
+!flink-yun-dist/zhiliuyun/bin
+!flink-yun-dist/zhiliuyun-agent/bin
 
 # isx工具不提交
 isx
