@@ -17,3 +17,7 @@ dependencies {
 bootJar {
   archiveFileName = 'zhiliuyun.jar'
 }
+
+bootRun {
+    workingDir(rootDir.getAbsolutePath())
+}
