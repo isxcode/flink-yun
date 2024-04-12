@@ -25,73 +25,73 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AcornAgentBizService {
 
-	private final FlinkClusterAcorn flinkClusterAcorn;
+    private final FlinkClusterAcorn flinkClusterAcorn;
 
-	private final KubernetesAcorn kubernetesAcorn;
+    private final KubernetesAcorn kubernetesAcorn;
 
-	private final YarnAcorn yarnAcorn;
+    private final YarnAcorn yarnAcorn;
 
-	public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
+    public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
 
-		switch (submitJobReq.getAgentType()) {
-			case AgentType.YARN :
-				return yarnAcorn.submitJob(submitJobReq);
-			case AgentType.K8S :
-				return kubernetesAcorn.submitJob(submitJobReq);
-			case AgentType.FlinkCluster :
-				return flinkClusterAcorn.submitJob(submitJobReq);
-			default :
-				throw new IsxAppException("agent类型不支持");
-		}
-	}
+        switch (submitJobReq.getAgentType()) {
+            case AgentType.YARN:
+                return yarnAcorn.submitJob(submitJobReq);
+            case AgentType.K8S:
+                return kubernetesAcorn.submitJob(submitJobReq);
+            case AgentType.FlinkCluster:
+                return flinkClusterAcorn.submitJob(submitJobReq);
+            default:
+                throw new IsxAppException("agent类型不支持");
+        }
+    }
 
-	public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
+    public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
 
-		switch (getJobInfoReq.getAgentType()) {
-			case AgentType.YARN :
+        switch (getJobInfoReq.getAgentType()) {
+            case AgentType.YARN:
 
-				break;
-			case AgentType.K8S :
-				return kubernetesAcorn.getJobInfo(getJobInfoReq);
-			case AgentType.FlinkCluster :
-				return flinkClusterAcorn.getJobInfo(getJobInfoReq);
-			default :
-				throw new IsxAppException("agent类型不支持");
-		}
+                break;
+            case AgentType.K8S:
+                return kubernetesAcorn.getJobInfo(getJobInfoReq);
+            case AgentType.FlinkCluster:
+                return flinkClusterAcorn.getJobInfo(getJobInfoReq);
+            default:
+                throw new IsxAppException("agent类型不支持");
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
+    public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
 
-		switch (getJobLogReq.getAgentType()) {
-			case AgentType.YARN :
-				break;
-			case AgentType.K8S :
-				return kubernetesAcorn.getJobLog(getJobLogReq);
-			case AgentType.FlinkCluster :
-				return flinkClusterAcorn.getJobLog(getJobLogReq);
-			default :
-				throw new IsxAppException("agent类型不支持");
-		}
+        switch (getJobLogReq.getAgentType()) {
+            case AgentType.YARN:
+                break;
+            case AgentType.K8S:
+                return kubernetesAcorn.getJobLog(getJobLogReq);
+            case AgentType.FlinkCluster:
+                return flinkClusterAcorn.getJobLog(getJobLogReq);
+            default:
+                throw new IsxAppException("agent类型不支持");
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public StopJobRes stopJob(StopJobReq stopJobReq) {
+    public StopJobRes stopJob(StopJobReq stopJobReq) {
 
-		switch (stopJobReq.getAgentType()) {
-			case AgentType.YARN :
+        switch (stopJobReq.getAgentType()) {
+            case AgentType.YARN:
 
-				break;
-			case AgentType.K8S :
-				return kubernetesAcorn.stopJobReq(stopJobReq);
-			case AgentType.FlinkCluster :
-				return flinkClusterAcorn.stopJobReq(stopJobReq);
-			default :
-				throw new IsxAppException("agent类型不支持");
-		}
+                break;
+            case AgentType.K8S:
+                return kubernetesAcorn.stopJobReq(stopJobReq);
+            case AgentType.FlinkCluster:
+                return flinkClusterAcorn.stopJobReq(stopJobReq);
+            default:
+                throw new IsxAppException("agent类型不支持");
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

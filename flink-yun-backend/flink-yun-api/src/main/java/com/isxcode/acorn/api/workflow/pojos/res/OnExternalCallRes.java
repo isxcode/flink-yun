@@ -7,8 +7,8 @@ import lombok.Data;
 @Builder
 public class OnExternalCallRes {
 
-	private String url;
+    private String url;
 
-	private String accessKey;
+    private String accessKey;
 
 }

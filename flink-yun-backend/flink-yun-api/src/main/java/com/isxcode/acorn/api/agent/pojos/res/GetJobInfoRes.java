@@ -9,9 +9,9 @@ import java.util.List;
 @Builder
 public class GetJobInfoRes {
 
-	private String jobId;
+    private String jobId;
 
-	private String status;
+    private String status;
 
-	private List<String> vertices;
+    private List<String> vertices;
 }

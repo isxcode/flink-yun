@@ -7,19 +7,19 @@ import java.util.List;
 @Data
 public class SubmitJobReq {
 
-	private String agentType;
+    private String agentType;
 
-	private String flinkHome;
+    private String flinkHome;
 
-	private PluginReq pluginReq;
+    private PluginReq pluginReq;
 
-	private String programArgs;
+    private String programArgs;
 
-	private List<String> programArgsList;
+    private List<String> programArgsList;
 
-	private String entryClass;
+    private String entryClass;
 
-	private String appResource;
+    private String appResource;
 
-	private String appName;
+    private String appName;
 }

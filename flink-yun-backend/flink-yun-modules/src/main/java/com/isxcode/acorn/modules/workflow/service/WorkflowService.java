@@ -16,24 +16,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WorkflowService {
 
-	private final WorkInstanceRepository workInstanceRepository;
+    private final WorkInstanceRepository workInstanceRepository;
 
-	private final WorkflowRepository workflowRepository;
+    private final WorkflowRepository workflowRepository;
 
-	private final WorkflowConfigRepository workflowConfigRepository;
+    private final WorkflowConfigRepository workflowConfigRepository;
 
-	public WorkInstanceEntity getWorkInstance(String workInstanceId) {
+    public WorkInstanceEntity getWorkInstance(String workInstanceId) {
 
-		return workInstanceRepository.findById(workInstanceId).orElseThrow(() -> new IsxAppException("实例不存在"));
-	}
+        return workInstanceRepository.findById(workInstanceId).orElseThrow(() -> new IsxAppException("实例不存在"));
+    }
 
-	public WorkflowEntity getWorkflow(String workflowId) {
+    public WorkflowEntity getWorkflow(String workflowId) {
 
-		return workflowRepository.findById(workflowId).orElseThrow(() -> new IsxAppException("工作流不存在"));
-	}
+        return workflowRepository.findById(workflowId).orElseThrow(() -> new IsxAppException("工作流不存在"));
+    }
 
-	public WorkflowConfigEntity getWorkflowConfig(String workflowConfigId) {
+    public WorkflowConfigEntity getWorkflowConfig(String workflowConfigId) {
 
-		return workflowConfigRepository.findById(workflowConfigId).orElseThrow(() -> new IsxAppException("工作流配置不存在"));
-	}
+        return workflowConfigRepository.findById(workflowConfigId).orElseThrow(() -> new IsxAppException("工作流配置不存在"));
+    }
 }

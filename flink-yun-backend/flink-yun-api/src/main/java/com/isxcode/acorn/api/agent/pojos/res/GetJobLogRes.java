@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class GetJobLogRes {
 
-	private String log;
+    private String log;
 }

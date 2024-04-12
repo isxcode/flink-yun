@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FlinkRestUploadRes {
 
-	private String filename;
+    private String filename;
 
-	private String status;
+    private String status;
 }

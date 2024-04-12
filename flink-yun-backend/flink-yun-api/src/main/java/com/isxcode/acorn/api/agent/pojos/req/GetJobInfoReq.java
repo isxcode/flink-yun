@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetJobInfoReq {
 
-	private String jobId;
+    private String jobId;
 
-	private String flinkHome;
+    private String flinkHome;
 
-	private String agentType;
+    private String agentType;
 
-	private String clusterId;
+    private String clusterId;
 }

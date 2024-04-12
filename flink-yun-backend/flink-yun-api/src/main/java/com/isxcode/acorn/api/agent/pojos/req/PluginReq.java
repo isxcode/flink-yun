@@ -19,25 +19,25 @@ import com.isxcode.acorn.api.work.pojos.dto.SyncWorkConfig;
 @NoArgsConstructor
 public class PluginReq {
 
-	private String flinkSql;
+    private String flinkSql;
 
-	private String sql;
+    private String sql;
 
-	private String database;
+    private String database;
 
-	private Integer limit;
+    private Integer limit;
 
-	private String applicationId;
+    private String applicationId;
 
-	private Map<String, String> sparkConfig;
+    private Map<String, String> sparkConfig;
 
-	private SyncWorkConfig syncWorkConfig;
+    private SyncWorkConfig syncWorkConfig;
 
-	private SyncRule syncRule;
+    private SyncRule syncRule;
 
-	private List<FuncInfo> funcInfoList;
+    private List<FuncInfo> funcInfoList;
 
-	private int containerPort;
+    private int containerPort;
 
-	private KafkaConfig kafkaConfig;
+    private KafkaConfig kafkaConfig;
 }

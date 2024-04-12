@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class SubmitJobRes {
 
-	public String jobId;
+    public String jobId;
 }

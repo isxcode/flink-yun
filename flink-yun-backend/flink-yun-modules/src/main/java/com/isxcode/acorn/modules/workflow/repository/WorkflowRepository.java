@@ -11,17 +11,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/** 只负责数据库查询逻辑. */
+/**
+ * 只负责数据库查询逻辑.
+ */
 @Repository
 @CacheConfig(cacheNames = {"sy_engines"})
 public interface WorkflowRepository extends JpaRepository<WorkflowEntity, String> {
 
-	@Query("SELECT w FROM WorkflowEntity w WHERE w.name LIKE %:keyword% OR w.remark LIKE %:keyword% order by w.createDateTime desc ")
-	Page<WorkflowEntity> searchAll(@Param("keyword") String searchKeyWord, Pageable pageable);
+    @Query("SELECT w FROM WorkflowEntity w WHERE w.name LIKE %:keyword% OR w.remark LIKE %:keyword% order by w.createDateTime desc ")
+    Page<WorkflowEntity> searchAll(@Param("keyword") String searchKeyWord, Pageable pageable);
 
-	long countByTenantId(String tenantId);
+    long countByTenantId(String tenantId);
 
-	Optional<WorkflowEntity> findByName(String name);
+    Optional<WorkflowEntity> findByName(String name);
 
-	long countByStatus(String status);
+    long countByStatus(String status);
 }

@@ -8,8 +8,8 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class OnExternalCallReq {
 
-	@Schema(title = "工作流配置id", example = "123")
-	@NotEmpty(message = "工作流配置id不能为空")
-	private String workflowConfigId;
+    @Schema(title = "工作流配置id", example = "123")
+    @NotEmpty(message = "工作流配置id不能为空")
+    private String workflowConfigId;
 
 }

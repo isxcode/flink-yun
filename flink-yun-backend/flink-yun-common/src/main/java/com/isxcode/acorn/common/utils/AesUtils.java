@@ -17,37 +17,37 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class AesUtils {
 
-	private final IsxAppProperties isxAppProperties;
+    private final IsxAppProperties isxAppProperties;
 
-	/**
-	 * 对称加密.
-	 */
-	public String encrypt(String data) {
+    /**
+     * 对称加密.
+     */
+    public String encrypt(String data) {
 
-		if (data == null) {
-			return null;
-		}
+        if (data == null) {
+            return null;
+        }
 
-		if (Strings.isEmpty(data)) {
-			return "";
-		}
+        if (Strings.isEmpty(data)) {
+            return "";
+        }
 
-		return SecureUtil.aes(Arrays.copyOf(isxAppProperties.getAesSlat().getBytes(), 1 << 5)).encryptBase64(data);
-	}
+        return SecureUtil.aes(Arrays.copyOf(isxAppProperties.getAesSlat().getBytes(), 1 << 5)).encryptBase64(data);
+    }
 
-	/**
-	 * 对称解密.
-	 */
-	public String decrypt(String data) {
+    /**
+     * 对称解密.
+     */
+    public String decrypt(String data) {
 
-		if (data == null) {
-			return null;
-		}
+        if (data == null) {
+            return null;
+        }
 
-		if (Strings.isEmpty(data)) {
-			return "";
-		}
+        if (Strings.isEmpty(data)) {
+            return "";
+        }
 
-		return SecureUtil.aes(Arrays.copyOf(isxAppProperties.getAesSlat().getBytes(), 1 << 5)).decryptStr(data);
-	}
+        return SecureUtil.aes(Arrays.copyOf(isxAppProperties.getAesSlat().getBytes(), 1 << 5)).decryptStr(data);
+    }
 }
