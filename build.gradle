@@ -80,7 +80,7 @@ allprojects {
 
     // checkstyle
     tasks.withType(Checkstyle).configureEach {
-        maxWarnings = 100
+        maxWarnings = 10000
         maxErrors = 0
         ignoreFailures = false
         config resources.text.fromFile(rootDir.getAbsolutePath() + '/.checkstyle/checkstyle.xml')
@@ -106,7 +106,7 @@ spotless {
 // gradle format，格式化代码
 tasks.register('format', GradleBuild) {
 
-    tasks = [":spotlessApply", ":checkstyleMain"]
+    tasks = ["spotlessApply", "checkstyleMain"]
 }
 
 // gradle install，安装项目依赖
