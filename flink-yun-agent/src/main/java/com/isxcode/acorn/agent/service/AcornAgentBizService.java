@@ -29,13 +29,13 @@ public class AcornAgentBizService {
 
 	private final KubernetesAcorn kubernetesAcorn;
 
-    private final YarnAcorn yarnAcorn;
+	private final YarnAcorn yarnAcorn;
 
 	public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
 
 		switch (submitJobReq.getAgentType()) {
 			case AgentType.YARN :
-                return yarnAcorn.submitJob(submitJobReq);
+				return yarnAcorn.submitJob(submitJobReq);
 			case AgentType.K8S :
 				return kubernetesAcorn.submitJob(submitJobReq);
 			case AgentType.FlinkCluster :
@@ -43,7 +43,7 @@ public class AcornAgentBizService {
 			default :
 				throw new IsxAppException("agent类型不支持");
 		}
-    }
+	}
 
 	public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
 
