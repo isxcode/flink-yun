@@ -142,8 +142,7 @@ public class ClusterNodeBizService {
 
     public Page<EnoQueryNodeRes> pageClusterNode(PageClusterNodeReq enoQueryNodeReq) {
 
-        Page<ClusterNodeEntity> engineNodeEntities =
-            clusterNodeRepository.searchAll(enoQueryNodeReq.getSearchKeyWord(), enoQueryNodeReq.getClusterId(), PageRequest.of(enoQueryNodeReq.getPage(), enoQueryNodeReq.getPageSize()));
+        Page<ClusterNodeEntity> engineNodeEntities = clusterNodeRepository.searchAll(enoQueryNodeReq.getSearchKeyWord(), enoQueryNodeReq.getClusterId(), PageRequest.of(enoQueryNodeReq.getPage(), enoQueryNodeReq.getPageSize()));
 
         return engineNodeEntities.map(engineNodeMapper::nodeEntityToQueryNodeRes);
     }

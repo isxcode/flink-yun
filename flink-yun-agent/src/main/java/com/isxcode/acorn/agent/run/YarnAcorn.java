@@ -53,8 +53,7 @@ public class YarnAcorn implements AcornRun {
         libFile.add("/Users/ispong/isxcode/flink-yun/resources/cdc");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
-        ClusterSpecification clusterSpecification =
-            new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024).setSlotsPerTaskManager(2).createClusterSpecification();
+        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024).setSlotsPerTaskManager(2).createClusterSpecification();
 
         ApplicationConfiguration applicationConfiguration = ApplicationConfiguration.fromConfiguration(flinkConfig);
         applicationConfiguration.applyToConfiguration(flinkConfig);
