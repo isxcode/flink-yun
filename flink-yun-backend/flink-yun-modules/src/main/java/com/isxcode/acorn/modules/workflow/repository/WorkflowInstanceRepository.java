@@ -37,8 +37,8 @@ public interface WorkflowInstanceRepository extends JpaRepository<WorkflowInstan
     default void deleteWorkflowLog(String workflowInstanceId) {}
 
     @Query(value = "select " + "   new com.isxcode.acorn.api.instance.pojos.ao.WfiWorkflowInstanceAo(" + "   W.id," + "   WF.name," + "   W.duration," + "   W.nextPlanDateTime,"
-            + "   W.planStartDateTime," + "   W.execStartDateTime," + "   W.execEndDateTime," + "   W.status," + "   W.instanceType) "
-            + "from WorkflowInstanceEntity W left join WorkflowEntity WF on W.flowId = WF.id " + " where WF.name LIKE %:keyword% AND W.tenantId=:tenantId order by W.lastModifiedDateTime desc")
+        + "   W.planStartDateTime," + "   W.execStartDateTime," + "   W.execEndDateTime," + "   W.status," + "   W.instanceType) "
+        + "from WorkflowInstanceEntity W left join WorkflowEntity WF on W.flowId = WF.id " + " where WF.name LIKE %:keyword% AND W.tenantId=:tenantId order by W.lastModifiedDateTime desc")
     Page<WfiWorkflowInstanceAo> pageWorkFlowInstances(@Param("tenantId") String tenantId, @Param("keyword") String searchKeyWord, Pageable pageable);
 
     @Query("SELECT new com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo( W.id,W1.name,W.duration,W.execStartDateTime,W.execEndDateTime,W.status,U.username ) from WorkflowInstanceEntity W left join WorkflowEntity W1 on W.flowId = W1.id left join UserEntity U on W.lastModifiedBy = U.id where W1.name like %:keyword% and W.tenantId=:tenantId order by W.status asc,W.lastModifiedDateTime desc")

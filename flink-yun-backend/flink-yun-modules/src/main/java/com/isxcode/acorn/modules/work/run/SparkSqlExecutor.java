@@ -88,9 +88,9 @@ public class SparkSqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public SparkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository, ClusterNodeRepository clusterNodeRepository,
-            WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker, HttpUrlUtils httpUrlUtils,
-            FuncRepository funcRepository, FuncMapper funcMapper, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties, FileRepository fileRepository,
-            DatasourceService datasourceService) {
+        WorkflowInstanceRepository workflowInstanceRepository, WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker, HttpUrlUtils httpUrlUtils,
+        FuncRepository funcRepository, FuncMapper funcMapper, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties, FileRepository fileRepository,
+        DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -151,7 +151,7 @@ public class SparkSqlExecutor extends WorkExecutor {
 
         // 开始构造SparkSubmit
         SparkSubmit sparkSubmit = SparkSubmit.builder().verbose(true).mainClass("com.isxcode.acorn.plugin.query.sql.Execute").appResource("spark-query-sql-plugin.jar")
-                .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
+            .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
 
         // 开始构造PluginReq
         PluginReq pluginReq = PluginReq.builder().sql(workRunContext.getScript()).limit(200).sparkConfig(genSparkConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
@@ -165,7 +165,7 @@ public class SparkSqlExecutor extends WorkExecutor {
             allFunc.forEach(e -> {
                 try {
                     scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getFileId(),
-                            engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getFileId() + ".jar");
+                        engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getFileId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
                 }
@@ -180,7 +180,7 @@ public class SparkSqlExecutor extends WorkExecutor {
             libFile.forEach(e -> {
                 try {
                     scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
-                            engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
+                        engineNode.getAgentHomePath() + File.separator + "zhiqingyun-agent" + File.separator + "file" + File.separator + e.getId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
                 }

@@ -41,7 +41,7 @@ public class SparkContainerSqlExecutor extends WorkExecutor {
     private final WorkInstanceRepository workInstanceRepository;
 
     public SparkContainerSqlExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, ContainerRepository containerRepository,
-            ClusterNodeRepository clusterNodeRepository, IsxAppProperties isxAppProperties, WorkInstanceRepository workInstanceRepository1) {
+        ClusterNodeRepository clusterNodeRepository, IsxAppProperties isxAppProperties, WorkInstanceRepository workInstanceRepository1) {
         super(workInstanceRepository, workflowInstanceRepository);
         this.containerRepository = containerRepository;
         this.clusterNodeRepository = clusterNodeRepository;

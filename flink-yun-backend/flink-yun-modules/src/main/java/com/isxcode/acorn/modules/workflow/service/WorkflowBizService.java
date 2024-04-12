@@ -160,7 +160,7 @@ public class WorkflowBizService {
     public Page<PageWorkflowRes> pageWorkflow(PageWorkflowReq wocQueryWorkflowReq) {
 
         Page<WorkflowEntity> workflowEntityPage =
-                workflowRepository.searchAll(wocQueryWorkflowReq.getSearchKeyWord(), PageRequest.of(wocQueryWorkflowReq.getPage(), wocQueryWorkflowReq.getPageSize()));
+            workflowRepository.searchAll(wocQueryWorkflowReq.getSearchKeyWord(), PageRequest.of(wocQueryWorkflowReq.getPage(), wocQueryWorkflowReq.getPageSize()));
 
         Page<PageWorkflowRes> pageWorkflowRes = workflowEntityPage.map(workflowMapper::workflowEntityToQueryWorkflowRes);
 
@@ -199,7 +199,7 @@ public class WorkflowBizService {
 
         // 创建工作流实例
         WorkflowInstanceEntity workflowInstance = WorkflowInstanceEntity.builder().flowId(runWorkflowReq.getWorkflowId()).webConfig(workflowConfig.getWebConfig()).status(FlowInstanceStatus.RUNNING)
-                .instanceType(InstanceType.MANUAL).execStartDateTime(new Date()).runLog(runLog).build();
+            .instanceType(InstanceType.MANUAL).execStartDateTime(new Date()).runLog(runLog).build();
         workflowInstance = workflowInstanceRepository.saveAndFlush(workflowInstance);
 
         workflowInstanceRepository.setWorkflowLog(workflowInstance.getId(), runLog);
@@ -209,7 +209,7 @@ public class WorkflowBizService {
         List<WorkInstanceEntity> workInstances = new ArrayList<>();
         for (String workId : nodeList) {
             WorkInstanceEntity metaInstance =
-                    WorkInstanceEntity.builder().workId(workId).instanceType(InstanceType.MANUAL).status(InstanceStatus.PENDING).workflowInstanceId(workflowInstance.getId()).build();
+                WorkInstanceEntity.builder().workId(workId).instanceType(InstanceType.MANUAL).status(InstanceStatus.PENDING).workflowInstanceId(workflowInstance.getId()).build();
             workInstances.add(metaInstance);
         }
         workInstanceRepository.saveAllAndFlush(workInstances);
@@ -224,7 +224,7 @@ public class WorkflowBizService {
         List<WorkEntity> startNodeWorks = workRepository.findAllByWorkIds(startNodes);
         for (WorkEntity work : startNodeWorks) {
             WorkflowRunEvent metaEvent = WorkflowRunEvent.builder().workId(work.getId()).workName(work.getName()).dagEndList(endNodes).dagStartList(startNodes).flowInstanceId(workflowInstance.getId())
-                    .nodeMapping(nodeMapping).nodeList(nodeList).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
+                .nodeMapping(nodeMapping).nodeList(nodeList).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
             eventPublisher.publishEvent(metaEvent);
         }
 
@@ -642,8 +642,8 @@ public class WorkflowBizService {
             List<WorkEntity> startNodeWorks = workRepository.findAllByWorkIds(startNodes);
             for (WorkEntity work : startNodeWorks) {
                 WorkflowRunEvent metaEvent = WorkflowRunEvent.builder().workId(work.getId()).workName(work.getName()).dagEndList(JSON.parseArray(workflowConfig.getDagEndList(), String.class))
-                        .dagStartList(startNodes).flowInstanceId(workflowInstance.getId()).nodeMapping(JSON.parseObject(workflowConfig.getNodeMapping(), new TypeReference<List<List<String>>>() {}))
-                        .nodeList(JSON.parseArray(workflowConfig.getNodeList(), String.class)).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
+                    .dagStartList(startNodes).flowInstanceId(workflowInstance.getId()).nodeMapping(JSON.parseObject(workflowConfig.getNodeMapping(), new TypeReference<List<List<String>>>() {}))
+                    .nodeList(JSON.parseArray(workflowConfig.getNodeList(), String.class)).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
                 eventPublisher.publishEvent(metaEvent);
             }
         });
@@ -682,8 +682,8 @@ public class WorkflowBizService {
 
         // 推送一次
         WorkflowRunEvent metaEvent = WorkflowRunEvent.builder().workId(work.getId()).workName(work.getName()).dagEndList(JSON.parseArray(workflowConfig.getDagEndList(), String.class))
-                .dagStartList(JSON.parseArray(workflowConfig.getDagStartList(), String.class)).flowInstanceId(workflowInstance.getId()).nodeMapping(nodeMapping)
-                .nodeList(JSON.parseArray(workflowConfig.getNodeList(), String.class)).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
+            .dagStartList(JSON.parseArray(workflowConfig.getDagStartList(), String.class)).flowInstanceId(workflowInstance.getId()).nodeMapping(nodeMapping)
+            .nodeList(JSON.parseArray(workflowConfig.getNodeList(), String.class)).tenantId(TENANT_ID.get()).userId(USER_ID.get()).build();
         eventPublisher.publishEvent(metaEvent);
     }
 

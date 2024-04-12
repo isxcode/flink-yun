@@ -112,7 +112,7 @@ public class WorkBizService {
 
         // sparkSql，数据同步，bash，python，必须配置集群
         if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType())
-                || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+            || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
             if (Strings.isEmpty(addWorkReq.getClusterId())) {
                 throw new IsxAppException("必须选择计算引擎");
             }
@@ -134,8 +134,8 @@ public class WorkBizService {
 
         // 如果是sparkSql,jdbcQuerySql,jdbcExecuteSql,bash,python作业，需要初始化脚本内容，方便客户使用
         if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType()) || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
-                || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_CONTAINER_SQL.equals(addWorkReq.getWorkType())
-                || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
+            || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_CONTAINER_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
             workConfigService.initWorkScript(workConfig, addWorkReq.getWorkType());
         }
 
@@ -146,7 +146,7 @@ public class WorkBizService {
 
         // 初始化计算引擎
         if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType())
-                || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+            || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
             workConfigService.initClusterConfig(workConfig, addWorkReq.getClusterId(), addWorkReq.getClusterNodeId(), addWorkReq.getEnableHive(), addWorkReq.getDatasourceId());
         }
 
@@ -184,7 +184,7 @@ public class WorkBizService {
     public Page<PageWorkRes> pageWork(PageWorkReq pageWorkReq) {
 
         Page<WorkEntity> workPage =
-                workRepository.pageSearchByWorkflowId(pageWorkReq.getSearchKeyWord(), pageWorkReq.getWorkflowId(), PageRequest.of(pageWorkReq.getPage(), pageWorkReq.getPageSize()));
+            workRepository.pageSearchByWorkflowId(pageWorkReq.getSearchKeyWord(), pageWorkReq.getWorkflowId(), PageRequest.of(pageWorkReq.getPage(), pageWorkReq.getPageSize()));
 
         Page<PageWorkRes> map = workPage.map(workMapper::workEntityToPageWorkRes);
 

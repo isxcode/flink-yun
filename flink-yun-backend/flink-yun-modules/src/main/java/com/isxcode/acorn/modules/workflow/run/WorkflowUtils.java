@@ -137,10 +137,10 @@ public class WorkflowUtils {
     public static WorkRunContext genWorkRunContext(String instanceId, WorkEntity work, WorkConfigEntity workConfig) {
 
         return WorkRunContext.builder().datasourceId(workConfig.getDatasourceId()).script(workConfig.getScript()).instanceId(instanceId).tenantId(TENANT_ID.get())
-                .clusterConfig(JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class)).syncWorkConfig(JSON.parseObject(workConfig.getSyncWorkConfig(), SyncWorkConfig.class))
-                .syncRule(JSON.parseObject(workConfig.getSyncRule(), SyncRule.class)).workType(work.getWorkType()).jarJobConfig(JSON.parseObject(workConfig.getJarJobConfig(), JarJobConfig.class))
-                .funcConfig(JSON.parseArray(workConfig.getFuncConfig(), String.class)).libConfig(JSON.parseArray(workConfig.getLibConfig(), String.class)).workId(work.getId())
-                .apiWorkConfig(JSON.parseObject(workConfig.getApiWorkConfig(), ApiWorkConfig.class)).containerId(workConfig.getContainerId()).workName(work.getName()).userId(USER_ID.get()).build();
+            .clusterConfig(JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class)).syncWorkConfig(JSON.parseObject(workConfig.getSyncWorkConfig(), SyncWorkConfig.class))
+            .syncRule(JSON.parseObject(workConfig.getSyncRule(), SyncRule.class)).workType(work.getWorkType()).jarJobConfig(JSON.parseObject(workConfig.getJarJobConfig(), JarJobConfig.class))
+            .funcConfig(JSON.parseArray(workConfig.getFuncConfig(), String.class)).libConfig(JSON.parseArray(workConfig.getLibConfig(), String.class)).workId(work.getId())
+            .apiWorkConfig(JSON.parseObject(workConfig.getApiWorkConfig(), ApiWorkConfig.class)).containerId(workConfig.getContainerId()).workName(work.getName()).userId(USER_ID.get()).build();
     }
 
     public static WorkRunContext genWorkRunContext(String instanceId, VipWorkVersionEntity workVersion, WorkflowRunEvent event) {
@@ -148,11 +148,10 @@ public class WorkflowUtils {
         // 维护udf配置信息
         // 维护自定义作业配置信息
         return WorkRunContext.builder().datasourceId(workVersion.getDatasourceId()).script(workVersion.getScript()).instanceId(instanceId).tenantId(TENANT_ID.get()).userId(USER_ID.get())
-                .syncWorkConfig(JSON.parseObject(workVersion.getSyncWorkConfig(), SyncWorkConfig.class)).syncRule(JSON.parseObject(workVersion.getSyncRule(), SyncRule.class))
-                .clusterConfig(JSON.parseObject(workVersion.getClusterConfig(), ClusterConfig.class)).jarJobConfig(JSON.parseObject(workVersion.getJarJobConfig(), JarJobConfig.class))
-                .funcConfig(JSON.parseArray(workVersion.getFuncConfig(), String.class)).libConfig(JSON.parseArray(workVersion.getLibConfig(), String.class)).containerId(workVersion.getContainerId())
-                .workType(workVersion.getWorkType()).apiWorkConfig(JSON.parseObject(workVersion.getApiWorkConfig(), ApiWorkConfig.class)).workName(event.getWorkName()).workId(workVersion.getId())
-                .build();
+            .syncWorkConfig(JSON.parseObject(workVersion.getSyncWorkConfig(), SyncWorkConfig.class)).syncRule(JSON.parseObject(workVersion.getSyncRule(), SyncRule.class))
+            .clusterConfig(JSON.parseObject(workVersion.getClusterConfig(), ClusterConfig.class)).jarJobConfig(JSON.parseObject(workVersion.getJarJobConfig(), JarJobConfig.class))
+            .funcConfig(JSON.parseArray(workVersion.getFuncConfig(), String.class)).libConfig(JSON.parseArray(workVersion.getLibConfig(), String.class)).containerId(workVersion.getContainerId())
+            .workType(workVersion.getWorkType()).apiWorkConfig(JSON.parseObject(workVersion.getApiWorkConfig(), ApiWorkConfig.class)).workName(event.getWorkName()).workId(workVersion.getId()).build();
     }
 
     /**

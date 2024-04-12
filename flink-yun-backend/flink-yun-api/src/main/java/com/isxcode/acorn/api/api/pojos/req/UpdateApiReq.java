@@ -48,7 +48,7 @@ public class UpdateApiReq {
     private String apiSql;
 
     @Schema(title = "响应体", example = "{\n" + "\"code\":\"200\",\n" + "    \"message\":\"返回成功\",\n" + "    \"data\":[\n" + "        ${\n" + "            \"username\":\"${username}\"\n"
-            + "            \"age\":\"${age}\"\n" + "        }$\n" + "    ]\n" + "    \"count\":\"${COUNT}\"\n" + "}")
+        + "            \"age\":\"${age}\"\n" + "        }$\n" + "    ]\n" + "    \"count\":\"${COUNT}\"\n" + "}")
     private String resBody;
 
     @Schema(title = "备注", example = "备注123")

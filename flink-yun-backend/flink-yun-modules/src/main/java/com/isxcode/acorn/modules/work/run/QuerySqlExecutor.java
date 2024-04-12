@@ -31,7 +31,7 @@ public class QuerySqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository,
-            DatasourceService datasourceService) {
+        DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;

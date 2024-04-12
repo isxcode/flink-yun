@@ -164,7 +164,7 @@ public class MonitorBizService {
         monitorLine.forEach(e -> {
             String nowTime;
             if (TimeType.THIRTY_MIN.equals(getClusterMonitorReq.getTimeType()) || TimeType.ONE_HOUR.equals(getClusterMonitorReq.getTimeType())
-                    || TimeType.TWO_HOUR.equals(getClusterMonitorReq.getTimeType()) || TimeType.SIX_HOUR.equals(getClusterMonitorReq.getTimeType())) {
+                || TimeType.TWO_HOUR.equals(getClusterMonitorReq.getTimeType()) || TimeType.SIX_HOUR.equals(getClusterMonitorReq.getTimeType())) {
                 // 30分钟/1小时/2小时/6小时/
                 // 小时:分
                 nowTime = DateUtil.format(e.getDateTime(), "HH:mm");
@@ -184,12 +184,12 @@ public class MonitorBizService {
         List<MonitorLineDto> line = new ArrayList<>();
         lineMap.forEach((k, v) -> {
             MonitorLineDto date = MonitorLineDto.builder().dateTime(k).activeNodeSize(v.getActiveNodeSize() == null ? null : v.getActiveNodeSize())
-                    .cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%").usedStorageSize(v.getUsedStorageSize() == null ? null : DataSizeUtil.format(v.getUsedStorageSize()))
-                    .usedMemorySize(v.getUsedMemorySize() == null ? null : DataSizeUtil.format(v.getUsedMemorySize()))
-                    .diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoReadSpeed() * 1024) + "/s")
-                    .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoWriteSpeed() / 1024 / 1024) + "/s")
-                    .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoReadSpeed() * 1024) + "/s")
-                    .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoWriteSpeed() / 1024 / 1024) + "/s").build();
+                .cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%").usedStorageSize(v.getUsedStorageSize() == null ? null : DataSizeUtil.format(v.getUsedStorageSize()))
+                .usedMemorySize(v.getUsedMemorySize() == null ? null : DataSizeUtil.format(v.getUsedMemorySize()))
+                .diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoReadSpeed() * 1024) + "/s")
+                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoWriteSpeed() / 1024 / 1024) + "/s")
+                .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoReadSpeed() * 1024) + "/s")
+                .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoWriteSpeed() / 1024 / 1024) + "/s").build();
             line.add(date);
         });
 
@@ -249,7 +249,7 @@ public class MonitorBizService {
 
         JPA_TENANT_MODE.set(false);
         Page<WorkflowMonitorAo> workflowMonitorAos =
-                workflowInstanceRepository.searchWorkflowMonitor(TENANT_ID.get(), pageInstancesReq.getSearchKeyWord(), PageRequest.of(pageInstancesReq.getPage(), pageInstancesReq.getPageSize()));
+            workflowInstanceRepository.searchWorkflowMonitor(TENANT_ID.get(), pageInstancesReq.getSearchKeyWord(), PageRequest.of(pageInstancesReq.getPage(), pageInstancesReq.getPageSize()));
 
         Page<PageInstancesRes> map = workflowMonitorAos.map(workflowMapper::workflowMonitorAoToPageInstancesRes);
         map.getContent().forEach(e -> e.setStatus(InstanceStatus.SUCCESS.equals(e.getStatus()) ? InstanceStatus.SUCCESS : InstanceStatus.FAIL));
@@ -282,7 +282,7 @@ public class MonitorBizService {
                     return nodeMonitor;
                 } catch (Exception ex) {
                     return NodeMonitorInfo.builder().clusterNodeId(e.getId()).clusterId(e.getClusterId()).status(MonitorStatus.FAIL).log(ex.getMessage()).tenantId(e.getTenantId()).createDateTime(now)
-                            .build();
+                        .build();
                 }
             }).whenComplete((result, throwable) -> {
                 // 持久化到数据库

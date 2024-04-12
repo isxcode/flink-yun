@@ -102,7 +102,7 @@ public abstract class WorkExecutor {
             if (!Strings.isEmpty(workInstance.getWorkflowInstanceId())) {
                 WorkflowInstanceEntity workflowInstance = workflowInstanceRepository.findById(workInstance.getWorkflowInstanceId()).get();
                 String runLog =
-                        workflowInstanceRepository.getWorkflowLog(workflowInstance.getId()) + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "作业: 【" + workRunContext.getWorkName() + "】运行成功";
+                    workflowInstanceRepository.getWorkflowLog(workflowInstance.getId()) + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "作业: 【" + workRunContext.getWorkName() + "】运行成功";
                 workflowInstance.setRunLog(runLog);
                 workflowInstanceRepository.setWorkflowLog(workflowInstance.getId(), runLog);
             }
@@ -128,7 +128,7 @@ public abstract class WorkExecutor {
             if (!Strings.isEmpty(workInstance.getWorkflowInstanceId())) {
                 WorkflowInstanceEntity workflowInstance = workflowInstanceRepository.findById(workInstance.getWorkflowInstanceId()).get();
                 String runLog =
-                        workflowInstanceRepository.getWorkflowLog(workflowInstance.getId()) + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "作业: 【" + workRunContext.getWorkName() + "】运行失败";
+                    workflowInstanceRepository.getWorkflowLog(workflowInstance.getId()) + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "作业: 【" + workRunContext.getWorkName() + "】运行失败";
                 workflowInstance.setRunLog(runLog);
                 workflowInstanceRepository.setWorkflowLog(workflowInstance.getId(), runLog);
             }
