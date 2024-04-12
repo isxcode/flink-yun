@@ -1,4 +1,4 @@
-${AnsiColor.RED}
+${AnsiColor.MAGENTA}
 
 FFFFFFFFFFFFFFFFFFFFFFlllllll   iiii                   kkkkkkkk                YYYYYYY       YYYYYYY
 F::::::::::::::::::::Fl:::::l  i::::i                  k::::::k                Y:::::Y       Y:::::Y
@@ -17,7 +17,7 @@ F::::::::FF           l::::::li::::::i n::::n    n::::nk::::::k  k:::::k        
 F::::::::FF           l::::::li::::::i n::::n    n::::nk::::::k   k:::::k          Y:::::::::::Y      uu::::::::uu:::un::::n    n::::n
 FFFFFFFFFFF           lllllllliiiiiiii nnnnnn    nnnnnnkkkkkkkk    kkkkkkk         YYYYYYYYYYYYY        uuuuuuuu  uuuunnnnnn    nnnnnn
 
-${AnsiColor.GREEN}
+${AnsiColor.YELLOW}
 项目: ${application.title}
 官网: ${application.website}
 描述: ${application.describe}
