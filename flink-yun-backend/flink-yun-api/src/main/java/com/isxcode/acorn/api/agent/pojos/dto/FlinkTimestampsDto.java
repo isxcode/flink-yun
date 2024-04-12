@@ -6,36 +6,36 @@ import lombok.Data;
 @Data
 public class FlinkTimestampsDto {
 
-	@JsonAlias("INITIALIZING")
-	private Long initializing;
+    @JsonAlias("INITIALIZING")
+    private Long initializing;
 
-	@JsonAlias("RECONCILING")
-	private Long reconciling;
+    @JsonAlias("RECONCILING")
+    private Long reconciling;
 
-	@JsonAlias("CANCELED")
-	private Long canceled;
+    @JsonAlias("CANCELED")
+    private Long canceled;
 
-	@JsonAlias("FAILED")
-	private Long failed;
+    @JsonAlias("FAILED")
+    private Long failed;
 
-	@JsonAlias("FINISHED")
-	private Long finished;
+    @JsonAlias("FINISHED")
+    private Long finished;
 
-	@JsonAlias("SUSPENDED")
-	private Long suspended;
+    @JsonAlias("SUSPENDED")
+    private Long suspended;
 
-	@JsonAlias("RUNNING")
-	private Long running;
+    @JsonAlias("RUNNING")
+    private Long running;
 
-	@JsonAlias("CANCELLING")
-	private Long cancelling;
+    @JsonAlias("CANCELLING")
+    private Long cancelling;
 
-	@JsonAlias("CREATED")
-	private Long created;
+    @JsonAlias("CREATED")
+    private Long created;
 
-	@JsonAlias("FAILING")
-	private Long failing;
+    @JsonAlias("FAILING")
+    private Long failing;
 
-	@JsonAlias("RESTARTING")
-	private Long restarting;
+    @JsonAlias("RESTARTING")
+    private Long restarting;
 }

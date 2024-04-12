@@ -11,11 +11,11 @@ import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
 
 public interface AcornRun {
 
-	SubmitJobRes submitJob(SubmitJobReq submitJobReq);
+    SubmitJobRes submitJob(SubmitJobReq submitJobReq);
 
-	GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq);
+    GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq);
 
-	GetJobLogRes getJobLog(GetJobLogReq getJobLogReq);
+    GetJobLogRes getJobLog(GetJobLogReq getJobLogReq);
 
-	StopJobRes stopJobReq(StopJobReq stopJobReq);
+    StopJobRes stopJobReq(StopJobReq stopJobReq);
 }

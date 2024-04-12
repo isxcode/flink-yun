@@ -9,22 +9,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/** 计算引擎模块. */
+/**
+ * 计算引擎模块.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class ClusterService {
 
-	private final ClusterRepository clusterRepository;
+    private final ClusterRepository clusterRepository;
 
-	public ClusterEntity getCluster(String clusterId) {
+    public ClusterEntity getCluster(String clusterId) {
 
-		return clusterRepository.findById(clusterId).orElseThrow(() -> new IsxAppException("计算引擎不存在"));
-	}
+        return clusterRepository.findById(clusterId).orElseThrow(() -> new IsxAppException("计算引擎不存在"));
+    }
 
-	public void checkCluster(String clusterId) {
+    public void checkCluster(String clusterId) {
 
-		clusterRepository.findById(clusterId).orElseThrow(() -> new IsxAppException("计算引擎不存在"));
-	}
+        clusterRepository.findById(clusterId).orElseThrow(() -> new IsxAppException("计算引擎不存在"));
+    }
 }

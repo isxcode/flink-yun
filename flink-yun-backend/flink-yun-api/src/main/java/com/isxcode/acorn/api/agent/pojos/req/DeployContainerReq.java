@@ -5,15 +5,15 @@ import lombok.Data;
 @Data
 public class DeployContainerReq {
 
-	private PluginReq pluginReq;
+    private PluginReq pluginReq;
 
-	private String agentHomePath;
+    private String agentHomePath;
 
-	private SparkSubmit sparkSubmit;
+    private SparkSubmit sparkSubmit;
 
-	private String agentType;
+    private String agentType;
 
-	private String sparkHomePath;
+    private String sparkHomePath;
 
-	private String args;
+    private String args;
 }

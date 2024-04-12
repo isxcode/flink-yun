@@ -16,25 +16,25 @@ import java.util.List;
 @NoArgsConstructor
 public class FlinkRestJobRes {
 
-	private String jid;
+    private String jid;
 
-	private String name;
+    private String name;
 
-	private String state;
+    private String state;
 
-	@JsonAlias("start-time")
-	private Long startTime;
+    @JsonAlias("start-time")
+    private Long startTime;
 
-	@JsonAlias("end-time")
-	private Long endTime;
+    @JsonAlias("end-time")
+    private Long endTime;
 
-	private Long duration;
+    private Long duration;
 
-	private int maxParallelism;
+    private int maxParallelism;
 
-	private Long now;
+    private Long now;
 
-	private List<FlinkVerticesDto> vertices;
+    private List<FlinkVerticesDto> vertices;
 
-	private FlinkTimestampsDto timestamps;
+    private FlinkTimestampsDto timestamps;
 }

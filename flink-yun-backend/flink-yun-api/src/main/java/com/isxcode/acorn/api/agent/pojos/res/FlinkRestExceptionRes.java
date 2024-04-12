@@ -14,9 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class FlinkRestExceptionRes {
 
-	@JsonAlias("root-exception")
-	private String rootException;
+    @JsonAlias("root-exception")
+    private String rootException;
 
-	@JsonAlias("all-exceptions")
-	private List<String> allExceptions;
+    @JsonAlias("all-exceptions")
+    private List<String> allExceptions;
 }

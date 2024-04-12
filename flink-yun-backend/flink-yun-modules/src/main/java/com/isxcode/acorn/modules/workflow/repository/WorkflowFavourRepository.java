@@ -6,10 +6,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/** 只负责数据库查询逻辑. */
+/**
+ * 只负责数据库查询逻辑.
+ */
 @Repository
 @CacheConfig(cacheNames = {"sy_workflow_favour"})
 public interface WorkflowFavourRepository extends JpaRepository<WorkflowFavourEntity, String> {
 
-	Optional<WorkflowFavourEntity> findByWorkflowIdAndUserId(String workflowId, String userId);
+    Optional<WorkflowFavourEntity> findByWorkflowIdAndUserId(String workflowId, String userId);
 }

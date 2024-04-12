@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FlinkRestStatusRes {
 
-	private String status;
+    private String status;
 }

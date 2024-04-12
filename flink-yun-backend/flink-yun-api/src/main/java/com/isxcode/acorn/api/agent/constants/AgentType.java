@@ -2,9 +2,9 @@ package com.isxcode.acorn.api.agent.constants;
 
 public interface AgentType {
 
-	String K8S = "kubernetes";
+    String K8S = "kubernetes";
 
-	String YARN = "yarn";
+    String YARN = "yarn";
 
-	String FlinkCluster = "flinkCluster";
+    String FlinkCluster = "flinkCluster";
 }

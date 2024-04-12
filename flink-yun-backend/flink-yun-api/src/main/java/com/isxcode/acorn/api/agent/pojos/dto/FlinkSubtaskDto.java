@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class FlinkSubtaskDto {
 
-	@JsonAlias("taskmanager-id")
-	private String taskmanagerId;
+    @JsonAlias("taskmanager-id")
+    private String taskmanagerId;
 }

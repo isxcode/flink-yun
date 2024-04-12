@@ -9,15 +9,15 @@ import java.util.List;
 @Builder
 public class FlinkRestRunReq {
 
-	private String entryClass;
+    private String entryClass;
 
-	private String parallelism;
+    private String parallelism;
 
-	private String programArgs;
+    private String programArgs;
 
-	private List<String> programArgsList;
+    private List<String> programArgsList;
 
-	private String savepointPath;
+    private String savepointPath;
 
-	private boolean allowNonRestoredState;
+    private boolean allowNonRestoredState;
 }

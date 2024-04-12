@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class StopJobRes {
 
-	private String requestId;
+    private String requestId;
 }

@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class StopJobReq {
 
-	private String flinkHome;
+    private String flinkHome;
 
-	private String jobId;
+    private String jobId;
 
-	private String agentType;
+    private String agentType;
 }

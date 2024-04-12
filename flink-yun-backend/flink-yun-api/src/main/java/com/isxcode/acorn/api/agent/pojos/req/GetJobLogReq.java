@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class GetJobLogReq {
 
-	private String jobId;
+    private String jobId;
 
-	private String flinkHome;
+    private String flinkHome;
 
-	private String agentType;
+    private String agentType;
 }

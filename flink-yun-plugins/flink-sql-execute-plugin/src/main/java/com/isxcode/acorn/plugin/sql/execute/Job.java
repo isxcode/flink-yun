@@ -8,16 +8,16 @@ import java.util.Base64;
 
 public class Job {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		String flinkSql = new String(Base64.getDecoder().decode(args[0]));
+        String flinkSql = new String(Base64.getDecoder().decode(args[0]));
 
-		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-		EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
-		StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(env, settings);
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
+        StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(env, settings);
 
-		for (String s : flinkSql.split(";")) {
-			streamTableEnvironment.executeSql(s);
-		}
-	}
+        for (String s : flinkSql.split(";")) {
+            streamTableEnvironment.executeSql(s);
+        }
+    }
 }

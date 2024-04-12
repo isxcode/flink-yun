@@ -17,59 +17,58 @@ import java.time.LocalDateTime;
 @Slf4j
 public class ContainerSparkSqlExecutor extends WorkExecutor {
 
-	private final DatasourceRepository datasourceRepository;
+    private final DatasourceRepository datasourceRepository;
 
-	private final WorkInstanceRepository workInstanceRepository;
+    private final WorkInstanceRepository workInstanceRepository;
 
-	private final DatasourceService datasourceService;
+    private final DatasourceService datasourceService;
 
-	public ContainerSparkSqlExecutor(DatasourceRepository datasourceRepository,
-			WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository,
-			DatasourceService datasourceService) {
+    public ContainerSparkSqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository,
+            DatasourceService datasourceService) {
 
-		super(workInstanceRepository, workflowInstanceRepository);
-		this.datasourceRepository = datasourceRepository;
-		this.workInstanceRepository = workInstanceRepository;
-		this.datasourceService = datasourceService;
-	}
+        super(workInstanceRepository, workflowInstanceRepository);
+        this.datasourceRepository = datasourceRepository;
+        this.workInstanceRepository = workInstanceRepository;
+        this.datasourceService = datasourceService;
+    }
 
-	public void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
+    public void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
 
-		// 获取日志构造器
-		StringBuilder logBuilder = workRunContext.getLogBuilder();
+        // 获取日志构造器
+        StringBuilder logBuilder = workRunContext.getLogBuilder();
 
-		// 检测数据源是否配置
-		logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始检测运行环境 \n");
+        // 检测数据源是否配置
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始检测运行环境 \n");
 
-		// 判断容器是否可用
+        // 判断容器是否可用
 
-		// 数据源检查通过
-		logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("检测运行环境完成  \n");
-		workInstance = updateInstance(workInstance, logBuilder);
+        // 数据源检查通过
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("检测运行环境完成  \n");
+        workInstance = updateInstance(workInstance, logBuilder);
 
-		// 检查脚本是否为空
-		if (Strings.isEmpty(workRunContext.getScript())) {
-			throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "Sql内容为空 \n");
-		}
+        // 检查脚本是否为空
+        if (Strings.isEmpty(workRunContext.getScript())) {
+            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "Sql内容为空 \n");
+        }
 
-		// 脚本检查通过
-		logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行作业 \n");
-		workInstance = updateInstance(workInstance, logBuilder);
+        // 脚本检查通过
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行作业 \n");
+        workInstance = updateInstance(workInstance, logBuilder);
 
-		// 开始执行接口访问
+        // 开始执行接口访问
 
-		// 讲data转为json存到实例中
-		// logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("数据保存成功
-		// \n");
-		// workInstance.setSubmitLog(logBuilder.toString());
-		// workInstance.setResultData(JSON.toJSONString(result));
-		// workInstanceRepository.saveAndFlush(workInstance);
-	}
+        // 讲data转为json存到实例中
+        // logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("数据保存成功
+        // \n");
+        // workInstance.setSubmitLog(logBuilder.toString());
+        // workInstance.setResultData(JSON.toJSONString(result));
+        // workInstanceRepository.saveAndFlush(workInstance);
+    }
 
-	@Override
-	protected void abort(WorkInstanceEntity workInstance) {
+    @Override
+    protected void abort(WorkInstanceEntity workInstance) {
 
-		Thread thread = WORK_THREAD.get(workInstance.getId());
-		thread.interrupt();
-	}
+        Thread thread = WORK_THREAD.get(workInstance.getId());
+        thread.interrupt();
+    }
 }

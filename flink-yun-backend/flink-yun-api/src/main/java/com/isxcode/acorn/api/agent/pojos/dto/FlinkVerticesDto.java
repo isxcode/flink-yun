@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class FlinkVerticesDto {
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private Long maxParallelism;
+    private Long maxParallelism;
 
-	private Long parallelism;
+    private Long parallelism;
 
-	private String status;
+    private String status;
 }

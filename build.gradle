@@ -98,7 +98,8 @@ spotless {
         target '*/**/*.java'
         targetExclude('*/build/**/*.java')
         targetExclude('flink-yun-dist/**/*.java')
-        file(rootDir.getAbsolutePath() + "/.spotless/intellij-java-google-style.xml")
+        eclipse().configFile('/Users/ispong/isxcode/flink-yun/.spotless/eclipse-java-google-style.xml')
+        indentWithSpaces()
     }
 }
 

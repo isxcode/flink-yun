@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FlinkRestStopRes {
 
-	@JsonAlias("request-id")
-	private String requestId;
+    @JsonAlias("request-id")
+    private String requestId;
 }
