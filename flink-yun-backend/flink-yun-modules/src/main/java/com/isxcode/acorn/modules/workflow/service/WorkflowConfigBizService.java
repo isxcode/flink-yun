@@ -41,7 +41,8 @@ public class WorkflowConfigBizService {
 
     public WorkflowConfigEntity getWorkflowConfig(String workflowConfigId) {
 
-        Optional<WorkflowConfigEntity> workflowConfigEntityOptional = workflowConfigRepository.findById(workflowConfigId);
+        Optional<WorkflowConfigEntity> workflowConfigEntityOptional =
+            workflowConfigRepository.findById(workflowConfigId);
         if (!workflowConfigEntityOptional.isPresent()) {
             throw new IsxAppException("工作流配置异常，不存在");
         }

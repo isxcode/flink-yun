@@ -35,7 +35,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if ("sy_anonymous".equals(userId)) {
 
             // 返回用户信息
-            return User.withUsername(userId).password("").authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ANONYMOUS")).build();
+            return User.withUsername(userId).password("")
+                .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ANONYMOUS")).build();
         }
 
         JPA_TENANT_MODE.set(false);
@@ -57,7 +58,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 获取用户租户权限
         if (!RoleType.SYS_ADMIN.equals(authority)) {
             if (!Strings.isEmpty(TENANT_ID.get()) && !"undefined".equals(TENANT_ID.get())) {
-                Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findByTenantIdAndUserId(TENANT_ID.get(), userId);
+                Optional<TenantUserEntity> tenantUserEntityOptional =
+                    tenantUserRepository.findByTenantIdAndUserId(TENANT_ID.get(), userId);
                 if (!tenantUserEntityOptional.isPresent()) {
                     throw new IsxAppException("用户不在租户中");
                 }
@@ -66,6 +68,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         // 返回用户信息
-        return User.withUsername(userId).password(userEntityOptional.get().getPasswd()).authorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authority)).build();
+        return User.withUsername(userId).password(userEntityOptional.get().getPasswd())
+            .authorities(AuthorityUtils.commaSeparatedStringToAuthorityList(authority)).build();
     }
 }

@@ -31,7 +31,9 @@ public class PrqlExecutor extends WorkExecutor {
     private final DatasourceRepository datasourceRepository;
     private final DatasourceService datasourceService;
 
-    public PrqlExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, DatasourceRepository datasourceRepository, DatasourceService datasourceService) {
+    public PrqlExecutor(WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository, DatasourceRepository datasourceRepository,
+        DatasourceService datasourceService) {
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;
         this.datasourceService = datasourceService;
@@ -50,7 +52,8 @@ public class PrqlExecutor extends WorkExecutor {
         }
 
         // 检查数据源是否存在
-        Optional<DatasourceEntity> datasourceEntityOptional = datasourceRepository.findById(workRunContext.getDatasourceId());
+        Optional<DatasourceEntity> datasourceEntityOptional =
+            datasourceRepository.findById(workRunContext.getDatasourceId());
         if (!datasourceEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测运行环境失败: 未配置有效数据源  \n");
         }
@@ -69,7 +72,8 @@ public class PrqlExecutor extends WorkExecutor {
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始执行sql
-        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get()); Statement statement = connection.createStatement()) {
+        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get());
+            Statement statement = connection.createStatement()) {
 
             statement.setQueryTimeout(1800);
 
@@ -78,7 +82,8 @@ public class PrqlExecutor extends WorkExecutor {
             // 解析sql
             String sql;
             try {
-                sql = PrqlCompiler.toSql(workRunContext.getScript().replace(";", ""), translateDBType(datasourceEntityOptional.get().getDbType()), true, true);
+                sql = PrqlCompiler.toSql(workRunContext.getScript().replace(";", ""),
+                    translateDBType(datasourceEntityOptional.get().getDbType()), true, true);
             } catch (NoClassDefFoundError error) {
                 throw new Exception(error.getMessage());
             }
@@ -87,7 +92,8 @@ public class PrqlExecutor extends WorkExecutor {
             String noCommentSql = sql.replaceAll(regex, "");
             String realSql = noCommentSql.replaceAll("--.*", "").replace("\n", " ");
 
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append(String.format("prql转化完成: \n%s\n", realSql));
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO)
+                .append(String.format("prql转化完成: \n%s\n", realSql));
             workInstance = updateInstance(workInstance, logBuilder);
 
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL \n");

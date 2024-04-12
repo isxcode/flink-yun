@@ -21,7 +21,8 @@ public class WorkflowMonitorAo {
 
     private String lastModifiedBy;
 
-    public WorkflowMonitorAo(String workflowInstanceId, String workflowName, Long duration, Date startDateTime, Date endDateTime, String status, String lastModifiedBy) {
+    public WorkflowMonitorAo(String workflowInstanceId, String workflowName, Long duration, Date startDateTime,
+        Date endDateTime, String status, String lastModifiedBy) {
         this.workflowInstanceId = workflowInstanceId;
         this.workflowName = workflowName;
         this.duration = duration;

@@ -33,7 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final IsxAppProperties isxAppProperties;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         // 获取用户token
         String authorization = request.getHeader(SecurityConstants.HEADER_AUTHORIZATION);
@@ -52,7 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 获取用户id
         String userUuid;
         try {
-            userUuid = JwtUtils.decrypt(isxAppProperties.getJwtKey(), authorization, isxAppProperties.getAesSlat(), String.class);
+            userUuid = JwtUtils.decrypt(isxAppProperties.getJwtKey(), authorization, isxAppProperties.getAesSlat(),
+                String.class);
             USER_ID.set(userUuid);
         } catch (Exception e) {
             log.error(e.getMessage());

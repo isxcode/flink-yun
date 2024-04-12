@@ -34,10 +34,13 @@ public interface ClusterNodeMapper {
     @Mapping(target = "agentHomePath", source = "clusterNodeEntity.agentHomePath")
     @Mapping(target = "agentPort", source = "clusterNodeEntity.agentPort")
     @Mapping(target = "hadoopHomePath", source = "clusterNodeEntity.hadoopHomePath")
-    ClusterNodeEntity updateNodeReqToNodeEntity(UpdateClusterNodeReq enoUpdateNodeReq, ClusterNodeEntity clusterNodeEntity);
+    ClusterNodeEntity updateNodeReqToNodeEntity(UpdateClusterNodeReq enoUpdateNodeReq,
+        ClusterNodeEntity clusterNodeEntity);
 
-    @Mapping(target = "memory", expression = "java( nodeEntity.getUsedMemory()+ \"G/\" +nodeEntity.getAllMemory()+\"G\")")
-    @Mapping(target = "storage", expression = "java( nodeEntity.getUsedStorage()+ \"G/\" +nodeEntity.getAllStorage()+\"G\")")
+    @Mapping(target = "memory",
+        expression = "java( nodeEntity.getUsedMemory()+ \"G/\" +nodeEntity.getAllMemory()+\"G\")")
+    @Mapping(target = "storage",
+        expression = "java( nodeEntity.getUsedStorage()+ \"G/\" +nodeEntity.getAllStorage()+\"G\")")
     @Mapping(target = "cpu", source = "cpuPercent")
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EnoQueryNodeRes nodeEntityToQueryNodeRes(ClusterNodeEntity nodeEntity);

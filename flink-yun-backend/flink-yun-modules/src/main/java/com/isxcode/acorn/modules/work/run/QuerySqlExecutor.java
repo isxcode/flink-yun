@@ -30,7 +30,8 @@ public class QuerySqlExecutor extends WorkExecutor {
 
     private final DatasourceService datasourceService;
 
-    public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
+    public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.datasourceRepository = datasourceRepository;
@@ -49,7 +50,8 @@ public class QuerySqlExecutor extends WorkExecutor {
         }
 
         // 检查数据源是否存在
-        Optional<DatasourceEntity> datasourceEntityOptional = datasourceRepository.findById(workRunContext.getDatasourceId());
+        Optional<DatasourceEntity> datasourceEntityOptional =
+            datasourceRepository.findById(workRunContext.getDatasourceId());
         if (!datasourceEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测运行环境失败: 未配置有效数据源  \n");
         }
@@ -68,7 +70,8 @@ public class QuerySqlExecutor extends WorkExecutor {
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始执行sql
-        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get()); Statement statement = connection.createStatement();) {
+        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get());
+            Statement statement = connection.createStatement();) {
 
             statement.setQueryTimeout(1800);
 
@@ -76,13 +79,15 @@ public class QuerySqlExecutor extends WorkExecutor {
             String noCommentSql = workRunContext.getScript().replaceAll("/\\*(?:.|[\\n\\r])*?\\*/|--.*", "");
 
             // 清除脚本中的脏数据
-            List<String> sqls = Arrays.stream(noCommentSql.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
+            List<String> sqls =
+                Arrays.stream(noCommentSql.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
 
             // 执行每条sql，除了最后一条
             for (int i = 0; i < sqls.size() - 1; i++) {
 
                 // 记录开始执行时间
-                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: ").append(sqls.get(i)).append(" \n");
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: ")
+                    .append(sqls.get(i)).append(" \n");
                 workInstance = updateInstance(workInstance, logBuilder);
 
                 // 执行sql
@@ -94,7 +99,8 @@ public class QuerySqlExecutor extends WorkExecutor {
             }
 
             // 执行最后一句查询语句
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: ").append(sqls.get(sqls.size() - 1)).append(" \n");
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: ")
+                .append(sqls.get(sqls.size() - 1)).append(" \n");
             workInstance = updateInstance(workInstance, logBuilder);
 
             // 执行查询sql

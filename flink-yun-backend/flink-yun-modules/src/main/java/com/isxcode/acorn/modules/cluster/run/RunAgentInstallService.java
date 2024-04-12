@@ -37,7 +37,8 @@ public class RunAgentInstallService {
     private final ClusterNodeRepository clusterNodeRepository;
 
     @Async("sparkYunWorkThreadPool")
-    public void run(String clusterNodeId, String clusterType, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
+    public void run(String clusterNodeId, String clusterType, ScpFileEngineNodeDto scpFileEngineNodeDto,
+        String tenantId, String userId) {
 
         USER_ID.set(userId);
         TENANT_ID.set(tenantId);
@@ -60,13 +61,17 @@ public class RunAgentInstallService {
         }
     }
 
-    public void installAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode, String clusterType) throws JSchException, IOException, InterruptedException, SftpException {
+    public void installAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode,
+        String clusterType) throws JSchException, IOException, InterruptedException, SftpException {
 
         // 先检查节点是否可以安装
-        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType), sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType));
+        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType),
+            sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType));
 
         // 运行安装脚本
-        String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType) + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator
+            + String.format("agent-%s.sh", clusterType) + " --home-path=" + engineNode.getAgentHomePath()
+            + File.separator + PathConstants.AGENT_PATH_NAME + " --agent-port=" + engineNode.getAgentPort();
         log.debug("执行远程命令:{}", envCommand);
 
         // 获取返回结果
@@ -85,19 +90,23 @@ public class RunAgentInstallService {
         }
 
         // 异步上传安装包
-        clusterNodeService.scpAgentFile(scpFileEngineNodeDto, "classpath:agent/zhiqingyun-agent.tar.gz", sparkYunProperties.getTmpDir() + File.separator + "zhiqingyun-agent.tar.gz");
+        clusterNodeService.scpAgentFile(scpFileEngineNodeDto, "classpath:agent/zhiqingyun-agent.tar.gz",
+            sparkYunProperties.getTmpDir() + File.separator + "zhiqingyun-agent.tar.gz");
         log.debug("代理安装包上传中");
 
         // 同步监听进度
-        clusterNodeService.checkScpPercent(scpFileEngineNodeDto, "classpath:agent/zhiqingyun-agent.tar.gz", sparkYunProperties.getTmpDir() + File.separator + "zhiqingyun-agent.tar.gz", engineNode);
+        clusterNodeService.checkScpPercent(scpFileEngineNodeDto, "classpath:agent/zhiqingyun-agent.tar.gz",
+            sparkYunProperties.getTmpDir() + File.separator + "zhiqingyun-agent.tar.gz", engineNode);
         log.debug("下载安装包成功");
 
         // 拷贝安装脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-install.sh", sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-install.sh",
+            sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh");
         log.debug("下载安装脚本成功");
 
         // 运行安装脚本
-        String installCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh" + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String installCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh"
+            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         log.debug("执行远程安装命令:{}", installCommand);
 
         executeLog = executeCommand(scpFileEngineNodeDto, installCommand, false);

@@ -40,7 +40,9 @@ public class PythonExecutor extends WorkExecutor {
 
     private final ClusterRepository clusterRepository;
 
-    public PythonExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository, ClusterNodeRepository clusterNodeRepository, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
+    public PythonExecutor(WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository, ClusterNodeRepository clusterNodeRepository,
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.clusterNodeRepository = clusterNodeRepository;
@@ -72,7 +74,8 @@ public class PythonExecutor extends WorkExecutor {
         }
 
         // 检查计算集群是否存在
-        Optional<ClusterEntity> calculateEngineEntityOptional = clusterRepository.findById(workRunContext.getClusterConfig().getClusterId());
+        Optional<ClusterEntity> calculateEngineEntityOptional =
+            clusterRepository.findById(workRunContext.getClusterConfig().getClusterId());
         if (!calculateEngineEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测集群失败 : 计算引擎不存在  \n");
         }
@@ -83,7 +86,8 @@ public class PythonExecutor extends WorkExecutor {
         }
 
         // 检测集群中是否有合法节点
-        Optional<ClusterNodeEntity> nodeRepositoryOptional = clusterNodeRepository.findById(workRunContext.getClusterConfig().getClusterNodeId());
+        Optional<ClusterNodeEntity> nodeRepositoryOptional =
+            clusterNodeRepository.findById(workRunContext.getClusterConfig().getClusterNodeId());
         if (!nodeRepositoryOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测集群失败 : 指定运行节点不存在  \n");
         }
@@ -94,19 +98,24 @@ public class PythonExecutor extends WorkExecutor {
 
         // 将脚本推送到指定集群节点中
         ClusterNodeEntity clusterNode = nodeRepositoryOptional.get();
-        ScpFileEngineNodeDto scpFileEngineNodeDto = clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
+        ScpFileEngineNodeDto scpFileEngineNodeDto =
+            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\nprint('zhiqingyun_success')", clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py");
+            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\nprint('zhiqingyun_success')",
+                clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py");
 
             // 执行命令获取pid
-            String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
+            String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath()
+                + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
+                + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
 
             // 保存pid
             workInstance.setWorkPid(pid);
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("BASH作业提交成功，pid:【").append(pid).append("】\n");
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("BASH作业提交成功，pid:【").append(pid)
+                .append("】\n");
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (JSchException | SftpException | InterruptedException | IOException e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业异常 : " + e.getMessage() + "\n");
@@ -125,29 +134,34 @@ public class PythonExecutor extends WorkExecutor {
                     pidStatus = InstanceStatus.FINISHED;
                 }
             } catch (JSchException | InterruptedException | IOException e) {
-                throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "获取pid状态异常 : " + e.getMessage() + "\n");
+                throw new WorkRunException(
+                    LocalDateTime.now() + WorkLog.ERROR_INFO + "获取pid状态异常 : " + e.getMessage() + "\n");
             }
 
             // 保存作业运行状体
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:").append(pidStatus).append("\n");
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:").append(pidStatus)
+                .append("\n");
             workInstance = updateInstance(workInstance, logBuilder);
 
             if (InstanceStatus.RUNNING.equals(pidStatus)) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "睡眠线程异常 : " + e.getMessage() + "\n");
+                    throw new WorkRunException(
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "睡眠线程异常 : " + e.getMessage() + "\n");
                 }
             } else {
                 // 运行结束
 
                 // 获取日志
-                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log";
+                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/"
+                    + workInstance.getId() + ".log";
                 String logCommand = "";
                 try {
                     logCommand = executeCommand(scpFileEngineNodeDto, getLogCommand, false);
                 } catch (JSchException | InterruptedException | IOException e) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "获取日志异常 : " + e.getMessage() + "\n");
+                    throw new WorkRunException(
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "获取日志异常 : " + e.getMessage() + "\n");
                 }
 
                 // 保存运行日志
@@ -157,7 +171,9 @@ public class PythonExecutor extends WorkExecutor {
 
                 // 删除脚本和日志
                 try {
-                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log && " + "rm -f " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py";
+                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/"
+                        + workInstance.getId() + ".log && " + "rm -f " + clusterNode.getAgentHomePath()
+                        + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py";
                     SshUtils.executeCommand(scpFileEngineNodeDto, clearWorkRunFile, false);
                 } catch (JSchException | InterruptedException | IOException e) {
                     log.error("删除运行脚本失败");

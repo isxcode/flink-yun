@@ -61,13 +61,16 @@ public class RunAgentCheckService {
         }
     }
 
-    public void checkAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode) throws JSchException, IOException, InterruptedException, SftpException {
+    public void checkAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
+        throws JSchException, IOException, InterruptedException, SftpException {
 
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh", sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh",
+            sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh");
 
         // 运行安装脚本
-        String checkCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh" + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
+        String checkCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh"
+            + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME;
 
         log.debug("执行远程命令:{}", checkCommand);
 
@@ -78,11 +81,16 @@ public class RunAgentCheckService {
         AgentInfo agentCheckInfo = JSON.parseObject(executeLog, AgentInfo.class);
 
         // 保存服务器信息
-        engineNode.setAllMemory(Double.parseDouble(Strings.isEmpty(agentCheckInfo.getAllMemory()) ? "0.0" : agentCheckInfo.getAllMemory()));
-        engineNode.setUsedMemory(Double.parseDouble(Strings.isEmpty(agentCheckInfo.getUsedMemory()) ? "0.0" : agentCheckInfo.getUsedMemory()));
-        engineNode.setAllStorage(Double.parseDouble(Strings.isEmpty(agentCheckInfo.getAllStorage()) ? "0.0" : agentCheckInfo.getAllStorage()));
-        engineNode.setUsedStorage(Double.parseDouble(Strings.isEmpty(agentCheckInfo.getUsedStorage()) ? "0.0" : agentCheckInfo.getUsedStorage()));
-        engineNode.setCpuPercent(Double.parseDouble(Strings.isEmpty(agentCheckInfo.getCpuPercent()) ? "0.0" : agentCheckInfo.getCpuPercent()));
+        engineNode.setAllMemory(
+            Double.parseDouble(Strings.isEmpty(agentCheckInfo.getAllMemory()) ? "0.0" : agentCheckInfo.getAllMemory()));
+        engineNode.setUsedMemory(Double
+            .parseDouble(Strings.isEmpty(agentCheckInfo.getUsedMemory()) ? "0.0" : agentCheckInfo.getUsedMemory()));
+        engineNode.setAllStorage(Double
+            .parseDouble(Strings.isEmpty(agentCheckInfo.getAllStorage()) ? "0.0" : agentCheckInfo.getAllStorage()));
+        engineNode.setUsedStorage(Double
+            .parseDouble(Strings.isEmpty(agentCheckInfo.getUsedStorage()) ? "0.0" : agentCheckInfo.getUsedStorage()));
+        engineNode.setCpuPercent(Double
+            .parseDouble(Strings.isEmpty(agentCheckInfo.getCpuPercent()) ? "0.0" : agentCheckInfo.getCpuPercent()));
 
         // 修改状态
         engineNode.setStatus(agentCheckInfo.getStatus());

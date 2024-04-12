@@ -60,7 +60,8 @@ public class FileBizService {
         }
 
         // 判断文件夹是否存在，不存在则创建
-        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file" + File.separator + TENANT_ID.get();
+        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+            + File.separator + TENANT_ID.get();
         if (!new File(fileDir).exists()) {
             try {
                 Files.createDirectories(Paths.get(fileDir));
@@ -70,7 +71,8 @@ public class FileBizService {
         }
 
         // 持久化数据
-        FileEntity fileEntity = FileEntity.builder().fileName(file.getOriginalFilename()).fileType(type).fileSize(DataSizeUtil.format(file.getSize())).remark(remark).build();
+        FileEntity fileEntity = FileEntity.builder().fileName(file.getOriginalFilename()).fileType(type)
+            .fileSize(DataSizeUtil.format(file.getSize())).remark(remark).build();
         fileEntity = fileRepository.save(fileEntity);
 
         // 持久化文件
@@ -103,10 +105,12 @@ public class FileBizService {
             }
 
             // 将原有的文件，加一个update_${timestamp}的后缀
-            String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file" + File.separator + TENANT_ID.get();
+            String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+                + File.separator + TENANT_ID.get();
             try {
                 File localFile = PathUtils.createFile(fileDir + File.separator + fileEntity.getId());
-                localFile.renameTo(new File(fileDir + File.separator + fileEntity.getId() + ".updated_" + DateUtil.now()));
+                localFile
+                    .renameTo(new File(fileDir + File.separator + fileEntity.getId() + ".updated_" + DateUtil.now()));
             } catch (IOException e) {
                 throw new IsxAppException("本地文件无法获取");
             }
@@ -133,10 +137,12 @@ public class FileBizService {
 
         // 获取文件信息
         FileEntity file = fileService.getFile(downloadFileReq.getFileId());
-        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file" + File.separator + TENANT_ID.get();
+        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+            + File.separator + TENANT_ID.get();
 
         try {
-            InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(fileDir + File.separator + file.getId())));
+            InputStreamResource resource =
+                new InputStreamResource(Files.newInputStream(Paths.get(fileDir + File.separator + file.getId())));
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", URLEncoder.encode(file.getFileName(), "UTF-8"));
@@ -154,7 +160,8 @@ public class FileBizService {
         FileEntity file = fileService.getFile(deleteFileReq.getFileId());
 
         // 将原有的文件，加一个deleted的后缀
-        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file" + File.separator + TENANT_ID.get();
+        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+            + File.separator + TENANT_ID.get();
         try {
             File localFile = PathUtils.createFile(fileDir + File.separator + file.getId());
             localFile.renameTo(new File(fileDir + File.separator + file.getId() + ".deleted"));
@@ -168,7 +175,8 @@ public class FileBizService {
 
     public Page<PageFileRes> pageFile(PageFileReq pageFileReq) {
 
-        Page<FileEntity> fileEntitiePage = fileRepository.searchAll(pageFileReq.getSearchKeyWord(), pageFileReq.getType(), PageRequest.of(pageFileReq.getPage(), pageFileReq.getPageSize()));
+        Page<FileEntity> fileEntitiePage = fileRepository.searchAll(pageFileReq.getSearchKeyWord(),
+            pageFileReq.getType(), PageRequest.of(pageFileReq.getPage(), pageFileReq.getPageSize()));
 
         return fileEntitiePage.map(fileMapper::fileEntityToPageFileRes);
     }

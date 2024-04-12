@@ -48,13 +48,16 @@ public class RunAgentCleanService {
         }
     }
 
-    public void cleanAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode) throws JSchException, IOException, InterruptedException, SftpException {
+    public void cleanAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
+        throws JSchException, IOException, InterruptedException, SftpException {
 
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-clean.sh", sparkYunProperties.getTmpDir() + File.separator + "agent-clean.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-clean.sh",
+            sparkYunProperties.getTmpDir() + File.separator + "agent-clean.sh");
 
         // 运行清理脚本
-        String cleanCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-clean.sh" + " --user=" + engineNode.getUsername();
+        String cleanCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-clean.sh" + " --user="
+            + engineNode.getUsername();
         log.debug("执行远程命令:{}", cleanCommand);
 
         // 获取返回结果

@@ -65,7 +65,8 @@ public class WorkConfigService {
         }
     }
 
-    public void initClusterConfig(WorkConfigEntity workConfig, String clusterId, String clusterNodeId, Boolean enableHive, String datasourceId) {
+    public void initClusterConfig(WorkConfigEntity workConfig, String clusterId, String clusterNodeId,
+        Boolean enableHive, String datasourceId) {
 
         Map<String, String> sparkConfig = initSparkConfig(ResourceLevel.LOW);
         if (enableHive) {
@@ -73,15 +74,19 @@ public class WorkConfigService {
             sparkConfig.put("hive.metastore.uris", datasource.getMetastoreUris());
         }
 
-        workConfig.setClusterConfig(JSON.toJSONString(ClusterConfig.builder().setMode(SetMode.SIMPLE).clusterId(clusterId).clusterNodeId(clusterNodeId).enableHive(enableHive).sparkConfig(sparkConfig).resourceLevel(ResourceLevel.LOW).build()));
+        workConfig.setClusterConfig(JSON.toJSONString(
+            ClusterConfig.builder().setMode(SetMode.SIMPLE).clusterId(clusterId).clusterNodeId(clusterNodeId)
+                .enableHive(enableHive).sparkConfig(sparkConfig).resourceLevel(ResourceLevel.LOW).build()));
     }
 
     public void initSyncRule(WorkConfigEntity workConfig) {
-        workConfig.setSyncRule(JSON.toJSONString(SyncRule.builder().setMode(SetMode.SIMPLE).numConcurrency(1).numPartitions(1).build()));
+        workConfig.setSyncRule(
+            JSON.toJSONString(SyncRule.builder().setMode(SetMode.SIMPLE).numConcurrency(1).numPartitions(1).build()));
     }
 
     public void initCronConfig(WorkConfigEntity workConfig) {
-        workConfig.setCronConfig(JSON.toJSONString(CronConfig.builder().setMode(SetMode.SIMPLE).type("ALL").enable(false).build()));
+        workConfig.setCronConfig(
+            JSON.toJSONString(CronConfig.builder().setMode(SetMode.SIMPLE).type("ALL").enable(false).build()));
     }
 
     public Map<String, String> initSparkConfig(String resourceLevel) {

@@ -29,11 +29,15 @@ public interface ClusterMapper {
 
     @Mapping(target = "name", source = "caeUpdateEngineReq.name")
     @Mapping(target = "remark", source = "caeUpdateEngineReq.remark")
-    ClusterEntity updateEngineReqToClusterEntity(UpdateClusterReq caeUpdateEngineReq, ClusterEntity calculateEngineEntity);
+    ClusterEntity updateEngineReqToClusterEntity(UpdateClusterReq caeUpdateEngineReq,
+        ClusterEntity calculateEngineEntity);
 
-    @Mapping(target = "node", expression = "java( clusterEntity.getActiveNodeNum()+ \"/\" +clusterEntity.getAllNodeNum())")
-    @Mapping(target = "memory", expression = "java( clusterEntity.getUsedMemoryNum()+ \"G/\" +clusterEntity.getAllMemoryNum()+\"G\")")
-    @Mapping(target = "storage", expression = "java( clusterEntity.getUsedStorageNum()+ \"G/\"  +clusterEntity.getAllStorageNum()+\"G\")")
+    @Mapping(target = "node",
+        expression = "java( clusterEntity.getActiveNodeNum()+ \"/\" +clusterEntity.getAllNodeNum())")
+    @Mapping(target = "memory",
+        expression = "java( clusterEntity.getUsedMemoryNum()+ \"G/\" +clusterEntity.getAllMemoryNum()+\"G\")")
+    @Mapping(target = "storage",
+        expression = "java( clusterEntity.getUsedStorageNum()+ \"G/\"  +clusterEntity.getAllStorageNum()+\"G\")")
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     PageClusterRes clusterEntityToPageClusterRes(ClusterEntity clusterEntity);
 

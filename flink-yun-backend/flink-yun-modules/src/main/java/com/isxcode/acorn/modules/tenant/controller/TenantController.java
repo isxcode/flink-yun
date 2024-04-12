@@ -57,7 +57,8 @@ public class TenantController {
     @Operation(summary = "系统管理员更新租户接口")
     @PostMapping("/updateTenantForSystemAdmin")
     @SuccessResponse("更新成功")
-    public void updateTenantForSystemAdmin(@Valid @RequestBody UpdateTenantForSystemAdminReq updateTenantForSystemAdminReq) {
+    public void updateTenantForSystemAdmin(
+        @Valid @RequestBody UpdateTenantForSystemAdminReq updateTenantForSystemAdminReq) {
 
         tenantBizService.updateTenantForSystemAdmin(updateTenantForSystemAdminReq);
     }
@@ -66,7 +67,8 @@ public class TenantController {
     @Operation(summary = "租户管理员更新租户接口")
     @PostMapping("/updateTenantForTenantAdmin")
     @SuccessResponse("更新成功")
-    public void updateTenantForTenantAdmin(@Valid @RequestBody UpdateTenantForTenantAdminReq updateTenantForTenantAdminReq) {
+    public void updateTenantForTenantAdmin(
+        @Valid @RequestBody UpdateTenantForTenantAdminReq updateTenantForTenantAdminReq) {
 
         tenantBizService.updateTenantForTenantAdmin(updateTenantForTenantAdminReq);
     }

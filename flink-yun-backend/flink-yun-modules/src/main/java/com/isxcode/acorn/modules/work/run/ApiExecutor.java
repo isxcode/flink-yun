@@ -21,7 +21,8 @@ import java.util.Map;
 @Slf4j
 public class ApiExecutor extends WorkExecutor {
 
-    public ApiExecutor(WorkInstanceRepository workInstanceRepository, WorkflowInstanceRepository workflowInstanceRepository) {
+    public ApiExecutor(WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
     }
@@ -44,7 +45,8 @@ public class ApiExecutor extends WorkExecutor {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测作业失败 : 接口调用作业请求方式为空不能执行  \n");
         }
 
-        if (!ApiType.GET.equals(apiWorkConfig.getRequestType()) && !ApiType.POST.equals(apiWorkConfig.getRequestType())) {
+        if (!ApiType.GET.equals(apiWorkConfig.getRequestType())
+            && !ApiType.POST.equals(apiWorkConfig.getRequestType())) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测作业失败 : 接口调用作业请求方式仅支持POST/GET  \n");
         }
 
@@ -71,7 +73,8 @@ public class ApiExecutor extends WorkExecutor {
                 response = HttpUtils.doGet(apiWorkConfig.getRequestUrl(), requestParam, requestHeader, Object.class);
             }
             if (ApiType.POST.equals(apiWorkConfig.getRequestType())) {
-                response = HttpUtils.doPost(apiWorkConfig.getRequestUrl(), requestHeader, JSON.parseObject(apiWorkConfig.getRequestBody()), Object.class);
+                response = HttpUtils.doPost(apiWorkConfig.getRequestUrl(), requestHeader,
+                    JSON.parseObject(apiWorkConfig.getRequestBody()), Object.class);
             }
 
             log.debug("获取远程返回数据:{}", response);
@@ -82,7 +85,8 @@ public class ApiExecutor extends WorkExecutor {
 
         // 保存运行日志
         workInstance.setResultData(JSON.toJSONString(response));
-        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("请求成功, 返回结果: \n").append(JSON.toJSONString(response, true)).append(" \n");
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("请求成功, 返回结果: \n")
+            .append(JSON.toJSONString(response, true)).append(" \n");
         updateInstance(workInstance, logBuilder);
     }
 

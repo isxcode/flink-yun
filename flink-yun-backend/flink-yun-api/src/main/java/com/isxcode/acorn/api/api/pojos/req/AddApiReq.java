@@ -40,13 +40,17 @@ public class AddApiReq {
     @Schema(title = "如果用户使用自定义认证方式，需要填写", example = "")
     private List<HeaderTokenDto> reqHeader;
 
-    @Schema(title = "请求体", example = "{\n" + "    \"age\":\"$age\",\n" + "    \"page\":\"$system.page\",\n" + "    \"pageSize\":\"$system.pageSize\"\n" + "}")
+    @Schema(title = "请求体", example = "{\n" + "    \"age\":\"$age\",\n" + "    \"page\":\"$system.page\",\n"
+        + "    \"pageSize\":\"$system.pageSize\"\n" + "}")
     private String reqBody;
 
     @Schema(title = "执行sql", example = "select username, age from ispong_db where age > $age")
     private String apiSql;
 
-    @Schema(title = "响应体", example = "{\n" + "\"code\":\"200\",\n" + "    \"message\":\"返回成功\",\n" + "    \"$data\":[\n" + "        {\n" + "            \"username\":\"$username\"\n" + "            \"age\":\"$age\"\n" + "        }\n" + "    ],\n" + "    \"count\":\"$system.count\"\n" + "}")
+    @Schema(title = "响应体",
+        example = "{\n" + "\"code\":\"200\",\n" + "    \"message\":\"返回成功\",\n" + "    \"$data\":[\n" + "        {\n"
+            + "            \"username\":\"$username\"\n" + "            \"age\":\"$age\"\n" + "        }\n" + "    ],\n"
+            + "    \"count\":\"$system.count\"\n" + "}")
     private String resBody;
 
     @Schema(title = "备注", example = "备注123")

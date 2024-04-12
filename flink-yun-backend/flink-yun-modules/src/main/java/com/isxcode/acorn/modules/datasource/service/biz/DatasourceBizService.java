@@ -76,13 +76,15 @@ public class DatasourceBizService {
         datasource.setPasswd(aesUtils.encrypt(datasource.getPasswd()));
 
         // 判断如果是hive数据源，metastore_uris没有填写，附加默认值，thrift://localhost:9083
-        if (DatasourceType.HIVE.equals(addDatasourceReq.getDbType()) && Strings.isEmpty(addDatasourceReq.getMetastoreUris())) {
+        if (DatasourceType.HIVE.equals(addDatasourceReq.getDbType())
+            && Strings.isEmpty(addDatasourceReq.getMetastoreUris())) {
             datasource.setMetastoreUris("thrift://localhost:9083");
         }
 
         // 如果是kafka数据源，添加kafka配置
         if (DatasourceType.KAFKA.equals(addDatasourceReq.getDbType())) {
-            datasource.setKafkaConfig(JSON.toJSONString(KafkaConfig.builder().bootstrapServers(addDatasourceReq.getJdbcUrl()).build()));
+            datasource.setKafkaConfig(
+                JSON.toJSONString(KafkaConfig.builder().bootstrapServers(addDatasourceReq.getJdbcUrl()).build()));
         }
 
         datasource.setCheckDateTime(LocalDateTime.now());
@@ -106,7 +108,8 @@ public class DatasourceBizService {
         datasource.setPasswd(aesUtils.encrypt(datasource.getPasswd()));
 
         // 判断如果是hive数据源，metastore_uris没有填写，附加默认值，thrift://localhost:9083
-        if (DatasourceType.HIVE.equals(updateDatasourceReq.getDbType()) && Strings.isEmpty(updateDatasourceReq.getMetastoreUris())) {
+        if (DatasourceType.HIVE.equals(updateDatasourceReq.getDbType())
+            && Strings.isEmpty(updateDatasourceReq.getMetastoreUris())) {
             datasource.setMetastoreUris("thrift://localhost:9083");
         }
 
@@ -121,9 +124,12 @@ public class DatasourceBizService {
             dasQueryDatasourceReq.setDatasourceType(null);
         }
 
-        Page<DatasourceEntity> datasourceEntityPage = datasourceRepository.searchAll(dasQueryDatasourceReq.getSearchKeyWord(), dasQueryDatasourceReq.getDatasourceType(), PageRequest.of(dasQueryDatasourceReq.getPage(), dasQueryDatasourceReq.getPageSize()));
+        Page<DatasourceEntity> datasourceEntityPage = datasourceRepository.searchAll(
+            dasQueryDatasourceReq.getSearchKeyWord(), dasQueryDatasourceReq.getDatasourceType(),
+            PageRequest.of(dasQueryDatasourceReq.getPage(), dasQueryDatasourceReq.getPageSize()));
 
-        Page<PageDatasourceRes> pageDatasourceRes = datasourceEntityPage.map(datasourceMapper::datasourceEntityToQueryDatasourceRes);
+        Page<PageDatasourceRes> pageDatasourceRes =
+            datasourceEntityPage.map(datasourceMapper::datasourceEntityToQueryDatasourceRes);
         pageDatasourceRes.getContent().forEach(e -> {
             if (!Strings.isEmpty(e.getDriverId())) {
                 Optional<DatabaseDriverEntity> databaseDriver = databaseDriverRepository.findById(e.getDriverId());
@@ -191,7 +197,8 @@ public class DatasourceBizService {
     public void uploadDatabaseDriver(MultipartFile driverFile, String dbType, String name, String remark) {
 
         // 判断驱动文件夹是否存在，没有则创建
-        String driverDirPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "jdbc" + File.separator + TENANT_ID.get();
+        String driverDirPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "jdbc"
+            + File.separator + TENANT_ID.get();
         if (!new File(driverDirPath).exists()) {
             try {
                 Files.createDirectories(Paths.get(driverDirPath));
@@ -202,13 +209,16 @@ public class DatasourceBizService {
 
         // 保存驱动文件
         try (InputStream inputStream = driverFile.getInputStream()) {
-            Files.copy(inputStream, Paths.get(driverDirPath).resolve(driverFile.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, Paths.get(driverDirPath).resolve(driverFile.getOriginalFilename()),
+                StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IsxAppException("上传许可证失败");
         }
 
         // 初始化驱动对象
-        DatabaseDriverEntity databaseDriver = DatabaseDriverEntity.builder().name(name).dbType(dbType).driverType("TENANT_DRIVER").remark(remark).isDefaultDriver(false).fileName(driverFile.getOriginalFilename()).build();
+        DatabaseDriverEntity databaseDriver =
+            DatabaseDriverEntity.builder().name(name).dbType(dbType).driverType("TENANT_DRIVER").remark(remark)
+                .isDefaultDriver(false).fileName(driverFile.getOriginalFilename()).build();
 
         // 持久化
         databaseDriverRepository.save(databaseDriver);
@@ -217,7 +227,9 @@ public class DatasourceBizService {
     public Page<PageDatabaseDriverRes> pageDatabaseDriver(PageDatabaseDriverReq pageDatabaseDriverReq) {
 
         JPA_TENANT_MODE.set(false);
-        Page<DatabaseDriverEntity> pageDatabaseDriver = databaseDriverRepository.searchAll(pageDatabaseDriverReq.getSearchKeyWord(), TENANT_ID.get(), PageRequest.of(pageDatabaseDriverReq.getPage(), pageDatabaseDriverReq.getPageSize()));
+        Page<DatabaseDriverEntity> pageDatabaseDriver =
+            databaseDriverRepository.searchAll(pageDatabaseDriverReq.getSearchKeyWord(), TENANT_ID.get(),
+                PageRequest.of(pageDatabaseDriverReq.getPage(), pageDatabaseDriverReq.getPageSize()));
 
         return pageDatabaseDriver.map(datasourceMapper::dataDriverEntityToPageDatabaseDriverRes);
     }
@@ -247,8 +259,11 @@ public class DatasourceBizService {
         // xxx.jar
         // ${driverId}_xxx.jar_bak
         try {
-            String jdbcDirPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "jdbc" + File.separator + TENANT_ID.get();
-            Files.copy(Paths.get(jdbcDirPath).resolve(driver.getFileName()), Paths.get(jdbcDirPath).resolve(driver.getId() + "_" + driver.getFileName() + "_bak"), StandardCopyOption.REPLACE_EXISTING);
+            String jdbcDirPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator
+                + "jdbc" + File.separator + TENANT_ID.get();
+            Files.copy(Paths.get(jdbcDirPath).resolve(driver.getFileName()),
+                Paths.get(jdbcDirPath).resolve(driver.getId() + "_" + driver.getFileName() + "_bak"),
+                StandardCopyOption.REPLACE_EXISTING);
             Files.delete(Paths.get(jdbcDirPath).resolve(driver.getFileName()));
         } catch (IOException e) {
             throw new IsxAppException("删除驱动文件异常");
@@ -261,7 +276,8 @@ public class DatasourceBizService {
     public void settingDefaultDatabaseDriver(SettingDefaultDatabaseDriverReq settingDefaultDatabaseDriverReq) {
 
         JPA_TENANT_MODE.set(false);
-        Optional<DatabaseDriverEntity> databaseDriverEntityOptional = databaseDriverRepository.findById(settingDefaultDatabaseDriverReq.getDriverId());
+        Optional<DatabaseDriverEntity> databaseDriverEntityOptional =
+            databaseDriverRepository.findById(settingDefaultDatabaseDriverReq.getDriverId());
         JPA_TENANT_MODE.set(true);
 
         if (!databaseDriverEntityOptional.isPresent()) {
@@ -285,17 +301,22 @@ public class DatasourceBizService {
         databaseDriverRepository.save(databaseDriver);
     }
 
-    public GetDefaultDatabaseDriverRes getDefaultDatabaseDriver(GetDefaultDatabaseDriverReq getDefaultDatabaseDriverReq) {
+    public GetDefaultDatabaseDriverRes getDefaultDatabaseDriver(
+        GetDefaultDatabaseDriverReq getDefaultDatabaseDriverReq) {
 
         // 先查询租户的如果有直接返回
-        Optional<DatabaseDriverEntity> defaultDriver = databaseDriverRepository.findByDriverTypeAndDbTypeAndIsDefaultDriver("TENANT_DRIVER", getDefaultDatabaseDriverReq.getDbType(), true);
+        Optional<DatabaseDriverEntity> defaultDriver =
+            databaseDriverRepository.findByDriverTypeAndDbTypeAndIsDefaultDriver("TENANT_DRIVER",
+                getDefaultDatabaseDriverReq.getDbType(), true);
         if (defaultDriver.isPresent()) {
             return datasourceMapper.databaseDriverEntityToGetDefaultDatabaseDriverRes(defaultDriver.get());
         }
 
         // 查询系统默认的返回
         JPA_TENANT_MODE.set(false);
-        Optional<DatabaseDriverEntity> systemDriver = databaseDriverRepository.findByDriverTypeAndDbTypeAndIsDefaultDriver("SYSTEM_DRIVER", getDefaultDatabaseDriverReq.getDbType(), true);
+        Optional<DatabaseDriverEntity> systemDriver =
+            databaseDriverRepository.findByDriverTypeAndDbTypeAndIsDefaultDriver("SYSTEM_DRIVER",
+                getDefaultDatabaseDriverReq.getDbType(), true);
         return datasourceMapper.databaseDriverEntityToGetDefaultDatabaseDriverRes(systemDriver.get());
     }
 

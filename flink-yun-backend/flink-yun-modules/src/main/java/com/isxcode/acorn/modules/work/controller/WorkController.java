@@ -153,7 +153,8 @@ public class WorkController {
     @Operation(summary = "获取数据源表信息")
     @PostMapping("/getDataSourceTables")
     @SuccessResponse("查询成功")
-    public GetDataSourceTablesRes getDataSourceTables(@Valid @RequestBody GetDataSourceTablesReq getDataSourceTablesReq) throws Exception {
+    public GetDataSourceTablesRes getDataSourceTables(@Valid @RequestBody GetDataSourceTablesReq getDataSourceTablesReq)
+        throws Exception {
 
         return syncWorkBizService.getDataSourceTables(getDataSourceTablesReq);
     }
@@ -161,7 +162,8 @@ public class WorkController {
     @Operation(summary = "获取数据表字段信息")
     @PostMapping("/getDataSourceColumns")
     @SuccessResponse("查询成功")
-    public GetDataSourceColumnsRes getDataSourceColumns(@Valid @RequestBody GetDataSourceColumnsReq getDataSourceColumnsReq) throws Exception {
+    public GetDataSourceColumnsRes getDataSourceColumns(
+        @Valid @RequestBody GetDataSourceColumnsReq getDataSourceColumnsReq) throws Exception {
 
         return syncWorkBizService.getDataSourceColumns(getDataSourceColumnsReq);
     }
@@ -169,7 +171,8 @@ public class WorkController {
     @Operation(summary = "数据预览")
     @PostMapping("/getDataSourceData")
     @SuccessResponse("查询成功")
-    public GetDataSourceDataRes getDataSourceData(@Valid @RequestBody GetDataSourceDataReq getDataSourceDataReq) throws Exception {
+    public GetDataSourceDataRes getDataSourceData(@Valid @RequestBody GetDataSourceDataReq getDataSourceDataReq)
+        throws Exception {
 
         return syncWorkBizService.getDataSourceData(getDataSourceDataReq);
     }
@@ -177,7 +180,8 @@ public class WorkController {
     @Operation(summary = "DDL预生成")
     @PostMapping("/getCreateTableSql")
     @SuccessResponse("查询成功")
-    public GetCreateTableSqlRes getCreateTableSql(@Valid @RequestBody GetCreateTableSqlReq getCreateTableSqlReq) throws Exception {
+    public GetCreateTableSqlRes getCreateTableSql(@Valid @RequestBody GetCreateTableSqlReq getCreateTableSqlReq)
+        throws Exception {
 
         return syncWorkBizService.getCreateTableSql(getCreateTableSqlReq);
     }

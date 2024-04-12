@@ -16,7 +16,8 @@ import java.util.Map;
 @Slf4j
 public class HttpUtils {
 
-    public static <A> A doGet(String url, Map<String, String> requestParams, Map<String, String> headerParams, Class<A> targetClass) {
+    public static <A> A doGet(String url, Map<String, String> requestParams, Map<String, String> headerParams,
+        Class<A> targetClass) {
 
         StringBuilder requestUrl = new StringBuilder(url);
 
@@ -49,7 +50,8 @@ public class HttpUtils {
         return doGet(url, null, headerParams, targetClass);
     }
 
-    public static <T> T doPost(String url, Map<String, String> headerParams, Object requestParams, Class<T> targetCls) throws IOException {
+    public static <T> T doPost(String url, Map<String, String> headerParams, Object requestParams, Class<T> targetCls)
+        throws IOException {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -61,7 +63,8 @@ public class HttpUtils {
             headerParams.forEach(headers::add);
         }
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(new ObjectMapper().writeValueAsString(requestParams), headers);
+        HttpEntity<String> requestEntity =
+            new HttpEntity<>(new ObjectMapper().writeValueAsString(requestParams), headers);
         return new RestTemplate().exchange(url, HttpMethod.POST, requestEntity, targetCls).getBody();
     }
 

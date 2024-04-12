@@ -37,11 +37,13 @@ public interface TenantMapper {
     @Mapping(target = "maxMemberNum", source = "tetUpdateTenantBySystemAdminReq.maxMemberNum")
     @Mapping(target = "name", source = "tetUpdateTenantBySystemAdminReq.name")
     @Mapping(target = "id", source = "tenantEntity.id")
-    TenantEntity tetUpdateTenantBySystemAdminReqToTenantEntity(UpdateTenantForSystemAdminReq tetUpdateTenantBySystemAdminReq, TenantEntity tenantEntity);
+    TenantEntity tetUpdateTenantBySystemAdminReqToTenantEntity(
+        UpdateTenantForSystemAdminReq tetUpdateTenantBySystemAdminReq, TenantEntity tenantEntity);
 
     @Mapping(target = "introduce", source = "tetUpdateTenantByTenantAdminReq.introduce")
     @Mapping(target = "id", source = "tenantEntity.id")
-    TenantEntity tetUpdateTenantByTenantAdminReqToTenantEntity(UpdateTenantForTenantAdminReq tetUpdateTenantByTenantAdminReq, TenantEntity tenantEntity);
+    TenantEntity tetUpdateTenantByTenantAdminReqToTenantEntity(
+        UpdateTenantForTenantAdminReq tetUpdateTenantByTenantAdminReq, TenantEntity tenantEntity);
 
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     PageTenantRes tenantEntityToTetQueryTenantRes(TenantEntity tenantEntity);

@@ -86,7 +86,8 @@ public class WorkBizService {
     public GetWorkRes addWork(AddWorkReq addWorkReq) {
 
         // 校验作业名的唯一性
-        Optional<WorkEntity> workByName = workRepository.findByNameAndAndWorkflowId(addWorkReq.getName(), addWorkReq.getWorkflowId());
+        Optional<WorkEntity> workByName =
+            workRepository.findByNameAndAndWorkflowId(addWorkReq.getName(), addWorkReq.getWorkflowId());
         if (workByName.isPresent()) {
             throw new IsxAppException("作业名称重复，请重新输入");
         }
@@ -111,7 +112,10 @@ public class WorkBizService {
         }
 
         // sparkSql，数据同步，bash，python，必须配置集群
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
+            || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
+            || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
             if (Strings.isEmpty(addWorkReq.getClusterId())) {
                 throw new IsxAppException("必须选择计算引擎");
             }
@@ -119,7 +123,9 @@ public class WorkBizService {
 
         // 如果jdbc执行和jdbc查询
         // 或者为prql查询，必填数据源
-        if (WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType()) || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType()) || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
+        if (WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
             if (Strings.isEmpty(addWorkReq.getDatasourceId())) {
                 throw new IsxAppException("数据源是必填项");
             }
@@ -132,7 +138,11 @@ public class WorkBizService {
         workConfig.setDatasourceId(addWorkReq.getDatasourceId());
 
         // 如果是sparkSql,jdbcQuerySql,jdbcExecuteSql,bash,python作业，需要初始化脚本内容，方便客户使用
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType()) || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_CONTAINER_SQL.equals(addWorkReq.getWorkType())
+        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
+            || WorkType.SPARK_CONTAINER_SQL.equals(addWorkReq.getWorkType())
             || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
             workConfigService.initWorkScript(workConfig, addWorkReq.getWorkType());
         }
@@ -143,8 +153,12 @@ public class WorkBizService {
         }
 
         // 初始化计算引擎
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType()) || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
-            workConfigService.initClusterConfig(workConfig, addWorkReq.getClusterId(), addWorkReq.getClusterNodeId(), addWorkReq.getEnableHive(), addWorkReq.getDatasourceId());
+        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+            || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
+            || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
+            || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+            workConfigService.initClusterConfig(workConfig, addWorkReq.getClusterId(), addWorkReq.getClusterNodeId(),
+                addWorkReq.getEnableHive(), addWorkReq.getDatasourceId());
         }
 
         // 如果jdbc执行和jdbc查询，必填数据源
@@ -180,7 +194,8 @@ public class WorkBizService {
 
     public Page<PageWorkRes> pageWork(PageWorkReq pageWorkReq) {
 
-        Page<WorkEntity> workPage = workRepository.pageSearchByWorkflowId(pageWorkReq.getSearchKeyWord(), pageWorkReq.getWorkflowId(), PageRequest.of(pageWorkReq.getPage(), pageWorkReq.getPageSize()));
+        Page<WorkEntity> workPage = workRepository.pageSearchByWorkflowId(pageWorkReq.getSearchKeyWord(),
+            pageWorkReq.getWorkflowId(), PageRequest.of(pageWorkReq.getPage(), pageWorkReq.getPageSize()));
 
         Page<PageWorkRes> map = workPage.map(workMapper::workEntityToPageWorkRes);
 
@@ -215,7 +230,8 @@ public class WorkBizService {
         if (WorkStatus.UN_PUBLISHED.equals(work.getStatus()) || WorkStatus.STOP.equals(work.getStatus())) {
             // 删除作业配置
             Optional<WorkConfigEntity> workConfigEntityOptional = workConfigRepository.findById(work.getConfigId());
-            workConfigEntityOptional.ifPresent(workConfigEntity -> workConfigRepository.deleteById(workConfigEntity.getId()));
+            workConfigEntityOptional
+                .ifPresent(workConfigEntity -> workConfigRepository.deleteById(workConfigEntity.getId()));
 
             workRepository.deleteById(deleteWorkReq.getWorkId());
         } else {
@@ -269,7 +285,8 @@ public class WorkBizService {
     public GetDataRes getData(GetDataReq getDataReq) {
 
         // 获取实例
-        Optional<WorkInstanceEntity> instanceEntityOptional = workInstanceRepository.findById(getDataReq.getInstanceId());
+        Optional<WorkInstanceEntity> instanceEntityOptional =
+            workInstanceRepository.findById(getDataReq.getInstanceId());
         if (!instanceEntityOptional.isPresent()) {
             throw new IsxAppException("实例不存在");
         }
@@ -289,7 +306,8 @@ public class WorkBizService {
 
     public GetStatusRes getStatus(GetStatusReq getStatusReq) {
 
-        Optional<WorkInstanceEntity> workInstanceEntityOptional = workInstanceRepository.findById(getStatusReq.getInstanceId());
+        Optional<WorkInstanceEntity> workInstanceEntityOptional =
+            workInstanceRepository.findById(getStatusReq.getInstanceId());
         if (!workInstanceEntityOptional.isPresent()) {
             throw new IsxAppException("实例暂未生成请稍后再试");
         }
@@ -310,7 +328,8 @@ public class WorkBizService {
 
         // 通过实例
         // 获取workId
-        Optional<WorkInstanceEntity> workInstanceEntityOptional = workInstanceRepository.findById(stopJobReq.getInstanceId());
+        Optional<WorkInstanceEntity> workInstanceEntityOptional =
+            workInstanceRepository.findById(stopJobReq.getInstanceId());
         if (!workInstanceEntityOptional.isPresent()) {
             throw new IsxAppException("实例不存在");
         }
@@ -329,13 +348,16 @@ public class WorkBizService {
             WorkEntity workEntity = workRepository.findById(workInstanceEntity.getWorkId()).get();
 
             // 作业类型不对返回
-            if (!WorkType.QUERY_SPARK_SQL.equals(workEntity.getWorkType()) && !WorkType.DATA_SYNC_JDBC.equals(workEntity.getWorkType())) {
+            if (!WorkType.QUERY_SPARK_SQL.equals(workEntity.getWorkType())
+                && !WorkType.DATA_SYNC_JDBC.equals(workEntity.getWorkType())) {
                 throw new IsxAppException("只有sparkSql作业才支持中止");
             }
 
             WorkConfigEntity workConfigEntity = workConfigRepository.findById(workEntity.getConfigId()).get();
-            String clusterId = JSON.parseObject(workConfigEntity.getClusterConfig(), ClusterConfig.class).getClusterId();
-            List<ClusterNodeEntity> allEngineNodes = engineNodeRepository.findAllByClusterIdAndStatus(clusterId, ClusterNodeStatus.RUNNING);
+            String clusterId =
+                JSON.parseObject(workConfigEntity.getClusterConfig(), ClusterConfig.class).getClusterId();
+            List<ClusterNodeEntity> allEngineNodes =
+                engineNodeRepository.findAllByClusterIdAndStatus(clusterId, ClusterNodeStatus.RUNNING);
             if (allEngineNodes.isEmpty()) {
                 throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
             }
@@ -359,7 +381,9 @@ public class WorkBizService {
             paramsMap.put("appId", wokRunWorkRes.getAppId());
             paramsMap.put("agentType", clusterEntityOptional.get().getClusterType());
             paramsMap.put("sparkHomePath", engineNode.getSparkHomePath());
-            BaseResponse<?> baseResponse = HttpUtils.doGet(httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/stopJob"), paramsMap, null, BaseResponse.class);
+            BaseResponse<?> baseResponse = HttpUtils.doGet(
+                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/stopJob"), paramsMap,
+                null, BaseResponse.class);
 
             if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
                 throw new IsxAppException(baseResponse.getCode(), baseResponse.getMsg(), baseResponse.getErr());
@@ -367,17 +391,20 @@ public class WorkBizService {
 
             // 修改实例状态
             workInstanceEntity.setStatus(InstanceStatus.ABORT);
-            String submitLog = workInstanceEntity.getSubmitLog() + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "已中止  \n";
+            String submitLog =
+                workInstanceEntity.getSubmitLog() + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "已中止  \n";
             workInstanceEntity.setSubmitLog(submitLog);
             workInstanceEntity.setExecEndDateTime(new Date());
-            workInstanceEntity.setDuration((System.currentTimeMillis() - workInstanceEntity.getExecStartDateTime().getTime()) / 1000);
+            workInstanceEntity
+                .setDuration((System.currentTimeMillis() - workInstanceEntity.getExecStartDateTime().getTime()) / 1000);
             workInstanceRepository.saveAndFlush(workInstanceEntity);
         }
     }
 
     public GetWorkLogRes getWorkLog(GetYarnLogReq getYarnLogReq) {
 
-        Optional<WorkInstanceEntity> workInstanceEntityOptional = workInstanceRepository.findById(getYarnLogReq.getInstanceId());
+        Optional<WorkInstanceEntity> workInstanceEntityOptional =
+            workInstanceRepository.findById(getYarnLogReq.getInstanceId());
         if (!workInstanceEntityOptional.isPresent()) {
             throw new IsxAppException("实例暂未生成，请稍后再试");
         }
@@ -421,7 +448,8 @@ public class WorkBizService {
 
         if (!Strings.isEmpty(workConfig.getClusterConfig())) {
             getWorkRes.setClusterConfig(JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class));
-            getWorkRes.getClusterConfig().setSparkConfigJson(JSON.toJSONString(getWorkRes.getClusterConfig().getSparkConfig()));
+            getWorkRes.getClusterConfig()
+                .setSparkConfigJson(JSON.toJSONString(getWorkRes.getClusterConfig().getSparkConfig()));
         }
 
         if (!Strings.isEmpty(workConfig.getSyncRule())) {
@@ -465,7 +493,8 @@ public class WorkBizService {
             throw new IsxAppException("计算引擎不存在");
         }
 
-        List<ClusterNodeEntity> allEngineNodes = engineNodeRepository.findAllByClusterIdAndStatus(calculateEngineEntityOptional.get().getId(), ClusterNodeStatus.RUNNING);
+        List<ClusterNodeEntity> allEngineNodes = engineNodeRepository
+            .findAllByClusterIdAndStatus(calculateEngineEntityOptional.get().getId(), ClusterNodeStatus.RUNNING);
         if (allEngineNodes.isEmpty()) {
             throw new IsxAppException("计算引擎无可用节点，请换一个计算引擎");
         }
@@ -474,13 +503,15 @@ public class WorkBizService {
 
     public GetSubmitLogRes getSubmitLog(GetSubmitLogReq getSubmitLogReq) {
 
-        Optional<WorkInstanceEntity> workInstanceEntityOptional = workInstanceRepository.findById(getSubmitLogReq.getInstanceId());
+        Optional<WorkInstanceEntity> workInstanceEntityOptional =
+            workInstanceRepository.findById(getSubmitLogReq.getInstanceId());
         if (!workInstanceEntityOptional.isPresent()) {
             throw new IsxAppException("请稍后再试");
         }
         WorkInstanceEntity workInstanceEntity = workInstanceEntityOptional.get();
 
-        return GetSubmitLogRes.builder().log(workInstanceEntity.getSubmitLog()).status(workInstanceEntity.getStatus()).build();
+        return GetSubmitLogRes.builder().log(workInstanceEntity.getSubmitLog()).status(workInstanceEntity.getStatus())
+            .build();
     }
 
     public void renameWork(RenameWorkReq wokRenameWorkReq) {

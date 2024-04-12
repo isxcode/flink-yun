@@ -105,11 +105,14 @@ public class DatasourceService {
             DatabaseDriverEntity driverEntity = dataDriverService.getDriver(datasource.getDriverId());
             JPA_TENANT_MODE.set(true);
 
-            String driverPath = "TENANT_DRIVER".equals(driverEntity.getDriverType()) ? driverEntity.getTenantId() + File.separator + driverEntity.getFileName() : "system" + File.separator + driverEntity.getFileName();
+            String driverPath = "TENANT_DRIVER".equals(driverEntity.getDriverType())
+                ? driverEntity.getTenantId() + File.separator + driverEntity.getFileName()
+                : "system" + File.separator + driverEntity.getFileName();
 
             // 先加载驱动到ALL_EXIST_DRIVER
             try {
-                URL url = new File(PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "jdbc" + File.separator + driverPath).toURI().toURL();
+                URL url = new File(PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator
+                    + "jdbc" + File.separator + driverPath).toURI().toURL();
                 ClassLoader driverClassLoader = new URLClassLoader(new URL[] {url});
 
                 // 特殊逻辑判断，如果驱动是mysql5的使用
@@ -123,7 +126,8 @@ public class DatasourceService {
                 Class<?> driverClass = driverClassLoader.loadClass(driverClassName);
                 driver = new DriverShim((Driver) driverClass.newInstance());
                 ALL_EXIST_DRIVER.put(datasource.getDriverId(), driver);
-            } catch (MalformedURLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            } catch (MalformedURLException | ClassNotFoundException | IllegalAccessException
+                | InstantiationException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -141,7 +145,8 @@ public class DatasourceService {
 
     public void executeSql(DatasourceEntity datasource, String sql) {
 
-        try (Connection connection = this.getDbConnection(datasource); Statement statement = connection.createStatement()) {
+        try (Connection connection = this.getDbConnection(datasource);
+            Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             log.error(e.getMessage());
@@ -152,11 +157,13 @@ public class DatasourceService {
         }
     }
 
-    public void securityExecuteSql(String datasourceId, String securityExecuteSql, List<SecurityColumnDto> securityColumns) {
+    public void securityExecuteSql(String datasourceId, String securityExecuteSql,
+        List<SecurityColumnDto> securityColumns) {
 
         DatasourceEntity datasource = this.getDatasource(datasourceId);
 
-        try (Connection connection = this.getDbConnection(datasource); PreparedStatement statement = connection.prepareStatement(securityExecuteSql);) {
+        try (Connection connection = this.getDbConnection(datasource);
+            PreparedStatement statement = connection.prepareStatement(securityExecuteSql);) {
             for (int i = 0; i < securityColumns.size(); i++) {
                 this.transAndSetParameter(statement, securityColumns.get(i), i);
             }
@@ -167,7 +174,8 @@ public class DatasourceService {
         }
     }
 
-    public ResultSet securityQuerySql(String datasourceId, String securityExecuteSql, List<SecurityColumnDto> securityColumns) throws SQLException {
+    public ResultSet securityQuerySql(String datasourceId, String securityExecuteSql,
+        List<SecurityColumnDto> securityColumns) throws SQLException {
 
         DatasourceEntity datasource = this.getDatasource(datasourceId);
 
@@ -179,11 +187,13 @@ public class DatasourceService {
         return statement.executeQuery();
     }
 
-    public long securityGetTableCount(String datasourceId, String securityExecuteSql, List<SecurityColumnDto> securityColumns) {
+    public long securityGetTableCount(String datasourceId, String securityExecuteSql,
+        List<SecurityColumnDto> securityColumns) {
 
         DatasourceEntity datasource = this.getDatasource(datasourceId);
 
-        try (Connection connection = this.getDbConnection(datasource); PreparedStatement statement = connection.prepareStatement(securityExecuteSql);) {
+        try (Connection connection = this.getDbConnection(datasource);
+            PreparedStatement statement = connection.prepareStatement(securityExecuteSql);) {
             for (int i = 0; i < securityColumns.size(); i++) {
                 this.transAndSetParameter(statement, securityColumns.get(i), i);
             }
@@ -200,7 +210,9 @@ public class DatasourceService {
 
     public boolean tableIsExist(DatasourceEntity datasource, String tableName) {
 
-        try (Connection connection = this.getDbConnection(datasource); PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1 FROM " + tableName + " WHERE 1 = 0")) {
+        try (Connection connection = this.getDbConnection(datasource);
+            PreparedStatement preparedStatement =
+                connection.prepareStatement("SELECT 1 FROM " + tableName + " WHERE 1 = 0")) {
             preparedStatement.executeQuery();
             return true;
         } catch (SQLException e) {
@@ -209,7 +221,8 @@ public class DatasourceService {
         }
     }
 
-    public void transAndSetParameter(PreparedStatement statement, SecurityColumnDto securityColumnDto, int parameterIndex) throws SQLException {
+    public void transAndSetParameter(PreparedStatement statement, SecurityColumnDto securityColumnDto,
+        int parameterIndex) throws SQLException {
 
         switch (securityColumnDto.getType()) {
             case ColumnType.STRING:
@@ -223,7 +236,8 @@ public class DatasourceService {
                 if (securityColumnDto.getValue() == null) {
                     statement.setNull(parameterIndex + 1, Types.INTEGER);
                 } else {
-                    statement.setInt(parameterIndex + 1, Integer.parseInt(String.valueOf(securityColumnDto.getValue())));
+                    statement.setInt(parameterIndex + 1,
+                        Integer.parseInt(String.valueOf(securityColumnDto.getValue())));
                 }
                 break;
             case ColumnType.DOUBLE:
@@ -231,7 +245,8 @@ public class DatasourceService {
                     statement.setNull(parameterIndex + 1, Types.DOUBLE);
 
                 } else {
-                    statement.setDouble(parameterIndex + 1, Double.parseDouble(String.valueOf(securityColumnDto.getValue())));
+                    statement.setDouble(parameterIndex + 1,
+                        Double.parseDouble(String.valueOf(securityColumnDto.getValue())));
                 }
                 break;
             case ColumnType.TIMESTAMP:
@@ -240,21 +255,24 @@ public class DatasourceService {
                 if (securityColumnDto.getValue() == null) {
                     statement.setNull(parameterIndex + 1, Types.TIMESTAMP);
                 } else {
-                    statement.setTimestamp(parameterIndex + 1, new Timestamp(Long.parseLong(String.valueOf(securityColumnDto.getValue()))));
+                    statement.setTimestamp(parameterIndex + 1,
+                        new Timestamp(Long.parseLong(String.valueOf(securityColumnDto.getValue()))));
                 }
                 break;
             case ColumnType.BIG_DECIMAL:
                 if (securityColumnDto.getValue() == null) {
                     statement.setNull(parameterIndex + 1, Types.NUMERIC);
                 } else {
-                    statement.setBigDecimal(parameterIndex + 1, new BigDecimal(String.valueOf(securityColumnDto.getValue())));
+                    statement.setBigDecimal(parameterIndex + 1,
+                        new BigDecimal(String.valueOf(securityColumnDto.getValue())));
                 }
                 break;
             case ColumnType.BOOLEAN:
                 if (securityColumnDto.getValue() == null) {
                     statement.setNull(parameterIndex + 1, Types.BOOLEAN);
                 } else {
-                    statement.setBoolean(parameterIndex + 1, Boolean.parseBoolean(String.valueOf(securityColumnDto.getValue())));
+                    statement.setBoolean(parameterIndex + 1,
+                        Boolean.parseBoolean(String.valueOf(securityColumnDto.getValue())));
                 }
                 break;
             default:

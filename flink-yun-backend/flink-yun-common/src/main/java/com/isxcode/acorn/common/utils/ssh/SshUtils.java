@@ -19,7 +19,8 @@ public class SshUtils {
     /**
      * scp传递文件.
      */
-    public static void scpFile(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath) throws JSchException, SftpException, InterruptedException, IOException {
+    public static void scpFile(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath)
+        throws JSchException, SftpException, InterruptedException, IOException {
 
         // 初始化jsch
         JSch jsch = new JSch();
@@ -28,7 +29,8 @@ public class SshUtils {
             jsch.addIdentity(engineNode.getUsername(), engineNode.getPasswd().getBytes(), null, null);
         }
 
-        Session session = jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
+        Session session =
+            jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
 
         // 连接远程服务器
         if (engineNode.getPasswd().length() < 1000) {
@@ -66,7 +68,8 @@ public class SshUtils {
     /**
      * 执行远程命令.
      */
-    public static String executeCommand(ScpFileEngineNodeDto engineNode, String command, boolean pty) throws JSchException, InterruptedException, IOException {
+    public static String executeCommand(ScpFileEngineNodeDto engineNode, String command, boolean pty)
+        throws JSchException, InterruptedException, IOException {
 
         JSch jsch = new JSch();
 
@@ -76,7 +79,8 @@ public class SshUtils {
 
         Session session;
 
-        session = jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
+        session =
+            jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
 
         if (engineNode.getPasswd().length() < 1000) {
             session.setPassword(engineNode.getPasswd());
@@ -119,7 +123,8 @@ public class SshUtils {
         session.disconnect();
 
         if (exitStatus != 0) {
-            return "{\n" + "        \"execStatus\":\"ERROR\",\n" + "        \"log\":\"" + errOutput + "\"\n" + "      }";
+            return "{\n" + "        \"execStatus\":\"ERROR\",\n" + "        \"log\":\"" + errOutput + "\"\n"
+                + "      }";
         } else {
             return output.toString();
         }
@@ -128,7 +133,8 @@ public class SshUtils {
     /**
      * scp传递文本.
      */
-    public static void scpText(ScpFileEngineNodeDto engineNode, String content, String dstPath) throws JSchException, SftpException, InterruptedException {
+    public static void scpText(ScpFileEngineNodeDto engineNode, String content, String dstPath)
+        throws JSchException, SftpException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();
@@ -137,7 +143,8 @@ public class SshUtils {
             jsch.addIdentity(engineNode.getUsername(), engineNode.getPasswd().getBytes(), null, null);
         }
 
-        Session session = jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
+        Session session =
+            jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
 
         // 连接远程服务器
         if (engineNode.getPasswd().length() < 1000) {
@@ -175,7 +182,8 @@ public class SshUtils {
     /**
      * scp传递Jar.
      */
-    public static void scpJar(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath) throws JSchException, SftpException, InterruptedException, IOException {
+    public static void scpJar(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath)
+        throws JSchException, SftpException, InterruptedException, IOException {
 
         // 初始化jsch
         JSch jsch = new JSch();
@@ -184,7 +192,8 @@ public class SshUtils {
             jsch.addIdentity(engineNode.getUsername(), engineNode.getPasswd().getBytes(), null, null);
         }
 
-        Session session = jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
+        Session session =
+            jsch.getSession(engineNode.getUsername(), engineNode.getHost(), Integer.parseInt(engineNode.getPort()));
 
         // 连接远程服务器
         if (engineNode.getPasswd().length() < 1000) {

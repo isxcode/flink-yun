@@ -71,7 +71,8 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers(isxAppProperties.getAdminUrl().toArray(new String[0])).hasRole("ADMIN");
 
         // 匿名者才可以访问的指定接口
-        http.authorizeRequests().antMatchers(isxAppProperties.getAnonymousRoleUrl().toArray(new String[0])).hasRole("ANONYMOUS");
+        http.authorizeRequests().antMatchers(isxAppProperties.getAnonymousRoleUrl().toArray(new String[0]))
+            .hasRole("ANONYMOUS");
 
         // 任何人都可以访问的权限
         http.authorizeRequests().antMatchers(isxAppProperties.getAnonymousUrl().toArray(new String[0])).permitAll();
@@ -82,7 +83,8 @@ public class WebSecurityConfig {
         excludePaths.addAll(isxAppProperties.getAnonymousUrl());
 
         // token
-        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), excludePaths, isxAppProperties), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), excludePaths, isxAppProperties),
+            UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests().antMatchers("/**").authenticated();
 
         http.formLogin();

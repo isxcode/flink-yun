@@ -43,7 +43,8 @@ public class TenantUserBizService {
     public void addTenantUser(AddTenantUserReq turAddTenantUserReq) {
 
         // 已req中的tenantId为主
-        String tenantId = Strings.isEmpty(turAddTenantUserReq.getTenantId()) ? TENANT_ID.get() : turAddTenantUserReq.getTenantId();
+        String tenantId =
+            Strings.isEmpty(turAddTenantUserReq.getTenantId()) ? TENANT_ID.get() : turAddTenantUserReq.getTenantId();
 
         // 判断是否到租户的人员上限
         TenantEntity tenant = tenantService.getTenant(tenantId);
@@ -65,13 +66,15 @@ public class TenantUserBizService {
         }
 
         // 判断该用户是否已经是成员
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findByTenantIdAndUserId(tenantId, turAddTenantUserReq.getUserId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findByTenantIdAndUserId(tenantId, turAddTenantUserReq.getUserId());
         if (tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("该成员已经是项目成员");
         }
 
         // 初始化租户用户
-        TenantUserEntity tenantUserEntity = TenantUserEntity.builder().tenantId(tenantId).userId(turAddTenantUserReq.getUserId()).status(UserStatus.ENABLE).build();
+        TenantUserEntity tenantUserEntity = TenantUserEntity.builder().tenantId(tenantId)
+            .userId(turAddTenantUserReq.getUserId()).status(UserStatus.ENABLE).build();
 
         // 初始化用户权限
         if (turAddTenantUserReq.getIsTenantAdmin()) {
@@ -100,13 +103,15 @@ public class TenantUserBizService {
             tenantId = TENANT_ID.get();
         }
 
-        return tenantUserRepository.searchTenantUser(tenantId, turAddTenantUserReq.getSearchKeyWord(), PageRequest.of(turAddTenantUserReq.getPage(), turAddTenantUserReq.getPageSize()));
+        return tenantUserRepository.searchTenantUser(tenantId, turAddTenantUserReq.getSearchKeyWord(),
+            PageRequest.of(turAddTenantUserReq.getPage(), turAddTenantUserReq.getPageSize()));
     }
 
     public void removeTenantUser(RemoveTenantUserReq removeTenantUserReq) {
 
         // 查询用户是否在租户中
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findById(removeTenantUserReq.getTenantUserId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findById(removeTenantUserReq.getTenantUserId());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("用户不存在");
         }
@@ -123,7 +128,8 @@ public class TenantUserBizService {
     public void setTenantAdmin(SetTenantAdminReq setTenantAdminReq) {
 
         // 查询用户是否在租户中
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findById(setTenantAdminReq.getTenantUserId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findById(setTenantAdminReq.getTenantUserId());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("用户不存在");
         }
@@ -139,13 +145,15 @@ public class TenantUserBizService {
     public void removeTenantAdmin(RemoveTenantAdminReq removeTenantAdminReq) {
 
         // 查询用户是否在租户中
-        Optional<TenantUserEntity> tenantUserEntityOptional = tenantUserRepository.findById(removeTenantAdminReq.getTenantUserId());
+        Optional<TenantUserEntity> tenantUserEntityOptional =
+            tenantUserRepository.findById(removeTenantAdminReq.getTenantUserId());
         if (!tenantUserEntityOptional.isPresent()) {
             throw new IsxAppException("用户不存在");
         }
 
         // 管理员不可以移除自己
-        if (RoleType.TENANT_ADMIN.equals(tenantUserEntityOptional.get().getRoleCode()) && USER_ID.get().equals(tenantUserEntityOptional.get().getUserId())) {
+        if (RoleType.TENANT_ADMIN.equals(tenantUserEntityOptional.get().getRoleCode())
+            && USER_ID.get().equals(tenantUserEntityOptional.get().getUserId())) {
             throw new IsxAppException("不可以取消自己的管理员权限");
         }
 

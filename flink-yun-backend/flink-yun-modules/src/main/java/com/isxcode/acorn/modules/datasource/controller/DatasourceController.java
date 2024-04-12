@@ -82,7 +82,9 @@ public class DatasourceController {
     @PostMapping("/uploadDatabaseDriver")
     @Operation(summary = "上传数据源驱动(Swagger有Bug不能使用)")
     @SuccessResponse("上传成功")
-    public void uploadDatabaseDriver(@RequestParam("driver") MultipartFile driver, @RequestParam("dbType") String dbType, @RequestParam("name") String name, @RequestParam("remark") String remark) {
+    public void uploadDatabaseDriver(@RequestParam("driver") MultipartFile driver,
+        @RequestParam("dbType") String dbType, @RequestParam("name") String name,
+        @RequestParam("remark") String remark) {
 
         datasourceBizService.uploadDatabaseDriver(driver, dbType, name, remark);
     }
@@ -106,7 +108,8 @@ public class DatasourceController {
     @PostMapping("/settingDefaultDatabaseDriver")
     @Operation(summary = "设置默认驱动接口")
     @SuccessResponse("设置成功")
-    public void settingDefaultDatabaseDriver(@RequestBody SettingDefaultDatabaseDriverReq settingDefaultDatabaseDriverReq) {
+    public void settingDefaultDatabaseDriver(
+        @RequestBody SettingDefaultDatabaseDriverReq settingDefaultDatabaseDriverReq) {
 
         datasourceBizService.settingDefaultDatabaseDriver(settingDefaultDatabaseDriverReq);
     }
@@ -114,7 +117,8 @@ public class DatasourceController {
     @PostMapping("/getDefaultDatabaseDriver")
     @Operation(summary = "获取默认驱动接口")
     @SuccessResponse("获取成功")
-    public GetDefaultDatabaseDriverRes getDefaultDatabaseDriver(@RequestBody GetDefaultDatabaseDriverReq getDefaultDatabaseDriverReq) {
+    public GetDefaultDatabaseDriverRes getDefaultDatabaseDriver(
+        @RequestBody GetDefaultDatabaseDriverReq getDefaultDatabaseDriverReq) {
 
         return datasourceBizService.getDefaultDatabaseDriver(getDefaultDatabaseDriverReq);
     }

@@ -40,26 +40,31 @@ public class YarnAcorn implements AcornRun {
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
         flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(submitJobReq.getProgramArgs()));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
-        flinkConfig.set(PipelineOptions.JARS, singletonList("/Users/ispong/isxcode/flink-yun/flink-yun-plugins/flink-sql-execute-plugin/build/libs/flink-sql-execute-plugin.jar"));
+        flinkConfig.set(PipelineOptions.JARS, singletonList(
+            "/Users/ispong/isxcode/flink-yun/flink-yun-plugins/flink-sql-execute-plugin/build/libs/flink-sql-execute-plugin.jar"));
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
         flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitJobReq.getAppName());
-        flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, "/Users/ispong/isxcode/flink-yun/flink-yun-dist/flink-min/lib/flink-dist-1.18.1.jar");
+        flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR,
+            "/Users/ispong/isxcode/flink-yun/flink-yun-dist/flink-min/lib/flink-dist-1.18.1.jar");
         List<String> libFile = new ArrayList<>();
         libFile.add("/Users/ispong/isxcode/flink-yun/flink-yun-dist/flink-min/lib");
         libFile.add("/Users/ispong/isxcode/flink-yun/resources/jdbc/system");
         libFile.add("/Users/ispong/isxcode/flink-yun/resources/cdc");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
-        ClusterSpecification clusterSpecification = new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024).setSlotsPerTaskManager(2).createClusterSpecification();
+        ClusterSpecification clusterSpecification =
+            new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024)
+                .setSlotsPerTaskManager(2).createClusterSpecification();
 
         ApplicationConfiguration applicationConfiguration = ApplicationConfiguration.fromConfiguration(flinkConfig);
         applicationConfiguration.applyToConfiguration(flinkConfig);
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            ClusterClientProvider<ApplicationId> applicationIdClusterClientProvider = clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
+            ClusterClientProvider<ApplicationId> applicationIdClusterClientProvider =
+                clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             System.out.println(applicationIdClusterClientProvider.getClusterClient().getClusterId());
             System.out.println(applicationIdClusterClientProvider.getClusterClient().getWebInterfaceURL());
             return null;

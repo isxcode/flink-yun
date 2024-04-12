@@ -24,13 +24,17 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     /**
      * 分页搜索查询所有用户.
      */
-    @Query("SELECT U FROM UserEntity U " + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' and " + "(U.username LIKE %:keyword% " + "OR U.account LIKE %:keyword% " + "OR U.email LIKE %:keyword% " + "OR U.phone LIKE %:keyword% " + "OR U.remark LIKE %:keyword%) order by U.createDateTime desc ")
+    @Query("SELECT U FROM UserEntity U " + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' and " + "(U.username LIKE %:keyword% "
+        + "OR U.account LIKE %:keyword% " + "OR U.email LIKE %:keyword% " + "OR U.phone LIKE %:keyword% "
+        + "OR U.remark LIKE %:keyword%) order by U.createDateTime desc ")
     Page<UserEntity> searchAllUser(@Param("keyword") String searchKeyWord, Pageable pageable);
 
     /**
      * 分页搜索查询所有有效用户.
      */
-    @Query("SELECT U FROM UserEntity U " + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' " + "AND U.status = 'ENABLE' " + "AND (U.username LIKE %:keyword%" + " OR U.account LIKE %:keyword% " + "OR U.email LIKE %:keyword% " + "OR U.phone LIKE %:keyword% " + "OR U.remark LIKE %:keyword%) order by U.createDateTime desc ")
+    @Query("SELECT U FROM UserEntity U " + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' " + "AND U.status = 'ENABLE' "
+        + "AND (U.username LIKE %:keyword%" + " OR U.account LIKE %:keyword% " + "OR U.email LIKE %:keyword% "
+        + "OR U.phone LIKE %:keyword% " + "OR U.remark LIKE %:keyword%) order by U.createDateTime desc ")
     Page<UserEntity> searchAllEnableUser(@Param("keyword") String searchKeyWord, Pageable pageable);
 
     Optional<UserEntity> findByAccount(String account);

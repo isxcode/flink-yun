@@ -32,7 +32,9 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
 
         BaseResponse<?> errorResponse = new BaseResponse<>();
         errorResponse.setMsg(abstractSparkYunException.getMsg());
-        errorResponse.setCode(abstractSparkYunException.getCode() == null ? String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()) : abstractSparkYunException.getCode());
+        errorResponse.setCode(
+            abstractSparkYunException.getCode() == null ? String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                : abstractSparkYunException.getCode());
         errorResponse.setErr(abstractSparkYunException.getErr() == null ? null : abstractSparkYunException.getErr());
 
         if ("401".equals(abstractSparkYunException.getCode())) {
@@ -64,7 +66,8 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<BaseResponse<Object>> emptyResultDataAccessException(EmptyResultDataAccessException emptyResultDataAccessException) {
+    public ResponseEntity<BaseResponse<Object>> emptyResultDataAccessException(
+        EmptyResultDataAccessException emptyResultDataAccessException) {
 
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode("55500");
@@ -75,7 +78,8 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    public ResponseEntity<BaseResponse<Object>> objectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException objectOptimisticLockingFailureException) {
+    public ResponseEntity<BaseResponse<Object>> objectOptimisticLockingFailureException(
+        ObjectOptimisticLockingFailureException objectOptimisticLockingFailureException) {
 
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode("55500");
@@ -97,8 +101,10 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
     @NonNull
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+        @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         ObjectError objectError = ex.getBindingResult().getAllErrors().get(0);
-        return new ResponseEntity<>(new BaseResponse<>(String.valueOf(HttpStatus.BAD_REQUEST.value()), objectError.getDefaultMessage(), "请求参数不合法"), HttpStatus.OK);
+        return new ResponseEntity<>(new BaseResponse<>(String.valueOf(HttpStatus.BAD_REQUEST.value()),
+            objectError.getDefaultMessage(), "请求参数不合法"), HttpStatus.OK);
     }
 }

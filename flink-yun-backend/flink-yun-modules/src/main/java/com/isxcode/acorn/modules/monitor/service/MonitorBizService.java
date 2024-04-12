@@ -101,17 +101,20 @@ public class MonitorBizService {
         // 集群信息
         long activeClusterNum = clusterRepository.countByStatus(ClusterStatus.ACTIVE);
         long allClusterNum = clusterRepository.count();
-        SystemMonitorDto clusterMonitor = SystemMonitorDto.builder().total(allClusterNum).activeNum(activeClusterNum).build();
+        SystemMonitorDto clusterMonitor =
+            SystemMonitorDto.builder().total(allClusterNum).activeNum(activeClusterNum).build();
 
         // 数据源信息
         long activeDatasourceNum = datasourceRepository.countByStatus(DatasourceStatus.ACTIVE);
         long allDatasourceNum = datasourceRepository.count();
-        SystemMonitorDto datasourceMonitor = SystemMonitorDto.builder().total(allDatasourceNum).activeNum(activeDatasourceNum).build();
+        SystemMonitorDto datasourceMonitor =
+            SystemMonitorDto.builder().total(allDatasourceNum).activeNum(activeDatasourceNum).build();
 
         // 发布作业信息
         long publishedWorkflowNum = workflowRepository.countByStatus(WorkflowStatus.PUBLISHED);
         long allWorkflowNum = workflowRepository.count();
-        SystemMonitorDto workMonitor = SystemMonitorDto.builder().total(allWorkflowNum).activeNum(publishedWorkflowNum).build();
+        SystemMonitorDto workMonitor =
+            SystemMonitorDto.builder().total(allWorkflowNum).activeNum(publishedWorkflowNum).build();
 
         // 发布接口信息
         long allApiNum = apiRepository.count();
@@ -119,7 +122,8 @@ public class MonitorBizService {
         SystemMonitorDto apiMonitor = SystemMonitorDto.builder().total(allApiNum).activeNum(publishedApiNum).build();
 
         // 封装返回
-        return GetSystemMonitorRes.builder().apiMonitor(apiMonitor).workflowMonitor(workMonitor).clusterMonitor(clusterMonitor).datasourceMonitor(datasourceMonitor).build();
+        return GetSystemMonitorRes.builder().apiMonitor(apiMonitor).workflowMonitor(workMonitor)
+            .clusterMonitor(clusterMonitor).datasourceMonitor(datasourceMonitor).build();
     }
 
     public GetClusterMonitorRes getClusterMonitor(GetClusterMonitorReq getClusterMonitorReq) {
@@ -157,17 +161,22 @@ public class MonitorBizService {
         }
 
         // 查询记录数
-        List<MonitorLineAo> monitorLine = monitorRepository.queryMonitorLine(getClusterMonitorReq.getClusterId(), startDateTime, endDateTime);
+        List<MonitorLineAo> monitorLine =
+            monitorRepository.queryMonitorLine(getClusterMonitorReq.getClusterId(), startDateTime, endDateTime);
 
         // 按照类型返回部分数据并转换单位
         Map<String, MonitorLineAo> lineMap = new HashMap<>();
         monitorLine.forEach(e -> {
             String nowTime;
-            if (TimeType.THIRTY_MIN.equals(getClusterMonitorReq.getTimeType()) || TimeType.ONE_HOUR.equals(getClusterMonitorReq.getTimeType()) || TimeType.TWO_HOUR.equals(getClusterMonitorReq.getTimeType()) || TimeType.SIX_HOUR.equals(getClusterMonitorReq.getTimeType())) {
+            if (TimeType.THIRTY_MIN.equals(getClusterMonitorReq.getTimeType())
+                || TimeType.ONE_HOUR.equals(getClusterMonitorReq.getTimeType())
+                || TimeType.TWO_HOUR.equals(getClusterMonitorReq.getTimeType())
+                || TimeType.SIX_HOUR.equals(getClusterMonitorReq.getTimeType())) {
                 // 30分钟/1小时/2小时/6小时/
                 // 小时:分
                 nowTime = DateUtil.format(e.getDateTime(), "HH:mm");
-            } else if (TimeType.TWELVE_HOUR.equals(getClusterMonitorReq.getTimeType()) || TimeType.ONE_DAY.equals(getClusterMonitorReq.getTimeType())) {
+            } else if (TimeType.TWELVE_HOUR.equals(getClusterMonitorReq.getTimeType())
+                || TimeType.ONE_DAY.equals(getClusterMonitorReq.getTimeType())) {
                 // 12小时/1天
                 // 小时:00
                 nowTime = DateUtil.format(e.getDateTime(), "HH:00");
@@ -182,9 +191,20 @@ public class MonitorBizService {
         // 收集map中的数据
         List<MonitorLineDto> line = new ArrayList<>();
         lineMap.forEach((k, v) -> {
-            MonitorLineDto date = MonitorLineDto.builder().dateTime(k).activeNodeSize(v.getActiveNodeSize() == null ? null : v.getActiveNodeSize()).cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%").usedStorageSize(v.getUsedStorageSize() == null ? null : DataSizeUtil.format(v.getUsedStorageSize()))
-                .usedMemorySize(v.getUsedMemorySize() == null ? null : DataSizeUtil.format(v.getUsedMemorySize())).diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoReadSpeed() * 1024) + "/s").diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoWriteSpeed() / 1024 / 1024) + "/s")
-                .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoReadSpeed() * 1024) + "/s").networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null : DataSizeUtil.format(v.getNetworkIoWriteSpeed() / 1024 / 1024) + "/s").build();
+            MonitorLineDto date = MonitorLineDto.builder().dateTime(k)
+                .activeNodeSize(v.getActiveNodeSize() == null ? null : v.getActiveNodeSize())
+                .cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%")
+                .usedStorageSize(v.getUsedStorageSize() == null ? null : DataSizeUtil.format(v.getUsedStorageSize()))
+                .usedMemorySize(v.getUsedMemorySize() == null ? null : DataSizeUtil.format(v.getUsedMemorySize()))
+                .diskIoReadSpeed(
+                    v.getDiskIoReadSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoReadSpeed() * 1024) + "/s")
+                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null
+                    : DataSizeUtil.format(v.getDiskIoWriteSpeed() / 1024 / 1024) + "/s")
+                .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null
+                    : DataSizeUtil.format(v.getNetworkIoReadSpeed() * 1024) + "/s")
+                .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null
+                    : DataSizeUtil.format(v.getNetworkIoWriteSpeed() / 1024 / 1024) + "/s")
+                .build();
             line.add(date);
         });
 
@@ -200,21 +220,25 @@ public class MonitorBizService {
         // 查询当天的实例
         DateTime startDateTime = DateUtil.beginOfDay(getInstanceMonitorReq.getLocalDate());
         DateTime endDateTime = DateUtil.endOfDay(getInstanceMonitorReq.getLocalDate());
-        List<WorkflowInstanceEntity> workflowInstances = workflowInstanceRepository.findAllByExecStartDateTimeAfterAndExecEndDateTimeBefore(startDateTime, endDateTime);
+        List<WorkflowInstanceEntity> workflowInstances = workflowInstanceRepository
+            .findAllByExecStartDateTimeAfterAndExecEndDateTimeBefore(startDateTime, endDateTime);
 
         // 初始化数组
         List<WorkflowInstanceLineDto> lines = new ArrayList<>();
         long allNum = DateUtil.between(DateUtil.beginOfDay(new Date()), new Date(), DateUnit.HOUR);
         for (int i = 0; i < allNum; i++) {
-            lines.add(WorkflowInstanceLineDto.builder().localTime(String.format("%02d", i + 1) + ":00").successNum(0L).failNum(0L).runningNum(0L).build());
+            lines.add(WorkflowInstanceLineDto.builder().localTime(String.format("%02d", i + 1) + ":00").successNum(0L)
+                .failNum(0L).runningNum(0L).build());
         }
 
         // 逐条解析
         workflowInstances.forEach(e -> {
 
             // 开始小时和结束小时
-            int startHour = DateUtil.hour(e.getExecStartDateTime(), true) == 0 ? 0 : DateUtil.hour(e.getExecStartDateTime(), true) - 1;
-            int endHour = e.getExecStartDateTime() == null ? Integer.parseInt(String.valueOf(allNum)) - 1 : DateUtil.hour(e.getExecEndDateTime(), true) - 1;
+            int startHour = DateUtil.hour(e.getExecStartDateTime(), true) == 0 ? 0
+                : DateUtil.hour(e.getExecStartDateTime(), true) - 1;
+            int endHour = e.getExecStartDateTime() == null ? Integer.parseInt(String.valueOf(allNum)) - 1
+                : DateUtil.hour(e.getExecEndDateTime(), true) - 1;
 
             // 补充运行中的个数
             for (int i = startHour; i < endHour; i++) {
@@ -243,10 +267,13 @@ public class MonitorBizService {
         }
 
         JPA_TENANT_MODE.set(false);
-        Page<WorkflowMonitorAo> workflowMonitorAos = workflowInstanceRepository.searchWorkflowMonitor(TENANT_ID.get(), pageInstancesReq.getSearchKeyWord(), PageRequest.of(pageInstancesReq.getPage(), pageInstancesReq.getPageSize()));
+        Page<WorkflowMonitorAo> workflowMonitorAos =
+            workflowInstanceRepository.searchWorkflowMonitor(TENANT_ID.get(), pageInstancesReq.getSearchKeyWord(),
+                PageRequest.of(pageInstancesReq.getPage(), pageInstancesReq.getPageSize()));
 
         Page<PageInstancesRes> map = workflowMonitorAos.map(workflowMapper::workflowMonitorAoToPageInstancesRes);
-        map.getContent().forEach(e -> e.setStatus(InstanceStatus.SUCCESS.equals(e.getStatus()) ? InstanceStatus.SUCCESS : InstanceStatus.FAIL));
+        map.getContent().forEach(e -> e
+            .setStatus(InstanceStatus.SUCCESS.equals(e.getStatus()) ? InstanceStatus.SUCCESS : InstanceStatus.FAIL));
         return map;
     }
 
@@ -275,7 +302,9 @@ public class MonitorBizService {
                     nodeMonitor.setCreateDateTime(now);
                     return nodeMonitor;
                 } catch (Exception ex) {
-                    return NodeMonitorInfo.builder().clusterNodeId(e.getId()).clusterId(e.getClusterId()).status(MonitorStatus.FAIL).log(ex.getMessage()).tenantId(e.getTenantId()).createDateTime(now).build();
+                    return NodeMonitorInfo.builder().clusterNodeId(e.getId()).clusterId(e.getClusterId())
+                        .status(MonitorStatus.FAIL).log(ex.getMessage()).tenantId(e.getTenantId()).createDateTime(now)
+                        .build();
                 }
             }).whenComplete((result, throwable) -> {
                 // 持久化到数据库
@@ -288,10 +317,12 @@ public class MonitorBizService {
         });
     }
 
-    public NodeMonitorInfo getNodeMonitor(ScpFileEngineNodeDto scpFileEngineNodeDto) throws JSchException, IOException, InterruptedException, SftpException {
+    public NodeMonitorInfo getNodeMonitor(ScpFileEngineNodeDto scpFileEngineNodeDto)
+        throws JSchException, IOException, InterruptedException, SftpException {
 
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/node-monitor.sh", sparkYunProperties.getTmpDir() + File.separator + "node-monitor.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/node-monitor.sh",
+            sparkYunProperties.getTmpDir() + File.separator + "node-monitor.sh");
 
         // 运行安装脚本
         String getMonitorCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "node-monitor.sh";
