@@ -20,7 +20,6 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesDeploymentTarget;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
 import java.util.Collections;
 
 @Slf4j
@@ -64,8 +63,8 @@ public class KubernetesAcorn implements AcornRun {
 		KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
 		try (KubernetesClusterDescriptor clusterDescriptor = kubernetesClusterClientFactory
 				.createClusterDescriptor(flinkConfig)) {
-            ClusterClientProvider<String> clusterClientProvider = clusterDescriptor
-                .deployApplicationCluster(clusterSpecification, applicationConfiguration);
+			ClusterClientProvider<String> clusterClientProvider = clusterDescriptor
+					.deployApplicationCluster(clusterSpecification, applicationConfiguration);
 			System.out.println(clusterClientProvider.getClusterClient().getClusterId());
 			System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
 			return null;
