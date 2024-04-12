@@ -62,7 +62,7 @@ public class KubernetesAcorn implements AcornRun {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             System.out.println(clusterClientProvider.getClusterClient().getClusterId());
@@ -84,7 +84,7 @@ public class KubernetesAcorn implements AcornRun {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.retrieve(getJobInfoReq.getClusterId());
             System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
