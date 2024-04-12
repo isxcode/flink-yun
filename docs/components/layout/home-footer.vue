@@ -79,6 +79,9 @@
 </template>
 
 <style lang="scss" scoped>
+
+$primary-color: #7573d1;
+
 .footer {
   font-family: "阿里巴巴普惠体 2.0 45 Light", sans-serif;
   padding-top: 40px;
@@ -211,7 +214,7 @@
     line-height: 50px;
     text-align: center;
     border-top: 1px solid #e5e5e5;
-    background: #F9DED1;
+    background: #bbabf0;
 
     .content {
       width: 130px;
@@ -227,7 +230,7 @@
       .phone-text {
         margin-left: 10px;
         font-size: 1.25rem;
-        color: #e25a1b;
+        color: $primary-color;
       }
     }
   }

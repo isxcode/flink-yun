@@ -194,7 +194,7 @@ onMounted(() => {
         fullscreenWeb: true,
         pip: true,
         autoplay: false,
-        theme: '#e25a1b',
+        theme: '#7573d1',
         muted: true,
         autoSize: true
     });
