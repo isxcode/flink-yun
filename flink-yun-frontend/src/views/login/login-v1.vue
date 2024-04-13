@@ -10,7 +10,7 @@
   <div class="zqy-login" @keyup.enter="clickToLogin">
     <div class="zqy-login-container">
       <div class="normal-login-title">
-        至轻云
+        至流云
       </div>
       <el-form
         ref="loginForm"
