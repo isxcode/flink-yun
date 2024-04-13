@@ -16,6 +16,7 @@ fi
 
 # 判断flink-yun.log是否存在,不存在则新建
 if [ ! -f logs/flink-yun.log ]; then
+  mkdir logs
   touch logs/flink-yun.log
 fi
 
