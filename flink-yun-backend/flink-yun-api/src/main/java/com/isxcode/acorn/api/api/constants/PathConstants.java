@@ -23,5 +23,5 @@ public interface PathConstants {
     /**
      * 代理文件命令.
      */
-    String AGENT_PATH_NAME = "zhiqingyun-agent";
+    String AGENT_PATH_NAME = "zhiliuyun-agent";
 }

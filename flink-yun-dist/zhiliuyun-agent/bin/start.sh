@@ -19,6 +19,7 @@ fi
 
 # 判断zhiliuyun-agent.log是否存在,不存在则新建
 if [ ! -f logs/zhiliuyun-agent.log ]; then
+  mkdir logs
   touch logs/zhiliuyun-agent.log
 fi
 

@@ -104,12 +104,12 @@ public class PythonExecutor extends WorkExecutor {
         try {
             // 上传脚本
             scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\nprint('zhiqingyun_success')",
-                clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py");
+                clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py");
 
             // 执行命令获取pid
             String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath()
-                + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
-                + "/zhiqingyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
+                + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
+                + "/zhiliuyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
 
             // 保存pid
@@ -154,7 +154,7 @@ public class PythonExecutor extends WorkExecutor {
                 // 运行结束
 
                 // 获取日志
-                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/"
+                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
                     + workInstance.getId() + ".log";
                 String logCommand = "";
                 try {
@@ -171,9 +171,9 @@ public class PythonExecutor extends WorkExecutor {
 
                 // 删除脚本和日志
                 try {
-                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/"
+                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
                         + workInstance.getId() + ".log && " + "rm -f " + clusterNode.getAgentHomePath()
-                        + "/zhiqingyun-agent/works/" + workInstance.getId() + ".py";
+                        + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py";
                     SshUtils.executeCommand(scpFileEngineNodeDto, clearWorkRunFile, false);
                 } catch (JSchException | InterruptedException | IOException e) {
                     log.error("删除运行脚本失败");

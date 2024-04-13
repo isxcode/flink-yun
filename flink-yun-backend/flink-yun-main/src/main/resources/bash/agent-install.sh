@@ -71,7 +71,7 @@ if [ -e "${home_path}/zhiliuyun-agent/zhiliuyun-agent.pid" ]; then
 fi
 
 # 如果是集群模式,自动安装flink cluster
-if [[ "$OSTYPE" == "flinkCluster" ]]; then
+if [[ "$OSTYPE" == "flinkcluster" ]]; then
   bash ${home_path}/zhiliuyun-agent/flink-min/bin/start-cluster.sh
 fi
 
