@@ -17,7 +17,7 @@
         <div class="column">
           <div class="title">产品</div>
           <div class="link" @click="clickZhiqingyun">至轻云</div>
-          <div class="link" @click="clickOther">至流云</div>
+          <div class="link" @click="clickZhiliuyun">至流云</div>
           <div class="link" @click="clickOther">至慧云</div>
           <div class="link" @click="clickOther">更多</div>
         </div>
@@ -341,7 +341,7 @@ $primary-color: #7573d1;
 <script setup lang="ts">
 import {ElMessage} from 'element-plus'
 
-function clickZhiqingyun() {
+function clickZhiliuyun() {
   const router = useRouter();
   router.push("/");
 }
@@ -355,6 +355,10 @@ function clickOther() {
 
 function clickGitee() {
   window.open("https://gitee.com/isxcode/spark-yun");
+}
+
+function clickZhiqingyun() {
+  window.open("https://zhiqingyun.isxcode.com");
 }
 
 function clickGithub() {
