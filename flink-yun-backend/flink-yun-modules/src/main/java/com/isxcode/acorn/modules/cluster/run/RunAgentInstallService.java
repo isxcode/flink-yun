@@ -65,8 +65,8 @@ public class RunAgentInstallService {
         String clusterType) throws JSchException, IOException, InterruptedException, SftpException {
 
         // 先检查节点是否可以安装
-        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("check-%s.sh", clusterType),
-            sparkYunProperties.getTmpDir() + File.separator + String.format("check-%s.sh", clusterType));
+        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("check-%s.sh", clusterType.toLowerCase()),
+            sparkYunProperties.getTmpDir() + File.separator + String.format("check-%s.sh", clusterType.toLowerCase()));
 
         // 运行安装脚本
         String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator
@@ -106,7 +106,7 @@ public class RunAgentInstallService {
 
         // 运行安装脚本
         String installCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-install.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort() + " --agent-type=" + clusterType;
+            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort() + " --agent-type=" + clusterType.toLowerCase();
         log.debug("执行远程安装命令:{}", installCommand);
 
         executeLog = executeCommand(scpFileEngineNodeDto, installCommand, false);

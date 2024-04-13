@@ -15,8 +15,8 @@ for arg in "$@"; do
 done
 
 # 关闭进程
-if [ -e "${home_path}/zhiqingyun-agent.pid" ]; then
-  pid=$(cat "${home_path}/zhiqingyun-agent.pid")
+if [ -e "${home_path}/zhiliuyun-agent.pid" ]; then
+  pid=$(cat "${home_path}/zhiliuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
     kill -15 ${pid}
   fi

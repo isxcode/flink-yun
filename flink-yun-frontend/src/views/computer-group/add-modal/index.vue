@@ -88,8 +88,8 @@ const typeList = reactive([
     value: 'yarn',
   },
   {
-    label: 'StandAlone',
-    value: 'standalone',
+    label: 'FlinkCluster',
+    value: 'flinkCluster',
   },
 ]);
 
