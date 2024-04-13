@@ -31,12 +31,12 @@ public class IsxAppProperties {
     /**
      * aes密钥.
      */
-    private String aesSlat = "spark-yun";
+    private String aesSlat = "flink-yun";
 
     /**
      * jwt密钥.
      */
-    private String jwtKey = "spark-yun";
+    private String jwtKey = "flink-yun";
 
     /**
      * jwt超时.(分钟)
