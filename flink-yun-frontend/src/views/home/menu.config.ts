@@ -66,7 +66,7 @@ export const menuListData: Array<Menu> = [
   },
   {
     code: 'spark-container',
-    name: 'Spark容器',
+    name: 'cdc仓库',
     icon: 'Box',
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     childPage: []
@@ -77,13 +77,6 @@ export const menuListData: Array<Menu> = [
     icon: 'DocumentRemove',
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     childPage: []
-  },
-  {
-    code: 'custom-form',
-    name: '分享表单',
-    icon: 'Share',
-    authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
-    childPage: ['form-list', 'form-query', 'form-setting']
   },
   {
     code: 'custom-api',

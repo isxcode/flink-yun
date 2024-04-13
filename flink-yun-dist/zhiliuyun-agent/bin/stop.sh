@@ -17,5 +17,5 @@ if [ -e "zhiliuyun-agent.pid" ]; then
   fi
 fi
 
-echo "【至流云代理】: CLOSED"
+echo "【至流云代理】: HAS CLOSED"
 exit 0
