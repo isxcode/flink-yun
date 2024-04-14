@@ -1,5 +1,6 @@
 package com.isxcode.acorn.api.work.pojos.req;
 
+import com.isxcode.acorn.api.work.constants.WorkType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -18,7 +19,8 @@ public class AddWorkReq {
             + "DATA_SYNC_JDBC： 数据同步作业" + "BASH： bash脚本作业" + "PYTHON： python脚本作业" + "API： 接口调用作业" + "PRQL： PRQL查询作业")
     @NotEmpty(message = "作业类型不能为空")
     @Pattern(
-        regexp = "^(SPARK_SQL|EXE_JDBC|QUERY_JDBC|DATA_SYNC_JDBC|BASH|PYTHON|SPARK_JAR|SPARK_CONTAINER_SQL|API|PRQL)$",
+        regexp = "^(" + WorkType.EXECUTE_FLINK_SQL
+            + "|EXE_JDBC|QUERY_JDBC|DATA_SYNC_JDBC|BASH|PYTHON|SPARK_JAR|SPARK_CONTAINER_SQL|API|PRQL)$",
         message = "作业类型不支持")
     private String workType;
 

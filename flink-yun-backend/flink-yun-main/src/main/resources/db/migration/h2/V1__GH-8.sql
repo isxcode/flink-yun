@@ -1163,3 +1163,21 @@ create table SY_MONITOR
   deleted                 int default 0 not null comment '逻辑删除',
   tenant_id               varchar(200)  not null comment '租户id'
 );
+
+-- 兼容flink
+
+alter table SY_CLUSTER_NODE
+    alter column SPARK_HOME_PATH rename to FLINK_HOME_PATH;
+
+comment on column SY_CLUSTER_NODE.FLINK_HOME_PATH is 'flink的安装目录';
+
+alter table SY_WORK_INSTANCE
+    alter column YARN_LOG rename to TASK_MANAGER_LOG;
+
+comment on column SY_WORK_INSTANCE.TASK_MANAGER_LOG is 'taskManagerLog记录';
+
+alter table SY_WORK_INSTANCE
+    add JOB_MANAGER_LOG CHARACTER LARGE OBJECT;
+
+comment on column SY_WORK_INSTANCE.JOB_MANAGER_LOG is 'jobManagerLog日志';
+

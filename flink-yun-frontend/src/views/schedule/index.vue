@@ -116,7 +116,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item
-                      v-if="['SPARK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON'].includes(scopeSlot.row.workType)"
+                      v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON'].includes(scopeSlot.row.workType)"
                       @click="showDetailModal(scopeSlot.row, 'yarnLog')"
                     >
                       运行日志
@@ -303,8 +303,8 @@ function getTypeData(e: string) {
       value: 'QUERY_JDBC'
     },
     {
-      label: 'SparkSql查询作业',
-      value: 'SPARK_SQL'
+      label: 'FlinkSql执行作业',
+      value: 'FLINK_SQL'
     },
     {
       label: 'SparkSql容器作业',

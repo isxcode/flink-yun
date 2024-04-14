@@ -607,7 +607,7 @@ public class WorkflowBizService {
             workInstance.setStatus(InstanceStatus.ABORT);
             workInstance.setSparkStarRes(null);
             workInstance.setSubmitLog(null);
-            workInstance.setYarnLog(null);
+            workInstance.setTaskManagerLog(null);
         });
         workInstanceRepository.saveAll(pendingWorkInstances);
 
@@ -715,7 +715,7 @@ public class WorkflowBizService {
             e.setStatus(InstanceStatus.PENDING);
             e.setSparkStarRes(null);
             e.setSubmitLog(null);
-            e.setYarnLog(null);
+            e.setTaskManagerLog(null);
         });
         workInstanceRepository.saveAllAndFlush(afterWorkInstances);
 

@@ -1,5 +1,7 @@
 package com.isxcode.acorn.plugin.sql.execute;
 
+import com.alibaba.fastjson2.JSON;
+import com.isxcode.acorn.api.agent.pojos.req.AcornPluginReq;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -10,13 +12,13 @@ public class Job {
 
     public static void main(String[] args) {
 
-        String flinkSql = new String(Base64.getDecoder().decode(args[0]));
+        AcornPluginReq acornPluginReq = JSON.parseObject(Base64.getDecoder().decode(args[0]), AcornPluginReq.class);
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(env, settings);
 
-        for (String s : flinkSql.split(";")) {
+        for (String s : acornPluginReq.getFlinkSql().split(";")) {
             streamTableEnvironment.executeSql(s);
         }
     }

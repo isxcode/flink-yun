@@ -47,7 +47,7 @@ public class WorkConfigService {
     public void initWorkScript(WorkConfigEntity workConfig, String workType) {
 
         switch (workType) {
-            case WorkType.QUERY_SPARK_SQL:
+            case WorkType.EXECUTE_FLINK_SQL:
             case WorkType.QUERY_JDBC_SQL:
             case WorkType.EXECUTE_JDBC_SQL:
             case WorkType.SPARK_CONTAINER_SQL:

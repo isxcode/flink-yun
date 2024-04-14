@@ -8,7 +8,7 @@ public interface WorkType {
     /**
      * sparkSql执行作业.
      */
-    String QUERY_SPARK_SQL = "SPARK_SQL";
+    String EXECUTE_FLINK_SQL = "FLINK_SQL";
 
     /**
      * jdbcSql执行作业

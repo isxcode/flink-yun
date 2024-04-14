@@ -1,10 +1,13 @@
 package com.isxcode.acorn.agent.run;
 
+import com.alibaba.fastjson2.JSON;
 import com.isxcode.acorn.api.agent.pojos.dto.FlinkVerticesDto;
 import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.runtime.rest.handler.RestHandlerException;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -33,14 +38,23 @@ public class FlinkClusterAcorn implements AcornRun {
         // 提交作业
         String submitUrl = "http://" + restUrl + "/jars/" + fileName + "/run";
         FlinkRestRunReq flinkRestRunReq = FlinkRestRunReq.builder().entryClass(submitJobReq.getEntryClass())
-            .programArgs(submitJobReq.getProgramArgs()).build();
-        ResponseEntity<FlinkRestRunRes> flinkRestRunResResult =
-            new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
-        if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
-            || flinkRestRunResResult.getBody().getJobid() == null) {
-            throw new IsxAppException("提交作业失败");
+            .programArgs(
+                Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes()))
+            .build();
+        try {
+            ResponseEntity<FlinkRestRunRes> flinkRestRunResResult = new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
+            if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
+                || flinkRestRunResResult.getBody().getJobid() == null) {
+                throw new IsxAppException("提交作业失败");
+            }
+            return SubmitJobRes.builder().jobId(flinkRestRunResResult.getBody().getJobid()).build();
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.BAD_REQUEST.equals(e.getStatusCode())) {
+                String[] split = Objects.requireNonNull(e.getMessage()).split("\\\\n");
+                throw new IsxAppException(Strings.join(Arrays.asList(split), '\n'));
+            }
+            throw new IsxAppException(e.getMessage());
         }
-        return SubmitJobRes.builder().jobId(flinkRestRunResResult.getBody().getJobid()).build();
     }
 
     @Override
@@ -121,7 +135,7 @@ public class FlinkClusterAcorn implements AcornRun {
         String restUrl = getRestUrl(stopJobReq.getFlinkHome());
 
         // 判断作业是否成功
-        String stopJobUrl = "http://" + restUrl + "/jobs/" + stopJobReq.getJobId() + "/stop";
+        String stopJobUrl = "http://" + restUrl + "/jobs/" + stopJobReq.getJobId() + "/yarn-cancel";
         ResponseEntity<FlinkRestStopRes> result;
         try {
             result = new RestTemplate().getForEntity(stopJobUrl, FlinkRestStopRes.class);

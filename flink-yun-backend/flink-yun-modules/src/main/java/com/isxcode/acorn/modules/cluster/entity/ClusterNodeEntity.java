@@ -76,7 +76,7 @@ public class ClusterNodeEntity {
 
     private String hadoopHomePath;
 
-    private String sparkHomePath;
+    private String flinkHomePath;
 
     private String agentLog;
 
