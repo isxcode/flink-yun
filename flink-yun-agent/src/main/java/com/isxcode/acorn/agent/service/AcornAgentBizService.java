@@ -49,8 +49,7 @@ public class AcornAgentBizService {
 
         switch (getJobInfoReq.getAgentType()) {
             case AgentType.YARN:
-
-                break;
+                return yarnAcorn.getJobInfo(getJobInfoReq);
             case AgentType.K8S:
                 return kubernetesAcorn.getJobInfo(getJobInfoReq);
             case AgentType.FlinkCluster:
@@ -58,15 +57,13 @@ public class AcornAgentBizService {
             default:
                 throw new IsxAppException("agent类型不支持");
         }
-
-        return null;
     }
 
     public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
 
         switch (getJobLogReq.getAgentType()) {
             case AgentType.YARN:
-                break;
+                return yarnAcorn.getJobLog(getJobLogReq);
             case AgentType.K8S:
                 return kubernetesAcorn.getJobLog(getJobLogReq);
             case AgentType.FlinkCluster:
@@ -74,16 +71,13 @@ public class AcornAgentBizService {
             default:
                 throw new IsxAppException("agent类型不支持");
         }
-
-        return null;
     }
 
     public StopJobRes stopJob(StopJobReq stopJobReq) {
 
         switch (stopJobReq.getAgentType()) {
             case AgentType.YARN:
-
-                break;
+                return yarnAcorn.stopJobReq(stopJobReq);
             case AgentType.K8S:
                 return kubernetesAcorn.stopJobReq(stopJobReq);
             case AgentType.FlinkCluster:
@@ -92,6 +86,5 @@ public class AcornAgentBizService {
                 throw new IsxAppException("agent类型不支持");
         }
 
-        return null;
     }
 }
