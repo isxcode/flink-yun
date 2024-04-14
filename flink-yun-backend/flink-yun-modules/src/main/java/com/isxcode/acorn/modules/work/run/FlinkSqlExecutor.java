@@ -147,8 +147,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
         // 开始构造flinkSubmit
         SubmitJobReq submitJobReq = SubmitJobReq.builder().entryClass("com.isxcode.acorn.plugin.sql.execute.Job")
-            .agentHomePath(engineNode.getAgentHomePath())
-            .appResource("flink-sql-execute-plugin.jar")
+            .agentHomePath(engineNode.getAgentHomePath()).appResource("flink-sql-execute-plugin.jar")
             .appName("zhiliuyun-job")
             .acornPluginReq(AcornPluginReq.builder().flinkSql(workRunContext.getScript()).build())
             .flinkHome(engineNode.getFlinkHomePath()).agentType(calculateEngineEntityOptional.get().getClusterType())

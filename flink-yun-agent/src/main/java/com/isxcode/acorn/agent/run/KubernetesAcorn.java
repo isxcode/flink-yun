@@ -19,18 +19,10 @@ import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesDeploymentTarget;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -42,7 +34,8 @@ public class KubernetesAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
+            Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
@@ -71,11 +64,11 @@ public class KubernetesAcorn implements AcornRun {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
-            return SubmitJobRes.builder()
-                .jobId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
+            return SubmitJobRes.builder().jobId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId()))
+                .build();
         } catch (Exception e) {
             throw new IsxAppException("提交任务失败" + e.getMessage());
         }
@@ -106,7 +99,7 @@ public class KubernetesAcorn implements AcornRun {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.killCluster(stopJobReq.getJobId());
             return StopJobRes.builder().build();
         } catch (Exception e) {
