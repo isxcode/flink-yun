@@ -16,6 +16,4 @@ public class GetJobInfoReq {
     private String flinkHome;
 
     private String agentType;
-
-    private String clusterId;
 }
