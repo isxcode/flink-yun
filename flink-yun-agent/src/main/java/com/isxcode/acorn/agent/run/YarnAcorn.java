@@ -45,7 +45,8 @@ public class YarnAcorn implements AcornRun {
         flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
             Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
-        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAgentHomePath() + File.separator + "plugins" + File.separator + submitJobReq.getAppResource()));
+        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAgentHomePath() + File.separator + "plugins"
+            + File.separator + submitJobReq.getAppResource()));
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
