@@ -9,7 +9,6 @@ import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
-import com.isxcode.acorn.api.agent.pojos.res.YagGetLogRes;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
@@ -81,11 +80,11 @@ public class FlinkSqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public FlinkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
-                            HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
-                            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-                            FileRepository fileRepository, DatasourceService datasourceService) {
+        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+        WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
+        HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
+        FileRepository fileRepository, DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -184,7 +183,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
         while (true) {
 
             // 获取作业状态并保存
-            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
+            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().flinkHome(engineNode.getFlinkHomePath())
+                .jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
             GetJobInfoRes getJobInfoRes;
             try {
                 getJobInfoRes = HttpUtils.doPost(
@@ -221,7 +221,9 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 }
 
                 // 获取日志并保存
-                GetJobLogReq getJobLogReq = GetJobLogReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
+                GetJobLogReq getJobLogReq =
+                    GetJobLogReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId())
+                        .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
                 GetJobLogRes getJobLogRes;
                 try {
                     getJobLogRes = HttpUtils.doPost(
