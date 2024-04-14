@@ -1,5 +1,6 @@
 package com.isxcode.acorn.agent.run;
 
+import com.alibaba.fastjson2.JSON;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
@@ -18,9 +19,18 @@ import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesDeploymentTarget;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -32,7 +42,7 @@ public class KubernetesAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(""));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
@@ -45,7 +55,7 @@ public class KubernetesAcorn implements AcornRun {
         flinkConfig.set(KubernetesConfigOptions.CONTAINER_IMAGE, "flink:1.18.1-scala_2.12");
         flinkConfig.set(KubernetesConfigOptions.TASK_MANAGER_CPU, 2.0);
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE,
-            "/Users/ispong/isxcode/flink-yun/flink-yun-dist/pod/pod-template.yaml");
+            "/Users/ispong/isxcode/flink-yun/resources/pod/pod-template.yaml");
         flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/log");
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
@@ -61,12 +71,11 @@ public class KubernetesAcorn implements AcornRun {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
-            System.out.println(clusterClientProvider.getClusterClient().getClusterId());
-            System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
-            return null;
+            return SubmitJobRes.builder()
+                .jobId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
         } catch (Exception e) {
             throw new IsxAppException("提交任务失败" + e.getMessage());
         }
@@ -76,6 +85,20 @@ public class KubernetesAcorn implements AcornRun {
     @Override
     public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
 
+        // 直接去日志文件中获取
+        return GetJobInfoRes.builder().build();
+    }
+
+    @Override
+    public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
+
+        // 直接去日志文件中获取
+        return GetJobLogRes.builder().build();
+    }
+
+    @Override
+    public StopJobRes stopJobReq(StopJobReq stopJobReq) {
+
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(KubernetesConfigOptions.NAMESPACE, "zhiliuyun-space");
@@ -83,29 +106,11 @@ public class KubernetesAcorn implements AcornRun {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            ClusterClientProvider<String> clusterClientProvider = clusterDescriptor.retrieve(getJobInfoReq.getJobId());
-            System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
-            return null;
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            clusterDescriptor.killCluster(stopJobReq.getJobId());
+            return StopJobRes.builder().build();
         } catch (Exception e) {
             throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
-
-    @Override
-    public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
-
-        return null;
-    }
-
-    @Override
-    public StopJobRes stopJobReq(StopJobReq stopJobReq) {
-
-        return null;
-    }
-
-    public String genPodTemplate() {
-        return "";
-    }
-
 }
