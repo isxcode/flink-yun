@@ -1,4 +1,4 @@
-package com.isxcode.acorn.api.agent.pojos.res;
+package com.isxcode.acorn.api.agent.pojos.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class StopJobRes {
+@NoArgsConstructor
+public class AcornPluginReq {
 
-    private String requestId;
+    private String flinkSql;
 }

@@ -32,8 +32,7 @@ public class KubernetesAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS,
-            Collections.singletonList(submitJobReq.getProgramArgs()));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(""));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());

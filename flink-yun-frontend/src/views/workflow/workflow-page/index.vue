@@ -244,8 +244,8 @@ const typeList = reactive([
     value: 'PRQL'
   },
   {
-    label: 'SparkSql查询作业',
-    value: 'SPARK_SQL'
+    label: 'FlinkSql执行作业',
+    value: 'FLINK_SQL'
   },
   {
     label: 'SparkSql容器作业',

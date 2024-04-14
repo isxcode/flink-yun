@@ -20,8 +20,8 @@ public class WorkExecutorFactory {
     public WorkExecutor create(String workType) {
 
         switch (workType) {
-            case WorkType.QUERY_SPARK_SQL:
-                return applicationContext.getBean(SparkSqlExecutor.class);
+            case WorkType.EXECUTE_FLINK_SQL:
+                return applicationContext.getBean(FlinkSqlExecutor.class);
             case WorkType.QUERY_JDBC_SQL:
                 return applicationContext.getBean(QuerySqlExecutor.class);
             case WorkType.EXECUTE_JDBC_SQL:

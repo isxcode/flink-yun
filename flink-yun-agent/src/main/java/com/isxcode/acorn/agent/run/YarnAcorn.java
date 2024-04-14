@@ -38,7 +38,7 @@ public class YarnAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(submitJobReq.getProgramArgs()));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(""));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, singletonList(
             "/Users/ispong/isxcode/flink-yun/flink-yun-plugins/flink-sql-execute-plugin/build/libs/flink-sql-execute-plugin.jar"));
@@ -88,83 +88,4 @@ public class YarnAcorn implements AcornRun {
     public StopJobRes stopJobReq(StopJobReq stopJobReq) {
         return null;
     }
-
-    // public
-    // static
-    // void
-    // main(String[]
-    // args) {
-    // String
-    // flinkSql
-    // =
-    // "CREATE
-    // TABLE
-    // from_table(\n"
-    // +
-    // "
-    // username
-    // STRING,\n"
-    // +
-    // " age
-    // INT\n"
-    // +
-    // ") WITH
-    // (\n" +
-    // "
-    // 'connector'='jdbc',\n"
-    // +
-    // "
-    // 'url'='jdbc:mysql://localhost:30306/ispong_db',\n"
-    // +
-    // "
-    // 'table-name'='users',\n"
-    // +
-    // "
-    // 'driver'='com.mysql.cj.jdbc.Driver',\n"
-    // +
-    // "
-    // 'username'='root',\n"
-    // +
-    // "
-    // 'password'='ispong123');"
-    // +
-    // "CREATE
-    // TABLE
-    // to_table(\n"
-    // +
-    // "
-    // username
-    // STRING,\n"
-    // +
-    // " age
-    // INT\n"
-    // +
-    // ") WITH
-    // (\n" +
-    // "
-    // 'connector'='jdbc',\n"
-    // +
-    // "
-    // 'url'='jdbc:mysql://localhost:30306/ispong_db',\n"
-    // +
-    // "
-    // 'table-name'='users2',\n"
-    // +
-    // "
-    // 'driver'='com.mysql.cj.jdbc.Driver',\n"
-    // +
-    // "
-    // 'username'='root',\n"
-    // +
-    // "
-    // 'password'='ispong123');"
-    // +
-    // "insert
-    // into
-    // to_table
-    // select
-    // * from
-    // from_table";
-    // System.out.println(Base64.getEncoder().encodeToString(flinkSql.getBytes()));
-    // }
 }

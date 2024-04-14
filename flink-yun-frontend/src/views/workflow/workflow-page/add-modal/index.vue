@@ -36,7 +36,7 @@
         </el-select>
       </el-form-item>
       <template v-if="renderSense === 'new'">
-        <el-form-item label="计算集群" prop="clusterId" v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'SPARK_SQL', 'SPARK_JAR'].includes(formData.workType)">
+        <el-form-item label="计算集群" prop="clusterId" v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'FLINK_SQL', 'SPARK_JAR'].includes(formData.workType)">
           <el-select
             v-model="formData.clusterId"
             placeholder="请选择"
@@ -61,10 +61,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否连接hive" v-if="['SPARK_SQL'].includes(formData.workType)">
+        <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(formData.workType)">
           <el-switch v-model="formData.enableHive" @change="enableHiveChange" />
         </el-form-item>
-        <el-form-item label="Hive数据源" :prop="formData.enableHive ? 'datasourceId' : ''" v-if="formData.enableHive && ['SPARK_SQL'].includes(formData.workType)">
+        <el-form-item label="Hive数据源" :prop="formData.enableHive ? 'datasourceId' : ''" v-if="formData.enableHive && ['FLINK_SQL'].includes(formData.workType)">
           <el-select
             v-model="formData.datasourceId"
             placeholder="请选择"
@@ -182,8 +182,8 @@ const typeList = reactive([
     value: 'PRQL'
   },
   {
-    label: 'SparkSql查询作业',
-    value: 'SPARK_SQL'
+    label: 'FlinkSql执行作业',
+    value: 'FLINK_SQL'
   },
   {
     label: 'SparkSql容器作业',

@@ -35,7 +35,7 @@ public class AddClusterNodeReq {
     @Schema(title = "代理安装的路径", example = "/Users/ispong")
     private String agentHomePath;
 
-    @Schema(title = "代理服务端口号", example = "30177")
+    @Schema(title = "代理服务端口号", example = "30178")
     private String agentPort;
 
     @Schema(title = "hadoop的home目录", example = "/opt/homebrew/Cellar/hadoop/3.3.4/libexec")

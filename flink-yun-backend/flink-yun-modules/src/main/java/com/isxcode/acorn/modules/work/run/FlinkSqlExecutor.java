@@ -1,13 +1,16 @@
 package com.isxcode.acorn.modules.work.run;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.acorn.api.agent.pojos.req.PluginReq;
-import com.isxcode.acorn.api.agent.pojos.req.SparkSubmit;
-import com.isxcode.acorn.api.agent.pojos.req.YagExecuteWorkReq;
+import com.isxcode.acorn.api.agent.constants.AgentApi;
+import com.isxcode.acorn.api.agent.pojos.req.AcornPluginReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
+import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
+import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
+import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
 import com.isxcode.acorn.api.agent.pojos.res.YagGetLogRes;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.api.work.pojos.res.RunWorkRes;
@@ -18,17 +21,13 @@ import com.isxcode.acorn.common.locker.Locker;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.common.utils.http.HttpUrlUtils;
 import com.isxcode.acorn.common.utils.http.HttpUtils;
-import com.isxcode.acorn.common.utils.path.PathUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
-import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import com.isxcode.acorn.modules.datasource.service.DatasourceService;
-import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.file.repository.FileRepository;
-import com.isxcode.acorn.modules.func.entity.FuncEntity;
 import com.isxcode.acorn.modules.func.mapper.FuncMapper;
 import com.isxcode.acorn.modules.func.repository.FuncRepository;
 import com.isxcode.acorn.modules.work.entity.WorkConfigEntity;
@@ -38,8 +37,6 @@ import com.isxcode.acorn.modules.work.repository.WorkConfigRepository;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
 import com.isxcode.acorn.modules.work.repository.WorkRepository;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
@@ -47,17 +44,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
-import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpJar;
-
 @Service
 @Slf4j
-public class SparkSqlExecutor extends WorkExecutor {
+public class FlinkSqlExecutor extends WorkExecutor {
 
     private final WorkInstanceRepository workInstanceRepository;
 
@@ -87,12 +80,12 @@ public class SparkSqlExecutor extends WorkExecutor {
 
     private final DatasourceService datasourceService;
 
-    public SparkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-        WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
-        HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
-        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-        FileRepository fileRepository, DatasourceService datasourceService) {
+    public FlinkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
+                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
+                            HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
+                            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
+                            FileRepository fileRepository, DatasourceService datasourceService) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -152,81 +145,17 @@ public class SparkSqlExecutor extends WorkExecutor {
 
         // 开始构建作业
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始构建作业  \n");
-        YagExecuteWorkReq executeReq = new YagExecuteWorkReq();
 
-        // 开始构造SparkSubmit
-        SparkSubmit sparkSubmit = SparkSubmit.builder().verbose(true)
-            .mainClass("com.isxcode.acorn.plugin.query.sql.Execute").appResource("spark-query-sql-plugin.jar")
-            .conf(genSparkSubmitConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
-
-        // 开始构造PluginReq
-        PluginReq pluginReq = PluginReq.builder().sql(workRunContext.getScript()).limit(200)
-            .sparkConfig(genSparkConfig(workRunContext.getClusterConfig().getSparkConfig())).build();
-
-        // 导入自定义函数
-        ScpFileEngineNodeDto scpFileEngineNodeDto =
-            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
-        scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
-        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-            + File.separator + TENANT_ID.get();
-        if (workRunContext.getFuncConfig() != null) {
-            List<FuncEntity> allFunc = funcRepository.findAllById(workRunContext.getFuncConfig());
-            allFunc.forEach(e -> {
-                try {
-                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getFileId(),
-                        engineNode.getAgentHomePath() + File.separator + "zhiliuyun-agent" + File.separator + "file"
-                            + File.separator + e.getFileId() + ".jar");
-                } catch (JSchException | SftpException | InterruptedException | IOException ex) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
-                }
-            });
-            pluginReq.setFuncInfoList(funcMapper.funcEntityListToFuncInfoList(allFunc));
-            executeReq.setFuncConfig(funcMapper.funcEntityListToFuncInfoList(allFunc));
-        }
-
-        // 上传依赖到制定节点路径
-        if (workRunContext.getLibConfig() != null) {
-            List<FileEntity> libFile = fileRepository.findAllById(workRunContext.getLibConfig());
-            libFile.forEach(e -> {
-                try {
-                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
-                        engineNode.getAgentHomePath() + File.separator + "zhiliuyun-agent" + File.separator + "file"
-                            + File.separator + e.getId() + ".jar");
-                } catch (JSchException | SftpException | InterruptedException | IOException ex) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
-                }
-            });
-            executeReq.setLibConfig(workRunContext.getLibConfig());
-        }
-
-        // 解析db
-        DatasourceEntity datasource = datasourceService.getDatasource(workRunContext.getDatasourceId());
-        try {
-            String database = datasourceService.parseDbName(datasource.getJdbcUrl());
-            if (!Strings.isEmpty(database)) {
-                pluginReq.setDatabase(database);
-            }
-        } catch (IsxAppException e) {
-            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + e.getMsg() + "\n");
-        }
-
-        // 如果数据库id不为空,则替换hive的metastore
-        // url
-        if (!Strings.isEmpty(workRunContext.getDatasourceId())) {
-            pluginReq.getSparkConfig().put("hive.metastore.uris", datasource.getMetastoreUris());
-        }
-
-        // 开始构造executeReq
-        executeReq.setSparkSubmit(sparkSubmit);
-        executeReq.setPluginReq(pluginReq);
-        executeReq.setAgentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME);
-        executeReq.setSparkHomePath(engineNode.getSparkHomePath());
-        executeReq.setAgentType(calculateEngineEntityOptional.get().getClusterType());
+        // 开始构造flinkSubmit
+        SubmitJobReq submitJobReq = SubmitJobReq.builder().entryClass("com.isxcode.acorn.plugin.sql.execute.Job")
+            .appResource(
+                "/Users/ispong/isxcode/flink-yun/flink-yun-plugins/flink-sql-execute-plugin/build/libs/flink-sql-execute-plugin.jar")
+            .acornPluginReq(AcornPluginReq.builder().flinkSql(workRunContext.getScript()).build())
+            .flinkHome(engineNode.getFlinkHomePath()).agentType(calculateEngineEntityOptional.get().getClusterType())
+            .build();
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
-        workRunContext.getClusterConfig().getSparkConfig().forEach((k, v) -> logBuilder.append(LocalDateTime.now())
-            .append(WorkLog.SUCCESS_INFO).append(k).append(":").append(v).append(" \n"));
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业  \n");
         workInstance = updateInstance(workInstance, logBuilder);
 
@@ -235,25 +164,14 @@ public class SparkSqlExecutor extends WorkExecutor {
 
         // 加锁，必须等待作业提交成功后才能中止
         Integer lock = locker.lock("REQUEST_" + workInstance.getId());
-        RunWorkRes submitWorkRes;
+        SubmitJobRes submitJobRes;
         try {
-            baseResponse = HttpUtils.doPost(
-                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/executeWork"),
-                executeReq, BaseResponse.class);
-            log.debug("获取远程提交作业日志:{}", baseResponse.toString());
-            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-                throw new WorkRunException(
-                    LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + baseResponse.getMsg() + "\n");
-            }
-            // 解析返回对象,获取appId
-            if (baseResponse.getData() == null) {
-                throw new WorkRunException(
-                    LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + baseResponse.getMsg() + "\n");
-            }
-            submitWorkRes = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), RunWorkRes.class);
+            submitJobRes = HttpUtils.doPost(
+                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob),
+                submitJobReq, SubmitJobRes.class);
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ")
-                .append(submitWorkRes.getAppId()).append("\n");
-            workInstance.setSparkStarRes(JSON.toJSONString(submitWorkRes));
+                .append(submitJobRes.getJobId()).append("\n");
+            workInstance.setSparkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (IOException | HttpServerErrorException | ResourceAccessException e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + e.getMessage() + "\n");
@@ -265,30 +183,27 @@ public class SparkSqlExecutor extends WorkExecutor {
         while (true) {
 
             // 获取作业状态并保存
-            Map<String, String> paramsMap = new HashMap<>();
-            paramsMap.put("appId", submitWorkRes.getAppId());
-            paramsMap.put("agentType", calculateEngineEntityOptional.get().getClusterType());
-            paramsMap.put("sparkHomePath", engineNode.getSparkHomePath());
-            baseResponse = HttpUtils.doGet(
-                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/getStatus"), paramsMap,
-                null, BaseResponse.class);
-            log.debug("获取远程获取状态日志:{}", baseResponse.toString());
-
-            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
+            GetJobInfoRes getJobInfoRes;
+            try {
+                getJobInfoRes = HttpUtils.doPost(
+                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.getJobInfo),
+                    jobInfoReq, GetJobInfoRes.class);
+                log.debug("获取远程获取状态日志:{}", getJobInfoRes);
+            } catch (Exception e) {
                 throw new WorkRunException(
-                    LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业状态异常 : " + baseResponse.getMsg() + "\n");
+                    LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业状态异常 : " + e.getMessage() + "\n");
             }
 
             // 解析返回状态，并保存
-            RunWorkRes workStatusRes = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), RunWorkRes.class);
-            workInstance.setSparkStarRes(JSON.toJSONString(workStatusRes));
+            workInstance.setSparkStarRes(JSON.toJSONString(getJobInfoRes));
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:")
-                .append(workStatusRes.getAppStatus()).append("\n");
+                .append(getJobInfoRes.getStatus()).append("\n");
             workInstance = updateInstance(workInstance, logBuilder);
 
             // 如果状态是运行中，更新日志，继续执行
             List<String> runningStatus = Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING");
-            if (runningStatus.contains(workStatusRes.getAppStatus().toUpperCase())) {
+            if (runningStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
                 try {
                     Thread.sleep(4000);
                 } catch (InterruptedException e) {
@@ -299,58 +214,33 @@ public class SparkSqlExecutor extends WorkExecutor {
                 // 运行结束逻辑
 
                 // 如果是中止，直接退出
-                if ("KILLED".equals(workStatusRes.getAppStatus().toUpperCase())
-                    || "TERMINATING".equals(workStatusRes.getAppStatus().toUpperCase())) {
+                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
                 }
 
                 // 获取日志并保存
-                Map<String, String> paramsMap2 = new HashMap<>();
-                paramsMap2.put("appId", submitWorkRes.getAppId());
-                paramsMap2.put("agentType", calculateEngineEntityOptional.get().getClusterType());
-                paramsMap2.put("sparkHomePath", engineNode.getSparkHomePath());
-                baseResponse = HttpUtils.doGet(
-                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/getLog"), paramsMap2,
-                    null, BaseResponse.class);
-                log.debug("获取远程返回日志:{}", baseResponse.toString());
-
-                if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+                GetJobLogReq getJobLogReq = GetJobLogReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
+                GetJobLogRes getJobLogRes;
+                try {
+                    getJobLogRes = HttpUtils.doPost(
+                        httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.getJobLog),
+                        getJobLogReq, GetJobLogRes.class);
+                } catch (IOException e) {
                     throw new WorkRunException(
-                        LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业日志异常 : " + baseResponse.getMsg() + "\n");
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业日志异常 : " + e.getMessage() + "\n");
                 }
 
-                // 解析日志并保存
-                YagGetLogRes yagGetLogRes =
-                    JSON.parseObject(JSON.toJSONString(baseResponse.getData()), YagGetLogRes.class);
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("日志保存成功 \n");
-                if (yagGetLogRes != null) {
-                    workInstance.setYarnLog(yagGetLogRes.getLog());
+                if (getJobLogRes != null) {
+                    workInstance.setTaskManagerLog(getJobLogRes.getLog());
                 }
-                workInstance = updateInstance(workInstance, logBuilder);
+                updateInstance(workInstance, logBuilder);
 
                 // 如果运行成功，则保存返回数据
                 List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED");
-                if (successStatus.contains(workStatusRes.getAppStatus().toUpperCase())) {
-
-                    // 获取数据
-                    Map<String, String> paramsMap3 = new HashMap<>();
-                    paramsMap3.put("appId", submitWorkRes.getAppId());
-                    paramsMap3.put("agentType", calculateEngineEntityOptional.get().getClusterType());
-                    paramsMap3.put("sparkHomePath", engineNode.getSparkHomePath());
-                    baseResponse = HttpUtils.doGet(
-                        httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/getData"),
-                        paramsMap3, null, BaseResponse.class);
-                    log.debug("获取远程返回数据:{}", baseResponse.toString());
-
-                    if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-                        throw new WorkRunException(
-                            LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业数据异常 : " + baseResponse.getErr() + "\n");
-                    }
-
-                    // 解析数据并保存
-                    workInstance.setResultData(JSON.toJSONString(baseResponse.getData()));
-                    logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("数据保存成功 \n");
-                    updateInstance(workInstance, logBuilder);
+                if (successStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
+                    // 没有数据保存
                 } else {
                     // 任务运行错误
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
@@ -389,7 +279,7 @@ public class SparkSqlExecutor extends WorkExecutor {
                     Map<String, String> paramsMap = new HashMap<>();
                     paramsMap.put("appId", wokRunWorkRes.getAppId());
                     paramsMap.put("agentType", cluster.getClusterType());
-                    paramsMap.put("sparkHomePath", engineNode.getSparkHomePath());
+                    paramsMap.put("sparkHomePath", engineNode.getFlinkHomePath());
                     BaseResponse<?> baseResponse = HttpUtils.doGet(
                         httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/stopJob"),
                         paramsMap, null, BaseResponse.class);

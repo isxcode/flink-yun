@@ -99,7 +99,7 @@ spotless {
         targetExclude('*/build/**/*.java')
         targetExclude('flink-yun-dist/**/*.java')
         eclipse().configFile('/Users/ispong/isxcode/flink-yun/.spotless/eclipse-java-google-style.xml')
-        indentWithSpaces()
+        removeUnusedImports()
     }
 }
 

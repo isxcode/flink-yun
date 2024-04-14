@@ -2,6 +2,9 @@ package com.isxcode.acorn.modules.work.service.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.isxcode.acorn.api.agent.constants.AgentApi;
+import com.isxcode.acorn.api.agent.pojos.res.StopJobRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
@@ -13,7 +16,6 @@ import com.isxcode.acorn.api.work.pojos.dto.*;
 import com.isxcode.acorn.api.work.pojos.req.*;
 import com.isxcode.acorn.api.work.pojos.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
-import com.isxcode.acorn.backend.api.base.pojos.BaseResponse;
 import com.isxcode.acorn.common.utils.http.HttpUrlUtils;
 import com.isxcode.acorn.common.utils.http.HttpUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
@@ -47,6 +49,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -96,7 +99,7 @@ public class WorkBizService {
         WorkEntity work = workMapper.addWorkReqToWorkEntity(addWorkReq);
 
         // sparkSql要是支持访问hive，必须填写datasourceId
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())) {
+        if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())) {
             if (addWorkReq.getEnableHive()) {
                 if (Strings.isEmpty(addWorkReq.getDatasourceId())) {
                     throw new IsxAppException("开启hive，必须配置hive数据源");
@@ -112,7 +115,7 @@ public class WorkBizService {
         }
 
         // sparkSql，数据同步，bash，python，必须配置集群
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+        if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())
             || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
             || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
@@ -138,7 +141,7 @@ public class WorkBizService {
         workConfig.setDatasourceId(addWorkReq.getDatasourceId());
 
         // 如果是sparkSql,jdbcQuerySql,jdbcExecuteSql,bash,python作业，需要初始化脚本内容，方便客户使用
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+        if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())
             || WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType())
             || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
@@ -153,7 +156,7 @@ public class WorkBizService {
         }
 
         // 初始化计算引擎
-        if (WorkType.QUERY_SPARK_SQL.equals(addWorkReq.getWorkType())
+        if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())
             || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
             || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
@@ -298,7 +301,7 @@ public class WorkBizService {
             throw new IsxAppException("请等待作业运行完毕或者对应作业无返回结果");
         }
 
-        if (Strings.isEmpty(workInstanceEntity.getYarnLog())) {
+        if (Strings.isEmpty(workInstanceEntity.getTaskManagerLog())) {
             return new GetDataRes(JSON.parseArray(workInstanceEntity.getResultData()));
         }
         return JSON.parseObject(workInstanceEntity.getResultData(), GetDataRes.class);
@@ -348,7 +351,7 @@ public class WorkBizService {
             WorkEntity workEntity = workRepository.findById(workInstanceEntity.getWorkId()).get();
 
             // 作业类型不对返回
-            if (!WorkType.QUERY_SPARK_SQL.equals(workEntity.getWorkType())
+            if (!WorkType.EXECUTE_FLINK_SQL.equals(workEntity.getWorkType())
                 && !WorkType.DATA_SYNC_JDBC.equals(workEntity.getWorkType())) {
                 throw new IsxAppException("只有sparkSql作业才支持中止");
             }
@@ -375,18 +378,14 @@ public class WorkBizService {
             }
 
             // 解析实例的状态信息
-            RunWorkRes wokRunWorkRes = JSON.parseObject(workInstanceEntity.getSparkStarRes(), RunWorkRes.class);
+            SubmitJobRes submitJobRes = JSON.parseObject(workInstanceEntity.getSparkStarRes(), SubmitJobRes.class);
 
-            Map<String, String> paramsMap = new HashMap<>();
-            paramsMap.put("appId", wokRunWorkRes.getAppId());
-            paramsMap.put("agentType", clusterEntityOptional.get().getClusterType());
-            paramsMap.put("sparkHomePath", engineNode.getSparkHomePath());
-            BaseResponse<?> baseResponse = HttpUtils.doGet(
-                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), "/yag/stopJob"), paramsMap,
-                null, BaseResponse.class);
-
-            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-                throw new IsxAppException(baseResponse.getCode(), baseResponse.getMsg(), baseResponse.getErr());
+            com.isxcode.acorn.api.agent.pojos.req.StopJobReq agentStopReq = com.isxcode.acorn.api.agent.pojos.req.StopJobReq.builder().jobId(submitJobRes.getJobId()).agentType(clusterEntityOptional.get().getClusterType()).flinkHome(engineNode.getFlinkHomePath()).build();
+            try {
+                HttpUtils.doPost(
+                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.stopJob), agentStopReq, StopJobRes.class);
+            } catch (IOException e) {
+                throw new IsxAppException(e.getMessage());
             }
 
             // 修改实例状态
@@ -410,10 +409,10 @@ public class WorkBizService {
         }
 
         WorkInstanceEntity workInstanceEntity = workInstanceEntityOptional.get();
-        if (Strings.isEmpty(workInstanceEntity.getYarnLog())) {
+        if (Strings.isEmpty(workInstanceEntity.getTaskManagerLog())) {
             throw new IsxAppException("请等待作业运行完毕");
         }
-        return GetWorkLogRes.builder().yarnLog(workInstanceEntity.getYarnLog()).build();
+        return GetWorkLogRes.builder().yarnLog(workInstanceEntity.getTaskManagerLog()).build();
     }
 
     public GetWorkRes getWork(GetWorkReq getWorkReq) {

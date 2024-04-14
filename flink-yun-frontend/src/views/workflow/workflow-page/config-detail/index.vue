@@ -55,10 +55,10 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="是否连接hive" v-if="['SPARK_SQL'].includes(workItemConfig.workType)">
+                <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(workItemConfig.workType)">
                   <el-switch v-model="clusterConfig.enableHive" />
                 </el-form-item>
-                <el-form-item label="Hive数据源" :prop="'datasourceId'" v-if="clusterConfig.enableHive && ['SPARK_SQL'].includes(workItemConfig.workType)">
+                <el-form-item label="Hive数据源" :prop="'datasourceId'" v-if="clusterConfig.enableHive && ['FLINK_SQL'].includes(workItemConfig.workType)">
                   <el-select
                     v-model="clusterConfig.datasourceId"
                     placeholder="请选择"
@@ -306,7 +306,7 @@
             </el-form>
           </div>
           <!-- 函数配置 -->
-          <div class="config-item" v-if="['SPARK_SQL', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">函数配置</div>
             <el-form
               ref="syncRuleForm"
@@ -324,7 +324,7 @@
             </el-form>
           </div>
           <!-- 依赖配置 -->
-          <div class="config-item" v-if="['SPARK_SQL', 'SPARK_JAR', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'SPARK_JAR', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">依赖配置</div>
             <el-form
               ref="syncRuleForm"
@@ -564,7 +564,7 @@ function getConfigDetailData() {
       })
       clusterConfig.sparkConfigJson = jsonFormatter(clusterConfig.sparkConfigJson)
     }
-    if (['SPARK_SQL'].includes(workItemConfig.value.workType)) {
+    if (['FLINK_SQL'].includes(workItemConfig.value.workType)) {
       clusterConfig.datasourceId = res.data.datasourceId
     }
     if (res.data.cronConfig) {
@@ -606,7 +606,7 @@ function okEvent() {
     if (status) {
       getCron()
       const clusObj = clusterConfig
-      if (['SPARK_SQL'].includes(workItemConfig.value.workType)) {
+      if (['FLINK_SQL'].includes(workItemConfig.value.workType)) {
         dataSourceForm.datasourceId = clusObj.datasourceId
         delete clusObj.datasourceId
       }
