@@ -21,10 +21,7 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -48,7 +45,7 @@ public class YarnAcorn implements AcornRun {
         flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
             Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
-        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAppResource()));
+        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAgentHomePath() + File.separator + "plugins" + File.separator + submitJobReq.getAppResource()));
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
@@ -57,8 +54,7 @@ public class YarnAcorn implements AcornRun {
         flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitJobReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
         List<String> libFile = new ArrayList<>();
         libFile.add(submitJobReq.getFlinkHome() + "/lib");
-        libFile.add("/Users/ispong/isxcode/flink-yun/resources/jdbc/system");
-        libFile.add("/Users/ispong/isxcode/flink-yun/resources/cdc");
+        libFile.add(submitJobReq.getAgentHomePath() + "/lib");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
         ClusterSpecification clusterSpecification =
