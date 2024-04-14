@@ -84,8 +84,7 @@ public class KubernetesAcorn implements AcornRun {
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
             kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            ClusterClientProvider<String> clusterClientProvider =
-                clusterDescriptor.retrieve(getJobInfoReq.getJobId());
+            ClusterClientProvider<String> clusterClientProvider = clusterDescriptor.retrieve(getJobInfoReq.getJobId());
             System.out.println(clusterClientProvider.getClusterClient().getWebInterfaceURL());
             return null;
         } catch (Exception e) {

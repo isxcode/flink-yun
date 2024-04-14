@@ -45,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -380,10 +379,14 @@ public class WorkBizService {
             // 解析实例的状态信息
             SubmitJobRes submitJobRes = JSON.parseObject(workInstanceEntity.getSparkStarRes(), SubmitJobRes.class);
 
-            com.isxcode.acorn.api.agent.pojos.req.StopJobReq agentStopReq = com.isxcode.acorn.api.agent.pojos.req.StopJobReq.builder().jobId(submitJobRes.getJobId()).agentType(clusterEntityOptional.get().getClusterType()).flinkHome(engineNode.getFlinkHomePath()).build();
+            com.isxcode.acorn.api.agent.pojos.req.StopJobReq agentStopReq =
+                com.isxcode.acorn.api.agent.pojos.req.StopJobReq.builder().jobId(submitJobRes.getJobId())
+                    .agentType(clusterEntityOptional.get().getClusterType()).flinkHome(engineNode.getFlinkHomePath())
+                    .build();
             try {
                 HttpUtils.doPost(
-                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.stopJob), agentStopReq, StopJobRes.class);
+                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.stopJob),
+                    agentStopReq, StopJobRes.class);
             } catch (IOException e) {
                 throw new IsxAppException(e.getMessage());
             }

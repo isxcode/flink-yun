@@ -6,7 +6,6 @@ import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.runtime.rest.handler.RestHandlerException;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -42,7 +41,8 @@ public class FlinkClusterAcorn implements AcornRun {
                 Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes()))
             .build();
         try {
-            ResponseEntity<FlinkRestRunRes> flinkRestRunResResult = new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
+            ResponseEntity<FlinkRestRunRes> flinkRestRunResResult =
+                new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
             if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
                 || flinkRestRunResResult.getBody().getJobid() == null) {
                 throw new IsxAppException("提交作业失败");

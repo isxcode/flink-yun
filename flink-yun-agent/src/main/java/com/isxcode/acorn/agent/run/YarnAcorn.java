@@ -1,7 +1,6 @@
 package com.isxcode.acorn.agent.run;
 
 import com.alibaba.fastjson2.JSON;
-import com.isxcode.acorn.api.agent.pojos.dto.FlinkVerticesDto;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
@@ -17,15 +16,10 @@ import org.apache.flink.configuration.*;
 import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
-import org.apache.flink.yarn.configuration.YarnConfigOptionsInternal;
 import org.apache.flink.yarn.configuration.YarnDeploymentTarget;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
-import org.apache.hadoop.yarn.client.api.YarnClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +31,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 
@@ -52,7 +45,8 @@ public class YarnAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
+            Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAppResource()));
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
@@ -76,7 +70,8 @@ public class YarnAcorn implements AcornRun {
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<ApplicationId> applicationIdClusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
-            return SubmitJobRes.builder().jobId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
+            return SubmitJobRes.builder()
+                .jobId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
         } catch (Exception e) {
             throw new IsxAppException("提交任务失败" + e.getMessage());
         }
@@ -90,8 +85,10 @@ public class YarnAcorn implements AcornRun {
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            ApplicationReport applicationReport = clusterDescriptor.getYarnClient().getApplicationReport(ApplicationId.fromString(getJobInfoReq.getJobId()));
-            return GetJobInfoRes.builder().jobId(getJobInfoReq.getJobId()).status(applicationReport.getYarnApplicationState().toString()).build();
+            ApplicationReport applicationReport = clusterDescriptor.getYarnClient()
+                .getApplicationReport(ApplicationId.fromString(getJobInfoReq.getJobId()));
+            return GetJobInfoRes.builder().jobId(getJobInfoReq.getJobId())
+                .status(applicationReport.getYarnApplicationState().toString()).build();
         } catch (Exception e) {
             throw new IsxAppException("提交任务失败" + e.getMessage());
         }
@@ -115,7 +112,8 @@ public class YarnAcorn implements AcornRun {
         String line;
         while (true) {
             try {
-                if (!((line = reader.readLine()) != null)) break;
+                if (!((line = reader.readLine()) != null))
+                    break;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -127,7 +125,8 @@ public class YarnAcorn implements AcornRun {
             if (exitCode == 1) {
                 throw new IsxAppException(errLog.toString());
             } else {
-                Pattern regex = Pattern.compile("LogType:taskmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:taskmanager.log");
+                Pattern regex =
+                    Pattern.compile("LogType:taskmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:taskmanager.log");
                 Matcher matcher = regex.matcher(errLog);
                 String log = "";
                 while (matcher.find()) {
