@@ -6,6 +6,8 @@ import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
 import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
 import com.isxcode.acorn.api.agent.pojos.res.*;
+import com.isxcode.acorn.api.api.constants.PathConstants;
+import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,28 +41,31 @@ public class YarnAcorn implements AcornRun {
     @Override
     public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
 
+        submitJobReq.setFlinkHome(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "flink-min");
+
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
         flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
             Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
-        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAgentHomePath() + File.separator + "plugins"
+        flinkConfig.set(PipelineOptions.JARS, singletonList(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins"
             + File.separator + submitJobReq.getAppResource()));
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
-        flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
-        flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("2g"));
+        flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
+        flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
         flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitJobReq.getAppName());
+//        flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
         flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitJobReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
         List<String> libFile = new ArrayList<>();
         libFile.add(submitJobReq.getFlinkHome() + "/lib");
-        libFile.add(submitJobReq.getAgentHomePath() + "/lib");
+        libFile.add(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "/lib");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
         ClusterSpecification clusterSpecification =
             new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024)
-                .setSlotsPerTaskManager(2).createClusterSpecification();
+                .setSlotsPerTaskManager(1).createClusterSpecification();
 
         ApplicationConfiguration applicationConfiguration = ApplicationConfiguration.fromConfiguration(flinkConfig);
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
@@ -70,7 +75,7 @@ public class YarnAcorn implements AcornRun {
             return SubmitJobRes.builder()
                 .jobId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
         } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getMessage());
+            throw new AgentResponseException("提交任务失败" + e.getMessage());
         }
     }
 
@@ -79,6 +84,7 @@ public class YarnAcorn implements AcornRun {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, getJobInfoReq.getFlinkHome() + "/conf");
+//        flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
@@ -87,7 +93,7 @@ public class YarnAcorn implements AcornRun {
             return GetJobInfoRes.builder().jobId(getJobInfoReq.getJobId())
                 .status(applicationReport.getYarnApplicationState().toString()).build();
         } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getMessage());
+            throw new AgentResponseException("提交任务失败" + e.getMessage());
         }
     }
 
@@ -139,7 +145,7 @@ public class YarnAcorn implements AcornRun {
                 return GetJobLogRes.builder().log(log).build();
             }
         } catch (InterruptedException e) {
-            throw new IsxAppException(e.getMessage());
+            throw new AgentResponseException(e.getMessage());
         }
     }
 
@@ -148,13 +154,14 @@ public class YarnAcorn implements AcornRun {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, stopJobReq.getFlinkHome() + "/conf");
+//        flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.getYarnClient().killApplication(ApplicationId.fromString(stopJobReq.getJobId()));
             return StopJobRes.builder().build();
         } catch (Exception e) {
-            throw new IsxAppException("停止任务失败" + e.getMessage());
+            throw new AgentResponseException("停止任务失败" + e.getMessage());
         }
     }
 }
