@@ -19,6 +19,7 @@ import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.apache.flink.yarn.configuration.YarnDeploymentTarget;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +60,13 @@ public class YarnAcorn implements AcornRun {
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
         flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitJobReq.getAppName());
-        // flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
+        Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
+        org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
+        conf.addResource(path);
+        Map<String, String> yarn = conf.getPropsWithPrefix("yarn");
+        yarn.forEach((k, v) -> {
+            flinkConfig.setString("flink.yarn" + k, v);
+        });
         flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitJobReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
         List<String> libFile = new ArrayList<>();
         libFile.add(submitJobReq.getFlinkHome() + "/lib");
@@ -87,7 +95,13 @@ public class YarnAcorn implements AcornRun {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, getJobInfoReq.getFlinkHome() + "/conf");
-        // flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
+        Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
+        org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
+        conf.addResource(path);
+        Map<String, String> yarn = conf.getPropsWithPrefix("yarn");
+        yarn.forEach((k, v) -> {
+            flinkConfig.setString("flink.yarn" + k, v);
+        });
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
@@ -157,7 +171,13 @@ public class YarnAcorn implements AcornRun {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, stopJobReq.getFlinkHome() + "/conf");
-        // flinkConfig.setString("flink.yarn.resourcemanager.address", "ispong-mac.local:8032");
+        Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
+        org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
+        conf.addResource(path);
+        Map<String, String> yarn = conf.getPropsWithPrefix("yarn");
+        yarn.forEach((k, v) -> {
+            flinkConfig.setString("flink.yarn" + k, v);
+        });
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
