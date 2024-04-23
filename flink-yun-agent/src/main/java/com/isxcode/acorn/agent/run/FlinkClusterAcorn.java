@@ -68,7 +68,7 @@ public class FlinkClusterAcorn implements AcornRun {
         ResponseEntity<FlinkRestJobRes> result = new RestTemplate().getForEntity(getStatusUrl, FlinkRestJobRes.class);
 
         if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null) {
-            throw new IsxAppException("提交作业失败");
+            throw new AgentResponseException("提交作业失败");
         }
 
         List<String> vertices =
@@ -89,7 +89,7 @@ public class FlinkClusterAcorn implements AcornRun {
             new RestTemplate().getForEntity(getStatusUrl, FlinkRestStatusRes.class);
         if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null
             || result.getBody().getStatus() == null) {
-            throw new IsxAppException("获取作业状态失败");
+            throw new AgentResponseException("获取作业状态失败");
         }
 
         if ("FAILED".equals(result.getBody().getStatus())) {
@@ -97,10 +97,10 @@ public class FlinkClusterAcorn implements AcornRun {
             ResponseEntity<FlinkRestExceptionRes> exceptionResult =
                 new RestTemplate().getForEntity(getExceptionUrl, FlinkRestExceptionRes.class);
             if (!HttpStatus.OK.equals(exceptionResult.getStatusCode())) {
-                throw new IsxAppException("提交作业失败");
+                throw new AgentResponseException("提交作业失败");
             }
             if (exceptionResult.getBody() == null) {
-                throw new IsxAppException("提交作业失败");
+                throw new AgentResponseException("提交作业失败");
             }
             return GetJobLogRes.builder().log(exceptionResult.getBody().getRootException()).build();
         } else {
@@ -143,12 +143,12 @@ public class FlinkClusterAcorn implements AcornRun {
             result = new RestTemplate().getForEntity(stopJobUrl, FlinkRestStopRes.class);
         } catch (HttpClientErrorException exception) {
             if (HttpStatus.NOT_FOUND.equals(exception.getStatusCode())) {
-                throw new IsxAppException("作业已停止");
+                throw new AgentResponseException("作业已停止");
             }
             throw new IsxAppException("停止作业失败");
         }
         if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null) {
-            throw new IsxAppException("停止作业失败");
+            throw new AgentResponseException("停止作业失败");
         }
 
         return StopJobRes.builder().requestId(result.getBody().getRequestId()).build();
@@ -183,10 +183,10 @@ public class FlinkClusterAcorn implements AcornRun {
         ResponseEntity<FlinkRestUploadRes> result =
             restTemplate.exchange(uploadUrl, HttpMethod.POST, requestEntity, FlinkRestUploadRes.class);
         if (!HttpStatus.OK.equals(result.getStatusCode())) {
-            throw new IsxAppException("提交资源文件异常");
+            throw new AgentResponseException("提交资源文件异常");
         }
         if (result.getBody() == null || result.getBody().getFilename() == null) {
-            throw new IsxAppException("提交资源文件异常");
+            throw new AgentResponseException("提交资源文件异常");
         }
         String[] sub = result.getBody().getFilename().split("/");
         return sub[sub.length - 1];
