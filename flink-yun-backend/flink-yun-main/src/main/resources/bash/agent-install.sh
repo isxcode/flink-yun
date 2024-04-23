@@ -41,10 +41,11 @@ done
 agent_path="${home_path}/zhiliuyun-agent"
 
 # 导入用户自己配置的环境变量
-source ${agent_path}conf/agent-env.sh
+source ${agent_path}/conf/agent-env.sh
 
 # 将文件解压到指定目录
 tar -xf /tmp/zhiliuyun-agent.tar.gz -C ${home_path} > /dev/null
+cp -r ${agent_path}/lib ${agent_path}/flink-min/lib
 
 # 进入代理目录,防止logs文件夹生成错位
 cd ${agent_path}
