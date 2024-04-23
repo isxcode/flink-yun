@@ -12,14 +12,19 @@ import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
+import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -35,6 +40,8 @@ public class RunAgentStartService {
     private final SparkYunProperties sparkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
+
+    private final ClusterService clusterService;
 
     @Async("sparkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
@@ -67,10 +74,12 @@ public class RunAgentStartService {
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-start.sh",
             sparkYunProperties.getTmpDir() + File.separator + "agent-start.sh");
 
+        ClusterEntity cluster = clusterService.getCluster(engineNode.getClusterId());
+
         // 运行启动脚本
         String startCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-start.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-            + " --agent-port=" + engineNode.getAgentPort();
+            + " --home-path=" + engineNode.getAgentHomePath()
+            + " --agent-port=" + engineNode.getAgentPort() + " --agent-type=" + cluster.getClusterType().toLowerCase();
         log.debug("执行远程命令:{}", startCommand);
 
         // 获取返回结果

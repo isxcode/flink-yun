@@ -1,11 +1,13 @@
 #!/bin/bash
 
 ######################
-# 启动脚本
+# 单独启动代理器
 ######################
 
+# 获取脚本文件当前路径
 BASE_PATH=$(cd "$(dirname "$0")" || exit ; pwd)
 
+# 初始化环境变量
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     source /etc/profile
     source ~/.bashrc
@@ -22,30 +24,58 @@ else
       exit 0
 fi
 
+# 获取外部参数
 home_path=""
 agent_port=""
+agent_type=""
 for arg in "$@"; do
   case "$arg" in
   --home-path=*) home_path="${arg#*=}" ;;
   --agent-port=*) agent_port="${arg#*=}" ;;
+  --agent-type=*) agent_type="${arg#*=}" ;;
   *) echo "未知参数: $arg" && exit 1 ;;
   esac
 done
 
-if [ -e "${home_path}/zhiliuyun-agent.pid" ]; then
-  pid=$(cat "${home_path}/zhiliuyun-agent.pid")
+# 初始化agent_path
+agent_path="${home_path}/zhiliuyun-agent"
+
+if [ -e "${agent_path}/zhiliuyun-agent.pid" ]; then
+  pid=$(cat "${agent_path}/zhiliuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
     json_output="{ \
                 \"status\": \"STOP\", \
                 \"log\": \"请停止后，再启动代理\"
               }"
-    exit 1
+    rm ${BASE_PATH}/agent-start.sh
+    exit 0
   fi
 fi
 
-# 运行jar包
-nohup java -jar -Xmx2048m ${home_path}/lib/zhiliuyun-agent.jar --server.port=${agent_port} >>${home_path}/logs/zhiliuyun-agent.log 2>&1 &
-echo $! >${home_path}/zhiliuyun-agent.pid
+# 进入代理目录,防止logs文件夹生成错位
+cd ${agent_path}
+
+# 判断zhiliuyun-agent.log是否存在,不存在则新建
+if [ ! -f "${agent_path}/logs/zhiliuyun-agent.log" ]; then
+  mkdir "${agent_path}/logs"
+  touch "${agent_path}/logs/zhiliuyun-agent.log"
+fi
+
+# 运行代理程序
+if ! command -v java &>/dev/null; then
+  nohup $JAVA_HOME/bin/java -jar -Xmx2048m ${agent_path}/lib/zhiliuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
+else
+  nohup java -jar -Xmx2048m ${agent_path}/lib/zhiliuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
+fi
+echo $! >${agent_path}/zhiliuyun-agent.pid
+
+# flinkcluster模型,自动安装flink
+if [[ "$agent_type" == "flinkcluster" ]]; then
+  # 如果端口已启动,则不安装flink
+  if netstat -tln | awk '$4 ~ /:'8081'$/ {exit 1}'; then
+    nohup bash flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
+  fi
+fi
 
 # 返回结果
 json_output="{ \

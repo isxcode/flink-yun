@@ -13,7 +13,9 @@ public class GetJobInfoReq {
 
     private String jobId;
 
-    private String flinkHome;
+    private String agentHome;
 
     private String agentType;
+
+    private String flinkHome;
 }
