@@ -9,7 +9,6 @@ import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
@@ -40,13 +39,11 @@ import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -154,8 +151,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
             .agentHomePath(engineNode.getAgentHomePath()).appResource("flink-sql-execute-plugin.jar")
             .appName("zhiliuyun-job")
             .acornPluginReq(AcornPluginReq.builder().flinkSql(workRunContext.getScript()).build())
-            .agentType(calculateEngineEntityOptional.get().getClusterType())
-            .build();
+            .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
@@ -166,8 +162,11 @@ public class FlinkSqlExecutor extends WorkExecutor {
         Integer lock = locker.lock("REQUEST_" + workInstance.getId());
         SubmitJobRes submitJobRes;
         try {
-            submitJobRes = new RestTemplate().postForObject(httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob), submitJobReq, SubmitJobRes.class);
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ").append(submitJobRes.getJobId()).append("\n");
+            submitJobRes = new RestTemplate().postForObject(
+                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob),
+                submitJobReq, SubmitJobRes.class);
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ")
+                .append(submitJobRes.getJobId()).append("\n");
             workInstance.setSparkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (HttpServerErrorException | ResourceAccessException e) {

@@ -6,7 +6,6 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.executeCommand;
 import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
@@ -15,7 +14,6 @@ import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
-import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -78,8 +76,8 @@ public class RunAgentStartService {
 
         // 运行启动脚本
         String startCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-start.sh"
-            + " --home-path=" + engineNode.getAgentHomePath()
-            + " --agent-port=" + engineNode.getAgentPort() + " --agent-type=" + cluster.getClusterType().toLowerCase();
+            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort()
+            + " --agent-type=" + cluster.getClusterType().toLowerCase();
         log.debug("执行远程命令:{}", startCommand);
 
         // 获取返回结果
