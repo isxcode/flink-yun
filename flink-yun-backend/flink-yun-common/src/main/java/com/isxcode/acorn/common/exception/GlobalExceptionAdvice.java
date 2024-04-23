@@ -1,6 +1,7 @@
 package com.isxcode.acorn.common.exception;
 
 import com.isxcode.acorn.backend.api.base.exceptions.AbstractIsxAppException;
+import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
 import com.isxcode.acorn.backend.api.base.exceptions.SuccessResponseException;
 import com.isxcode.acorn.backend.api.base.pojos.BaseResponse;
 import java.nio.file.AccessDeniedException;
@@ -52,6 +53,12 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<BaseResponse<Object>> successException(SuccessResponseException successException) {
 
         return new ResponseEntity<>(successException.getBaseResponse(), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(AgentResponseException.class)
+    public ResponseEntity<String> agentResponseException(AgentResponseException successException) {
+
+        return new ResponseEntity<>(successException.getMsg(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

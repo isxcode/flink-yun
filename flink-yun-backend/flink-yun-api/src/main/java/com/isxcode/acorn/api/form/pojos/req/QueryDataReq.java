@@ -3,9 +3,11 @@ package com.isxcode.acorn.api.form.pojos.req;
 import com.isxcode.acorn.backend.api.base.pojos.BasePageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotEmpty;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class QueryDataReq extends BasePageRequest {
 

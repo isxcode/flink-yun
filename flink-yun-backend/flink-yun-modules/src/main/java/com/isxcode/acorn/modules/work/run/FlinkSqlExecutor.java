@@ -9,6 +9,7 @@ import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
+import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
@@ -39,10 +40,13 @@ import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -150,7 +154,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
             .agentHomePath(engineNode.getAgentHomePath()).appResource("flink-sql-execute-plugin.jar")
             .appName("zhiliuyun-job")
             .acornPluginReq(AcornPluginReq.builder().flinkSql(workRunContext.getScript()).build())
-            .flinkHome(engineNode.getFlinkHomePath()).agentType(calculateEngineEntityOptional.get().getClusterType())
+            .agentType(calculateEngineEntityOptional.get().getClusterType())
             .build();
 
         // 构建作业完成，并打印作业配置信息
@@ -158,21 +162,15 @@ public class FlinkSqlExecutor extends WorkExecutor {
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业  \n");
         workInstance = updateInstance(workInstance, logBuilder);
 
-        // 开始提交作业
-        BaseResponse<?> baseResponse;
-
         // 加锁，必须等待作业提交成功后才能中止
         Integer lock = locker.lock("REQUEST_" + workInstance.getId());
         SubmitJobRes submitJobRes;
         try {
-            submitJobRes = HttpUtils.doPost(
-                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob),
-                submitJobReq, SubmitJobRes.class);
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ")
-                .append(submitJobRes.getJobId()).append("\n");
+            submitJobRes = new RestTemplate().postForObject(httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob), submitJobReq, SubmitJobRes.class);
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ").append(submitJobRes.getJobId()).append("\n");
             workInstance.setSparkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
-        } catch (IOException | HttpServerErrorException | ResourceAccessException e) {
+        } catch (HttpServerErrorException | ResourceAccessException e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + e.getMessage() + "\n");
         } finally {
             locker.unlock(lock);
@@ -182,7 +180,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
         while (true) {
 
             // 获取作业状态并保存
-            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().flinkHome(engineNode.getFlinkHomePath())
+            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().agentHome(engineNode.getAgentHomePath())
                 .jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
             GetJobInfoRes getJobInfoRes;
             try {
