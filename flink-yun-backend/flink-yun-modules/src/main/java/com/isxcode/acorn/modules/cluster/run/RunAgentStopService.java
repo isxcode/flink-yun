@@ -6,7 +6,6 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.executeCommand;
 import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;

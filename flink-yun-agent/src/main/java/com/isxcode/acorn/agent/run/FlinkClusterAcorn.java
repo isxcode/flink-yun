@@ -8,7 +8,6 @@ import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +31,8 @@ public class FlinkClusterAcorn implements AcornRun {
     @Override
     public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
 
-        submitJobReq.setFlinkHome(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "flink-min");
+        submitJobReq.setFlinkHome(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+            + File.separator + "flink-min");
 
         String restUrl = getRestUrl(submitJobReq.getFlinkHome());
         String fileName = uploadAppResource(submitJobReq, restUrl);
@@ -60,7 +59,8 @@ public class FlinkClusterAcorn implements AcornRun {
     @Override
     public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
 
-        getJobInfoReq.setFlinkHome(getJobInfoReq.getAgentHome() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "flink-min");
+        getJobInfoReq.setFlinkHome(getJobInfoReq.getAgentHome() + File.separator + PathConstants.AGENT_PATH_NAME
+            + File.separator + "flink-min");
 
         String restUrl = getRestUrl(getJobInfoReq.getFlinkHome());
 
@@ -177,7 +177,10 @@ public class FlinkClusterAcorn implements AcornRun {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("jarfile", new FileSystemResource(new File(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins" + File.separator + submitJobReq.getAppResource())));
+        param.add("jarfile",
+            new FileSystemResource(
+                new File(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+                    + File.separator + "plugins" + File.separator + submitJobReq.getAppResource())));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(param, headers);
 
         ResponseEntity<FlinkRestUploadRes> result =
