@@ -18,6 +18,7 @@ tasks.register('build_agent_lib', Copy) {
   from rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-api/build/libs'
   from rootDir.getAbsolutePath() + '/flink-yun-agent/build/libs'
   from rootDir.getAbsolutePath() + '/resources/jdbc/system'
+  from rootDir.getAbsolutePath() + '/resources/cdc'
   into 'build/zhiliuyun-agent/lib'
 }
 
@@ -41,9 +42,6 @@ tasks.register('build_agent', Tar) {
   compression = Compression.GZIP
   archiveFileName = 'zhiliuyun-agent.tar.gz'
 
-  from(rootDir.getAbsolutePath() + '/resources/cdc') {
-    into 'zhiliuyun-agent/flink-min/lib'
-  }
   from(rootDir.getAbsolutePath() + "/flink-yun-dist/flink-min") {
     into 'zhiliuyun-agent/flink-min'
   }
@@ -67,9 +65,6 @@ tasks.register('build_agent', Tar) {
   }
   from('build/zhiliuyun-agent/lib') {
     into 'zhiliuyun-agent/lib'
-  }
-  from('build/zhiliuyun-agent/lib') {
-    into 'zhiliuyun-agent/flink-min/lib'
   }
   from('../README.md') {
     into 'zhiliuyun-agent/'
