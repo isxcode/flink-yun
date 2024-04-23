@@ -54,7 +54,7 @@ if [ ! -f logs/zhiliuyun-agent.log ]; then
 fi
 
 # 运行jar包
-nohup java -jar -Xmx2048m lib/zhiliuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+nohup java -jar -Xmx2048m lib/zhiliuyun-agent.jar --spring.config.additional-location=conf/ --server.port=${agent_port}  > /dev/null 2>&1 &
 echo $! >zhiliuyun-agent.pid
 
 # 检查是否安装
