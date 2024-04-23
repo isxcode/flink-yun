@@ -20,7 +20,7 @@ else
                       \"log\": \"该系统不支持安装\" \
                     }"
       echo $json_output
-      rm /tmp/agent-install.sh
+      rm ${BASE_PATH}/agent-install.sh
       exit 0
 fi
 
