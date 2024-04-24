@@ -16,4 +16,6 @@ public class StopJobReq {
     private String jobId;
 
     private String agentType;
+
+    private String agentHomePath;
 }
