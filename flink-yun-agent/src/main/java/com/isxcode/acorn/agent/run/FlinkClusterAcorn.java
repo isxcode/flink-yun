@@ -134,6 +134,9 @@ public class FlinkClusterAcorn implements AcornRun {
     @Override
     public StopJobRes stopJobReq(StopJobReq stopJobReq) {
 
+         stopJobReq.setFlinkHome(stopJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+            + File.separator + "flink-min");
+
         String restUrl = getRestUrl(stopJobReq.getFlinkHome());
 
         // 判断作业是否成功
@@ -146,9 +149,6 @@ public class FlinkClusterAcorn implements AcornRun {
                 throw new AgentResponseException("作业已停止");
             }
             throw new IsxAppException("停止作业失败");
-        }
-        if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null) {
-            throw new AgentResponseException("停止作业失败");
         }
 
         return StopJobRes.builder().requestId(result.getBody().getRequestId()).build();
