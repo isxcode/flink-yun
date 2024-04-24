@@ -30,8 +30,8 @@ dependencies:
     specifier: ^2.1.0
     version: 2.1.0(vue@3.3.4)
   axios:
-    specifier: ^1.4.0
-    version: 1.5.0
+    specifier: ^1.6.0
+    version: 1.6.0
   clipboard:
     specifier: ^2.0.11
     version: 2.0.11
@@ -259,7 +259,7 @@ packages:
     dependencies:
       '@antv/x6': 1.34.14
       vue: 3.3.4
-      vue-demi: 0.14.6(vue@3.3.4)
+      vue-demi: 0.14.7(vue@3.3.4)
     dev: false
 
   /@antv/x6@1.34.14:
@@ -1676,8 +1676,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /axios@1.5.0:
-    resolution: {integrity: sha512-D4DdjDo5CY50Qms0qGQTTw6Q44jl7zRwY7bthds06pUGfChBCTcQs+N743eFWGEd6pRTMd6A+I87aWyFV5wiZQ==}
+  /axios@1.6.0:
+    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -4289,7 +4289,7 @@ packages:
     dependencies:
       codemirror: 6.0.1(@lezer/common@1.0.4)
       vue: 3.3.4
-      vue-demi: 0.14.6(vue@3.3.4)
+      vue-demi: 0.14.7(vue@3.3.4)
     transitivePeerDependencies:
       - '@lezer/common'
       - '@vue/composition-api'
@@ -4301,6 +4301,21 @@ packages:
 
   /vue-demi@0.14.6(vue@3.3.4):
     resolution: {integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.3.4
+    dev: false
+
+  /vue-demi@0.14.7(vue@3.3.4):
+    resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
     hasBin: true
     requiresBuild: true
