@@ -381,8 +381,8 @@ public class WorkBizService {
 
             com.isxcode.acorn.api.agent.pojos.req.StopJobReq agentStopReq =
                 com.isxcode.acorn.api.agent.pojos.req.StopJobReq.builder().jobId(submitJobRes.getJobId())
-                    .agentType(clusterEntityOptional.get().getClusterType()).agentHomePath(engineNode.getFlinkHomePath())
-                    .build();
+                    .agentType(clusterEntityOptional.get().getClusterType())
+                    .agentHomePath(engineNode.getFlinkHomePath()).build();
             try {
                 HttpUtils.doPost(
                     httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.stopJob),

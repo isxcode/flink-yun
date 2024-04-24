@@ -73,8 +73,9 @@ public class RunAgentRemoveService {
         ClusterEntity cluster = clusterService.getCluster(engineNode.getClusterId());
 
         // 运行停止脚本
-        String removeCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-type=" + cluster.getClusterType().toLowerCase();
+        String removeCommand =
+            "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh" + " --home-path="
+                + engineNode.getAgentHomePath() + " --agent-type=" + cluster.getClusterType().toLowerCase();
         log.debug("执行远程命令:{}", removeCommand);
 
         // 获取返回结果

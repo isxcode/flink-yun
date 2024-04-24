@@ -73,8 +73,9 @@ public class RunAgentStopService {
         ClusterEntity cluster = clusterService.getCluster(engineNode.getClusterId());
 
         // 运行停止脚本
-        String stopCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-type=" + cluster.getClusterType().toLowerCase();
+        String stopCommand =
+            "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh" + " --home-path="
+                + engineNode.getAgentHomePath() + " --agent-type=" + cluster.getClusterType().toLowerCase();
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果

@@ -24,4 +24,6 @@ public class SubmitJobReq {
     private String appName;
 
     private String agentHomePath;
+
+    private String workInstanceId;
 }
