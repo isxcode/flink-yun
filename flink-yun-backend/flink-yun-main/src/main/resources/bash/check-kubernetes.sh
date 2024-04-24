@@ -122,7 +122,7 @@ if ! kubectl cluster-info &>/dev/null; then
   exit 0
 fi
 
-# 执行拉取spark镜像命令
+# 执行拉取flink镜像命令
 if ! docker image inspect apache/flink:1.18.1-scala_2.12 &>/dev/null; then
   json_output="{ \
             \"status\": \"INSTALL_ERROR\", \
@@ -133,7 +133,7 @@ if ! docker image inspect apache/flink:1.18.1-scala_2.12 &>/dev/null; then
   exit 0
 fi
 
-# 检测命名空间是否有spark-yun
+# 检测命名空间是否有flink-yun
 if ! kubectl get namespace zhiliuyun-space &>/dev/null; then
   json_output="{ \
             \"status\": \"INSTALL_ERROR\", \
@@ -160,7 +160,7 @@ hasRole=$(kubectl auth can-i create pods --as=system:serviceaccount:zhiliuyun-sp
 if [ "$hasRole" = "no" ]; then
   json_output="{ \
                 \"status\": \"INSTALL_ERROR\", \
-                \"log\": \"zhiliuyun没有创建pod的权限，需要执行命令，kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=zhiliuyun-space:zhiliuyun --namespace=zhiliuyun-space \" \
+                \"log\": \"zhiliuyun没有创建pod的权限，需要执行命令，kubectl create clusterrolebinding flink-role --clusterrole=edit --serviceaccount=zhiliuyun-space:zhiliuyun --namespace=zhiliuyun-space \" \
               }"
   echo $json_output
   rm ${BASE_PATH}/check-kubernetes.sh
