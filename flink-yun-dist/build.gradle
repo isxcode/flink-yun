@@ -82,6 +82,9 @@ tasks.register('build_zhiliuyun', Tar) {
   from('zhiliuyun/bin') {
     into 'zhiliuyun/bin'
   }
+  from('zhiliuyun/conf') {
+    into 'zhiliuyun/conf'
+  }
   from(rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-main/src/main/resources/application-local.yml') {
     into 'zhiliuyun/conf'
   }
