@@ -44,7 +44,7 @@ agent_path="${home_path}/zhiliuyun-agent"
 source ${agent_path}/conf/agent-env.sh
 
 # 将文件解压到指定目录
-tar -xf /tmp/zhiliuyun-agent.tar.gz -C ${home_path} > /dev/null
+tar -xf ${BASE_PATH}/zhiliuyun-agent.tar.gz -C ${home_path} > /dev/null
 cp -r ${agent_path}/lib ${agent_path}/flink-min/lib
 
 # 进入代理目录,防止logs文件夹生成错位
@@ -64,6 +64,11 @@ else
 fi
 echo $! >${agent_path}/zhiliuyun-agent.pid
 
+# 如果用户需要默认flink
+if [ ${agent_type} = "flinkcluster" ]; then
+  nohup bash ${agent_path}/flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
+fi
+
 # 检查是否安装
 if [ -e "${agent_path}/zhiliuyun-agent.pid" ]; then
   pid=$(cat "${agent_path}/zhiliuyun-agent.pid")
@@ -80,14 +85,6 @@ if [ -e "${agent_path}/zhiliuyun-agent.pid" ]; then
               \"log\": \"已安装，请激活\" \
             }"
     echo $json_output
-  fi
-fi
-
-# flinkcluster模型,自动安装flink
-if [[ "$agent_type" == "flinkcluster" ]]; then
-  # 如果端口已启动,则不安装flink
-  if netstat -tln | awk '$4 ~ /:'8081'$/ {exit 1}'; then
-    nohup bash flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
   fi
 fi
 
