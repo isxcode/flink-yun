@@ -1,0 +1,20 @@
+dependencies {
+
+    api(project(':flink-yun-backend:flink-yun-api'))
+
+    implementation "org.apache.flink:flink-java:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-streaming-java:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-table-planner_${FLINK_SCALA_VERSION}:${FLINK_VERSION}"
+
+    implementation "org.apache.flink:flink-table-api-java-bridge:${FLINK_VERSION}"
+}
+
+jar {
+    archiveFileName = "flink-sql-execute-plugin.jar"
+    manifest {
+        attributes 'Main-Class': 'com.isxcode.acorn.execute.sql.ExecuteSqlJob'
+    }
+}
+

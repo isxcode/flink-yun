@@ -1,0 +1,25 @@
+${AnsiColor.MAGENTA}
+
+FFFFFFFFFFFFFFFFFFFFFFlllllll   iiii                   kkkkkkkk                YYYYYYY       YYYYYYY
+F::::::::::::::::::::Fl:::::l  i::::i                  k::::::k                Y:::::Y       Y:::::Y
+F::::::::::::::::::::Fl:::::l   iiii                   k::::::k                Y:::::Y       Y:::::Y
+FF::::::FFFFFFFFF::::Fl:::::l                          k::::::k                Y::::::Y     Y::::::Y
+  F:::::F       FFFFFF l::::l iiiiiiinnnn  nnnnnnnn     k:::::k    kkkkkkk     YYY:::::Y   Y:::::YYYuuuuuu    uuuuuunnnn  nnnnnnnn
+  F:::::F              l::::l i:::::in:::nn::::::::nn   k:::::k   k:::::k         Y:::::Y Y:::::Y   u::::u    u::::un:::nn::::::::nn
+  F::::::FFFFFFFFFF    l::::l  i::::in::::::::::::::nn  k:::::k  k:::::k           Y:::::Y:::::Y    u::::u    u::::un::::::::::::::nn
+  F:::::::::::::::F    l::::l  i::::inn:::::::::::::::n k:::::k k:::::k             Y:::::::::Y     u::::u    u::::unn:::::::::::::::n
+  F:::::::::::::::F    l::::l  i::::i  n:::::nnnn:::::n k::::::k:::::k               Y:::::::Y      u::::u    u::::u  n:::::nnnn:::::n
+  F::::::FFFFFFFFFF    l::::l  i::::i  n::::n    n::::n k:::::::::::k                 Y:::::Y       u::::u    u::::u  n::::n    n::::n
+  F:::::F              l::::l  i::::i  n::::n    n::::n k:::::::::::k                 Y:::::Y       u::::u    u::::u  n::::n    n::::n
+  F:::::F              l::::l  i::::i  n::::n    n::::n k::::::k:::::k                Y:::::Y       u:::::uuuu:::::u  n::::n    n::::n
+FF:::::::FF           l::::::li::::::i n::::n    n::::nk::::::k k:::::k               Y:::::Y       u:::::::::::::::uun::::n    n::::n
+F::::::::FF           l::::::li::::::i n::::n    n::::nk::::::k  k:::::k           YYYY:::::YYYY     u:::::::::::::::un::::n    n::::n
+F::::::::FF           l::::::li::::::i n::::n    n::::nk::::::k   k:::::k          Y:::::::::::Y      uu::::::::uu:::un::::n    n::::n
+FFFFFFFFFFF           lllllllliiiiiiii nnnnnn    nnnnnnkkkkkkkk    kkkkkkk         YYYYYYYYYYYYY        uuuuuuuu  uuuunnnnnn    nnnnnn
+
+${AnsiColor.YELLOW}
+项目: ${application.title}
+官网: ${application.website}
+描述: ${application.describe}
+
+${AnsiColor.WHITE}
