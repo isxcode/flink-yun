@@ -134,7 +134,7 @@ public class FlinkClusterAcorn implements AcornRun {
     @Override
     public StopJobRes stopJobReq(StopJobReq stopJobReq) {
 
-         stopJobReq.setFlinkHome(stopJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+        stopJobReq.setFlinkHome(stopJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
             + File.separator + "flink-min");
 
         String restUrl = getRestUrl(stopJobReq.getFlinkHome());

@@ -149,7 +149,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
         // 开始构造flinkSubmit
         SubmitJobReq submitJobReq = SubmitJobReq.builder().entryClass("com.isxcode.acorn.plugin.sql.execute.Job")
             .agentHomePath(engineNode.getAgentHomePath()).appResource("flink-sql-execute-plugin.jar")
-            .appName("zhiliuyun-job")
+            .appName("zhiliuyun-job").workInstanceId(workInstance.getId())
             .acornPluginReq(AcornPluginReq.builder().flinkSql(workRunContext.getScript()).build())
             .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
 
@@ -217,9 +217,9 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 }
 
                 // 获取日志并保存
-                GetJobLogReq getJobLogReq =
-                    GetJobLogReq.builder().flinkHome(engineNode.getFlinkHomePath()).jobId(submitJobRes.getJobId())
-                        .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
+                GetJobLogReq getJobLogReq = GetJobLogReq.builder().agentHomePath(engineNode.getAgentHomePath())
+                    .jobId(submitJobRes.getJobId()).workInstanceId(workInstance.getId())
+                    .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
                 GetJobLogRes getJobLogRes;
                 try {
                     getJobLogRes = HttpUtils.doPost(

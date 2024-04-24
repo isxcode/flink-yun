@@ -16,4 +16,8 @@ public class GetJobLogReq {
     private String flinkHome;
 
     private String agentType;
+
+    private String agentHomePath;
+
+    private String workInstanceId;
 }

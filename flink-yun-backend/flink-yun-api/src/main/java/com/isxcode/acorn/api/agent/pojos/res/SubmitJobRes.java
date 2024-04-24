@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class SubmitJobRes {
 
     public String jobId;
+
+    private String webUrl;
 }

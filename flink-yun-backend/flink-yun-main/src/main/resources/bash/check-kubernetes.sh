@@ -48,8 +48,6 @@ if [ ! -f "${agent_path}/conf/agent-env.sh" ]; then
   mkdir "${agent_path}/conf"
   touch "${agent_path}/conf/agent-env.sh"
   echo '#export JAVA_HOME=' >> "${agent_path}/conf/agent-env.sh"
-  echo '#export HADOOP_HOME=' >> "${agent_path}/conf/agent-env.sh"
-  echo '#export HADOOP_CONF_DIR=' >> "${agent_path}/conf/agent-env.sh"
 fi
 
 # 导入用户自己配置的环境变量
@@ -125,10 +123,10 @@ if ! kubectl cluster-info &>/dev/null; then
 fi
 
 # 执行拉取spark镜像命令
-if ! docker image inspect apache/spark:v3.1.3 &>/dev/null; then
+if ! docker image inspect apache/flink:1.18.1-scala_2.12 &>/dev/null; then
   json_output="{ \
             \"status\": \"INSTALL_ERROR\", \
-            \"log\": \"没有apache/spark:v3.1.3镜像，需要执行拉取镜像命令，docker pull apache/spark:v3.1.3\" \
+            \"log\": \"没有apache/flink:1.18.1-scala_2.12镜像，需要执行拉取镜像命令，docker pull apache/flink:1.18.1-scala_2.12\" \
           }"
   echo $json_output
   rm ${BASE_PATH}/check-kubernetes.sh
