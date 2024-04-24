@@ -25,7 +25,12 @@ flink-yun-backend/flink-yun-main/src/main/resources/agent
 flink-yun-vip
 
 # 资源文件不提交
-resources
+resources/file
+resources/jdbc
+resources/libs
+resources/license
+resources/tmp
+resources/cdc
 
 # flink-min不提交
 flink-yun-dist/flink-min
