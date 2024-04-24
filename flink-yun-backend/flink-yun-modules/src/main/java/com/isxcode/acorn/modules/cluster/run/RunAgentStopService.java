@@ -11,8 +11,10 @@ import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import java.io.File;
@@ -34,6 +36,8 @@ public class RunAgentStopService {
     private final SparkYunProperties sparkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
+
+    private final ClusterService clusterService;
 
     @Async("sparkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
@@ -66,9 +70,11 @@ public class RunAgentStopService {
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-stop.sh",
             sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh");
 
+        ClusterEntity cluster = clusterService.getCluster(engineNode.getClusterId());
+
         // 运行停止脚本
         String stopCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-stop.sh"
-            + " --home-path=" + engineNode.getAgentHomePath();
+            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-type=" + cluster.getClusterType().toLowerCase();
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果

@@ -69,12 +69,9 @@ else
 fi
 echo $! >${agent_path}/zhiliuyun-agent.pid
 
-# flinkcluster模型,自动安装flink
-if [[ "$agent_type" == "flinkcluster" ]]; then
-  # 如果端口已启动,则不安装flink
-  if netstat -tln | awk '$4 ~ /:'8081'$/ {exit 1}'; then
-    nohup bash flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
-  fi
+# 如果用户需要默认spark
+if [ ${agent_type} = "flinkcluster" ]; then
+  nohup bash ${agent_path}/flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
 fi
 
 # 返回结果
