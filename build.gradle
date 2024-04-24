@@ -130,3 +130,37 @@ tasks.register('backend', GradleBuild) {
 
     tasks = [":flink-yun-backend:flink-yun-main:bootRun"]
 }
+
+// gradle docker，构建docker镜像
+tasks.register('docker', Exec) {
+
+  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
+    commandLine 'sh', '-c', '''
+      docker buildx uninstallá
+      docker build -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile .
+     '''
+  } else {
+    commandLine 'cmd', '/c', '''
+      docker buildx uninstall
+      docker build -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile .
+    '''
+  }
+}
+
+// gradle deploy，发布docker镜像
+tasks.register('deploy', Exec) {
+
+  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
+    commandLine 'sh', '-c', '''
+      docker buildx install
+      docker buildx use zhiliuyun-builder
+      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile . --push
+    '''
+  } else {
+    commandLine 'cmd', '/c', '''
+      docker buildx install
+      docker buildx use zhiliuyun-builder
+      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile . --push
+    '''
+  }
+}
