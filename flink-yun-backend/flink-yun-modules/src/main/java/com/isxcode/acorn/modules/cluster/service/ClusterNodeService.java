@@ -1,5 +1,6 @@
 package com.isxcode.acorn.modules.cluster.service;
 
+import cn.hutool.system.SystemUtil;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
@@ -29,11 +30,14 @@ public class ClusterNodeService {
     /**
      * 获取代理安装路径
      *
-     * @param agentHomePath 代理的安装目录
-     * @param username 节点的用户名
+     * @param username      节点的用户名
      * @return 代理安装的路径
      */
-    public String getDefaultAgentHomePath(String agentHomePath, String username) {
+    public String getDefaultAgentHomePath(String username) {
+
+        if ("Mac OS X".equals(SystemUtil.getOsInfo().getName())) {
+            return "/Users/" + username;
+        }
 
         if ("root".equals(username)) {
             return "/root";
@@ -69,7 +73,7 @@ public class ClusterNodeService {
     }
 
     public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
-        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+                                ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();

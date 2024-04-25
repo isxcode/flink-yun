@@ -117,7 +117,7 @@ public class WorkBizService {
         if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())
             || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
-            || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+            || WorkType.FLINK_JAR.equals(addWorkReq.getWorkType())) {
             if (Strings.isEmpty(addWorkReq.getClusterId())) {
                 throw new IsxAppException("必须选择计算引擎");
             }
@@ -158,7 +158,7 @@ public class WorkBizService {
         if (WorkType.EXECUTE_FLINK_SQL.equals(addWorkReq.getWorkType())
             || WorkType.DATA_SYNC_JDBC.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
-            || WorkType.SPARK_JAR.equals(addWorkReq.getWorkType())) {
+            || WorkType.FLINK_JAR.equals(addWorkReq.getWorkType())) {
             workConfigService.initClusterConfig(workConfig, addWorkReq.getClusterId(), addWorkReq.getClusterNodeId(),
                 addWorkReq.getEnableHive(), addWorkReq.getDatasourceId());
         }
@@ -351,7 +351,8 @@ public class WorkBizService {
 
             // 作业类型不对返回
             if (!WorkType.EXECUTE_FLINK_SQL.equals(workEntity.getWorkType())
-                && !WorkType.DATA_SYNC_JDBC.equals(workEntity.getWorkType())) {
+                && !WorkType.DATA_SYNC_JDBC.equals(workEntity.getWorkType())
+                && !WorkType.FLINK_JAR.equals(workEntity.getWorkType())) {
                 throw new IsxAppException("只有sparkSql作业才支持中止");
             }
 

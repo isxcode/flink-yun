@@ -123,10 +123,10 @@ if ! kubectl cluster-info &>/dev/null; then
 fi
 
 # 执行拉取flink镜像命令
-if ! docker image inspect apache/flink:1.18.1-scala_2.12 &>/dev/null; then
+if ! docker image inspect flink:1.18.1-scala_2.12 &>/dev/null; then
   json_output="{ \
             \"status\": \"INSTALL_ERROR\", \
-            \"log\": \"没有apache/flink:1.18.1-scala_2.12镜像，需要执行拉取镜像命令，docker pull apache/flink:1.18.1-scala_2.12\" \
+            \"log\": \"没有flink:1.18.1-scala_2.12镜像，需要执行拉取镜像命令，docker pull flink:1.18.1-scala_2.12\" \
           }"
   echo $json_output
   rm ${BASE_PATH}/check-kubernetes.sh
