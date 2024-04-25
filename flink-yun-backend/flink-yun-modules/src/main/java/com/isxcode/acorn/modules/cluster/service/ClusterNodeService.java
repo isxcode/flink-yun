@@ -30,7 +30,7 @@ public class ClusterNodeService {
     /**
      * 获取代理安装路径
      *
-     * @param username      节点的用户名
+     * @param username 节点的用户名
      * @return 代理安装的路径
      */
     public String getDefaultAgentHomePath(String username) {
@@ -73,7 +73,7 @@ public class ClusterNodeService {
     }
 
     public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
-                                ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();

@@ -86,10 +86,10 @@ public class FlinkJarExecutor extends WorkExecutor {
     private final FileRepository fileRepository;
 
     public FlinkJarExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, IsxAppProperties isxAppProperties,
-                            Locker locker, HttpUrlUtils httpUrlUtils, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils,
-                            FileService fileService, FileRepository fileRepository) {
+        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+        WorkRepository workRepository, WorkConfigRepository workConfigRepository, IsxAppProperties isxAppProperties,
+        Locker locker, HttpUrlUtils httpUrlUtils, ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils,
+        FileService fileService, FileRepository fileRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository);
         this.workInstanceRepository = workInstanceRepository;
@@ -127,8 +127,7 @@ public class FlinkJarExecutor extends WorkExecutor {
 
         // 检测集群中是否有合法节点
         List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository
-            .findAllByClusterIdAndStatus(calculateEngineEntityOptional.get().getId(),
-                ClusterNodeStatus.RUNNING);
+            .findAllByClusterIdAndStatus(calculateEngineEntityOptional.get().getId(), ClusterNodeStatus.RUNNING);
         if (allEngineNodes.isEmpty()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "申请资源失败 : 集群不存在可用节点，请切换一个集群\n");
         }
@@ -159,8 +158,7 @@ public class FlinkJarExecutor extends WorkExecutor {
         ScpFileEngineNodeDto scpFileEngineNodeDto =
             clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
-        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator
-            + "file"
+        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
             + File.separator + TENANT_ID.get();
         try {
             scpJar(scpFileEngineNodeDto, fileDir + File.separator + jarFile.getId(),
@@ -186,16 +184,11 @@ public class FlinkJarExecutor extends WorkExecutor {
         }
 
         // 开始构造SparkSubmit
-        SubmitJobReq submitJobReq = SubmitJobReq.builder()
-            .entryClass(jarJobConfig.getMainClass())
-            .appName(jarJobConfig.getAppName())
-            .appResource(jarFile.getId() + ".jar")
-            .agentHomePath(engineNode.getAgentHomePath())
-            .workType(WorkType.FLINK_JAR)
-            .workInstanceId(workInstance.getId())
-            .programArgs(Arrays.asList(jarJobConfig.getArgs()))
-            .agentType(calculateEngineEntityOptional.get().getClusterType())
-            .build();
+        SubmitJobReq submitJobReq = SubmitJobReq.builder().entryClass(jarJobConfig.getMainClass())
+            .appName(jarJobConfig.getAppName()).appResource(jarFile.getId() + ".jar")
+            .agentHomePath(engineNode.getAgentHomePath()).workType(WorkType.FLINK_JAR)
+            .workInstanceId(workInstance.getId()).programArgs(Arrays.asList(jarJobConfig.getArgs()))
+            .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
