@@ -91,7 +91,7 @@ public class KubernetesAcorn implements AcornRun {
 
         File[] jarFiles = new File(
             submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "lib")
-            .listFiles();
+                .listFiles();
         if (jarFiles != null) {
             for (File jarFile : jarFiles) {
                 if (jarFile.getName().contains("fastjson") || jarFile.getName().contains("flink")
@@ -112,7 +112,7 @@ public class KubernetesAcorn implements AcornRun {
         // 判断pod文件夹是否存在
         if (!new File(
             submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod")
-            .exists()) {
+                .exists()) {
             try {
                 Files.createDirectories(Paths.get(submitJobReq.getAgentHomePath() + File.separator
                     + PathConstants.AGENT_PATH_NAME + File.separator + "pod"));
@@ -161,7 +161,7 @@ public class KubernetesAcorn implements AcornRun {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitJobRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
@@ -182,10 +182,10 @@ public class KubernetesAcorn implements AcornRun {
             String command = String.format(getStatusJobManagerFormat, getJobInfoReq.getJobId());
             Process process = Runtime.getRuntime().exec(command);
             try (InputStream inputStream = process.getInputStream();
-                 InputStream errStream = process.getErrorStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                 BufferedReader errReader =
-                     new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
+                InputStream errStream = process.getErrorStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                BufferedReader errReader =
+                    new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
 
                 while ((line = reader.readLine()) != null) {
                     errLog.append(line).append("\n");
@@ -274,7 +274,7 @@ public class KubernetesAcorn implements AcornRun {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.killCluster(stopJobReq.getJobId());
             return StopJobRes.builder().build();
         } catch (Exception e) {
