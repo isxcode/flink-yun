@@ -77,7 +77,7 @@ public class ClusterNodeBizService {
         clusterNode.setPort(Strings.isEmpty(addClusterNodeReq.getPort()) ? "22" : addClusterNodeReq.getPort().trim());
 
         // 设置默认代理安装地址
-        clusterNode.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getAgentHomePath(),
+        clusterNode.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(
             addClusterNodeReq.getUsername().trim()));
 
         // 添加特殊逻辑，从备注中获取安装路径
@@ -112,7 +112,7 @@ public class ClusterNodeBizService {
         ClusterNodeEntity node = engineNodeMapper.updateNodeReqToNodeEntity(updateClusterNodeReq, clusterNode);
 
         // 设置安装地址
-        node.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(updateClusterNodeReq.getAgentHomePath(),
+        node.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(
             updateClusterNodeReq.getUsername()));
 
         // 添加特殊逻辑，从备注中获取安装路径

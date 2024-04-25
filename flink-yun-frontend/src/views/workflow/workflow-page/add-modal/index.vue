@@ -36,7 +36,7 @@
         </el-select>
       </el-form-item>
       <template v-if="renderSense === 'new'">
-        <el-form-item label="计算集群" prop="clusterId" v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'FLINK_SQL', 'SPARK_JAR'].includes(formData.workType)">
+        <el-form-item label="计算集群" prop="clusterId" v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'FLINK_SQL', 'FLINK_JAR'].includes(formData.workType)">
           <el-select
             v-model="formData.clusterId"
             placeholder="请选择"
@@ -203,7 +203,7 @@ const typeList = reactive([
   },
   {
     label: '自定义作业',
-    value: 'SPARK_JAR'
+    value: 'FLINK_JAR'
   },
   {
     label: '接口调用作业',

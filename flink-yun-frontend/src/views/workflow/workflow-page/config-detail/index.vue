@@ -324,7 +324,7 @@
             </el-form>
           </div>
           <!-- 依赖配置 -->
-          <div class="config-item" v-if="['FLINK_SQL', 'SPARK_JAR', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'FLINK_JAR', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">依赖配置</div>
             <el-form
               ref="syncRuleForm"

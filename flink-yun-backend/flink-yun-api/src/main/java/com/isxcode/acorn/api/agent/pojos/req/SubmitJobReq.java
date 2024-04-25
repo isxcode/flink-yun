@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -26,4 +28,8 @@ public class SubmitJobReq {
     private String agentHomePath;
 
     private String workInstanceId;
+
+    private String workType;
+
+    private List<String> programArgs;
 }

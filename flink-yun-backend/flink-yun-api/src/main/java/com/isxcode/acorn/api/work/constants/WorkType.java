@@ -36,9 +36,9 @@ public interface WorkType {
     String PYTHON = "PYTHON";
 
     /**
-     * 用户自定义spark作业.
+     * 用户自定义flink作业.
      */
-    String SPARK_JAR = "SPARK_JAR";
+    String FLINK_JAR = "FLINK_JAR";
 
     /**
      * spark容器sql.

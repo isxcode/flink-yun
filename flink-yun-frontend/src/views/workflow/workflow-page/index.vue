@@ -137,7 +137,7 @@
                 </template>
                 <template v-else>
                     <spark-jar
-                        v-if="showWorkItem && workConfig.workType === 'SPARK_JAR'"
+                        v-if="showWorkItem && workConfig.workType === 'FLINK_JAR'"
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
                         @back="backToFlow"
@@ -151,7 +151,7 @@
                         @locationNode="locationNode"
                     ></WorkApi>
                     <WorkItem
-                        v-if="showWorkItem && workConfig.workType !== 'DATA_SYNC_JDBC' && workConfig.workType !== 'SPARK_JAR'"
+                        v-if="showWorkItem && workConfig.workType !== 'DATA_SYNC_JDBC' && workConfig.workType !== 'FLINK_JAR'"
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
                         @back="backToFlow"
@@ -265,7 +265,7 @@ const typeList = reactive([
   },
   {
     label: '自定义作业',
-    value: 'SPARK_JAR'
+    value: 'FLINK_JAR'
   },
   {
     label: '接口调用作业',

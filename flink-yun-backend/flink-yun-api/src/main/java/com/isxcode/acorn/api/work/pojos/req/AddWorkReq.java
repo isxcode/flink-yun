@@ -20,7 +20,7 @@ public class AddWorkReq {
     @NotEmpty(message = "作业类型不能为空")
     @Pattern(
         regexp = "^(" + WorkType.EXECUTE_FLINK_SQL
-            + "|EXE_JDBC|QUERY_JDBC|DATA_SYNC_JDBC|BASH|PYTHON|SPARK_JAR|SPARK_CONTAINER_SQL|API|PRQL)$",
+            + "|EXE_JDBC|QUERY_JDBC|DATA_SYNC_JDBC|BASH|PYTHON|FLINK_JAR|SPARK_CONTAINER_SQL|API|PRQL)$",
         message = "作业类型不支持")
     private String workType;
 
