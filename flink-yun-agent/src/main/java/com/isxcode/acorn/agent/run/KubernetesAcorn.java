@@ -10,6 +10,7 @@ import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.StopJobRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
 import com.isxcode.acorn.api.api.constants.PathConstants;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -45,8 +46,13 @@ public class KubernetesAcorn implements AcornRun {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
-            Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
+
+        if (WorkType.FLINK_JAR.equals(submitJobReq.getWorkType())) {
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitJobReq.getProgramArgs());
+        } else {
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
+                Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
+        }
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
@@ -56,7 +62,7 @@ public class KubernetesAcorn implements AcornRun {
             KubernetesConfigOptions.ImagePullPolicy.IfNotPresent);
         flinkConfig.set(KubernetesConfigOptions.NAMESPACE, "zhiliuyun-space");
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_SERVICE_ACCOUNT, "zhiliuyun");
-        flinkConfig.set(KubernetesConfigOptions.CONTAINER_IMAGE, "apache/flink:1.18.1-scala_2.12");
+        flinkConfig.set(KubernetesConfigOptions.CONTAINER_IMAGE, "flink:1.18.1-scala_2.12");
         flinkConfig.set(KubernetesConfigOptions.TASK_MANAGER_CPU, 2.0);
 
         String podTemplate = "apiVersion: v1\n" + "kind: Pod\n" + "metadata:\n" + "  name: pod-template\n" + "spec:\n"
@@ -68,9 +74,17 @@ public class KubernetesAcorn implements AcornRun {
         volumeMounts.add("       - name: flink-log\n" + "          mountPath: /log\n");
 
         List<String> volumes = new ArrayList<>();
-        volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
-            + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins" + File.separator
-            + submitJobReq.getAppResource() + "\n");
+
+        if (WorkType.FLINK_JAR.equals(submitJobReq.getWorkType())) {
+            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
+                + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "file" + File.separator
+                + submitJobReq.getAppResource() + "\n");
+        } else {
+            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
+                + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins" + File.separator
+                + submitJobReq.getAppResource() + "\n");
+        }
+
         volumes.add("   - name: flink-log\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
             + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "k8s-logs" + File.separator
             + submitJobReq.getWorkInstanceId() + "\n");
@@ -215,6 +229,21 @@ public class KubernetesAcorn implements AcornRun {
         if (logFiles != null) {
             for (File logFile : logFiles) {
                 if (logFile.getName().contains("taskmanager")) {
+                    try {
+                        FileReader fileReader = new FileReader(logFile);
+                        BufferedReader bufferedReader = new BufferedReader(fileReader);
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            logBuilder.append(line).append("\n");
+                        }
+                        bufferedReader.close();
+                        fileReader.close();
+                    } catch (IOException e) {
+                        throw new AgentResponseException(e.getMessage());
+                    }
+                    break;
+                }
+                if (logFile.getName().contains("application")) {
                     try {
                         FileReader fileReader = new FileReader(logFile);
                         BufferedReader bufferedReader = new BufferedReader(fileReader);

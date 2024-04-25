@@ -324,7 +324,7 @@ function getTypeData(e: string) {
     },
     {
       label: '自定义作业',
-      value: 'SPARK_JAR'
+      value: 'FLINK_JAR'
     }
   ]
   return typeList.find(itme => itme.value === e)?.label

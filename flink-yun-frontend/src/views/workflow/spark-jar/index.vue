@@ -19,7 +19,7 @@
                             </el-icon>
                             <span class="btn-text">运行</span>
                         </div>
-                        <div v-if="workConfig.workType === 'SPARK_JAR'" class="btn-box" @click="terWorkData">
+                        <div v-if="workConfig.workType === 'FLINK_JAR'" class="btn-box" @click="terWorkData">
                             <el-icon v-if="!terLoading">
                                 <Close />
                             </el-icon>
@@ -203,7 +203,7 @@ function initData(id?: string, tableLoading?: boolean) {
                 changeStatus.value = false
                 containerInstanceRef.value.initData(id || instanceId.value, (status: string) => {
                     // 运行结束
-                    if (workConfig.workType === 'SPARK_JAR') {
+                    if (workConfig.workType === 'FLINK_JAR') {
                         tabList.forEach((item: any) => {
                             if (['RunningLog', 'TotalDetail'].includes(item.code)) {
                                 item.hide = false
