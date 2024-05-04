@@ -104,19 +104,19 @@ fi
 
 # prql jar依赖文件
 if [ ! -f "${LIBS_DIR}"/prql-java-0.5.2.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
   echo "prql-java-0.5.2.jar下载成功"
 fi
 
 # prql 二进制文件(mac arm64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
   echo "prql_java-osx-arm64.dylib下载成功"
 fi
 
 # prql 二进制文件(linux amd64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
   echo "prql_java-linux64.so下载成功"
 fi
 
