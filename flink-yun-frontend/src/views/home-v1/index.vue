@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-16 22:12:11
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /spark-yun/spark-yun-website/src/views/home/index.vue
+ * @FilePath: /flink-yun/flink-yun-website/src/views/home/index.vue
 -->
 <template>
   <div class="zqy-home">

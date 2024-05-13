@@ -65,7 +65,7 @@ spring:
         web-allow-others: true
 
   quartz:
-    scheduler-name: spark-yun-quartz-scheduler
+    scheduler-name: flink-yun-quartz-scheduler
     job-store-type: jdbc
     jdbc:
       initialize-schema: never

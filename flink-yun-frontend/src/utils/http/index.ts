@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-05 22:32:18
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /spark-yun/spark-yun-website/src/utils/http/index.ts
+ * @FilePath: /flink-yun/flink-yun-website/src/utils/http/index.ts
  */
 import { createAxios } from '@/plugins/http-request'
 import router from '@/router'

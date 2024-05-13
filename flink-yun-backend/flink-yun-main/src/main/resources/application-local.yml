@@ -35,7 +35,7 @@ logging:
       max-history: 30
       max-file-size: 10MB
 
-spark-yun:
+flink-yun:
   default-agent-port: 30178
   tmp-dir: /tmp
   resource-dir: /var/lib/zhiqingyun

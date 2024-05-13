@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-05 22:33:09
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /spark-yun/spark-yun-website/.eslintrc.js
+ * @FilePath: /flink-yun/flink-yun-website/.eslintrc.js
  */
 module.exports = {
   root: true,
