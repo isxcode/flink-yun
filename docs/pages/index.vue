@@ -50,19 +50,19 @@
                     相关技术
                 </div>
                 <div class="tech-img-div">
-                    <img class="tech-img" @click="handleK8sClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-k8s.png" alt="">
-                    <img class="tech-img" @click="handleHadoopClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-hadoop.png" alt="">
-                    <img class="tech-img" @click="handleFlinkClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-flink.png" alt="">
-                    <img class="tech-img" @click="handleEsClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-es.png" alt="">
-                    <img class="tech-img" @click="handleDorisClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-doris.png" alt="">
-                    <img class="tech-img" @click="handleMongoClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/t-mongodb.png" alt="">
+                    <img class="tech-img" @click="handleK8sClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
+                    <img class="tech-img" @click="handleHadoopClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hadoop.png" alt="">
+                    <img class="tech-img" @click="handleFlinkClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-flink.png" alt="">
+                    <img class="tech-img" @click="handleEsClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-es.png" alt="">
+                    <img class="tech-img" @click="handleDorisClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-doris.png" alt="">
+                    <img class="tech-img" @click="handleMongoClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-mongodb.png" alt="">
                 </div>
             </div>
         </div>
         <div class="module-feat-left">
             <div class="content">
                 <div class="left">
-                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-1.jpg" alt="">
+                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-1.jpg" alt="">
                 </div>
                 <div class="right">
                     <div class="line-1">多平台部署，从不娇生惯养</div>
@@ -74,7 +74,7 @@
         <div class="module-feat-right">
             <div class="content">
                 <div class="right-phone">
-                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-2.jpg" alt="">
+                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
                 </div>
                 <div class="left">
                     <div class="line-1">驱动上传，任何姿势都能连</div>
@@ -82,14 +82,14 @@
                     <div class="line-3" @click="handleQuickClick">立即体验</div>
                 </div>
                 <div class="right">
-                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-2.jpg" alt="">
+                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
                 </div>
             </div>
         </div>
         <div class="module-feat-left">
             <div class="content">
                 <div class="left">
-                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-3.jpg" alt="">
+                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
                 </div>
                 <div class="right">
                     <div class="line-1">创建租户，再大也能装下</div>
@@ -103,23 +103,23 @@
                 <div class="line-1">数据创造价值，大数据创造大价值</div>
                 <div class="line-2">AI将至，至轻云与您携手实现企业级大数据平台落地</div>
                 <div class="business-img">
-                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-1.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-2.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-3.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-4.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-5.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-6.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-7.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-8.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-9.png" alt="">
-                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/b-10.png" alt="">
+                    <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-1.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-2.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-3.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-4.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-5.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-6.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-7.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-8.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-9.png" alt="">
+                    <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-10.png" alt="">
                 </div>
             </div>
         </div>
         <div class="module-feat-right">
             <div class="content">
                 <div class="right-phone">
-                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-4.jpg" alt="">
+                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
                 </div>
                 <div class="left">
                     <div class="line-1">编排作业，横竖都能拖拽</div>
@@ -127,14 +127,14 @@
                     <div class="line-3" @click="handleQuickClick">立即体验</div>
                 </div>
                 <div class="right">
-                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-4.jpg" alt="">
+                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
                 </div>
             </div>
         </div>
         <div class="module-feat-left">
             <div class="content">
                 <div class="left">
-                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/p-5.jpg" alt="">
+                    <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-5.jpg" alt="">
                 </div>
                 <div class="right">
                     <div class="line-1">能写代码？不单单只有FlinkSql</div>
@@ -188,8 +188,7 @@ const toggleVideo = () => {
 onMounted(() => {
     const art = new Artplayer({
         container: '.artplayer-app',
-        url: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product.mp4',
-        // poster: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product.png',
+        url: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/product.mp4',
         fullscreen: true,
         fullscreenWeb: true,
         pip: true,
@@ -307,7 +306,7 @@ $module-intro-img-width: 600px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-0.png');
+        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/bg-0.png');
         padding-top: 200px;
         position: relative;
         overflow: hidden;
@@ -474,7 +473,7 @@ $module-intro-img-width: 600px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-2.png');
+        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/bg-2.png');
         display: flex;
         align-items: center;
         justify-content: center;
@@ -617,7 +616,7 @@ $module-intro-img-width: 600px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-1.png');
+    background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/bg-1.png');
     display: flex;
     align-items: center;
     justify-content: center;
@@ -788,7 +787,7 @@ $module-intro-img-width: 600px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-2.png');
+            background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/bg-2.png');
             align-items: center;
 
             .content {
@@ -926,7 +925,7 @@ $module-intro-img-width: 600px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/bg-1.png');
+        background-image: url('https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/bg-1.png');
         display: flex;
         align-items: center;
         justify-content: center;

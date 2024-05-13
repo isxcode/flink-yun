@@ -164,3 +164,23 @@ tasks.register('deploy', Exec) {
     '''
   }
 }
+
+// gradle website，单独启动官网
+tasks.register('website', Exec) {
+
+  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
+    commandLine 'sh', '-c', '''
+      cd docs
+      rm -rf node_modules
+      pnpm install --force
+      pnpm run dev
+     '''
+  } else {
+    commandLine 'cmd', '/c', '''
+      cd docs
+      rm -rf node_modules
+      pnpm install --force
+      pnpm run dev
+     '''
+  }
+}
