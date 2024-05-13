@@ -12,7 +12,7 @@ title: "Gitpod部署"
 
 ![20230621165436](https://img.isxcode.com/picgo/20230621165436.png)
 
-> 输入仓库地址： https://github.com/isxcode/spark-yun
+> 输入仓库地址： https://github.com/isxcode/flink-yun
 
 ![20230621165609](https://img.isxcode.com/picgo/20230621165609.png)
 
@@ -40,13 +40,13 @@ title: "Gitpod部署"
 cd /tmp
 nohup wget https://archive.apache.org/dist/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz >> download_spark.log 2>&1 &  
 tail -f download_spark.log
-tar vzxf spark-3.4.0-bin-hadoop3.tgz --strip-components=1 -C /workspace/spark-yun/spark-yun-dist/src/main/spark-min
+tar vzxf spark-3.4.0-bin-hadoop3.tgz --strip-components=1 -C /workspace/flink-yun/flink-yun-dist/src/main/spark-min
 ```
 
 > 重启项目即可
 
 ```bash
-cd /workspace/spark-yun/
+cd /workspace/flink-yun/
 ./gradlew 0-快速开始
 ```
 
@@ -69,14 +69,14 @@ cat /home/gitpod/.ssh/id_rsa.pub
 ![20230621172445](https://img.isxcode.com/picgo/20230621172445.png)
 
 ```bash
-cd /workspace/spark-yun/
-rm -rf spark-yun-vip
-git clone git@github.com:isxcode/spark-yun-vip.git
+cd /workspace/flink-yun/
+rm -rf flink-yun-vip
+git clone git@github.com:isxcode/flink-yun-vip.git
 ```
 
 > 重启项目即可
 
 ```bash
-cd /workspace/spark-yun/
+cd /workspace/flink-yun/
 ./gradlew 0-快速开始
 ```
