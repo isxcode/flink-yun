@@ -4,7 +4,7 @@
 
     <div class="content">
       <div class="left">
-        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun-logo.jpg" alt=""/>
+        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/logo.jpg" alt=""/>
         <div class="logo-name">
           至爻数据
         </div>
@@ -18,7 +18,9 @@
           <div class="title">产品</div>
           <div class="link" @click="clickZhiqingyun">至轻云</div>
           <div class="link" @click="clickZhiliuyun">至流云</div>
-          <div class="link" @click="clickOther">至慧云</div>
+          <div class="link" @click="clickZhishiyun">至视云</div>
+          <div class="link" @click="clickZhishuyun">至数云</div>
+          <div class="link" @click="clickZhihuiyun">至慧云</div>
           <div class="link" @click="clickOther">更多</div>
         </div>
         <div class="column">
@@ -35,11 +37,14 @@
           <div class="link" @click="clickBlogs">博客</div>
           <div class="link" @click="clickFeishu">飞书文档</div>
           <div class="link" @click="clickDockerHub">Docker hub</div>
+          <div class="link" @click="downloadPackage">安装包下载</div>
+          <div class="link" @click="downloadLicense">许可证下载</div>
         </div>
         <div class="column">
           <div class="title">关于我们</div>
           <div class="link" @click="clickOther">至爻简介</div>
           <div class="link" @click="clickOther">加入我们</div>
+          <div class="link" @click="clickGithubProject">开发进度</div>
         </div>
         <div class="column">
           <div class="title">联系我们</div>
@@ -213,7 +218,6 @@ $primary-color: #7573d1;
     height: 50px;
     line-height: 50px;
     text-align: center;
-    border-top: 1px solid #e5e5e5;
     background: #bbabf0;
 
     .content {
@@ -353,12 +357,28 @@ function clickOther() {
   })
 }
 
+function clickGithubProject() {
+  window.open("https://github.com/orgs/isxcode/projects/21");
+}
+
 function clickGitee() {
   window.open("https://gitee.com/isxcode/spark-yun");
 }
 
 function clickZhiqingyun() {
   window.open("https://zhiqingyun.isxcode.com");
+}
+
+function clickZhishuyun() {
+  window.open("https://zhishuyun.isxcode.com");
+}
+
+function clickZhishiyun() {
+  window.open("https://zhishiyun.isxcode.com");
+}
+
+function clickZhihuiyun() {
+  window.open("https://zhihuiyun.isxcode.com");
 }
 
 function clickGithub() {
@@ -379,6 +399,14 @@ function clickLinked() {
 
 function clickDockerHub() {
   window.open("https://hub.docker.com/r/isxcode/zhiqingyun");
+}
+
+function downloadLicense() {
+  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/license.lic");
+}
+
+function downloadPackage() {
+  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz");
 }
 
 function clickFeishu() {

@@ -33,7 +33,7 @@ cd "${BASE_PATH}" || exit
 # 创建tmp目录
 TMP_DIR="${BASE_PATH}"/resources/tmp
 FLINK_MIN_FILE=flink-1.18.1-bin-scala_2.12.tgz
-FLINK_MIN_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/flink-1.18.1-bin-scala_2.12.tgz
+FLINK_MIN_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/flink-1.18.1-bin-scala_2.12.tgz
 FLINK_MIN_DIR="${BASE_PATH}"/flink-yun-dist/flink-min
 
 # 如果TMP_DIR目录不存在则新建
@@ -77,7 +77,7 @@ fi
 
 # 下载mysql8驱动
 if [ ! -f "${CDC_DIR}"/flink-connector-jdbc-3.1.2-1.18.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/flink-connector-jdbc-3.1.2-1.18.jar -o ${CDC_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/flink-connector-jdbc-3.1.2-1.18.jar -o ${CDC_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
   echo "flink-connector-jdbc-3.1.2-1.18.jar下载成功"
 fi
 
@@ -90,7 +90,7 @@ fi
 
 # 下载mysql8驱动
 if [ ! -f "${JDBC_DIR}"/mysql-connector-j-8.1.0.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/mysql-connector-j-8.1.0.jar -o ${JDBC_DIR}/mysql-connector-j-8.1.0.jar
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/mysql-connector-j-8.1.0.jar -o ${JDBC_DIR}/mysql-connector-j-8.1.0.jar
   echo "mysql-connector-j-8.1.0.jar驱动下载成功"
 fi
 
@@ -104,19 +104,19 @@ fi
 
 # prql jar依赖文件
 if [ ! -f "${LIBS_DIR}"/prql-java-0.5.2.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
   echo "prql-java-0.5.2.jar下载成功"
 fi
 
 # prql 二进制文件(mac arm64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
   echo "prql_java-osx-arm64.dylib下载成功"
 fi
 
 # prql 二进制文件(linux amd64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
+  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
   echo "prql_java-linux64.so下载成功"
 fi
 
