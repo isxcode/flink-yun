@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-05 22:10:41
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /spark-yun/spark-yun-website/.prettierrc.js
+ * @FilePath: /flink-yun/flink-yun-website/.prettierrc.js
  */
 module.exports = {
   useTabs: false,

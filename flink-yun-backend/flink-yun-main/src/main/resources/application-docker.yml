@@ -28,7 +28,7 @@ logging:
   level:
     root: info
 
-spark-yun:
+flink-yun:
   default-agent-port: 30178
   tmp-dir: /tmp
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "spark-yun")
+@ConfigurationProperties(prefix = "flink-yun")
 @EnableConfigurationProperties(SparkYunProperties.class)
 public class SparkYunProperties {
 
