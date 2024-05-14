@@ -7,7 +7,7 @@
                         至流云
                     </div>
                     <div class="slogan">
-                        企业级流式大数据平台
+                        企业级流数据分析平台
                     </div>
                     <div class="command">
                         <p id="command-shell">docker run -p 8080:8080 isxcode/zhiliuyun</p>
@@ -41,7 +41,7 @@
                     选择至流云
                 </div>
                 <div class="why-content">
-                    至流云是一款企业级流式大数据平台。具有一键Docker部署，开箱即用特色。无需额外大数据组件安装，即可快速实现企业级大数据离线ETL、实时计算、复杂作业运行等场景。项目持续更新迭代，源码永久免费开源。助力企业快速处理海量数据，获得更多商业价值。
+                    至流云是一款企业级流数据分析平台。具有一键Docker部署，开箱即用特色。无需额外大数据组件安装，即可快速实现企业级大数据离线ETL、实时计算、复杂作业运行等场景。项目持续更新迭代，源码永久免费开源。助力企业快速处理海量数据，获得更多商业价值。
                 </div>
                 <div class="why-content-mobile">
                     至流云是一款超轻量级、企业级大数据平台。具有一键Docker部署，开箱即用特色。无需额外大数据组件安装，即可快速实现企业级大数据离线ETL、实时计算、复杂作业运行等场景。
@@ -101,7 +101,7 @@
         <div class="module-business">
             <div class="content">
                 <div class="line-1">数据创造价值，大数据创造大价值</div>
-                <div class="line-2">AI将至，至轻云与您携手实现企业级大数据平台落地</div>
+                <div class="line-2">AI已至，至流云与您携手实现企业级大数据平台落地</div>
                 <div class="business-img">
                     <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-1.png" alt="">
                     <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-2.png" alt="">
@@ -166,8 +166,8 @@ definePageMeta({
 useSeoMeta({
     title: "至流云",
     ogTitle: "至流云",
-    description: "打造企业级流式大数据平台",
-    ogDescription: "打造企业级流式大数据平台",
+    description: "打造企业级流数据分析平台",
+    ogDescription: "打造企业级流数据分析平台",
 });
 
 const isMobile = useMediaQuery('(max-width: 767px)')

@@ -16,7 +16,7 @@
       <div class="right">
         <div class="column">
           <div class="title">产品</div>
-          <div class="link" @click="clickZhiqingyun">至轻云</div>
+          <div class="link" @click="clickZhiqingyun">至流云</div>
           <div class="link" @click="clickZhiliuyun">至流云</div>
           <div class="link" @click="clickZhishiyun">至视云</div>
           <div class="link" @click="clickZhishuyun">至数云</div>
@@ -218,7 +218,7 @@ $primary-color: #7573d1;
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #bbabf0;
+    background: #dbd2fa;
 
     .content {
       width: 130px;
