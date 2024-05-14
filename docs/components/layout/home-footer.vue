@@ -35,7 +35,6 @@
           <div class="title">资源</div>
           <div class="link" @click="clickDocs">产品手册</div>
           <div class="link" @click="clickBlogs">博客</div>
-          <div class="link" @click="clickFeishu">飞书文档</div>
           <div class="link" @click="clickDockerHub">Docker hub</div>
           <div class="link" @click="downloadPackage">安装包下载</div>
           <div class="link" @click="downloadLicense">许可证下载</div>
@@ -193,12 +192,19 @@ $primary-color: #7573d1;
   font-display: swap;
 }
 
-/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: "阿里巴巴普惠体 2.0 45 Light";
   font-weight: 300;
   src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/cHPsZ2tb5Gxv.woff2") format("woff2"),
   url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/F8LRQLgsPF37.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "阿里巴巴普惠体 2.0 45 Light";
+  font-weight: 300;
+  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/2zShG9N1CLyU.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/QWhJMtmtg3dt.woff") format("woff");
   font-display: swap;
 }
 
