@@ -15,6 +15,6 @@ public class BasePageRequest {
     @NotNull(message = "pageSize不能为空")
     private Integer pageSize;
 
-    @Schema(title = "搜索内容", example = "至轻云")
+    @Schema(title = "搜索内容", example = "至流云")
     private String searchKeyWord;
 }

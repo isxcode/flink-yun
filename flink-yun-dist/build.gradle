@@ -31,7 +31,7 @@ tasks.register('build_agent_plugins', Copy) {
   into 'build/zhiliuyun-agent/plugins'
 }
 
-// 构建至轻云代理
+// 构建至流云代理
 tasks.register('build_agent', Tar) {
 
   mustRunAfter(":flink-yun-frontend:make")
@@ -71,7 +71,7 @@ tasks.register('build_agent', Tar) {
   }
 }
 
-// 构建至轻云
+// 构建至流云
 tasks.register('build_zhiliuyun', Tar) {
 
   mustRunAfter(":flink-yun-backend:make")
