@@ -18,7 +18,7 @@
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/isxcode/flink-yun)
 ![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/flink-yun)
 ![GitHub forks](https://img.shields.io/github/forks/isxcode/flink-yun)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_small)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_shield&issueType=license)
 ![GitHub License](https://img.shields.io/github/license/isxcode/flink-yun)
 
 </div>
@@ -26,7 +26,6 @@
 ### 产品体验
 
 - 演示环境：https://zhiliuyun-demo.isxcode.com
-- 暂不开放
 
 ### 产品特色
 
@@ -75,4 +74,4 @@ cd flink-yun
 邮箱：hello@isxcode.com <br/>
 微信公众号：<br/>
 
-<img width="200" alt="image" src="https://github.com/ispong/flink-yun/assets/34756621/ae6323bf-3455-434f-a919-949af1eca11f">
+<img width="200" alt="image" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiyao/qrcode_for_8.jpg">
