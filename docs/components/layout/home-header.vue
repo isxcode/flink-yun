@@ -1,4 +1,7 @@
 <template>
+   <div ref="headerFilterRef" class="backdrop-blur">
+
+  </div>
   <header ref="headerRef" class="home-header">
     <div class="content">
       <div class="right">
@@ -48,6 +51,8 @@ function handleLangChange(lang: string) {
 
 const headerRef = ref<HTMLElement | null>(null);
 
+const headerFilterRef = ref<HTMLElement | null>(null);
+
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
 });
@@ -65,13 +70,14 @@ function handleScroll() {
     headerRef.value!.style.height = "60px";
     headerRef.value!.style.boxShadow = "0 2px 4px -1px rgba(0,0,0,0.25)";
     headerRef.value!.style.backgroundColor = "rgba(255,255,255,0.3)";
-    headerRef.value!.style.backdropFilter = "blur(10px)";
-
+     // headerRef.value!.style.backdropFilter = "blur(10px)";
+    headerFilterRef.value!.style.display = "block";
   } else {
     headerRef.value!.style.height = "80px";
     headerRef.value!.style.boxShadow = "none";
     headerRef.value!.style.backgroundColor = "transparent";
     headerRef.value!.style.backdropFilter = "none";
+    headerFilterRef.value!.style.display = "none";
   }
 }
 
@@ -86,7 +92,7 @@ watch(
       return item === `/${path}`;
     });
     if (!flag) {
-      headerRef.value!.style.backgroundColor = "var(--sk-color-home-bgc)";
+      headerRef.value!.style.backgroundColor = "transparent";
       headerRef.value!.style.height = "60px";
       headerRef.value!.style.boxShadow = "0 2px 4px -1px rgba(0,0,0,0.25)";
       return;
@@ -136,6 +142,20 @@ function handleMenuClick(menuItem: MenuData) {
 </script>
 
 <style lang="scss" scoped>
+
+.backdrop-blur {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 998;
+  width: 100%;
+  height: 60px;
+  filter: blur(0px);
+  -webkit-filter: blur(0px);
+}
+
 .home-header {
   position: fixed;
   top: 0;
