@@ -184,30 +184,6 @@ $primary-color: #7573d1;
   display: none;
 }
 
-@font-face {
-  font-family: "阿里妈妈数黑体 Bold";
-  font-weight: 700;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/T4JjC1yVtRsU.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/Y0ipOh97amn9.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/cHPsZ2tb5Gxv.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/F8LRQLgsPF37.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/2zShG9N1CLyU.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/QWhJMtmtg3dt.woff") format("woff");
-  font-display: swap;
-}
-
 .org-info{
   display: none;
 }
