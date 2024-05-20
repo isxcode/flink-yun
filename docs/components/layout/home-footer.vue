@@ -16,10 +16,10 @@
       <div class="right">
         <div class="column">
           <div class="title">产品</div>
-          <div class="link" @click="clickZhiqingyun">至流云</div>
+          <div class="link" @click="clickZhiqingyun">至轻云</div>
           <div class="link" @click="clickZhiliuyun">至流云</div>
-          <div class="link" @click="clickZhishiyun">至视云</div>
           <div class="link" @click="clickZhishuyun">至数云</div>
+          <div class="link" @click="clickZhishiyun">至视云</div>
           <div class="link" @click="clickZhihuiyun">至慧云</div>
           <div class="link" @click="clickOther">更多</div>
         </div>
@@ -33,7 +33,7 @@
         </div>
         <div class="column">
           <div class="title">资源</div>
-          <div class="link" @click="clickDocs">产品手册</div>
+          <div class="link" @click="clickOther">产品手册</div>
           <div class="link" @click="clickBlogs">博客</div>
           <div class="link" @click="clickDockerHub">Docker hub</div>
           <div class="link" @click="downloadPackage">安装包下载</div>
@@ -184,30 +184,6 @@ $primary-color: #7573d1;
   display: none;
 }
 
-@font-face {
-  font-family: "阿里妈妈数黑体 Bold";
-  font-weight: 700;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/T4JjC1yVtRsU.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/Y0ipOh97amn9.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/cHPsZ2tb5Gxv.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/F8LRQLgsPF37.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/2zShG9N1CLyU.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/QWhJMtmtg3dt.woff") format("woff");
-  font-display: swap;
-}
-
 .org-info{
   display: none;
 }
@@ -224,7 +200,7 @@ $primary-color: #7573d1;
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #dbd2fa;
+    background: #f5f3fe;
 
     .content {
       width: 130px;
@@ -404,7 +380,7 @@ function clickLinked() {
 }
 
 function clickDockerHub() {
-  window.open("https://hub.docker.com/r/isxcode/zhiqingyun");
+  window.open("https://hub.docker.com/r/isxcode/zhiliuyun");
 }
 
 function downloadLicense() {
@@ -420,7 +396,7 @@ function clickFeishu() {
 }
 
 function clickBlogs() {
-  window.open("/https://ispong.isxcode.com/tags/spark/");
+  window.open("https://ispong.isxcode.com/tags/flink/");
 }
 
 function clickDocs() {
