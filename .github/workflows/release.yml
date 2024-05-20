@@ -45,14 +45,8 @@ jobs:
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
           repository: "isxcode/flink-yun-vip"
-          path: "flink-yun/"
+          path: "/home/runner/work/flink-yun/flink-yun"
           ref: 'main'
-
-      - name: Print GITHUB_WORKSPACE
-        run: echo "GITHUB_WORKSPACE is $GITHUB_WORKSPACE"
 
       - name: Print ls
         run: ls
-
-      - name: Print pwd
-        run: pwd
