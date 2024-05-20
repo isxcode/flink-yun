@@ -50,13 +50,13 @@ export const menuListData: Array<Menu> = [
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     childPage: []
   },
-  {
-    code: 'realtime-computing',
-    name: '实时计算',
-    icon: 'Iphone',
-    authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
-    childPage: ['computing-detail']
-  },
+  // {
+  //   code: 'realtime-computing',
+  //   name: '实时计算',
+  //   icon: 'Iphone',
+  //   authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+  //   childPage: ['computing-detail']
+  // },
   {
     code: 'driver-management',
     name: '驱动管理',
