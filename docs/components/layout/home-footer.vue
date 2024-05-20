@@ -33,7 +33,7 @@
         </div>
         <div class="column">
           <div class="title">资源</div>
-          <div class="link" @click="clickDocs">产品手册</div>
+          <div class="link" @click="clickOther">产品手册</div>
           <div class="link" @click="clickBlogs">博客</div>
           <div class="link" @click="clickDockerHub">Docker hub</div>
           <div class="link" @click="downloadPackage">安装包下载</div>
@@ -420,7 +420,7 @@ function clickFeishu() {
 }
 
 function clickBlogs() {
-  window.open("/https://ispong.isxcode.com/tags/flink/");
+  window.open("https://ispong.isxcode.com/tags/flink/");
 }
 
 function clickDocs() {
