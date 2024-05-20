@@ -45,7 +45,7 @@ jobs:
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
           repository: "isxcode/flink-yun-vip"
-          path: "/home/runner/work/flink-yun/flink-yun/"
+          path: "/home/runner/work/flink-yun/flink-yun/flink-yun-vip"
           ref: 'main'
 
       - name: Print ls
