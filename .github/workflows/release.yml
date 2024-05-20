@@ -49,4 +49,4 @@ jobs:
           ref: 'main'
 
       - name: Print ls
-        run: ls
+        run: cd flink-yun-vip && ls
