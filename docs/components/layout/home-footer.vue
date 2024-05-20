@@ -224,7 +224,7 @@ $primary-color: #7573d1;
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #dbd2fa;
+    background: #f5f3fe;
 
     .content {
       width: 130px;
