@@ -49,4 +49,4 @@ jobs:
           ref: 'main'
 
       - name: Print ls
-        run: cd .. && ls
+        run: ls
