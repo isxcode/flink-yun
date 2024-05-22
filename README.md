@@ -25,6 +25,7 @@
 
 ### 产品体验
 
+> 暂不支持公测
 - 演示环境：https://zhiliuyun-demo.isxcode.com
 
 ### 产品特色
