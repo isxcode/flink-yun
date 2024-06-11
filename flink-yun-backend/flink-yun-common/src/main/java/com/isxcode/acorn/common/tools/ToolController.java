@@ -35,20 +35,20 @@ public class ToolController {
     public String getLeoLastVersion() {
 
         try {
-			Resource resource = resourceLoader.getResource("classpath:VERSION");
-			InputStream inputStream = resource.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			StringBuilder content = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				content.append(line);
-			}
-			reader.close();
-			return content.toString();
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			throw new IsxAppException("获取版本号异常", e.getMessage());
-		}
+            Resource resource = resourceLoader.getResource("classpath:VERSION");
+            InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+            reader.close();
+            return content.toString();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new IsxAppException("获取版本号异常", e.getMessage());
+        }
     }
 
     @Operation(summary = "切换系统日志等级")
@@ -76,9 +76,9 @@ public class ToolController {
     }
 
     @Operation(summary = "返回当前应用状态")
-	@GetMapping("/open/health")
-	public String health() {
+    @GetMapping("/open/health")
+    public String health() {
 
-		return "UP";
-	}
+        return "UP";
+    }
 }
