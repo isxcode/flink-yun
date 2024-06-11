@@ -18,4 +18,6 @@ public interface AcornRun {
     GetJobLogRes getJobLog(GetJobLogReq getJobLogReq);
 
     StopJobRes stopJobReq(StopJobReq stopJobReq);
+
+    String getAgentName();
 }
