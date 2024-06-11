@@ -1,10 +1,6 @@
 package com.isxcode.acorn.agent.service;
 
 import com.isxcode.acorn.agent.run.AcornRun;
-import com.isxcode.acorn.agent.run.FlinkClusterAcorn;
-import com.isxcode.acorn.agent.run.KubernetesAcorn;
-import com.isxcode.acorn.agent.run.YarnAcorn;
-import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
@@ -33,7 +29,8 @@ public class AcornAgentBizService {
 
     public AcornRun getAgentRun(String agentType) {
 
-        Optional<AcornRun> agentServiceOptional = applicationContext.getBeansOfType(AcornRun.class).values().stream().filter(agent -> agent.getAgentName().equals(agentType)).findFirst();
+        Optional<AcornRun> agentServiceOptional = applicationContext.getBeansOfType(AcornRun.class).values().stream()
+            .filter(agent -> agent.getAgentName().equals(agentType)).findFirst();
 
         if (!agentServiceOptional.isPresent()) {
             throw new IsxAppException("agent类型不支持");
