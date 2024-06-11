@@ -1,6 +1,7 @@
 package com.isxcode.acorn.agent.run;
 
 import com.alibaba.fastjson2.JSON;
+import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.pojos.dto.FlinkVerticesDto;
 import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.*;
@@ -152,6 +153,11 @@ public class FlinkClusterAcorn implements AcornRun {
         }
 
         return StopJobRes.builder().requestId(result.getBody().getRequestId()).build();
+    }
+
+    @Override
+    public String getAgentName() {
+        return AgentType.FlinkCluster;
     }
 
     /**

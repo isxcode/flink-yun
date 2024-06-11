@@ -1,6 +1,7 @@
 package com.isxcode.acorn.agent.run;
 
 import com.alibaba.fastjson2.JSON;
+import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
 import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
@@ -186,5 +187,10 @@ public class YarnAcorn implements AcornRun {
         } catch (Exception e) {
             throw new AgentResponseException("停止任务失败" + e.getMessage());
         }
+    }
+
+    @Override
+    public String getAgentName() {
+        return AgentType.YARN;
     }
 }
