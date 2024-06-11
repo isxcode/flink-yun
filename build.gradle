@@ -6,7 +6,7 @@ plugins {
     id "com.diffplug.spotless" version "${SPOTLESS_VERSION}"
 }
 
-def version_number = new File(rootDir.getAbsolutePath(), 'VERSION').readLines()[0].trim()
+def version_number = new File(rootDir.getAbsolutePath(), 'flink-yun-backend/flink-yun-main/src/main/resources/VERSION').readLines()[0].trim()
 
 allprojects {
 
@@ -112,11 +112,7 @@ tasks.register('format', GradleBuild) {
 // gradle install，安装项目依赖
 tasks.register('install', Exec) {
 
-    if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
-        commandLine 'sh', '-c', 'bash install.sh'
-    } else {
-        commandLine 'cmd', '/c', 'install.bat'
-    }
+    commandLine 'sh', '-c', 'bash install.sh'
 }
 
 // gradle package，打包项目
@@ -134,53 +130,29 @@ tasks.register('backend', GradleBuild) {
 // gradle docker，构建docker镜像
 tasks.register('docker', Exec) {
 
-  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
     commandLine 'sh', '-c', '''
-      docker buildx uninstallá
-      docker build -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile .
-     '''
-  } else {
-    commandLine 'cmd', '/c', '''
       docker buildx uninstall
       docker build -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile .
-    '''
-  }
+     '''
 }
 
 // gradle deploy，发布docker镜像
 tasks.register('deploy', Exec) {
 
-  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
     commandLine 'sh', '-c', '''
       docker buildx install
       docker buildx use zhiliuyun-builder
       docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile . --push
     '''
-  } else {
-    commandLine 'cmd', '/c', '''
-      docker buildx install
-      docker buildx use zhiliuyun-builder
-      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile . --push
-    '''
-  }
 }
 
 // gradle website，单独启动官网
 tasks.register('website', Exec) {
 
-  if (System.properties['os.name'].toString().contains('Mac OS X') || System.properties['os.name'].toString().contains('Linux')) {
     commandLine 'sh', '-c', '''
       cd docs
       rm -rf node_modules
       pnpm install --force
       pnpm run dev
      '''
-  } else {
-    commandLine 'cmd', '/c', '''
-      cd docs
-      rm -rf node_modules
-      pnpm install --force
-      pnpm run dev
-     '''
-  }
 }
