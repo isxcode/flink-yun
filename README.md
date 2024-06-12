@@ -9,69 +9,75 @@
 </h1>
 
 <h3 align="center">
-  企业级流数据分析平台
+  打造企业级流数据分析平台
 </h3>
 
 <div align="center">
 
-![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/isxcode/flink-yun)
-![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/flink-yun)
-![GitHub forks](https://img.shields.io/github/forks/isxcode/flink-yun)
+[![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)](https://hub.docker.com/r/isxcode/zhiliuyun)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/releases)
+[![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/flink-yun)](https://github.com/isxcode/flink-yun)
+[![GitHub forks](https://img.shields.io/github/forks/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/fork)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_shield&issueType=license)
-![GitHub License](https://img.shields.io/github/license/isxcode/flink-yun)
+[![GitHub License](https://img.shields.io/github/license/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/blob/main/LICENSE)
 
 </div>
 
-### 产品体验
+### 产品介绍
+  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [**至流云**](https://zhiliuyun.isxcode.com)是一款超轻量级、企业级流数据分析平台。具有一键部署，开箱即用特色。无需额外数据组件安装，即可快速实现流数据实时ETL、数据同步、复杂作业运行等场景。助力企业探索实时数据分析领域，获得更多商业价值。
 
-- 演示环境：https://zhiliuyun-demo.isxcode.com
+### 功能特点
 
-### 产品特色
+- **超轻量**: 无需预装任何中间组件，一键部署即可实现流数据计算。
+- **多租户**: 支持创建多租户，实现租户间的数据完全隔离。
+- **高可用**: 兼容云原生架构，支持多节点安装，确保高可用性。
+- **私有化部署**: 支持内网部署与访问，提升系统安全性。
+- **代码开源**: 永久开源且免费，实时公开产品进度，内容持续更新。
 
-- **代码开源**：允许用户二次自定义功能开发
-- **高可用**：支持高可用集群部署，提高用户抗灾能力
-- **多租户**：一套系统多部门使用,支持多租户数据隔离
-- **云原生**：Docker快速部署，一键启动
-- **私有化部署**：可内网部署，提高用户数据安全性
-- **flink纯原生**：支持flink官网的所有原生用法
+### 立即体验
+
+&nbsp;&nbsp;&nbsp;&nbsp; 演示地址：https://zhiliuyun-demo.isxcode.com </br>
+&nbsp;&nbsp;&nbsp;&nbsp; 体验账号：user001 </br>
+&nbsp;&nbsp;&nbsp;&nbsp; 账号密码：welcome1
 
 ### 快速部署
-
-> 推荐使用amd64架构平台
 
 ```bash
 docker run -p 8080:8080 -d isxcode/zhiliuyun
 ```
 
-- 访问地址：http://localhost:8080
-- 管理员账号：admin
-- 管理员密码：admin123
-
 ### 相关文档
 
-- [相关博客](https://ispong.isxcode.com/tags/flink/)
+- [快速入门](https://zhiliuyun.isxcode.com/docs/zh/0/0)
+- [产品手册](https://zhiliuyun.isxcode.com/docs/zh/2/0)
+- [部署文档](https://zhiliuyun.isxcode.com/docs/zh/1/0-docker)
+- [博客](https://ispong.isxcode.com/tags/flink/)
 
-### 开发手册
+### 源码构建
 
-- java-1.8
-- nodejs-18.14.2
-- vue-3.3.2
-- spring-2.7.9
-
-> 推荐使用mac或者linux系统
+> 打包结果路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
 
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
 cd flink-yun
-./gradlew install
-./gradlew clean package
-# 安装包路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
+./gradlew install package
 ```
 
-### 关于我们
+### 源码运行
 
-邮箱：hello@isxcode.com <br/>
-微信公众号：<br/>
+```bash
+./gradlew backend
+```
 
-<img width="200" alt="image" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiyao/qrcode_for_8.jpg">
+### 联系我们
+
+邮箱：hello@isxcode.com
+
+---
+
+**Thanks for free JetBrains Open Source license**
+
+<a href="https://www.jetbrains.com/?from=flink-yun" target="_blank" style="border-bottom: none !important;">
+    <img src="https://img.isxcode.com/index_img/jetbrains/jetbrains-3.png" height="100" alt="jetbrains"/>
+</a>
