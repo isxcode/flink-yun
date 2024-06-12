@@ -23,8 +23,12 @@ if [ ! -f logs/zhiliuyun-agent.log ]; then
   touch logs/zhiliuyun-agent.log
 fi
 
-# 运行jar包
-nohup java -jar -Xmx2048m lib/zhiliuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+# 运行代理程序
+if ! command -v java &>/dev/null; then
+  nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhiliuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+else
+  nohup java -jar -Xmx2048m lib/zhiliuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+fi
 echo $! >zhiliuyun-agent.pid
 echo "【至流云代理】: RUNNING"
 
