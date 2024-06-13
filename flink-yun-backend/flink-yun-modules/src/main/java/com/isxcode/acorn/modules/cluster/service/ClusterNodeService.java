@@ -1,10 +1,12 @@
 package com.isxcode.acorn.modules.cluster.service;
 
-import cn.hutool.system.SystemUtil;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.ssh.SshUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
+import com.isxcode.acorn.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.jcraft.jsch.*;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +29,37 @@ public class ClusterNodeService {
 
     private final ClusterNodeRepository clusterNodeRepository;
 
+    private final ClusterNodeMapper clusterNodeMapper;
+
+    private final AesUtils aesUtils;
+
     /**
      * 获取代理安装路径
      *
      * @param username 节点的用户名
      * @return 代理安装的路径
      */
-    public String getDefaultAgentHomePath(String username) {
+    public String getDefaultAgentHomePath(String username, ClusterNodeEntity clusterNode) {
 
-        if ("Mac OS X".equals(SystemUtil.getOsInfo().getName())) {
-            return "/Users/" + username;
-        }
-
-        if ("root".equals(username)) {
-            return "/root";
-        } else {
-            return "/home/" + username;
+        ScpFileEngineNodeDto scpFileEngineNodeDto =
+            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
+        scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+        String getOsType = "echo $OSTYPE";
+        try {
+            String systemType = SshUtils.executeCommand(scpFileEngineNodeDto, getOsType, false);
+            if (systemType.contains("darwin")) {
+                return "/Users/" + username;
+            }
+            if (systemType.contains("linux")) {
+                if ("root".equals(username)) {
+                    return "/root";
+                } else {
+                    return "/home/" + username;
+                }
+            }
+            throw new IsxAppException("不支持该节点服务器系统");
+        } catch (JSchException | InterruptedException | IOException e) {
+            throw new IsxAppException("无法获取节点信息");
         }
     }
 

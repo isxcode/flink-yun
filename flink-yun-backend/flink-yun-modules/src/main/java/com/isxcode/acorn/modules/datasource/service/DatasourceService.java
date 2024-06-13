@@ -344,7 +344,8 @@ public class DatasourceService {
     public String genDefaultSql(String datasourceId) {
 
         if (StringUtils.isEmpty(datasourceId)) {
-            return "show databases";
+            return "CREATE TABLE print_table (\n" + "   username STRING,\n" + "    age INT\n" + ") WITH (\n"
+                + "  'connector' = 'print'\n" + ");";
         }
 
         DatasourceEntity datasource = getDatasource(datasourceId);

@@ -23,6 +23,7 @@ import org.apache.flink.yarn.configuration.YarnDeploymentTarget;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -133,7 +134,7 @@ public class YarnAcorn implements AcornRun {
         String line;
         while (true) {
             try {
-                if (!((line = reader.readLine()) != null))
+                if ((line = reader.readLine()) == null)
                     break;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -158,6 +159,20 @@ public class YarnAcorn implements AcornRun {
                     }
                     if (tmpLog.length() > log.length()) {
                         log = tmpLog;
+                    }
+                }
+                if (Strings.isEmpty(log)) {
+                    regex = Pattern.compile("LogType:jobmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:jobmanager.log");
+                    matcher = regex.matcher(errLog);
+                    while (matcher.find()) {
+                        String tmpLog = matcher.group();
+                        if (tmpLog.contains("ERROR")) {
+                            log = tmpLog;
+                            break;
+                        }
+                        if (tmpLog.length() > log.length()) {
+                            log = tmpLog;
+                        }
                     }
                 }
                 return GetJobLogRes.builder().log(log).build();
