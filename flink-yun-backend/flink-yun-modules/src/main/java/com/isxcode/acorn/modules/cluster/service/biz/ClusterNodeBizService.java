@@ -92,8 +92,8 @@ public class ClusterNodeBizService {
         clusterNode.setAgentPort(clusterNodeService.getDefaultAgentPort(addClusterNodeReq.getAgentPort().trim()));
 
         // 设置默认代理安装地址
-        clusterNode
-            .setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getUsername().trim(), clusterNode));
+        clusterNode.setAgentHomePath(
+            clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getUsername().trim(), clusterNode));
 
         // 初始化节点状态，未检测
         clusterNode.setStatus(ClusterNodeStatus.UN_INSTALL);

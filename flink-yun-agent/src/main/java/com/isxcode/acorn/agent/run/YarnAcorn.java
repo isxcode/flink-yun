@@ -162,8 +162,7 @@ public class YarnAcorn implements AcornRun {
                     }
                 }
                 if (Strings.isEmpty(log)) {
-                    regex =
-                        Pattern.compile("LogType:jobmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:jobmanager.log");
+                    regex = Pattern.compile("LogType:jobmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:jobmanager.log");
                     matcher = regex.matcher(errLog);
                     while (matcher.find()) {
                         String tmpLog = matcher.group();
