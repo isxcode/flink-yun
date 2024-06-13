@@ -76,10 +76,6 @@ public class ClusterNodeBizService {
         // 设置服务器默认端口号
         clusterNode.setPort(Strings.isEmpty(addClusterNodeReq.getPort()) ? "22" : addClusterNodeReq.getPort().trim());
 
-        // 设置默认代理安装地址
-        clusterNode
-            .setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getUsername().trim()));
-
         // 添加特殊逻辑，从备注中获取安装路径
         // 正则获取路径
         // $path{/root}
@@ -94,6 +90,10 @@ public class ClusterNodeBizService {
 
         // 设置默认代理端口号
         clusterNode.setAgentPort(clusterNodeService.getDefaultAgentPort(addClusterNodeReq.getAgentPort().trim()));
+
+        // 设置默认代理安装地址
+        clusterNode
+            .setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getUsername().trim(), clusterNode));
 
         // 初始化节点状态，未检测
         clusterNode.setStatus(ClusterNodeStatus.UN_INSTALL);
@@ -110,9 +110,6 @@ public class ClusterNodeBizService {
 
         // 转换对象
         ClusterNodeEntity node = engineNodeMapper.updateNodeReqToNodeEntity(updateClusterNodeReq, clusterNode);
-
-        // 设置安装地址
-        node.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(updateClusterNodeReq.getUsername()));
 
         // 添加特殊逻辑，从备注中获取安装路径
         // 正则获取路径
@@ -131,6 +128,9 @@ public class ClusterNodeBizService {
 
         // 设置代理端口号
         node.setAgentPort(clusterNodeService.getDefaultAgentPort(updateClusterNodeReq.getAgentPort()));
+
+        // 设置安装地址
+        node.setAgentHomePath(clusterNodeService.getDefaultAgentHomePath(updateClusterNodeReq.getUsername(), node));
 
         // 初始化节点状态，未检测
         node.setStatus(ClusterNodeStatus.UN_CHECK);
