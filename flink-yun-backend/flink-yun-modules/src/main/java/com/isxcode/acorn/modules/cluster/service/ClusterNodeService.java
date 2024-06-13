@@ -1,6 +1,5 @@
 package com.isxcode.acorn.modules.cluster.service;
 
-import cn.hutool.system.SystemUtil;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
@@ -42,8 +41,8 @@ public class ClusterNodeService {
      */
     public String getDefaultAgentHomePath(String username, ClusterNodeEntity clusterNode) {
 
-        ScpFileEngineNodeDto scpFileEngineNodeDto = clusterNodeMapper
-            .engineNodeEntityToScpFileEngineNodeDto(clusterNode);
+        ScpFileEngineNodeDto scpFileEngineNodeDto =
+            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         String getOsType = "echo $OSTYPE";
         try {
@@ -91,7 +90,7 @@ public class ClusterNodeService {
     }
 
     public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
-                                ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();
