@@ -18,7 +18,7 @@ allprojects {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
-    group = 'com.isxcode.flink'
+    group = 'com.isxcode.acorn'
     version = version_number
 
     repositories {
@@ -36,36 +36,26 @@ allprojects {
 
     dependencies {
 
-        // spring-web
         implementation 'org.springframework.boot:spring-boot-starter-web'
 
-        // spring-aop
         implementation 'org.springframework.boot:spring-boot-starter-aop'
 
-        // spring-validation
         implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-        // spring-configuration
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-        // spring-test
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-        // spring-openapi
         implementation "org.springdoc:springdoc-openapi-ui:${OPENAPI_VERSION}"
 
-        // lombok
         compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
         annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
 
-        // fastjson
         implementation "com.alibaba:fastjson:${FASTJSON_VERSION}"
 
-        // junit
         implementation "org.junit.jupiter:junit-jupiter:${JUPITER_VERSION}"
         testImplementation "org.junit.jupiter:junit-jupiter-api:${JUPITER_VERSION}"
 
-        // mapstruct
         implementation "org.mapstruct:mapstruct:${MAPSTRUCT_VERSION}"
         implementation "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
@@ -78,9 +68,8 @@ allprojects {
         }
     }
 
-    // checkstyle
     tasks.withType(Checkstyle).configureEach {
-        maxWarnings = 10000
+        maxWarnings = 100
         maxErrors = 0
         ignoreFailures = false
         config resources.text.fromFile(rootDir.getAbsolutePath() + '/.checkstyle/checkstyle.xml')
@@ -92,42 +81,36 @@ allprojects {
     }
 }
 
-// spotless
 spotless {
     java {
         target '*/**/*.java'
         targetExclude('*/build/**/*.java')
         targetExclude('flink-yun-dist/**/*.java')
-        eclipse().configFile('/Users/ispong/isxcode/flink-yun/.spotless/eclipse-java-google-style.xml')
+        eclipse().configFile(rootDir.getAbsolutePath() + '/.spotless/eclipse-java-google-style.xml')
         removeUnusedImports()
     }
 }
 
-// gradle format，格式化代码
 tasks.register('format', GradleBuild) {
 
-    tasks = ["spotlessApply", "checkstyleMain"]
+    tasks = [":spotlessApply", ":checkstyleMain"]
 }
 
-// gradle install，安装项目依赖
-tasks.register('install', Exec) {
-
-    commandLine 'sh', '-c', 'bash install.sh'
-}
-
-// gradle package，打包项目
 tasks.register('package', GradleBuild) {
 
-    tasks = ["flink-yun-dist:make"]
+    tasks = [":flink-yun-dist:make"]
 }
 
-// gradle backend，单独启动后端
-tasks.register('backend', GradleBuild) {
+tasks.register('start', Exec) {
 
-    tasks = [":flink-yun-backend:flink-yun-main:bootRun"]
+    commandLine 'sh', '-c', '''
+      rm -rf flink-yun-dist/build/distributions/zhiliuyun
+      tar -vzxf flink-yun-dist/build/distributions/zhiliuyun.tar.gz -C flink-yun-dist/build/distributions/
+      cd flink-yun-dist/build/distributions/zhiliuyun/bin
+      bash start.sh
+    '''
 }
 
-// gradle docker，构建docker镜像
 tasks.register('docker', Exec) {
 
     commandLine 'sh', '-c', '''
@@ -136,17 +119,6 @@ tasks.register('docker', Exec) {
      '''
 }
 
-// gradle deploy，发布docker镜像
-tasks.register('deploy', Exec) {
-
-    commandLine 'sh', '-c', '''
-      docker buildx install
-      docker buildx use zhiliuyun-builder
-      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhiliuyun:''' + version_number + ''' -f ./Dockerfile . --push
-    '''
-}
-
-// gradle website，单独启动官网
 tasks.register('website', Exec) {
 
     commandLine 'sh', '-c', '''
@@ -155,4 +127,28 @@ tasks.register('website', Exec) {
       pnpm install --force
       pnpm run dev
      '''
+}
+
+tasks.register('frontend', Exec) {
+
+    commandLine 'sh', '-c', '''
+      cd flink-yun-frontend
+      rm -rf node_modules
+      pnpm install --force
+      pnpm run dev --host
+    '''
+}
+
+tasks.register('backend', GradleBuild) {
+
+    tasks = [":flink-yun-backend:flink-yun-main:bootRun"]
+}
+
+tasks.register('autotest', GradleBuild) {
+
+    tasks = [":flink-yun-autotest:autotest"]
+}
+
+tasks.register('install', Exec) {
+    commandLine 'sh', '-c', 'bash install.sh'
 }
