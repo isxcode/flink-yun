@@ -74,6 +74,7 @@ if [ ! -d "${CDC_DIR}" ]; then
     mkdir -p "${CDC_DIR}"
 fi
 if [ ! -f "${CDC_DIR}"/flink-connector-jdbc-3.1.2-1.18.jar ]; then
+  echo "flink-connector-jdbc-3.1.2-1.18.jar开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-jdbc-3.1.2-1.18.jar -o ${CDC_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
   echo "flink-connector-jdbc-3.1.2-1.18.jar下载成功"
 fi
