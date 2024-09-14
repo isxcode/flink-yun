@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="600" alt="image" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/product.jpg">
+  <img width="600" alt="image" src="https://img.isxcode.com/picgo/20240914152345.png">
 </div>
 
 ---
