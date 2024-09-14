@@ -9,7 +9,7 @@
 </h1>
 
 <h3 align="center">
-  打造企业级流数据分析平台
+  打造企业级超轻量级流数据分析平台
 </h3>
 
 <div align="center">
@@ -43,18 +43,17 @@
 
 ### 快速部署
 
+> 至轻云地址：http://localhost:8080 <br/>
+> 管理员账号：admin <br/>
+> 管理员密码：admin123
+
 ```bash
 docker run -p 8080:8080 -d isxcode/zhiliuyun
 ```
 
-### 相关文档
-
-- [快速入门](https://zhiliuyun.isxcode.com/docs/zh/0/0)
-- [产品手册](https://zhiliuyun.isxcode.com/docs/zh/2/0)
-- [部署文档](https://zhiliuyun.isxcode.com/docs/zh/1/0-docker)
-- [博客](https://ispong.isxcode.com/tags/flink/)
-
 ### 源码构建
+
+##### mac/linux
 
 > 打包结果路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
 
@@ -64,11 +63,22 @@ cd flink-yun
 ./gradlew install package
 ```
 
-### 源码运行
+##### windows
+
+> 注意！请使用git bash工具执行命令
 
 ```bash
-./gradlew backend
+git clone https://github.com/isxcode/flink-yun.git
+cd spark-yun
+./gradlew.bat install package
 ```
+
+### 相关文档
+
+- [快速入门](https://zhiliuyun.isxcode.com/docs/zh/0/0)
+- [产品手册](https://zhiliuyun.isxcode.com/docs/zh/2/0)
+- [安装文档](https://zhiliuyun.isxcode.com/docs/zh/1/0-docker)
+- [博客](https://ispong.isxcode.com/tags/flink/)
 
 ### 联系我们
 
