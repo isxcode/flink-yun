@@ -11,21 +11,9 @@ ports:
     port: 30177
     description: 代理开放访问端口
     visibility: public
-  - name: spark-server
-    port: 7077
-    description: spark服务
-    visibility: public
-  - name: spark-ui
+  - name: flink-ui
     port: 8081
-    description: spark ui
-    visibility: public
-  - name: spark-worker
-    port: 8082
-    description: spark worker
-    visibility: public
-  - name: isxcode mysql
-    port: 30306
-    description: mysql port
+    description: flink ui
     visibility: public
 
 # 安装必要插件
