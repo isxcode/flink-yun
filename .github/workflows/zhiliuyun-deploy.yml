@@ -16,19 +16,14 @@ env:
   ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
 
 jobs:
-  build:
+
+  download:
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: write
       id-token: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        node:
-          - '18'
 
     steps:
 
@@ -55,10 +50,37 @@ jobs:
           script: |
             rm -rf /tmp/zhiliuyun.tar.gz
             curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz -o /tmp/zhiliuyun.tar.gz
+
+  deploy:
+    needs: download
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+
+      - name: deploy demo
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          timeout: 1800s
+          script: |
             bash /opt/zhiliuyun/bin/stop.sh
             tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
             rm -rf /opt/zhiliuyun/conf/application-local.yml
             curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/application-local.yml -o /opt/zhiliuyun/conf/application-local.yml
+            rm -rf /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
             cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
             rm -rf /opt/zhiliuyun/bin/start.sh
             curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/start.sh -o /opt/zhiliuyun/bin/start.sh
@@ -68,3 +90,29 @@ jobs:
               echo "Waiting for service to be available..."
               sleep 1
             done
+
+  ssl:
+    needs: deploy
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: config ssl
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          script: |
+            rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
+            rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
+            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/ssl/zhiliuyun-demo.isxcode.com.pem -o /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
+            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/ssl/zhiliuyun-demo.isxcode.com.key -o /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
+            nginx -s reload
