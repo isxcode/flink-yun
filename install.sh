@@ -66,58 +66,110 @@ if [ ! -f "${FLINK_MIN_DIR}"/README.txt ]; then
   rm -rf "${FLINK_MIN_DIR}"/licenses
   rm "${FLINK_MIN_DIR}"/LICENSE
   rm "${FLINK_MIN_DIR}"/NOTICE
-  echo "flink解压成功"
 fi
 
 # 创建cdc文件夹
 CDC_DIR="${BASE_PATH}"/resources/cdc
-
 if [ ! -d "${CDC_DIR}" ]; then
     mkdir -p "${CDC_DIR}"
 fi
-
-# 下载mysql8驱动
 if [ ! -f "${CDC_DIR}"/flink-connector-jdbc-3.1.2-1.18.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/flink-connector-jdbc-3.1.2-1.18.jar -o ${CDC_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
+  curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-jdbc-3.1.2-1.18.jar -o ${CDC_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
   echo "flink-connector-jdbc-3.1.2-1.18.jar下载成功"
 fi
 
-# 创建resources文件夹
+# 创建系统驱动目录
 JDBC_DIR="${BASE_PATH}"/resources/jdbc/system
-
 if [ ! -d "${JDBC_DIR}" ]; then
     mkdir -p "${JDBC_DIR}"
 fi
 
-# 下载mysql8驱动
+# 下载数据库驱动文件
 if [ ! -f "${JDBC_DIR}"/mysql-connector-j-8.1.0.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/mysql-connector-j-8.1.0.jar -o ${JDBC_DIR}/mysql-connector-j-8.1.0.jar
+  echo "mysql-connector-j-8.1.0.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/mysql-connector-j-8.1.0.jar -o ${JDBC_DIR}/mysql-connector-j-8.1.0.jar
   echo "mysql-connector-j-8.1.0.jar驱动下载成功"
 fi
+if [ ! -f "${JDBC_DIR}"/postgresql-42.6.0.jar ]; then
+  echo "postgresql-42.6.0.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/postgresql-42.6.0.jar -o ${JDBC_DIR}/postgresql-42.6.0.jar
+  echo "postgresql-42.6.0.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/Dm8JdbcDriver18-8.1.1.49.jar ]; then
+  echo "Dm8JdbcDriver18-8.1.1.49.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/Dm8JdbcDriver18-8.1.1.49.jar -o ${JDBC_DIR}/Dm8JdbcDriver18-8.1.1.49.jar
+  echo "Dm8JdbcDriver18-8.1.1.49.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/clickhouse-jdbc-0.5.0.jar ]; then
+  echo "clickhouse-jdbc-0.5.0.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/clickhouse-jdbc-0.5.0.jar -o ${JDBC_DIR}/clickhouse-jdbc-0.5.0.jar
+  echo "clickhouse-jdbc-0.5.0.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/ngdbc-2.18.13.jar ]; then
+  echo "ngdbc-2.18.13.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/ngdbc-2.18.13.jar -o ${JDBC_DIR}/ngdbc-2.18.13.jar
+  echo "ngdbc-2.18.13.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/mysql-connector-java-5.1.49.jar ]; then
+  echo "mysql-connector-java-5.1.49.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/mysql-connector-java-5.1.49.jar -o ${JDBC_DIR}/mysql-connector-java-5.1.49.jar
+  echo "mysql-connector-java-5.1.49.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/mssql-jdbc-12.4.2.jre8.jar ]; then
+  echo "mssql-jdbc-12.4.2.jre8.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/mssql-jdbc-12.4.2.jre8.jar -o ${JDBC_DIR}/mssql-jdbc-12.4.2.jre8.jar
+  echo "mssql-jdbc-12.4.2.jre8.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/hive-jdbc-3.1.3-standalone.jar ]; then
+  echo "hive-jdbc-3.1.3-standalone.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/hive-jdbc-3.1.3-standalone.jar -o ${JDBC_DIR}/hive-jdbc-3.1.3-standalone.jar
+  echo "hive-jdbc-3.1.3-standalone.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/hive-jdbc-uber-2.6.3.0-235.jar ]; then
+  echo "hive-jdbc-2.1.1-standalone.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/hive-jdbc-uber-2.6.3.0-235.jar -o ${JDBC_DIR}/hive-jdbc-uber-2.6.3.0-235.jar
+  echo "hive-jdbc-2.1.1-standalone.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/ojdbc8-19.23.0.0.jar ]; then
+  echo "ojdbc8-19.23.0.0.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/ojdbc8-19.23.0.0.jar -o ${JDBC_DIR}/ojdbc8-19.23.0.0.jar
+  echo "ojdbc8-19.23.0.0.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/oceanbase-client-2.4.6.jar ]; then
+  echo "oceanbase-client-2.4.6.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/oceanbase-client-2.4.6.jar -o ${JDBC_DIR}/oceanbase-client-2.4.6.jar
+  echo "oceanbase-client-2.4.6.jar驱动下载成功"
+fi
+if [ ! -f "${JDBC_DIR}"/jcc-11.5.8.0.jar ]; then
+  echo "jcc-11.5.8.0.jar驱动开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/jcc-11.5.8.0.jar -o ${JDBC_DIR}/jcc-11.5.8.0.jar
+  echo "jcc-11.5.8.0.jar驱动下载成功"
+fi
 
-
-# 创建项目依赖libs文件夹
+# 创建项目依赖文件夹
 LIBS_DIR="${BASE_PATH}"/resources/libs
-
 if [ ! -d "${LIBS_DIR}" ]; then
     mkdir -p "${LIBS_DIR}"
 fi
 
-# prql jar依赖文件
+# 下载项目第三方依赖
 if [ ! -f "${LIBS_DIR}"/prql-java-0.5.2.jar ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
+  echo "prql-java-0.5.2.jar开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
   echo "prql-java-0.5.2.jar下载成功"
 fi
 
+# 下载prql文件
 # prql 二进制文件(mac arm64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
+  echo "prql_java-osx-arm64.dylib开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
   echo "prql_java-osx-arm64.dylib下载成功"
 fi
-
 # prql 二进制文件(linux amd64)
 if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so ]; then
-  curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiqingyun/install/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
+  echo "prql_java-linux64.so开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
   echo "prql_java-linux64.so下载成功"
 fi
 
