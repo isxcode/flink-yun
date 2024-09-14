@@ -2,62 +2,64 @@
 
 echo "开始安装"
 
-# 判断tar解压命令
+# 检查tar命令
 if ! command -v tar &>/dev/null; then
-  echo "【安装结果】：未检测到tar命令,请安装tar命令,参考安装命令：brew install tar"
+  echo "【安装结果】：未检测到tar命令,请安装tar"
   exit 1
 fi
 
-# 判断是否有java环境
+# 检查java命令
 if ! command -v java &>/dev/null; then
-  echo "【安装结果】：未检测到java命令，请安装java命令，"
+  echo "【安装结果】：未检测到java命令，请安装java"
   exit 1
 fi
 
-# 判断是否有node环境
+# 检查node命令
 if ! command -v node &>/dev/null; then
-  echo "【安装结果】：未检测到node命令，请安装node命令，参考安装命令：brew install node"
+  echo "【安装结果】：未检测到node命令，请安装nodejs"
   exit 1
 fi
 
-# 如果没有pnpm命令,需要安装
+# 检查pnpm命令
 if ! command -v pnpm &>/dev/null; then
-   npm install pnpm -g
+   echo "【提示】：未检测到pnpm命令，已经执行命令: npm install pnpm@9.0.6 -g"
+   npm install pnpm@9.0.6 -g
 fi
 
-# 获取当前路径
+# 进入项目目录
 BASE_PATH=$(cd "$(dirname "$0")" || exit ; pwd)
 cd "${BASE_PATH}" || exit
 
 # 创建tmp目录
 TMP_DIR="${BASE_PATH}"/resources/tmp
 FLINK_MIN_FILE=flink-1.18.1-bin-scala_2.12.tgz
-FLINK_MIN_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install/flink-1.18.1-bin-scala_2.12.tgz
+OSS_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/install
+FLINK_MIN_DOWNLOAD_URL="${OSS_DOWNLOAD_URL}"/"${FLINK_MIN_FILE}"
 FLINK_MIN_DIR="${BASE_PATH}"/flink-yun-dist/flink-min
 
-# 如果TMP_DIR目录不存在则新建
+# 创建tmp目录
 if [ ! -d "${TMP_DIR}" ]; then
     mkdir -p "${TMP_DIR}"
 fi
 
-# 下载flink
+# 下载flink二进制文件
 if [ ! -f "${TMP_DIR}"/"${FLINK_MIN_FILE}" ]; then
-    cd "${TMP_DIR}"
-    curl -ssL "${FLINK_MIN_DOWNLOAD_URL}" -o "${FLINK_MIN_FILE}"
+    echo "flink-1.18.1开始下载，请耐心等待"
+    curl -ssL "${FLINK_MIN_DOWNLOAD_URL}" -o "${TMP_DIR}"/"${FLINK_MIN_FILE}"
     if [ $? -eq 0 ]; then
-        echo "flink下载成功"
+        echo "fink-1.18.1下载成功"
     else
-        echo "【安装结果】：flink下载失败"
+        echo "【安装结果】：fink-1.18.1下载失败"
         exit 1
     fi
 fi
 
-# 如果没有SPARK_MIN_DIR目录，则新建
+# 创建flink-min目录
 if [ ! -d "${FLINK_MIN_DIR}" ]; then
     mkdir -p "${FLINK_MIN_DIR}"
 fi
 
-# 解压FLINK_MIN_FILE，到指定目录FLINK_MIN_DIR
+# 解压flink程序，并删除不需要的文件
 if [ ! -f "${FLINK_MIN_DIR}"/README.txt ]; then
   tar vzxf "${TMP_DIR}"/"${FLINK_MIN_FILE}" --strip-components=1 -C "${FLINK_MIN_DIR}"
   rm -rf "${FLINK_MIN_DIR}"/examples
