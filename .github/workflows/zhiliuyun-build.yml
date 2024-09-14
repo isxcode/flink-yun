@@ -1,4 +1,4 @@
-name: release project
+name: build zhiliuyun
 
 on:
   workflow_dispatch:
@@ -17,6 +17,7 @@ env:
   ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -63,16 +64,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9.0.6
+          run_install: false
+
+      - name: Print pnpm version
+        shell: bash
+        run: |
+          echo pnpm version: `pnpm -v`
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
+      - name: Print node version
+        shell: bash
+        run: |
+          echo node version: `node -v`
 
       - name: Get pnpm store directory
         shell: bash
@@ -122,16 +133,82 @@ jobs:
           tags: isxcode/zhiliuyun:${{ inputs.version_number }}
           push: true
 
-      - name: Delete zhiqingyun-agent.tar.gz
-        run: rm flink-yun-dist/build/distributions/zhiliuyun-agent.tar.gz
+      - name: Upload zhiliuyun tar
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhiliuyun
+          path: ./flink-yun-dist/build/distributions/zhiliuyun.tar.gz
+
+  upload-oss:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+
+      - name: Mkdir distributions
+        shell: bash
+        run: |
+          mkdir distributions
+
+      - name: Download zhiliuyun tar
+        uses: actions/download-artifact@v4
+        with:
+          name: zhiliuyun
+          path: ./distributions
 
       - name: Upload Package to Ali oss
-        uses: chf007/aliyun-oss-upload-action@main
-        env:
-          OSS_ACCESS_KEY_ID: ${{ secrets.ALI_OSS_KEY_ID }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.ALI_OSS_KEY_SECRET }}
+        uses: tvrcgo/oss-action@master
         with:
+          key-id: ${{ secrets.ALI_OSS_KEY_ID }}
+          key-secret: ${{ secrets.ALI_OSS_KEY_SECRET }}
           region: oss-cn-shanghai
           bucket: isxcode
-          source-dir: 'flink-yun-dist/build/distributions'
-          dest-dir: 'zhiliuyun'
+          timeout: 1200
+          assets: |
+            distributions/**:/zhiliuyun/
+
+  upload-ali:
+      needs: build
+
+      runs-on: ubuntu-latest
+
+      permissions:
+        contents: read
+        packages: write
+        id-token: write
+
+      steps:
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-shanghai.aliyuncs.com
+          username: ispong
+          password: ${{ secrets.ALI_DOCKERHUB_TOKEN }}
+
+      - name: Pull docker images
+        run: |
+          docker pull --platform=linux/amd64 isxcode/zhiliuyun
+          docker tag isxcode/zhiliuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun:latest-amd64
+          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun:latest-amd64
+          docker rmi isxcode/zhiliuyun
+          docker pull --platform=linux/arm64 isxcode/zhiliuyun
+          docker tag isxcode/zhiliuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun:latest-arm64
+          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun:latest-arm64
