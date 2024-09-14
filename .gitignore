@@ -13,10 +13,11 @@
 
 # .DS_Store不提交
 **/.DS_Store
+.DS_Store
 
 # 前端打包不提交
-flink-yun-backend/flink-yun-main/src/main/resources/templates
-flink-yun-backend/flink-yun-main/src/main/resources/static
+flink-yun-backend/flink-yun-main/src/main/resources/templates/**
+flink-yun-backend/flink-yun-main/src/main/resources/static/**
 
 # 代理安装包不提交
 flink-yun-backend/flink-yun-main/src/main/resources/agent
@@ -25,19 +26,26 @@ flink-yun-backend/flink-yun-main/src/main/resources/agent
 flink-yun-vip
 
 # 资源文件不提交
-resources/file
-resources/jdbc
-resources/libs
-resources/license
-resources/tmp
-resources/cdc
+resources/**
 
 # flink-min不提交
 flink-yun-dist/flink-min
 
+# 自动化测试报告不提交
+flink-yun-autotest/Reports
+
 # 日志不提交
 logs
 
-# prql二进制文件不提交
+# flink本地运行日志不提交
+metastore_db
+
+# prql二进制文件
 flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
 flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
+
+# 自动化测试代码不提交
+**/__pycache__
+
+# derby.log不提交
+derby.log
