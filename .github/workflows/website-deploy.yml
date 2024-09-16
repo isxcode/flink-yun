@@ -73,9 +73,7 @@ jobs:
 
       - name: Tar dist
         run: |
-          tar -czf dist.tar.gz docs/dist
-          pwd
-          ls -la
+          tar -czf dist.tar.gz /home/runner/work/flink-yun/flink-yun/docs/dist
       
       - name: Upload website to Ali oss
         uses: tvrcgo/oss-action@master
@@ -86,7 +84,7 @@ jobs:
           bucket: isxcode
           timeout: 1200
           assets: |
-            ./dist.tar.gz:/zhiliuyun/
+            /home/runner/work/flink-yun/flink-yun/dist.tar.gz:/zhiliuyun/
 
       - name: deploy website
         uses: appleboy/ssh-action@v1.0.3
