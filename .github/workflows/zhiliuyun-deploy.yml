@@ -101,8 +101,8 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            bash /opt/zhiliuyun/bin/stop.sh
             tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
+            bash /opt/zhiliuyun/bin/stop.sh
             rm -rf /opt/zhiliuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
             rm -rf /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
