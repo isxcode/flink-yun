@@ -5,6 +5,14 @@ BASE_PATH=$(cd "$(dirname "$0")" || exit ; pwd)
 cd "${BASE_PATH}" || exit
 cd ".." || exit
 
+print_log="true"
+for arg in "$@"; do
+  case "$arg" in
+    --print-log=*) print_log="${arg#*=}" ;;
+    *) echo "未知参数: $arg" && exit 1 ;;
+  esac
+done
+
 # 导入用户指定环境变量
 source "conf/zhiliuyun-env.sh"
 
@@ -32,4 +40,6 @@ fi
 echo $! >zhiliuyun.pid
 
 echo "【至流云】: RUNNING"
-tail -f logs/flink-yun.log
+if [ "$print_log" == "true" ]; then
+  tail -f logs/flink-yun.log
+fi
