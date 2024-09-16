@@ -74,6 +74,8 @@ jobs:
       - name: Tar dist
         run: |
           tar -czf dist.tar.gz docs/dist
+          pwd
+          ls -la
       
       - name: Upload website to Ali oss
         uses: tvrcgo/oss-action@master
