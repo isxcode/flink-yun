@@ -87,7 +87,7 @@
         <div class="left">
           <div class="line-1">驱动上传，任何姿势都能连</div>
           <div class="line-2">
-            支持海量数据源，如Mysql、Hive、Oracle、SqlServer、TiDB、Oceanbase、Doris、Clickhouse等。支持自定义驱动上传，解决企业中多版本数据源无法同时连接的难题。
+            支持海量数据源，如Mysql、Hive、Oracle、SqlServer、TiDB、Oceanbase、Doris、Clickhouse等，支持自定义驱动上传。
           </div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
@@ -278,10 +278,8 @@ const copyContent = async (text: string) => {
 };
 
 function clickOther() {
-  ElMessage({
-    message: '敬请期待',
-    type: 'success',
-  })
+    const router = useRouter();
+    router.push("/docs/zh/0/0");
 }
 
 </script>
