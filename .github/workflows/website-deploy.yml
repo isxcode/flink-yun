@@ -75,6 +75,7 @@ jobs:
         run: |
           cd /home/runner/work/flink-yun/flink-yun/docs/.output
           tar -czf dist.tar.gz ./public
+          mv dist.tar.gz cd /home/runner/work/flink-yun/flink-yun/
 
       - name: Copy website via ssh password
         uses: appleboy/scp-action@v0.1.7
@@ -83,7 +84,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          source: "/home/runner/work/flink-yun/flink-yun/docs/.output/dist.tar.gz"
+          source: "dist.tar.gz"
           target: /tmp/
 
       - name: deploy website
