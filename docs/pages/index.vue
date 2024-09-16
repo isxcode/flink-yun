@@ -278,10 +278,8 @@ const copyContent = async (text: string) => {
 };
 
 function clickOther() {
-  ElMessage({
-    message: '敬请期待',
-    type: 'success',
-  })
+    const router = useRouter();
+    router.push("/docs/zh/0/0");
 }
 
 </script>
