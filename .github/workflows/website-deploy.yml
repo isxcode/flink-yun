@@ -84,7 +84,7 @@ jobs:
           bucket: isxcode
           timeout: 1200
           assets: |
-            dist.tar.gz:/zhiliuyun/
+            ./dist.tar.gz:/zhiliuyun/
 
       - name: deploy website
         uses: appleboy/ssh-action@v1.0.3
