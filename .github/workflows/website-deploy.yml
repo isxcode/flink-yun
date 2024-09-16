@@ -93,7 +93,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script_stop: true
+          script_stop: false
           timeout: 1800s
           script: |
             pm2 delete all
