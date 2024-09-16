@@ -83,7 +83,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          source: "dist.tar.gz"
+          source: "/home/runner/work/flink-yun/flink-yun/docs/.output/dist.tar.gz"
           target: /tmp/
 
       - name: deploy website
