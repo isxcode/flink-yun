@@ -73,7 +73,8 @@ jobs:
 
       - name: Tar dist
         run: |
-          tar -czf dist.tar.gz /home/runner/work/flink-yun/flink-yun/docs/dist
+          cd /home/runner/work/flink-yun/flink-yun/docs/.output
+          tar -czf dist.tar.gz ./public
 
       - name: Copy website via ssh password
         uses: appleboy/scp-action@v0.1.7
