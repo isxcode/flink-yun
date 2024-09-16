@@ -72,8 +72,8 @@ jobs:
           script: |
             rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
             rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/ssl/zhiliuyun-demo.isxcode.com.pem -o /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/ssl/zhiliuyun-demo.isxcode.com.key -o /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
+            cp /root/zhiliuyun-demo.isxcode.com.pem /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
+            cp /root/zhiliuyun-demo.isxcode.com.key /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
             nginx -s reload
 
   deploy:
@@ -104,12 +104,10 @@ jobs:
             bash /opt/zhiliuyun/bin/stop.sh
             tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
             rm -rf /opt/zhiliuyun/conf/application-local.yml
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/application-local.yml -o /opt/zhiliuyun/conf/application-local.yml
+            cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
             rm -rf /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
             cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
-            rm -rf /opt/zhiliuyun/bin/start.sh
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/start.sh -o /opt/zhiliuyun/bin/start.sh
-            bash /opt/zhiliuyun/bin/start.sh
+            bash /opt/zhiliuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhiliuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
               echo "Waiting for service to be available..."
