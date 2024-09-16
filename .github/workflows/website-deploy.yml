@@ -96,8 +96,8 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            tar -vzxf /tmp/website.tar.gz -C /opt/
             pm2 delete all
+            tar -vzxf /tmp/website.tar.gz -C /opt/
             pm2 start /opt/.output/server/index.mjs
             rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.pem
             rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.key
