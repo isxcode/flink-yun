@@ -74,17 +74,16 @@ jobs:
       - name: Tar dist
         run: |
           tar -czf dist.tar.gz /home/runner/work/flink-yun/flink-yun/docs/dist
-      
-      - name: Upload website to Ali oss
-        uses: tvrcgo/oss-action@master
+
+      - name: Copy website via ssh password
+        uses: appleboy/scp-action@v0.1.7
         with:
-          key-id: ${{ secrets.ALI_OSS_KEY_ID }}
-          key-secret: ${{ secrets.ALI_OSS_KEY_SECRET }}
-          region: oss-cn-shanghai
-          bucket: isxcode
-          timeout: 1200
-          assets: |
-            /home/runner/work/flink-yun/flink-yun/dist.tar.gz:/zhiliuyun/
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          source: "dist.tar.gz"
+          target: /tmp/
 
       - name: deploy website
         uses: appleboy/ssh-action@v1.0.3
@@ -95,7 +94,6 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/dist.tar.gz -o /tmp/dist.tar.gz
             tar -vzxf /tmp/dist.tar.gz -C /data/nginx/html
             rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.pem
             rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.key
