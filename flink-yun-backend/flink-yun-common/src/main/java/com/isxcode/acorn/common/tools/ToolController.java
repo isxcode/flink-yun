@@ -57,7 +57,7 @@ public class ToolController {
 
         LoggingSystem system = LoggingSystem.get(LoggingSystem.class.getClassLoader());
         LogLevel logLevel = LogLevel.valueOf(level.trim().toUpperCase(Locale.ENGLISH));
-        system.setLogLevel("com.isxcode.star", logLevel);
+        system.setLogLevel("com.isxcode.acorn", logLevel);
         return "当前日志等级：" + logLevel.name();
     }
 

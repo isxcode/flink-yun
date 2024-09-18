@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Tag(name = "计算引擎模块")
-@RestController
 @RequestMapping(ModuleCode.CLUSTER)
+@RestController
 @RequiredArgsConstructor
 public class ClusterController {
 
