@@ -2,6 +2,7 @@ package com.isxcode.acorn.modules.api.repository;
 
 import java.util.Optional;
 
+import com.isxcode.acorn.api.main.constants.ModuleVipCode;
 import com.isxcode.acorn.modules.api.entity.ApiEntity;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_API"})
+@CacheConfig(cacheNames = {ModuleVipCode.VIP_API})
 public interface ApiRepository extends JpaRepository<ApiEntity, String> {
 
     Optional<ApiEntity> findByPathAndApiType(String path, String tenantId);
