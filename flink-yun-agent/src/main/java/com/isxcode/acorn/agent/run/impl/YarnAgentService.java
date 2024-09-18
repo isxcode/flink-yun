@@ -1,14 +1,17 @@
-package com.isxcode.acorn.agent.run;
+package com.isxcode.acorn.agent.run.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.isxcode.acorn.agent.run.AgentService;
 import com.isxcode.acorn.api.agent.constants.AgentType;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
-import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
-import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
-import com.isxcode.acorn.api.agent.pojos.res.*;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkInfoReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
+import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
+import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
+import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.api.constants.PathConstants;
-import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,40 +43,54 @@ import static java.util.Collections.singletonList;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class YarnAcorn implements AcornRun {
+public class YarnAgentService implements AgentService {
 
     @Override
-    public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
+    public String getAgentType() {
 
-        submitJobReq.setFlinkHome(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-            + File.separator + "flink-min");
+        return AgentType.YARN;
+    }
+
+    @Override
+    public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
+
+        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
+        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitWorkReq.getFlinkSubmit().getAppName());
+
+        // 使用application模式部署
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
-        flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
-            Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
+
+        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
+
         flinkConfig.set(PipelineOptions.JARS,
-            singletonList(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-                + File.separator + "plugins" + File.separator + submitJobReq.getAppResource()));
-        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
+            singletonList(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+                + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
+            Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
+            submitWorkReq.getFlinkSubmit().getEntryClass());
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
-        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitJobReq.getAppName());
+
+        // 配置yarn文件
         Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
         conf.addResource(path);
         Map<String, String> yarn = conf.getPropsWithPrefix("yarn");
-        yarn.forEach((k, v) -> {
-            flinkConfig.setString("flink.yarn" + k, v);
-        });
-        flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitJobReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
+        yarn.forEach((k, v) -> flinkConfig.setString("flink.yarn" + k, v));
+
+        // 添加flink dist
+        flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitWorkReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
+
+        // 添加lib
         List<String> libFile = new ArrayList<>();
-        libFile.add(submitJobReq.getFlinkHome() + "/lib");
-        libFile.add(
-            submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "/lib");
+        libFile.add(submitWorkReq.getFlinkHome() + "/lib");
+        libFile.add(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator
+            + "/lib");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
         ClusterSpecification clusterSpecification =
@@ -85,18 +102,18 @@ public class YarnAcorn implements AcornRun {
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<ApplicationId> applicationIdClusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
-            return SubmitJobRes.builder()
-                .jobId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
+            return SubmitWorkRes.builder()
+                .appId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
         } catch (Exception e) {
-            throw new AgentResponseException("提交任务失败" + e.getMessage());
+            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
 
     @Override
-    public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
+    public GetWorkInfoRes getWorkInfo(GetWorkInfoReq getWorkInfoReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
-        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, getJobInfoReq.getFlinkHome() + "/conf");
+        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, getWorkInfoReq.getFlinkHome() + "/conf");
         Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
         conf.addResource(path);
@@ -108,21 +125,21 @@ public class YarnAcorn implements AcornRun {
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ApplicationReport applicationReport = clusterDescriptor.getYarnClient()
-                .getApplicationReport(ApplicationId.fromString(getJobInfoReq.getJobId()));
-            return GetJobInfoRes.builder().jobId(getJobInfoReq.getJobId())
+                .getApplicationReport(ApplicationId.fromString(getWorkInfoReq.getAppId()));
+            return GetWorkInfoRes.builder().appId(getWorkInfoReq.getAppId())
                 .status(applicationReport.getYarnApplicationState().toString()).build();
         } catch (Exception e) {
-            throw new AgentResponseException("提交任务失败" + e.getMessage());
+            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
 
     @Override
-    public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
+    public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
 
         String getLogCmdFormat = "yarn logs -applicationId %s";
         Process process;
         try {
-            process = Runtime.getRuntime().exec(String.format(getLogCmdFormat, getJobLogReq.getJobId()));
+            process = Runtime.getRuntime().exec(String.format(getLogCmdFormat, getWorkLogReq.getAppId()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -175,18 +192,18 @@ public class YarnAcorn implements AcornRun {
                         }
                     }
                 }
-                return GetJobLogRes.builder().log(log).build();
+                return GetWorkLogRes.builder().log(log).build();
             }
         } catch (InterruptedException e) {
-            throw new AgentResponseException(e.getMessage());
+            throw new IsxAppException(e.getMessage());
         }
     }
 
     @Override
-    public StopJobRes stopJobReq(StopJobReq stopJobReq) {
+    public StopWorkRes stopWork(StopWorkReq stopWorkReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
-        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, stopJobReq.getFlinkHome() + "/conf");
+        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, stopWorkReq.getFlinkHome() + "/conf");
         Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
         conf.addResource(path);
@@ -197,15 +214,10 @@ public class YarnAcorn implements AcornRun {
 
         YarnClusterClientFactory yarnClusterClientFactory = new YarnClusterClientFactory();
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            clusterDescriptor.getYarnClient().killApplication(ApplicationId.fromString(stopJobReq.getJobId()));
-            return StopJobRes.builder().build();
+            clusterDescriptor.getYarnClient().killApplication(ApplicationId.fromString(stopWorkReq.getAppId()));
+            return StopWorkRes.builder().build();
         } catch (Exception e) {
-            throw new AgentResponseException("停止任务失败" + e.getMessage());
+            throw new IsxAppException("停止任务失败" + e.getMessage());
         }
-    }
-
-    @Override
-    public String getAgentName() {
-        return AgentType.YARN;
     }
 }

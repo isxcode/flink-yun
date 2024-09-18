@@ -5,19 +5,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class GetJobLogReq {
+@NoArgsConstructor
+public class SubmitWorkReq {
 
-    private String jobId;
+    private String clusterType;
 
     private String flinkHome;
 
-    private String agentType;
+    private PluginReq pluginReq;
+
+    private FlinkSubmit flinkSubmit;
 
     private String agentHomePath;
 
     private String workInstanceId;
+
+    private String workType;
 }

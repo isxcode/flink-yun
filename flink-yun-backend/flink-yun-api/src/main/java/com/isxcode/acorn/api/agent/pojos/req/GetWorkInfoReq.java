@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetJobInfoReq {
+public class GetWorkInfoReq {
 
-    private String jobId;
+    private String appId;
 
     private String agentHome;
 
-    private String agentType;
+    private String clusterType;
 
     private String flinkHome;
 }

@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubmitJobRes {
+public class StopWorkRes {
 
-    public String jobId;
-
-    private String webUrl;
+    private String requestId;
 }
