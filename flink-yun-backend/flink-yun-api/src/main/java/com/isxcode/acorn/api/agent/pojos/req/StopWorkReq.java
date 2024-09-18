@@ -6,10 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AcornPluginReq {
+@AllArgsConstructor
+@Builder
+public class StopWorkReq {
 
-    private String flinkSql;
+    private String flinkHome;
+
+    private String appId;
+
+    private String clusterType;
+
+    private String agentHomePath;
 }

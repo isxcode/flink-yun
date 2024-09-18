@@ -1,18 +1,19 @@
-package com.isxcode.acorn.agent.run;
+package com.isxcode.acorn.agent.run.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.isxcode.acorn.agent.run.AgentService;
 import com.isxcode.acorn.api.agent.constants.AgentType;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
-import com.isxcode.acorn.api.agent.pojos.req.StopJobReq;
-import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
-import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
-import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
-import com.isxcode.acorn.api.agent.pojos.res.StopJobRes;
-import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkInfoReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
+import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
+import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
+import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.work.constants.WorkType;
-import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
@@ -30,31 +31,37 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
 @Service
-public class KubernetesAcorn implements AcornRun {
+public class KubernetesAgentService implements AgentService {
 
     @Override
-    public SubmitJobRes submitJob(SubmitJobReq submitJobReq) {
+    public String getAgentType() {
+        return AgentType.K8S;
+    }
 
-        submitJobReq.setFlinkHome(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-            + File.separator + "flink-min");
+    @Override
+    public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
-        flinkConfig.set(PipelineOptions.NAME, submitJobReq.getAppName());
+        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
 
-        if (WorkType.FLINK_JAR.equals(submitJobReq.getWorkType())) {
-            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitJobReq.getProgramArgs());
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitWorkReq.getFlinkSubmit().getProgramArgs());
         } else {
             flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
-                Base64.getEncoder().encodeToString(JSON.toJSONString(submitJobReq.getAcornPluginReq()).getBytes())));
+                Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
         }
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitJobReq.getEntryClass());
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
+            submitWorkReq.getFlinkSubmit().getEntryClass());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
         flinkConfig.set(KubernetesConfigOptions.REST_SERVICE_EXPOSED_TYPE,
@@ -76,22 +83,22 @@ public class KubernetesAcorn implements AcornRun {
 
         List<String> volumes = new ArrayList<>();
 
-        if (WorkType.FLINK_JAR.equals(submitJobReq.getWorkType())) {
-            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
                 + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "file" + File.separator
-                + submitJobReq.getAppResource() + "\n");
+                + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
         } else {
-            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
+            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
                 + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins" + File.separator
-                + submitJobReq.getAppResource() + "\n");
+                + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
         }
 
-        volumes.add("   - name: flink-log\n" + "      hostPath:\n" + "        path: " + submitJobReq.getAgentHomePath()
+        volumes.add("   - name: flink-log\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
             + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "k8s-logs" + File.separator
-            + submitJobReq.getWorkInstanceId() + "\n");
+            + submitWorkReq.getWorkInstanceId() + "\n");
 
         File[] jarFiles = new File(
-            submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "lib")
+            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "lib")
                 .listFiles();
         if (jarFiles != null) {
             for (File jarFile : jarFiles) {
@@ -100,7 +107,7 @@ public class KubernetesAcorn implements AcornRun {
                     volumeMounts.add("       - name: " + jarFile.getName().replace(".", "-") + "\n"
                         + "          mountPath: /opt/flink/lib/" + jarFile.getName() + "\n");
                     volumes.add("   - name: " + jarFile.getName().replace(".", "-") + "\n" + "      hostPath:\n"
-                        + "        path: " + submitJobReq.getAgentHomePath() + File.separator
+                        + "        path: " + submitWorkReq.getAgentHomePath() + File.separator
                         + PathConstants.AGENT_PATH_NAME + File.separator + "lib" + File.separator + jarFile.getName()
                         + "\n");
                 }
@@ -112,43 +119,43 @@ public class KubernetesAcorn implements AcornRun {
 
         // 判断pod文件夹是否存在
         if (!new File(
-            submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod")
+            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod")
                 .exists()) {
             try {
-                Files.createDirectories(Paths.get(submitJobReq.getAgentHomePath() + File.separator
+                Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator
                     + PathConstants.AGENT_PATH_NAME + File.separator + "pod"));
             } catch (IOException e) {
-                throw new AgentResponseException(e.getMessage());
+                throw new IsxAppException(e.getMessage());
             }
         }
 
         // 判断k8s-logs文件夹是否存在
-        if (!new File(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator
+        if (!new File(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator
             + "k8s-logs").exists()) {
             try {
-                Files.createDirectories(Paths.get(submitJobReq.getAgentHomePath() + File.separator
+                Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator
                     + PathConstants.AGENT_PATH_NAME + File.separator + "k8s-logs"));
             } catch (IOException e) {
-                throw new AgentResponseException(e.getMessage());
+                throw new IsxAppException(e.getMessage());
             }
         }
 
         // 先把许可证保存下来
         try (InputStream inputStream = new ByteArrayInputStream(podTemplateContent.getBytes())) {
             Files.copy(inputStream,
-                Paths.get(submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-                    + File.separator + "pod").resolve(submitJobReq.getWorkInstanceId() + ".yaml"),
+                Paths.get(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+                    + File.separator + "pod").resolve(submitWorkReq.getWorkInstanceId() + ".yaml"),
                 StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new AgentResponseException("生成pod文件失败");
+            throw new IsxAppException("生成pod文件失败");
         }
 
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE,
-            submitJobReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod"
-                + File.separator + submitJobReq.getWorkInstanceId() + ".yaml");
+            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod"
+                + File.separator + submitWorkReq.getWorkInstanceId() + ".yaml");
 
         flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/log");
-        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitJobReq.getFlinkHome() + "/conf");
+        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
@@ -165,22 +172,22 @@ public class KubernetesAcorn implements AcornRun {
             kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
-            return SubmitJobRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
-                .jobId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
+            return SubmitWorkRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
+                .appId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
         } catch (Exception e) {
-            throw new AgentResponseException("提交任务失败" + e.getCause().getMessage());
+            throw new IsxAppException("提交任务失败" + e.getCause().getMessage());
         }
     }
 
     @Override
-    public GetJobInfoRes getJobInfo(GetJobInfoReq getJobInfoReq) {
+    public GetWorkInfoRes getWorkInfo(GetWorkInfoReq getWorkInfoReq) throws Exception {
 
         String getStatusJobManagerFormat = "kubectl get pods -l app=%s -n zhiliuyun-space";
         String line;
         StringBuilder errLog = new StringBuilder();
 
         try {
-            String command = String.format(getStatusJobManagerFormat, getJobInfoReq.getJobId());
+            String command = String.format(getStatusJobManagerFormat, getWorkInfoReq.getAppId());
             Process process = Runtime.getRuntime().exec(command);
             try (InputStream inputStream = process.getInputStream();
                 InputStream errStream = process.getErrorStream();
@@ -194,7 +201,8 @@ public class KubernetesAcorn implements AcornRun {
                     Pattern regex = Pattern.compile(pattern);
                     Matcher matcher = regex.matcher(line);
                     if (matcher.find()) {
-                        return GetJobInfoRes.builder().status(matcher.group(1)).jobId(getJobInfoReq.getJobId()).build();
+                        return GetWorkInfoRes.builder().status(matcher.group(1)).appId(getWorkInfoReq.getAppId())
+                            .build();
                     }
                 }
 
@@ -203,28 +211,27 @@ public class KubernetesAcorn implements AcornRun {
                         errLog.append(line).append("\n");
                     }
                     if (errLog.toString().contains("No resources found in zhiliuyun-space namespace")) {
-                        return GetJobInfoRes.builder().status("FINISHED").jobId(getJobInfoReq.getJobId()).build();
+                        return GetWorkInfoRes.builder().status("FINISHED").appId(getWorkInfoReq.getAppId()).build();
                     }
                 }
                 int exitCode = process.waitFor();
                 if (exitCode == 1) {
-                    throw new AgentResponseException("Command execution failed:\n" + errLog);
+                    throw new IsxAppException("Command execution failed:\n" + errLog);
                 }
             } catch (IOException | InterruptedException e) {
-                throw new AgentResponseException(e.getMessage());
+                throw new IsxAppException(e.getMessage());
             }
         } catch (IOException e) {
-            throw new AgentResponseException(e.getMessage());
+            throw new IsxAppException(e.getMessage());
         }
 
-        throw new AgentResponseException("获取状态异常");
+        throw new IsxAppException("获取状态异常");
     }
 
     @Override
-    public GetJobLogRes getJobLog(GetJobLogReq getJobLogReq) {
-
-        File[] logFiles = new File(getJobLogReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-            + File.separator + "k8s-logs" + File.separator + getJobLogReq.getWorkInstanceId()).listFiles();
+    public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
+        File[] logFiles = new File(getWorkLogReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+            + File.separator + "k8s-logs" + File.separator + getWorkLogReq.getWorkInstanceId()).listFiles();
 
         StringBuilder logBuilder = new StringBuilder();
         if (logFiles != null) {
@@ -240,7 +247,7 @@ public class KubernetesAcorn implements AcornRun {
                         bufferedReader.close();
                         fileReader.close();
                     } catch (IOException e) {
-                        throw new AgentResponseException(e.getMessage());
+                        throw new IsxAppException(e.getMessage());
                     }
                     break;
                 }
@@ -255,19 +262,18 @@ public class KubernetesAcorn implements AcornRun {
                         bufferedReader.close();
                         fileReader.close();
                     } catch (IOException e) {
-                        throw new AgentResponseException(e.getMessage());
+                        throw new IsxAppException(e.getMessage());
                     }
                     break;
                 }
             }
         }
 
-        return GetJobLogRes.builder().log(logBuilder.toString()).build();
+        return GetWorkLogRes.builder().log(logBuilder.toString()).build();
     }
 
     @Override
-    public StopJobRes stopJobReq(StopJobReq stopJobReq) {
-
+    public StopWorkRes stopWork(StopWorkReq stopWorkReq) throws Exception {
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(KubernetesConfigOptions.NAMESPACE, "zhiliuyun-space");
@@ -276,15 +282,10 @@ public class KubernetesAcorn implements AcornRun {
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
             kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
-            clusterDescriptor.killCluster(stopJobReq.getJobId());
-            return StopJobRes.builder().build();
+            clusterDescriptor.killCluster(stopWorkReq.getAppId());
+            return StopWorkRes.builder().build();
         } catch (Exception e) {
-            throw new AgentResponseException("提交任务失败" + e.getMessage());
+            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
-    }
-
-    @Override
-    public String getAgentName() {
-        return AgentType.K8S;
     }
 }

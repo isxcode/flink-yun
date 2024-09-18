@@ -2,12 +2,12 @@ package com.isxcode.acorn.modules.work.run;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.agent.constants.AgentApi;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobInfoReq;
-import com.isxcode.acorn.api.agent.pojos.req.GetJobLogReq;
-import com.isxcode.acorn.api.agent.pojos.req.SubmitJobReq;
-import com.isxcode.acorn.api.agent.pojos.res.GetJobInfoRes;
-import com.isxcode.acorn.api.agent.pojos.res.GetJobLogRes;
-import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkInfoReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
+import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
+import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.work.constants.WorkLog;
@@ -184,7 +184,7 @@ public class FlinkJarExecutor extends WorkExecutor {
         }
 
         // 开始构造SparkSubmit
-        SubmitJobReq submitJobReq = SubmitJobReq.builder().entryClass(jarJobConfig.getMainClass())
+        SubmitWorkReq submitJobReq = SubmitWorkReq.builder().entryClass(jarJobConfig.getMainClass())
             .appName(jarJobConfig.getAppName()).appResource(jarFile.getId() + ".jar")
             .agentHomePath(engineNode.getAgentHomePath()).workType(WorkType.FLINK_JAR)
             .workInstanceId(workInstance.getId()).programArgs(Arrays.asList(jarJobConfig.getArgs()))
@@ -197,11 +197,11 @@ public class FlinkJarExecutor extends WorkExecutor {
 
         // 加锁，必须等待作业提交成功后才能中止
         Integer lock = locker.lock("REQUEST_" + workInstance.getId());
-        SubmitJobRes submitJobRes;
+        SubmitWorkRes submitJobRes;
         try {
             submitJobRes = new RestTemplate().postForObject(
                 httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.submitJob),
-                submitJobReq, SubmitJobRes.class);
+                submitJobReq, SubmitWorkRes.class);
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("提交作业成功 : ")
                 .append(submitJobRes.getJobId()).append("\n");
             workInstance.setSparkStarRes(JSON.toJSONString(submitJobRes));
@@ -216,13 +216,13 @@ public class FlinkJarExecutor extends WorkExecutor {
         while (true) {
 
             // 获取作业状态并保存
-            GetJobInfoReq jobInfoReq = GetJobInfoReq.builder().agentHome(engineNode.getAgentHomePath())
+            GetWorkInfoReq jobInfoReq = GetWorkInfoReq.builder().agentHome(engineNode.getAgentHomePath())
                 .jobId(submitJobRes.getJobId()).agentType(calculateEngineEntityOptional.get().getClusterType()).build();
-            GetJobInfoRes getJobInfoRes;
+            GetWorkInfoRes getJobInfoRes;
             try {
                 getJobInfoRes = HttpUtils.doPost(
                     httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.getJobInfo),
-                    jobInfoReq, GetJobInfoRes.class);
+                    jobInfoReq, GetWorkInfoRes.class);
                 log.debug("获取远程获取状态日志:{}", getJobInfoRes);
             } catch (Exception e) {
                 throw new WorkRunException(
@@ -254,14 +254,14 @@ public class FlinkJarExecutor extends WorkExecutor {
                 }
 
                 // 获取日志并保存
-                GetJobLogReq getJobLogReq = GetJobLogReq.builder().agentHomePath(engineNode.getAgentHomePath())
+                GetWorkLogReq getJobLogReq = GetWorkLogReq.builder().agentHomePath(engineNode.getAgentHomePath())
                     .jobId(submitJobRes.getJobId()).workInstanceId(workInstance.getId())
                     .agentType(calculateEngineEntityOptional.get().getClusterType()).build();
-                GetJobLogRes getJobLogRes;
+                GetWorkLogRes getJobLogRes;
                 try {
                     getJobLogRes = HttpUtils.doPost(
                         httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.getJobLog),
-                        getJobLogReq, GetJobLogRes.class);
+                        getJobLogReq, GetWorkLogRes.class);
                 } catch (IOException e) {
                     throw new WorkRunException(
                         LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业日志异常 : " + e.getMessage() + "\n");

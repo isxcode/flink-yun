@@ -6,16 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class StopJobReq {
+public class GetWorkLogReq {
+
+    private String appId;
 
     private String flinkHome;
 
-    private String jobId;
-
-    private String agentType;
+    private String clusterType;
 
     private String agentHomePath;
+
+    private String workInstanceId;
 }

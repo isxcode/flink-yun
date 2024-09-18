@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetJobInfoRes {
+public class SubmitWorkRes {
 
-    private String jobId;
+    public String appId;
 
-    private String status;
-
-    private List<String> vertices;
+    private String webUrl;
 }

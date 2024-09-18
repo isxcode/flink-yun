@@ -3,8 +3,9 @@ package com.isxcode.acorn.modules.work.service.biz;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.isxcode.acorn.api.agent.constants.AgentApi;
-import com.isxcode.acorn.api.agent.pojos.res.StopJobRes;
-import com.isxcode.acorn.api.agent.pojos.res.SubmitJobRes;
+import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
+import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
+import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
@@ -378,16 +379,15 @@ public class WorkBizService {
             }
 
             // 解析实例的状态信息
-            SubmitJobRes submitJobRes = JSON.parseObject(workInstanceEntity.getSparkStarRes(), SubmitJobRes.class);
+            SubmitWorkRes submitJobRes = JSON.parseObject(workInstanceEntity.getSparkStarRes(), SubmitWorkRes.class);
 
-            com.isxcode.acorn.api.agent.pojos.req.StopJobReq agentStopReq =
-                com.isxcode.acorn.api.agent.pojos.req.StopJobReq.builder().jobId(submitJobRes.getJobId())
-                    .agentType(clusterEntityOptional.get().getClusterType())
-                    .agentHomePath(engineNode.getFlinkHomePath()).build();
+            StopWorkReq agentStopReq = StopWorkReq.builder().jobId(submitJobRes.getJobId())
+                .agentType(clusterEntityOptional.get().getClusterType()).agentHomePath(engineNode.getFlinkHomePath())
+                .build();
             try {
                 HttpUtils.doPost(
                     httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentApi.stopJob),
-                    agentStopReq, StopJobRes.class);
+                    agentStopReq, StopWorkRes.class);
             } catch (IOException e) {
                 throw new IsxAppException(e.getMessage());
             }
