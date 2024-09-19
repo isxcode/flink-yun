@@ -2,9 +2,7 @@ package com.isxcode.acorn.backend.api.base.exceptions;
 
 import lombok.Getter;
 
-/**
- * 异常抽象类.
- */
+/** 异常抽象类. */
 public abstract class AbstractIsxAppException extends RuntimeException {
 
     @Getter
