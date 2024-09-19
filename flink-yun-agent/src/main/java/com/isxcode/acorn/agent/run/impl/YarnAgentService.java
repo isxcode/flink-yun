@@ -104,8 +104,6 @@ public class YarnAgentService implements AgentService {
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitWorkRes.builder()
                 .appId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
-        } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
 
@@ -128,8 +126,6 @@ public class YarnAgentService implements AgentService {
                 .getApplicationReport(ApplicationId.fromString(getWorkInfoReq.getAppId()));
             return GetWorkInfoRes.builder().appId(getWorkInfoReq.getAppId())
                 .status(applicationReport.getYarnApplicationState().toString()).build();
-        } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
 
@@ -137,12 +133,7 @@ public class YarnAgentService implements AgentService {
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
 
         String getLogCmdFormat = "yarn logs -applicationId %s";
-        Process process;
-        try {
-            process = Runtime.getRuntime().exec(String.format(getLogCmdFormat, getWorkLogReq.getAppId()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Process process = Runtime.getRuntime().exec(String.format(getLogCmdFormat, getWorkLogReq.getAppId()));
 
         InputStream inputStream = process.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
@@ -159,15 +150,27 @@ public class YarnAgentService implements AgentService {
             errLog.append(line).append("\n");
         }
 
-        try {
-            int exitCode = process.waitFor();
-            if (exitCode == 1) {
-                throw new IsxAppException(errLog.toString());
-            } else {
-                Pattern regex =
-                    Pattern.compile("LogType:taskmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:taskmanager.log");
-                Matcher matcher = regex.matcher(errLog);
-                String log = "";
+        int exitCode = process.waitFor();
+        if (exitCode == 1) {
+            throw new IsxAppException(errLog.toString());
+        } else {
+            Pattern regex =
+                Pattern.compile("LogType:taskmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:taskmanager.log");
+            Matcher matcher = regex.matcher(errLog);
+            String log = "";
+            while (matcher.find()) {
+                String tmpLog = matcher.group();
+                if (tmpLog.contains("ERROR")) {
+                    log = tmpLog;
+                    break;
+                }
+                if (tmpLog.length() > log.length()) {
+                    log = tmpLog;
+                }
+            }
+            if (Strings.isEmpty(log)) {
+                regex = Pattern.compile("LogType:jobmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:jobmanager.log");
+                matcher = regex.matcher(errLog);
                 while (matcher.find()) {
                     String tmpLog = matcher.group();
                     if (tmpLog.contains("ERROR")) {
@@ -178,24 +181,8 @@ public class YarnAgentService implements AgentService {
                         log = tmpLog;
                     }
                 }
-                if (Strings.isEmpty(log)) {
-                    regex = Pattern.compile("LogType:jobmanager.log\\s*([\\s\\S]*?)\\s*End of LogType:jobmanager.log");
-                    matcher = regex.matcher(errLog);
-                    while (matcher.find()) {
-                        String tmpLog = matcher.group();
-                        if (tmpLog.contains("ERROR")) {
-                            log = tmpLog;
-                            break;
-                        }
-                        if (tmpLog.length() > log.length()) {
-                            log = tmpLog;
-                        }
-                    }
-                }
-                return GetWorkLogRes.builder().log(log).build();
             }
-        } catch (InterruptedException e) {
-            throw new IsxAppException(e.getMessage());
+            return GetWorkLogRes.builder().log(log).build();
         }
     }
 
@@ -216,8 +203,6 @@ public class YarnAgentService implements AgentService {
         try (YarnClusterDescriptor clusterDescriptor = yarnClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.getYarnClient().killApplication(ApplicationId.fromString(stopWorkReq.getAppId()));
             return StopWorkRes.builder().build();
-        } catch (Exception e) {
-            throw new IsxAppException("停止任务失败" + e.getMessage());
         }
     }
 }

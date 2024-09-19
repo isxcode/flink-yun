@@ -80,17 +80,14 @@ public class FlinkClusterAgentService implements AgentService {
                 .programArgs(
                     Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
                 .build();
-        try {
-            ResponseEntity<FlinkRestRunRes> flinkRestRunResResult =
-                new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
-            if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
-                || flinkRestRunResResult.getBody().getJobid() == null) {
-                throw new IsxAppException("提交作业失败");
-            }
-            return SubmitWorkRes.builder().appId(flinkRestRunResResult.getBody().getJobid()).build();
-        } catch (HttpClientErrorException e) {
-            throw new IsxAppException(e.getMessage());
+
+        ResponseEntity<FlinkRestRunRes> flinkRestRunResResult =
+            new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
+        if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
+            || flinkRestRunResResult.getBody().getJobid() == null) {
+            throw new IsxAppException("提交作业失败");
         }
+        return SubmitWorkRes.builder().appId(flinkRestRunResResult.getBody().getJobid()).build();
     }
 
     @Override

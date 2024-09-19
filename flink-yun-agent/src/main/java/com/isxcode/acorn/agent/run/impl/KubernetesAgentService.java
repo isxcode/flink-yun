@@ -99,7 +99,7 @@ public class KubernetesAgentService implements AgentService {
 
         File[] jarFiles = new File(
             submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "lib")
-                .listFiles();
+            .listFiles();
         if (jarFiles != null) {
             for (File jarFile : jarFiles) {
                 if (jarFile.getName().contains("fastjson") || jarFile.getName().contains("flink")
@@ -120,7 +120,7 @@ public class KubernetesAgentService implements AgentService {
         // 判断pod文件夹是否存在
         if (!new File(
             submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod")
-                .exists()) {
+            .exists()) {
             try {
                 Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator
                     + PathConstants.AGENT_PATH_NAME + File.separator + "pod"));
@@ -146,8 +146,6 @@ public class KubernetesAgentService implements AgentService {
                 Paths.get(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
                     + File.separator + "pod").resolve(submitWorkReq.getWorkInstanceId() + ".yaml"),
                 StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new IsxAppException("生成pod文件失败");
         }
 
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE,
@@ -169,13 +167,11 @@ public class KubernetesAgentService implements AgentService {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitWorkRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
                 .appId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
-        } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getCause().getMessage());
         }
     }
 
@@ -186,43 +182,37 @@ public class KubernetesAgentService implements AgentService {
         String line;
         StringBuilder errLog = new StringBuilder();
 
-        try {
-            String command = String.format(getStatusJobManagerFormat, getWorkInfoReq.getAppId());
-            Process process = Runtime.getRuntime().exec(command);
-            try (InputStream inputStream = process.getInputStream();
-                InputStream errStream = process.getErrorStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                BufferedReader errReader =
-                    new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
+        String command = String.format(getStatusJobManagerFormat, getWorkInfoReq.getAppId());
+        Process process = Runtime.getRuntime().exec(command);
+        try (InputStream inputStream = process.getInputStream();
+             InputStream errStream = process.getErrorStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+             BufferedReader errReader =
+                 new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
 
-                while ((line = reader.readLine()) != null) {
-                    errLog.append(line).append("\n");
-                    String pattern = "\\s+\\d/\\d\\s+(\\w+)";
-                    Pattern regex = Pattern.compile(pattern);
-                    Matcher matcher = regex.matcher(line);
-                    if (matcher.find()) {
-                        return GetWorkInfoRes.builder().status(matcher.group(1)).appId(getWorkInfoReq.getAppId())
-                            .build();
-                    }
+            while ((line = reader.readLine()) != null) {
+                errLog.append(line).append("\n");
+                String pattern = "\\s+\\d/\\d\\s+(\\w+)";
+                Pattern regex = Pattern.compile(pattern);
+                Matcher matcher = regex.matcher(line);
+                if (matcher.find()) {
+                    return GetWorkInfoRes.builder().status(matcher.group(1)).appId(getWorkInfoReq.getAppId())
+                        .build();
                 }
-
-                if (errLog.toString().isEmpty()) {
-                    while ((line = errReader.readLine()) != null) {
-                        errLog.append(line).append("\n");
-                    }
-                    if (errLog.toString().contains("No resources found in zhiliuyun-space namespace")) {
-                        return GetWorkInfoRes.builder().status("FINISHED").appId(getWorkInfoReq.getAppId()).build();
-                    }
-                }
-                int exitCode = process.waitFor();
-                if (exitCode == 1) {
-                    throw new IsxAppException("Command execution failed:\n" + errLog);
-                }
-            } catch (IOException | InterruptedException e) {
-                throw new IsxAppException(e.getMessage());
             }
-        } catch (IOException e) {
-            throw new IsxAppException(e.getMessage());
+
+            if (errLog.toString().isEmpty()) {
+                while ((line = errReader.readLine()) != null) {
+                    errLog.append(line).append("\n");
+                }
+                if (errLog.toString().contains("No resources found in zhiliuyun-space namespace")) {
+                    return GetWorkInfoRes.builder().status("FINISHED").appId(getWorkInfoReq.getAppId()).build();
+                }
+            }
+            int exitCode = process.waitFor();
+            if (exitCode == 1) {
+                throw new Exception("Command execution failed:\n" + errLog);
+            }
         }
 
         throw new IsxAppException("获取状态异常");
@@ -274,6 +264,7 @@ public class KubernetesAgentService implements AgentService {
 
     @Override
     public StopWorkRes stopWork(StopWorkReq stopWorkReq) throws Exception {
+
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(KubernetesConfigOptions.NAMESPACE, "zhiliuyun-space");
@@ -281,11 +272,9 @@ public class KubernetesAgentService implements AgentService {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.killCluster(stopWorkReq.getAppId());
             return StopWorkRes.builder().build();
-        } catch (Exception e) {
-            throw new IsxAppException("提交任务失败" + e.getMessage());
         }
     }
 }
