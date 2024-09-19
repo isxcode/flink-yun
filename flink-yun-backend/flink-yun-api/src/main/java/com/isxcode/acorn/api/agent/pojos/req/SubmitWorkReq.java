@@ -1,15 +1,11 @@
 package com.isxcode.acorn.api.agent.pojos.req;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.isxcode.acorn.api.func.pojos.dto.FuncInfo;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class SubmitWorkReq {
 
     private String clusterType;
@@ -25,4 +21,10 @@ public class SubmitWorkReq {
     private String workInstanceId;
 
     private String workType;
+
+    private String workId;
+
+    private List<String> libConfig;
+
+    private List<FuncInfo> funcConfig;
 }

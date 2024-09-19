@@ -48,4 +48,16 @@ public interface WorkType {
     String API = "API";
 
     String PRQL = "PRQL";
+
+    String CURL = "CURL";
+
+    /**
+     * Excel导入作业.
+     */
+    String EXCEL_SYNC_JDBC = "EXCEL_SYNC_JDBC";
+
+    /**
+     * 实时计算.
+     */
+    String REAL_WORK = "REAL_WORK";
 }

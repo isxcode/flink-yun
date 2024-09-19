@@ -13,10 +13,8 @@ public class AgentFactory {
 
     public AgentService getAgentService(String clusterType) {
 
-        return applicationContext.getBeansOfType(AgentService.class)
-            .values()
-            .stream()
-            .filter(agent -> agent.getAgentType().equals(clusterType))
-            .findFirst().orElseThrow(() -> new IsxAppException("agent类型不支持"));
+        return applicationContext.getBeansOfType(AgentService.class).values().stream()
+            .filter(agent -> agent.getAgentType().equals(clusterType)).findFirst()
+            .orElseThrow(() -> new IsxAppException("agent类型不支持"));
     }
 }

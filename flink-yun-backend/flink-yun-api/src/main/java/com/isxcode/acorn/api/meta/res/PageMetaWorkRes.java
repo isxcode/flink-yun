@@ -2,8 +2,8 @@ package com.isxcode.acorn.api.meta.res;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.isxcode.star.api.work.pojos.dto.CronConfig;
-import com.isxcode.star.backend.api.base.serializer.LocalDateTimeSerializer;
+import com.isxcode.acorn.api.work.pojos.dto.CronConfig;
+import com.isxcode.acorn.backend.api.base.serializer.LocalDateTimeSerializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;

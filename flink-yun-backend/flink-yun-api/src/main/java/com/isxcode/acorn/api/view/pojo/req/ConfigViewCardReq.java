@@ -1,6 +1,6 @@
 package com.isxcode.acorn.api.view.pojo.req;
 
-import com.isxcode.star.api.view.pojo.dto.DataSql;
+import com.isxcode.acorn.api.view.pojo.dto.DataSql;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

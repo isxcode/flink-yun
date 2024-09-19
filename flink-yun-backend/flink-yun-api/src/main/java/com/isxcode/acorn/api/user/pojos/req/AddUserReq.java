@@ -1,11 +1,10 @@
 package com.isxcode.acorn.api.user.pojos.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import lombok.Data;
 
 @Data
 public class AddUserReq {
