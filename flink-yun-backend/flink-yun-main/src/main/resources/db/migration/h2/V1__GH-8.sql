@@ -1180,4 +1180,3 @@ alter table SY_WORK_INSTANCE
     add JOB_MANAGER_LOG CHARACTER LARGE OBJECT;
 
 comment on column SY_WORK_INSTANCE.JOB_MANAGER_LOG is 'jobManagerLog日志';
-
