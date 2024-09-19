@@ -8,9 +8,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
-/**
- * id生成器.
- */
+/** id生成器. */
 public class GeneratedValueConfig implements IdentifierGenerator {
 
     @Override

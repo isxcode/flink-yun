@@ -1,6 +1,7 @@
 package com.isxcode.acorn.common.exception;
 
 import com.isxcode.acorn.backend.api.base.exceptions.AbstractIsxAppException;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxErrorException;
 import com.isxcode.acorn.backend.api.base.exceptions.SuccessResponseException;
 import com.isxcode.acorn.backend.api.base.pojos.BaseResponse;
 import java.nio.file.AccessDeniedException;
