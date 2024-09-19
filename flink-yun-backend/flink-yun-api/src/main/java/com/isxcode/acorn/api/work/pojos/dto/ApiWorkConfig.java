@@ -11,7 +11,7 @@ public class ApiWorkConfig {
     @Schema(title = "作业唯一id", example = "sy_4f07ab7b1fe54dab9be884e410c53af4")
     private String workId;
 
-    @Schema(title = "接口请求url", example = "http(s)://zhiqingyun-demo.isxcode.com/xxxx/xxxx")
+    @Schema(title = "接口请求url", example = "http(s)://zhiliuyun-demo.isxcode.com/xxxx/xxxx")
     private String requestUrl;
 
     @Schema(title = "接口请求类型", example = "POST/GET")

@@ -4,13 +4,13 @@
  * @LastEditTime: 2023-06-16 21:56:33
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /spark-yun/spark-yun-website/src/views/login/login.vue
+ * @FilePath: /flink-yun/flink-yun-website/src/views/login/login.vue
 -->
 <template>
   <div class="zqy-login" @keyup.enter="clickToLogin">
     <div class="zqy-login-container">
       <div class="normal-login-title">
-        至轻云
+        至流云
       </div>
       <el-form
         ref="loginForm"
