@@ -1,6 +1,7 @@
 <template>
   <vxe-table
     class="block-table"
+    :class="{ 'block-table__empty': !tableConfig.tableData?.length }"
     :row-config="{ isHover: true }"
     :data="tableConfig.tableData"
     :loading="tableConfig.loading"
@@ -117,6 +118,11 @@ function columnSlotAdapter(column: any, colConfig: any) {
 
 <style lang="scss">
 .block-table {
+  &.block-table__empty {
+    .vxe-table--render-wrapper {
+      min-height: 176px;
+    }
+  }
   .vxe-table--header tr.vxe-header--row > th {
     height: getCssVar('menu', 'item-height');
     padding: 0;
@@ -130,10 +136,33 @@ function columnSlotAdapter(column: any, colConfig: any) {
     padding: 0;
     .vxe-cell {
       font-size: getCssVar('font-size', 'extra-small');
+
+      .name-click {
+        cursor: pointer;
+        font-weight: bold;
+        color: getCssVar('color', 'primary', 'light-3');
+
+        &:hover {
+          color: getCssVar('color', 'primary');
+          text-decoration: underline;
+        }
+      }
     }
   }
   .vxe-table--empty-content {
     height: 132px;
+  }
+  .vxe-loading {
+    .vxe-loading--chunk {
+      color: getCssVar('color', 'primary');
+    }
+  }
+}
+.vxe-table--tooltip-wrapper {
+  &.is--active {
+    &.is--visible {
+      z-index: 3000 !important;
+    }
   }
 }
 .pagination {

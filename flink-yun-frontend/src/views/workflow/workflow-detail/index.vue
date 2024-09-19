@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-18 14:59:12
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /flink-yun/flink-yun-website/src/views/workflow/workflow-detail/index.vue
+ * @FilePath: /spark-yun/spark-yun-website/src/views/workflow/workflow-detail/index.vue
 -->
 <template>
   <Breadcrumb :bread-crumb-list="breadCrumbList" />
@@ -280,8 +280,8 @@ function getTypeData(e: string) {
       value: 'QUERY_JDBC'
     },
     {
-      label: 'FlinkSql执行作业',
-      value: 'FLINK_SQL'
+      label: 'SparkSql查询作业',
+      value: 'SPARK_SQL'
     }
   ]
   return typeList.find(itme => itme.value === e)?.label

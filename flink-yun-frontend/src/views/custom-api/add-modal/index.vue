@@ -82,7 +82,7 @@
         <!-- 接口配置 -->
         <!-- <div class="item-title">请求配置</div> -->
         <el-form-item label="请求头模式">
-          <el-tooltip content="任何人访问：无权限拦截。系统认证：通过至流云用户权限拦截。自定义：用户自定义请求头拦截" placement="top">
+          <el-tooltip content="任何人访问：无权限拦截。系统认证：通过至轻云用户权限拦截。自定义：用户自定义请求头拦截" placement="top">
             <el-icon style="left: 68px" class="tooltip-msg"><QuestionFilled /></el-icon>
           </el-tooltip>
           <el-radio-group v-model="formData.tokenType" size="small" @change="tokenTypeChangeEvent">
@@ -240,7 +240,7 @@ import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { GetDatasourceList } from '@/services/datasource.service'
 import { GetComputerGroupList } from '@/services/computer-group.service'
-import CodeMirror from 'vue-codemirror6'
+// import CodeMirror from 'vue-codemirror6'
 import {json} from '@codemirror/lang-json'
 import { jsonFormatter } from '@/utils/formatter'
 import {sql} from '@codemirror/lang-sql'

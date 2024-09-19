@@ -70,6 +70,10 @@ const typeList = ref([
   {
     label: '依赖',
     value: 'LIB',
+  },
+  {
+    label: 'Excel',
+    value: 'EXCEL',
   }
 ])
 const modelConfig = reactive({
@@ -116,6 +120,10 @@ function showModal(cb: () => void): void {
 }
 
 function okEvent() {
+  if (!formData.fileData) {
+    ElMessage.warning('请上传附件')
+    return
+  }
   form.value?.validate((valid) => {
     if (valid) {
       modelConfig.okConfig.loading = true

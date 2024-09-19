@@ -82,6 +82,9 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item prop="sourceDBId" label="数据源">
+                            <el-tooltip content="数据源网速直接影响同步速度,推荐使用内网ip" placement="top">
+                                <el-icon style="left: -30px" class="tooltip-msg"><QuestionFilled /></el-icon>
+                            </el-tooltip>
                             <el-select v-model="formData.sourceDBId" clearable filterable placeholder="请选择"
                                 @visible-change="getDataSource($event, formData.sourceDBType, 'source')"
                                 @change="dbIdChange('source')">
@@ -157,7 +160,7 @@
         <el-collapse v-if="!!instanceId" v-model="collapseActive" class="data-sync-log__collapse" ref="logCollapseRef">
             <el-collapse-item title="查看日志" :disabled="true" name="1">
                 <template #title>
-                    <el-tabs v-model="activeName" @tab-change="tabChangeEvent">
+                    <el-tabs v-model="activeName" @tab-click="changeCollapseUp" @tab-change="tabChangeEvent">
                         <template v-for="tab in tabList" :key="tab.code">
                         <el-tab-pane v-if="!tab.hide" :label="tab.name" :name="tab.code" />
                         </template>
@@ -167,7 +170,7 @@
                         <el-icon v-else @click="changeCollapseUp"><ArrowUp /></el-icon>
                     </span>
                 </template>
-                <div class="log-show">
+                <div class="log-show log-show-datasync">
                     <component :is="currentTab" ref="containerInstanceRef" class="show-container" />
                 </div>
             </el-collapse-item>
@@ -182,7 +185,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, defineProps, nextTick, markRaw } from 'vue'
 import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
-import CodeMirror from 'vue-codemirror6'
+// import CodeMirror from 'vue-codemirror6'
 import { sql } from '@codemirror/lang-sql'
 import { DataSourceType, OverModeList } from './data.config.ts'
 import { GetDatasourceList } from '@/services/datasource.service'
@@ -315,13 +318,13 @@ function getDate() {
             formData.targetDBId = res.data.syncWorkConfig.targetDBId
             formData.targetTable = res.data.syncWorkConfig.targetTable
             formData.overMode = res.data.syncWorkConfig.overMode
-    
+
             nextTick(() => {
                 getDataSource(true, formData.sourceDBType, 'source')
                 getDataSource(true, formData.targetDBType, 'target')
                 getDataSourceTable(true, formData.sourceDBId, 'source')
                 getDataSourceTable(true, formData.targetDBId, 'target')
-    
+
                 dataSyncTableRef.value.initPageData(res.data.syncWorkConfig)
                 changeStatus.value = false
             })
@@ -339,6 +342,9 @@ function runWorkData() {
         type: 'warning'
         }).then(() => {
             btnLoadingConfig.runningLoading = true
+            // 运行自动切换到提交日志
+            tabChangeEvent('PublishLog')
+
             RunWorkItemConfig({
                 workId: props.workItemConfig.id
             }).then((res: any) => {
@@ -348,7 +354,6 @@ function runWorkData() {
                     containerInstanceRef.value.initData(instanceId.value)
                 })
                 btnLoadingConfig.runningLoading = false
-                // initData(res.data.instanceId)
                 nextTick(() => {
                     changeCollapseUp()
                 })
@@ -358,6 +363,9 @@ function runWorkData() {
         })
     } else {
         btnLoadingConfig.runningLoading = true
+        // 运行自动切换到提交日志
+        tabChangeEvent('PublishLog')
+
         RunWorkItemConfig({
             workId: props.workItemConfig.id
         }).then((res: any) => {
@@ -605,6 +613,7 @@ onMounted(() => {
     padding-top: 50px;
     background-color: #ffffff;
     width: 100%;
+    // border-left: 1px solid var(--el-border-color);
 
     .data-sync__option-container {
         height: 50px;
@@ -724,6 +733,13 @@ onMounted(() => {
                 .el-card__body {
                     .el-form {
                         .el-form-item {
+                            position: relative;
+                            .tooltip-msg {
+                                position: absolute;
+                                top: 7px;
+                                color: getCssVar('color', 'info');
+                                font-size: 16px;
+                            }
                             .el-form-item__label {
                                 position: relative;
 
@@ -805,6 +821,12 @@ onMounted(() => {
         .log-show {
             padding: 0 20px;
             box-sizing: border-box;
+            &.log-show-datasync {
+                .zqy-download-log {
+                    right: 40px;
+                    top: 12px;
+                }
+            }
 
             pre {
                 width: 100px;

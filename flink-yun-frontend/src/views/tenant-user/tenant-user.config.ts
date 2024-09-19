@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-16 22:22:24
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /flink-yun/flink-yun-website/src/views/tenant-user/tenant-user.config.ts
+ * @FilePath: /spark-yun/spark-yun-website/src/views/tenant-user/tenant-user.config.ts
  */
 export interface BreadCrumb {
   name: string;

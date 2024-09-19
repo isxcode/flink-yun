@@ -4,13 +4,13 @@
  * @LastEditTime: 2023-06-16 21:56:33
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /flink-yun/flink-yun-website/src/views/login/login.vue
+ * @FilePath: /spark-yun/spark-yun-website/src/views/login/login.vue
 -->
 <template>
   <div class="zqy-login" @keyup.enter="clickToLogin">
     <div class="zqy-login-container">
       <div class="normal-login-title">
-        至流云
+        至轻云
       </div>
       <el-form
         ref="loginForm"
@@ -50,7 +50,7 @@
           </el-button>
         </el-form-item>
         <el-form-item class="registered-content">
-          <span class="registered">基于spark打造超轻量级大数据平台
+          <span class="registered">企业级大数据计算平台
             <!-- <a class="do-registered" @click="clickRegistered"
                             >免费注册</a -->
           </span>
