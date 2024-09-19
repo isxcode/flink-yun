@@ -27,9 +27,6 @@ public class FlinkYunAgentBizService {
         AgentService agentService = agentFactory.getAgentService(submitWorkReq.getClusterType());
         try {
             return agentService.submitWork(submitWorkReq);
-        } catch (IsxAppException e) {
-            log.error(e.getMessage(), e);
-            throw new IsxAppException(e.getMsg());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IsxAppException(e.getMessage());
