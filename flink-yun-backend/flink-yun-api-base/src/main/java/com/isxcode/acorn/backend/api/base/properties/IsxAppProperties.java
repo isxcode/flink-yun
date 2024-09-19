@@ -67,4 +67,9 @@ public class IsxAppProperties {
      * 使用端口号访问接口.
      */
     private boolean usePort = true;
+
+    /**
+     * 简单配置模式 simple. 高级配置模式 advance.
+     */
+    private String configMode = "simple";
 }
