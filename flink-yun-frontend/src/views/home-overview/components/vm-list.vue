@@ -4,12 +4,12 @@
       <span class="vm-list__title">实例列表</span>
       <div class="vm-list__ops">
         <el-icon class="vm-list__icon"><RefreshRight /></el-icon>
-        <el-input class="vm-list__search" v-model="keyWord" placeholder="名称"  @keydown.enter="queryVmlistData"/>
+        <el-input class="vm-list__search" v-model="keyWord" placeholder="作业流"  @keydown.enter="queryVmlistData"/>
       </div>
     </div>
     <div class="vm-list__body">
       <el-table class="vm-list__table" :data="tableData">
-        <el-table-column prop="workflowName" label="名称" width="120" show-overflow-tooltip/>
+        <el-table-column prop="workflowName" label="作业流" width="120" show-overflow-tooltip/>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="{ row }">
             <vm-status :status="row.status"></vm-status>
@@ -22,11 +22,14 @@
         </el-table-column>
         <el-table-column prop="startDateTime" label="开始时间" show-overflow-tooltip />
         <el-table-column prop="endDateTime" label="结束时间" show-overflow-tooltip />
-        <el-table-column label="操作" align="center">
+        <!-- <el-table-column label="操作" align="center">
           <template #default="{ row }">
             <el-icon class="vm-list__more"><MoreFilled /></el-icon>
           </template>
-        </el-table-column>
+        </el-table-column> -->
+        <template #empty>
+          <el-empty class="vm-list__empty" description="暂无数据"></el-empty>
+        </template>
       </el-table>
       <el-pagination class="vm-list__pagination" small layout="prev, pager, next" :total="total" @current-change="handleCurrentChange"/>
     </div>
@@ -141,6 +144,14 @@ onMounted(() => {
 
     &:hover {
       color: getCssVar('color', 'primary');
+    }
+  }
+
+  .vm-list__empty {
+    padding: 20px 0 0;
+    --el-empty-image-width: 60px;
+    .el-empty__description {
+      margin-top: 0;
     }
   }
 

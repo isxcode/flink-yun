@@ -98,6 +98,10 @@ const typeList = ref([
   {
     label: '依赖',
     value: 'LIB',
+  },
+  {
+    label: 'Excel',
+    value: 'EXCEL',
   }
 ])
 
@@ -202,6 +206,8 @@ function handleCurrentChange(e: number) {
 }
 
 onMounted(() => {
+  tableConfig.pagination.currentPage = 1
+  tableConfig.pagination.pageSize = 10
   initData()
 })
 </script>

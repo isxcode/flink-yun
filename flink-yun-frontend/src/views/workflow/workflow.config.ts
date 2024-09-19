@@ -49,22 +49,32 @@ export const BreadCrumbList: Array<BreadCrumb> = [
 export const colConfigs: colConfig[] = [
   {
     prop: 'name',
-    title: '作业流名称',
-    minWidth: 100,
+    title: '名称',
+    minWidth: 120,
     customSlot: 'nameSlot',
     showOverflowTooltip: true
   },
-  // {
-  //   prop: 'clusterName',
-  //   title: '默认集群',
-  //   minWidth: 100,
-  //   showOverflowTooltip: true
-  // },
   {
     prop: 'status',
     title: '发布状态',
-    minWidth: 100,
+    minWidth: 80,
     customSlot: 'statusTag'
+  },
+  {
+    prop: 'nextDateTime',
+    title: '下次执行时间',
+    minWidth: 120,
+    showOverflowTooltip: true
+  },
+  {
+    prop: 'createUsername',
+    title: '创建人',
+    minWidth: 80
+  },
+  {
+    prop: 'createDateTime',
+    title: '创建时间',
+    minWidth: 140
   },
   {
     prop: 'remark',
@@ -76,7 +86,7 @@ export const colConfigs: colConfig[] = [
     title: '操作',
     align: 'center',
     customSlot: 'options',
-    width: 110
+    width: 80
   }
 ]
 
@@ -143,3 +153,54 @@ export const DetailTableConfig: TableConfig = {
   seqType: 'seq',
   loading: false
 }
+
+export const TypeList = [
+  {
+    label: 'Jdbc执行作业',
+    value: 'EXE_JDBC'
+  },
+  {
+    label: 'Jdbc查询作业',
+    value: 'QUERY_JDBC'
+  },
+  {
+    label: 'Prql查询作业',
+    value: 'PRQL'
+  },
+  {
+    label: 'Curl作业',
+    value: 'CURL'
+  },
+  {
+    label: 'SparkSql查询作业',
+    value: 'SPARK_SQL'
+  },
+  {
+    label: 'SparkSql容器作业',
+    value: 'SPARK_CONTAINER_SQL'
+  },
+  {
+    label: '数据同步作业',
+    value: 'DATA_SYNC_JDBC'
+  },
+  {
+    label: 'bash作业',
+    value: 'BASH'
+  },
+  {
+    label: 'python作业',
+    value: 'PYTHON'
+  },
+  {
+    label: '自定义作业',
+    value: 'SPARK_JAR'
+  },
+  {
+    label: '接口调用作业',
+    value: 'API'
+  },
+  {
+    label: 'Excel导入作业',
+    value: 'EXCEL_SYNC_JDBC'
+  }
+]

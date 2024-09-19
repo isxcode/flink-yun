@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-06-18 14:56:21
  * @LastEditors: fanciNate
  * @Description: In User Settings Edit
- * @FilePath: /flink-yun/flink-yun-website/src/services/workflow.service.ts
+ * @FilePath: /spark-yun/spark-yun-website/src/services/workflow.service.ts
  */
 import { http } from '@/utils/http'
 interface SerchParams {
@@ -80,6 +80,15 @@ export function UpdateWorkflowDetailList(params: any): Promise<any> {
   return http.request({
     method: 'post',
     url: '/work/updateWork',
+    params: params
+  })
+}
+
+// 作业-复制
+export function CopyWorkflowDetailList(params: any): Promise<any> {
+  return http.request({
+    method: 'post',
+    url: '/work/copyWork',
     params: params
   })
 }
@@ -283,6 +292,15 @@ export function ReRunWorkflow(params: any): Promise<any> {
   return http.request({
     method: 'post',
     url: '/workflow/reRunFlow',
+    params: params
+  })
+}
+
+// 外部调用获取链接
+export function GetInvokeUrl(params: any): Promise<any> {
+  return http.request({
+    method: 'post',
+    url: '/workflow/getInvokeUrl',
     params: params
   })
 }

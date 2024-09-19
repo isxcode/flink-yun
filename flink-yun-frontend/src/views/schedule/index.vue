@@ -6,6 +6,21 @@
         <el-radio-button label="workflow">作业流</el-radio-button>
         <el-radio-button label="work">作业</el-radio-button>
       </el-radio-group>
+      <div class="zqy-tenant__select">
+        <el-select
+          v-model="executeStatus"
+          clearable
+          placeholder="请选择状态进行搜索"
+          @change="initData(false)"
+        >
+          <el-option
+            v-for="item in typeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </div>
       <div class="zqy-seach">
         <el-input
           v-model="keyword"
@@ -15,12 +30,6 @@
           @input="inputEvent"
           @keyup.enter="initData(false)"
         />
-        <el-button
-          type="primary"
-          @click="initData(false)"
-        >
-          刷新
-        </el-button>
       </div>
     </div>
     <LoadingPage
@@ -49,6 +58,13 @@
                 type="info"
               >
                 调度执行
+              </el-tag>
+              <el-tag
+                v-if="scopeSlot.row.instanceType === 'INVOKE' || scopeSlot.row.type === 'INVOKE'"
+                class="ml-2"
+                type="info"
+              >
+                外部调用
               </el-tag>
             </div>
           </template>
@@ -116,22 +132,28 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item
-                      v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON'].includes(scopeSlot.row.workType)"
+                      v-if="['SPARK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON', 'EXCEL_SYNC_JDBC'].includes(scopeSlot.row.workType)"
                       @click="showDetailModal(scopeSlot.row, 'yarnLog')"
                     >
                       运行日志
                     </el-dropdown-item>
                     <el-dropdown-item
-                      v-if="scopeSlot.row.status !== 'RUNNING' && scopeSlot.row.instanceType === 'WORK'"
-                      @click="retry(scopeSlot.row)"
-                    >
-                      重新运行
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-if="scopeSlot.row.status === 'SUCCESS' && scopeSlot.row.workType !== 'EXE_JDBC'"
-                      @click="showDetailModal(scopeSlot.row, 'result')"
+                        v-if="scopeSlot.row.status === 'SUCCESS' && scopeSlot.row.workType !== 'EXE_JDBC'"
+                        @click="showDetailModal(scopeSlot.row, 'result')"
                     >
                       运行结果
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                        v-if="scopeSlot.row.status === 'RUNNING'"
+                        @click="stopWork(scopeSlot.row)"
+                    >
+                      中止
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="scopeSlot.row.status !== 'RUNNING'"
+                      @click="retry(scopeSlot.row)"
+                    >
+                      重跑
                     </el-dropdown-item>
                     <el-dropdown-item @click="deleteSchedule(scopeSlot.row)">
                       删除
@@ -148,14 +170,14 @@
                 <span class="click-show-more">更多</span>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item>
-                      删除
-                    </el-dropdown-item>
                     <el-dropdown-item @click="reRunWorkFlowDataEvent(scopeSlot.row)">
                       重跑
                     </el-dropdown-item>
-                    <el-dropdown-item @click="stopWorkFlow(scopeSlot.row)">
+                    <el-dropdown-item v-if="!['SUCCESS','FAIL','ABORT'].includes(scopeSlot.row.status)" @click="stopWorkFlow(scopeSlot.row)">
                       中止
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="deleteWorkflowSchedule(scopeSlot.row)">
+                      删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
@@ -179,9 +201,10 @@ import DetailModal from './detail-modal/index.vue'
 import DagDetail from './dag-detail/index.vue'
 
 import { BreadCrumbList, TableConfig, TableConfigWorkFlow } from './schedule.config'
-import { GetScheduleList, DeleteScheduleLog, ReStartRunning, GetScheduleWorkFlowList } from '@/services/schedule.service'
+import { GetScheduleList, DeleteScheduleLog, ReStartRunning, GetScheduleWorkFlowList, DeleteWorkFlowScheduleLog } from '@/services/schedule.service'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ReRunWorkflow, StopWorkflowData } from '@/services/workflow.service'
+import { ReRunWorkflow, StopWorkflowData, TerWorkItemConfig } from '@/services/workflow.service'
+import { TypeList } from '../workflow/workflow.config'
 
 const breadCrumbList = reactive(BreadCrumbList)
 const tableConfig: any = reactive(TableConfig)
@@ -193,39 +216,91 @@ const detailModalRef = ref()
 const dagDetailRef = ref()
 const tableType = ref('')  // work or workflow
 const timer = ref()
+const executeStatus = ref('')
+const typeList = ref([
+  {
+    label: '成功',
+    value: 'SUCCESS',
+  },
+  {
+    label: '失败',
+    value: 'FAIL',
+  },
+  {
+    label: '已中止',
+    value: 'ABORT',
+  },
+  {
+    label: '中止中',
+    value: 'ABORTING',
+  },
+  {
+    label: '运行中',
+    value: 'RUNNING',
+  },
+  {
+    label: '等待中',
+    value: 'PENDING',
+  }
+])
 
-function initData(tableLoading?: boolean) {
+function initData(tableLoading?: boolean, type?: string) {
   loading.value = tableLoading ? false : true
   networkError.value = networkError.value || false
   if (tableType.value === 'workflow') {
     GetScheduleWorkFlowList({
       page: tableConfigWorkFlow.pagination.currentPage - 1,
       pageSize: tableConfigWorkFlow.pagination.pageSize,
-      searchKeyWord: keyword.value
-    })
-      .then((res: any) => {
+      searchKeyWord: keyword.value,
+      executeStatus: executeStatus.value
+    }).then((res: any) => {
+      if (type) {
+        res.data.content.forEach((item: any) => {
+          tableConfigWorkFlow.tableData.forEach((col: any) => {
+            if (item.workflowInstanceId === col.workflowInstanceId) {
+              col.status = item.status
+            }
+          })
+        })
+      } else {
         tableConfigWorkFlow.tableData = res.data.content
         tableConfigWorkFlow.pagination.total = res.data.totalElements
-        loading.value = false
-        tableConfigWorkFlow.loading = false
-        networkError.value = false
-      })
-      .catch(() => {
-        tableConfigWorkFlow.tableData = []
-        tableConfigWorkFlow.pagination.total = 0
-        loading.value = false
-        tableConfigWorkFlow.loading = false
-        networkError.value = true
-      })
+      }
+      loading.value = false
+      tableConfigWorkFlow.loading = false
+      networkError.value = false
+    }).catch(() => {
+      tableConfigWorkFlow.tableData = []
+      tableConfigWorkFlow.pagination.total = 0
+      loading.value = false
+      tableConfigWorkFlow.loading = false
+      networkError.value = true
+
+      if (timer.value) {
+        clearInterval(timer.value)
+      }
+      timer.value = null
+    })
   } else {
     GetScheduleList({
       page: tableConfig.pagination.currentPage - 1,
       pageSize: tableConfig.pagination.pageSize,
-      searchKeyWord: keyword.value
+      searchKeyWord: keyword.value,
+      executeStatus: executeStatus.value
     })
       .then((res: any) => {
-        tableConfig.tableData = res.data.content
-        tableConfig.pagination.total = res.data.totalElements
+        if (type) {
+          res.data.content.forEach((item: any) => {
+            tableConfig.tableData.forEach((col: any) => {
+              if (item.id === col.id) {
+                col.status = item.status
+              }
+            })
+          })
+        } else {
+          tableConfig.tableData = res.data.content
+          tableConfig.pagination.total = res.data.totalElements
+        }
         loading.value = false
         tableConfig.loading = false
         networkError.value = false
@@ -236,6 +311,11 @@ function initData(tableLoading?: boolean) {
         loading.value = false
         tableConfig.loading = false
         networkError.value = true
+
+        if (timer.value) {
+          clearInterval(timer.value)
+        }
+        timer.value = null
       })
   }
 }
@@ -271,7 +351,18 @@ function retry(data: any) {
     })
 }
 
-// // 删除
+function stopWork(data: any) {
+  TerWorkItemConfig({instanceId: data.id})
+    .then((res: any) => {
+      ElMessage.success(res.msg)
+      initData()
+    })
+    .catch((error: any) => {
+      console.error(error)
+    })
+}
+
+// 删除
 function deleteSchedule(data: any) {
   ElMessageBox.confirm('确定删除该调度历史吗？', '警告', {
     confirmButtonText: '确定',
@@ -289,44 +380,27 @@ function deleteSchedule(data: any) {
   })
 }
 
+// 删除作业流调度
+function deleteWorkflowSchedule(data: any) {
+  ElMessageBox.confirm('确定删除该调度历史吗？', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    DeleteWorkFlowScheduleLog({
+      workflowInstanceId: data.workflowInstanceId
+    }).then((res: any) => {
+      ElMessage.success(res.msg)
+      initData()
+    }).catch(() => {})
+  })
+}
+
 function getTypeData(e: string) {
   if (!e) {
     return
   }
-  const typeList = [
-    {
-      label: 'Jdbc执行作业',
-      value: 'EXE_JDBC'
-    },
-    {
-      label: 'Jdbc查询作业',
-      value: 'QUERY_JDBC'
-    },
-    {
-      label: 'FlinkSql执行作业',
-      value: 'FLINK_SQL'
-    },
-    {
-      label: 'SparkSql容器作业',
-      value: 'SPARK_CONTAINER_SQL'
-    },
-    {
-      label: '数据同步作业',
-      value: 'DATA_SYNC_JDBC'
-    },
-    {
-      label: 'bash作业',
-      value: 'BASH'
-    },
-    {
-      label: 'python作业',
-      value: 'PYTHON'
-    },
-    {
-      label: '自定义作业',
-      value: 'FLINK_JAR'
-    }
-  ]
+  const typeList = [...TypeList]
   return typeList.find(itme => itme.value === e)?.label
 }
 
@@ -401,9 +475,12 @@ onMounted(() => {
   if (!tableType.value) {
     tableType.value = 'workflow'
   }
+
+  tableConfigWorkFlow.pagination.currentPage = 1
+  tableConfigWorkFlow.pagination.pageSize = 10
   initData()
   timer.value = setInterval(() => {
-    initData(true)
+    initData(true, 'interval')
   }, 3000)
 })
 onUnmounted(() => {
@@ -421,6 +498,13 @@ onUnmounted(() => {
   }
 
   &.zqy-schedule {
+    .zqy-table-top {
+      .el-radio-group {
+        .el-radio-button__inner {
+          font-size: getCssVar('font-size', 'extra-small');
+        }
+      }
+    }
     .zqy-seach {
       display: flex;
       align-items: center;
