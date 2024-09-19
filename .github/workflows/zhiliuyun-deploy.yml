@@ -1,4 +1,4 @@
-name: deploy zhiqingyun
+name: deploy zhiliuyun
 
 on:
   workflow_dispatch:

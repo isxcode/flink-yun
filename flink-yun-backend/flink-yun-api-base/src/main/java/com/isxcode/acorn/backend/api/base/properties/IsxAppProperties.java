@@ -46,7 +46,7 @@ public class IsxAppProperties {
     /**
      * 资源目录.
      */
-    private String resourcesPath = "/var/lib/zhiqingyun";
+    private String resourcesPath = "/var/lib/zhiliuyun";
 
     /**
      * 系统管理员admin密码.

@@ -102,7 +102,7 @@ public class BashExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\necho 'zhiqingyun_success'",
+            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\necho 'zhiliuyun_success'",
                 clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".sh");
 
             // 执行命令获取pid
@@ -164,7 +164,7 @@ public class BashExecutor extends WorkExecutor {
                 }
 
                 // 保存运行日志
-                workInstance.setTaskManagerLog(logCommand.replace("zhiqingyun_success", ""));
+                workInstance.setTaskManagerLog(logCommand.replace("zhiliuyun_success", ""));
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存日志成功 \n");
                 updateInstance(workInstance, logBuilder);
 
@@ -179,7 +179,7 @@ public class BashExecutor extends WorkExecutor {
                 }
 
                 // 判断脚本运行成功还是失败
-                if (!logCommand.contains("zhiqingyun_success")) {
+                if (!logCommand.contains("zhiliuyun_success")) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
                 }
 

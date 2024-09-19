@@ -16,7 +16,7 @@
       <div class="right">
         <div class="column">
           <div class="title">产品</div>
-          <div class="link" @click="clickZhiqingyun">至轻云</div>
+          <div class="link" @click="clickZhiqingyun">至流云</div>
           <div class="link" @click="clickZhiliuyun">至流云</div>
           <div class="link" @click="clickZhishuyun">至数云</div>
           <div class="link" @click="clickZhishiyun">至视云</div>
@@ -346,7 +346,7 @@ function clickGitee() {
 }
 
 function clickZhiqingyun() {
-  window.open("https://zhiqingyun.isxcode.com");
+  window.open("https://zhiliuyun.isxcode.com");
 }
 
 function clickZhishuyun() {
