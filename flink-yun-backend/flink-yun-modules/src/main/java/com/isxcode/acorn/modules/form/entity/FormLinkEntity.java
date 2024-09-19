@@ -1,9 +1,10 @@
-package com.isxcode.acorn.modules.container.entity;
+package com.isxcode.acorn.modules.form.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -20,41 +21,28 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_CONTAINER SET deleted = 1 WHERE id = ?")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@SQLDelete(sql = "UPDATE SY_FORM_LINK SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_CONTAINER")
+@Table(name = "SY_FORM_LINK")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
-@Builder(toBuilder = true)
-@AllArgsConstructor
-public class ContainerEntity {
+public class FormLinkEntity {
 
     @Id
     @GeneratedValue(generator = "sy-id-generator")
     @GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.acorn.config.GeneratedValueConfig")
     private String id;
 
-    private String name;
+    private String formId;
 
-    private String remark;
+    private String formVersion;
 
-    private String status;
+    private String formToken;
 
-    private String datasourceId;
-
-    private String clusterId;
-
-    private String resourceLevel;
-
-    private String sparkConfig;
-
-    private Integer port;
-
-    private String submitLog;
-
-    private String runningLog;
-
-    private String applicationId;
+    private LocalDateTime invalidDateTime;
 
     @CreatedDate
     private LocalDateTime createDateTime;
@@ -68,12 +56,13 @@ public class ContainerEntity {
     @LastModifiedBy
     private String lastModifiedBy;
 
+    @Version
+    private Long versionNumber;
+
     @Transient
     private Integer deleted;
 
     private String tenantId;
-
-    public ContainerEntity() {}
 
     @PrePersist
     public void prePersist() {

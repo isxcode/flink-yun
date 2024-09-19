@@ -7,12 +7,15 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
+import com.isxcode.acorn.api.cluster.constants.ClusterStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import java.io.File;
@@ -36,6 +39,8 @@ public class RunAgentCheckService {
 
     private final ClusterNodeRepository clusterNodeRepository;
 
+    private final ClusterRepository clusterRepository;
+
     @Async("sparkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
 
@@ -52,7 +57,7 @@ public class RunAgentCheckService {
         try {
             checkAgent(scpFileEngineNodeDto, clusterNodeEntity);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             clusterNodeEntity.setCheckDateTime(LocalDateTime.now());
             clusterNodeEntity.setAgentLog(e.getMessage());
             clusterNodeEntity.setStatus(ClusterNodeStatus.CHECK_ERROR);
@@ -96,5 +101,13 @@ public class RunAgentCheckService {
         engineNode.setAgentLog(agentCheckInfo.getLog());
         engineNode.setCheckDateTime(LocalDateTime.now());
         clusterNodeRepository.saveAndFlush(engineNode);
+
+        // 如果状态是成功的话,将集群改为启用
+        if (ClusterNodeStatus.RUNNING.equals(agentCheckInfo.getStatus())) {
+            Optional<ClusterEntity> byId = clusterRepository.findById(engineNode.getClusterId());
+            ClusterEntity clusterEntity = byId.get();
+            clusterEntity.setStatus(ClusterStatus.ACTIVE);
+            clusterRepository.saveAndFlush(clusterEntity);
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.SparkYunProperties;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterNodeService;
 import com.jcraft.jsch.*;
 
@@ -31,9 +32,12 @@ import org.springframework.stereotype.Service;
 public class RunAgentInstallService {
 
     private final ClusterNodeService clusterNodeService;
+
     private final SparkYunProperties sparkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
+
+    private final ClusterRepository clusterRepository;
 
     @Async("sparkYunWorkThreadPool")
     public void run(String clusterNodeId, String clusterType, ScpFileEngineNodeDto scpFileEngineNodeDto,
@@ -52,7 +56,7 @@ public class RunAgentInstallService {
         try {
             installAgent(scpFileEngineNodeDto, clusterNodeEntity, clusterType);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             clusterNodeEntity.setCheckDateTime(LocalDateTime.now());
             clusterNodeEntity.setAgentLog(e.getMessage());
             clusterNodeEntity.setStatus(ClusterNodeStatus.UN_INSTALL);
@@ -64,13 +68,16 @@ public class RunAgentInstallService {
         String clusterType) throws JSchException, IOException, InterruptedException, SftpException {
 
         // 先检查节点是否可以安装
-        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("check-%s.sh", clusterType.toLowerCase()),
-            sparkYunProperties.getTmpDir() + File.separator + String.format("check-%s.sh", clusterType.toLowerCase()));
+        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType),
+            sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType));
 
         // 运行安装脚本
-        String envCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator
-            + String.format("check-%s.sh", clusterType.toLowerCase()) + " --home-path=" + engineNode.getAgentHomePath()
-            + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand =
+            "bash " + sparkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType)
+                + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        if (engineNode.getInstallSparkLocal() != null) {
+            envCommand = envCommand + " --flink-local=" + engineNode.getInstallSparkLocal();
+        }
         log.debug("执行远程命令:{}", envCommand);
 
         // 获取返回结果

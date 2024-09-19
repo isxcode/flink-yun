@@ -1,21 +1,9 @@
-package com.isxcode.acorn.modules.cluster.entity;
-
-import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+package com.isxcode.acorn.modules.meta.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -25,17 +13,21 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE SY_CLUSTER_NODE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE SY_META_WORK SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_CLUSTER_NODE")
+@Table(name = "SY_META_WORK")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
-public class ClusterNodeEntity {
+@Builder(toBuilder = true)
+@AllArgsConstructor
+public class MetaWorkEntity {
 
     @Id
     @GeneratedValue(generator = "sy-id-generator")
@@ -44,43 +36,19 @@ public class ClusterNodeEntity {
 
     private String name;
 
-    private String remark;
+    private String dbType;
+
+    private String datasourceId;
+
+    private String collectType;
+
+    private String tablePattern;
+
+    private String cronConfig;
 
     private String status;
 
-    private LocalDateTime checkDateTime;
-
-    private Double allMemory;
-
-    private Double usedMemory;
-
-    private Double allStorage;
-
-    private Double usedStorage;
-
-    private Double cpuPercent;
-
-    private String clusterId;
-
-    private String host;
-
-    private String port;
-
-    private String username;
-
-    private String passwd;
-
-    private Boolean installFlinkLocal;
-
-    private String agentHomePath;
-
-    private String agentPort;
-
-    private String hadoopHomePath;
-
-    private String flinkHomePath;
-
-    private String agentLog;
+    private String remark;
 
     @CreatedDate
     private LocalDateTime createDateTime;
@@ -94,10 +62,15 @@ public class ClusterNodeEntity {
     @LastModifiedBy
     private String lastModifiedBy;
 
+    @Version
+    private Long versionNumber;
+
     @Transient
     private Integer deleted;
 
     private String tenantId;
+
+    public MetaWorkEntity() {}
 
     @PrePersist
     public void prePersist() {

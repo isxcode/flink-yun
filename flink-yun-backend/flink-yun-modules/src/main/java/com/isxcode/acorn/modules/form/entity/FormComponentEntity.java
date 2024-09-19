@@ -1,17 +1,6 @@
-package com.isxcode.acorn.modules.cluster.entity;
-
-import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+package com.isxcode.acorn.modules.form.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -22,43 +11,30 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_CLUSTER SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE SY_FORM_COMPONENT SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_CLUSTER")
+@Table(name = "SY_FORM_COMPONENT")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
-public class ClusterEntity {
+public class FormComponentEntity {
 
     @Id
     @GeneratedValue(generator = "sy-id-generator")
     @GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.acorn.config.GeneratedValueConfig")
     private String id;
 
-    private String name;
+    private String formId;
 
-    private String remark;
+    private String uuid;
 
-    private String status;
-
-    private LocalDateTime checkDateTime;
-
-    private Integer allNodeNum;
-
-    private Integer activeNodeNum;
-
-    private Double allMemoryNum;
-
-    private Double usedMemoryNum;
-
-    private Double allStorageNum;
-
-    private Double usedStorageNum;
-
-    private String clusterType;
-
-    private Boolean defaultCluster;
+    private String componentConfig;
 
     @CreatedDate
     private LocalDateTime createDateTime;
