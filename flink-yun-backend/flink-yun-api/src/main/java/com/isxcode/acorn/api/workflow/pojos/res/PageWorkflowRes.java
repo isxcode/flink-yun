@@ -1,7 +1,12 @@
 package com.isxcode.acorn.api.workflow.pojos.res;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.isxcode.acorn.backend.api.base.serializer.LocalDateMinuteSerializer;
+import com.isxcode.acorn.backend.api.base.serializer.LocalDateTimeSerializer;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,4 +23,14 @@ public class PageWorkflowRes {
     private String defaultClusterId;
 
     private String clusterName;
+
+    @JsonSerialize(using = LocalDateMinuteSerializer.class)
+    private LocalDateTime nextDateTime;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime createDateTime;
+
+    private String createBy;
+
+    private String createUsername;
 }

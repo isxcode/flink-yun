@@ -23,6 +23,7 @@ public class AddClusterNodeReq {
     private String username;
 
     @Schema(title = "节点服务器密码", example = "ispong123")
+    @NotEmpty(message = "密码或者令牌不能为空")
     private String passwd;
 
     @Schema(title = "备注", example = "本地测试节点")
@@ -40,4 +41,10 @@ public class AddClusterNodeReq {
 
     @Schema(title = "hadoop的home目录", example = "/opt/homebrew/Cellar/hadoop/3.3.4/libexec")
     private String hadoopHomePath;
+
+    @Schema(title = "是否安装flink-local组件", example = "true")
+    private Boolean installFlinkLocal;
+
+    @Schema(title = "flink安装路径", example = "/xxx")
+    private String flinkHomePath;
 }

@@ -7,13 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-/**
- * ClassName: UpdateUserStatusReq Package: com.isxcode.acorn.api.user.pojos.req Description:
- *
- * @Author 一只有梦想的咸鱼
- * @Version 1.0
- */
-@Data()
+@Data
 public class UpdateUserInfoReq {
 
     @Schema(title = "名称", example = "ispong")

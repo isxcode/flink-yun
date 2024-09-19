@@ -1,7 +1,7 @@
 package com.isxcode.acorn.api.meta.res;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.isxcode.star.backend.api.base.serializer.LocalDateTimeSerializer;
+import com.isxcode.acorn.backend.api.base.serializer.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

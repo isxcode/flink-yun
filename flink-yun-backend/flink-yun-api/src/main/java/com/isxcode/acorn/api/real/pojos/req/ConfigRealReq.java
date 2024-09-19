@@ -23,8 +23,8 @@ public class ConfigRealReq {
     @Schema(title = "依赖选择")
     private List<String> LibList;
 
-    @Schema(title = "spark配置")
-    private String sparkConfig;
+    @Schema(title = "flink配置字符串")
+    private String flinkConfigJson;
 
     @Schema(title = "集群id")
     private String clusterId;

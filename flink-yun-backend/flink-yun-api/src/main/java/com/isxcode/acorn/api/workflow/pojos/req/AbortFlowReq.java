@@ -1,9 +1,7 @@
 package com.isxcode.acorn.api.workflow.pojos.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import javax.validation.constraints.NotEmpty;
-
 import lombok.Data;
 
 @Data

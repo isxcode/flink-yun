@@ -28,6 +28,9 @@ public class ConfigWorkReq {
     @Schema(title = "数据同步作业配置")
     private SyncWorkConfig syncWorkConfig;
 
+    @Schema(title = "Excel导入作业配置")
+    private ExcelSyncConfig excelSyncConfig;
+
     @Schema(title = "接口调用作业配置")
     private ApiWorkConfig apiWorkConfig;
 
@@ -48,4 +51,7 @@ public class ConfigWorkReq {
 
     @Schema(title = "容器id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
     private String containerId;
+
+    @Schema(title = "告警")
+    private List<String> alarmList;
 }
