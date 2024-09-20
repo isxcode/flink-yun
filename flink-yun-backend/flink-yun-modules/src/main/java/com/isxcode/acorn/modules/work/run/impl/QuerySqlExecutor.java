@@ -1,14 +1,29 @@
-package com.isxcode.acorn.modules.work.run;
+package com.isxcode.acorn.modules.work.run.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
 import com.isxcode.acorn.api.work.constants.WorkLog;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
+import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
+import com.isxcode.acorn.modules.datasource.mapper.DatasourceMapper;
 import com.isxcode.acorn.modules.datasource.repository.DatasourceRepository;
 import com.isxcode.acorn.modules.datasource.service.DatasourceService;
+import com.isxcode.acorn.modules.datasource.source.DataSourceFactory;
+import com.isxcode.acorn.modules.datasource.source.Datasource;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
+import com.isxcode.acorn.modules.work.run.WorkExecutor;
+import com.isxcode.acorn.modules.work.run.WorkRunContext;
+import com.isxcode.acorn.modules.work.sql.SqlCommentService;
+import com.isxcode.acorn.modules.work.sql.SqlFunctionService;
+import com.isxcode.acorn.modules.work.sql.SqlValueService;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Service;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -18,9 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -30,15 +42,40 @@ public class QuerySqlExecutor extends WorkExecutor {
 
     private final DatasourceService datasourceService;
 
-    public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository,
-        WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService) {
+    private final SqlCommentService sqlCommentService;
 
-        super(workInstanceRepository, workflowInstanceRepository);
+    private final SqlFunctionService sqlFunctionService;
+
+    private final SqlValueService sqlValueService;
+
+    private final DataSourceFactory dataSourceFactory;
+
+    private final DatasourceMapper datasourceMapper;
+
+    public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository,
+        WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService,
+        SqlCommentService sqlCommentService, SqlFunctionService sqlFunctionService, SqlValueService sqlValueService,
+        AlarmService alarmService, DataSourceFactory dataSourceFactory, DatasourceMapper datasourceMapper) {
+
+        super(workInstanceRepository, workflowInstanceRepository, alarmService);
         this.datasourceRepository = datasourceRepository;
         this.datasourceService = datasourceService;
+        this.sqlCommentService = sqlCommentService;
+        this.sqlFunctionService = sqlFunctionService;
+        this.sqlValueService = sqlValueService;
+        this.dataSourceFactory = dataSourceFactory;
+        this.datasourceMapper = datasourceMapper;
+    }
+
+    @Override
+    public String getWorkType() {
+        return WorkType.QUERY_JDBC_SQL;
     }
 
     public void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
+
+        // 将线程存到Map
+        WORK_THREAD.put(workInstance.getId(), Thread.currentThread());
 
         // 获取日志构造器
         StringBuilder logBuilder = workRunContext.getLogBuilder();
@@ -55,6 +92,7 @@ public class QuerySqlExecutor extends WorkExecutor {
         if (!datasourceEntityOptional.isPresent()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测运行环境失败: 未配置有效数据源  \n");
         }
+        DatasourceEntity datasourceEntity = datasourceEntityOptional.get();
 
         // 数据源检查通过
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("检测运行环境完成  \n");
@@ -70,23 +108,31 @@ public class QuerySqlExecutor extends WorkExecutor {
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始执行sql
-        try (Connection connection = datasourceService.getDbConnection(datasourceEntityOptional.get());
+        ConnectInfo connectInfo = datasourceMapper.datasourceEntityToConnectInfo(datasourceEntity);
+        Datasource datasource = dataSourceFactory.getDatasource(connectInfo.getDbType());
+        try (Connection connection = datasource.getConnection(connectInfo);
             Statement statement = connection.createStatement();) {
 
             statement.setQueryTimeout(1800);
 
-            // 清除注释
-            String noCommentSql = workRunContext.getScript().replaceAll("/\\*(?:.|[\\n\\r])*?\\*/|--.*", "");
+            // 去掉sql中的注释
+            String sqlNoComment = sqlCommentService.removeSqlComment(workRunContext.getScript());
+
+            // 翻译sql中的系统变量
+            String parseValueSql = sqlValueService.parseSqlValue(sqlNoComment);
+
+            // 翻译sql中的系统函数
+            String script = sqlFunctionService.parseSqlFunction(parseValueSql);
 
             // 清除脚本中的脏数据
             List<String> sqls =
-                Arrays.stream(noCommentSql.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
+                Arrays.stream(script.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
 
             // 执行每条sql，除了最后一条
             for (int i = 0; i < sqls.size() - 1; i++) {
 
                 // 记录开始执行时间
-                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: ")
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行SQL: \n")
                     .append(sqls.get(i)).append(" \n");
                 workInstance = updateInstance(workInstance, logBuilder);
 
@@ -98,13 +144,24 @@ public class QuerySqlExecutor extends WorkExecutor {
                 workInstance = updateInstance(workInstance, logBuilder);
             }
 
+            // 执行查询sql，给lastSql添加查询条数限制
+            String lastSql = sqls.get(sqls.size() - 1);
+
             // 执行最后一句查询语句
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: ")
-                .append(sqls.get(sqls.size() - 1)).append(" \n");
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: \n").append(lastSql)
+                .append(" \n");
             workInstance = updateInstance(workInstance, logBuilder);
 
-            // 执行查询sql
-            ResultSet resultSet = statement.executeQuery(sqls.get(sqls.size() - 1));
+            if (!datasourceService.isQueryStatement(lastSql)) {
+                throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "最后sql不是查询语句 \n");
+            }
+
+            if (!datasourceService.hasLimit(lastSql)) {
+                lastSql = lastSql + datasourceService.getSqlLimitSql(datasourceEntityOptional.get().getDbType(),
+                    datasourceService.hasWhere(lastSql));
+            }
+
+            ResultSet resultSet = statement.executeQuery(lastSql);
 
             // 记录结束执行时间
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("查询SQL执行成功  \n");
@@ -134,9 +191,10 @@ public class QuerySqlExecutor extends WorkExecutor {
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("数据保存成功  \n");
             workInstance.setResultData(JSON.toJSONString(result));
             updateInstance(workInstance, logBuilder);
+        } catch (WorkRunException e) {
+            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + e.getMsg() + "\n");
         } catch (Exception e) {
-
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + e.getMessage() + "\n");
         }
     }

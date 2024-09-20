@@ -1,5 +1,6 @@
 package com.isxcode.acorn.modules.tenant.repository;
 
+import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.modules.tenant.entity.TenantEntity;
 import java.util.Optional;
 import org.springframework.cache.annotation.CacheConfig;
@@ -11,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_TENANT"})
+@CacheConfig(cacheNames = {ModuleCode.TENANT})
 public interface TenantRepository extends JpaRepository<TenantEntity, String> {
 
     Optional<TenantEntity> findByName(String name);

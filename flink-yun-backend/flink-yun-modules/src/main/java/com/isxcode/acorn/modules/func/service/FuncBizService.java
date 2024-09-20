@@ -6,8 +6,7 @@ import com.isxcode.acorn.api.func.pojos.req.PageFuncReq;
 import com.isxcode.acorn.api.func.pojos.req.UpdateFuncReq;
 import com.isxcode.acorn.api.func.pojos.res.PageFuncRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
-import com.isxcode.acorn.modules.file.entity.FileEntity;
-import com.isxcode.acorn.modules.file.repository.FileRepository;
+import com.isxcode.acorn.modules.file.service.FileService;
 import com.isxcode.acorn.modules.func.entity.FuncEntity;
 import com.isxcode.acorn.modules.func.mapper.FuncMapper;
 import com.isxcode.acorn.modules.func.repository.FuncRepository;
@@ -30,7 +29,7 @@ public class FuncBizService {
 
     private final FuncMapper funcMapper;
 
-    private final FileRepository fileRepository;
+    private final FileService fileService;
 
     public void addFunc(AddFuncReq addFuncReq) {
 
@@ -67,12 +66,7 @@ public class FuncBizService {
 
         Page<PageFuncRes> result = funcPage.map(funcMapper::funcEntityToPageFuncRes);
         result.getContent().forEach(e -> {
-            Optional<FileEntity> fileEntityOptional = fileRepository.findById(e.getFileId());
-            if (fileEntityOptional.isPresent()) {
-                e.setFileName(fileEntityOptional.get().getFileName());
-            } else {
-                e.setFileName("文件不存在");
-            }
+            e.setFileName(fileService.getFileName(e.getFileId()));
         });
 
         return result;

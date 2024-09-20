@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GetExcelDataReq {
 
-    @Schema(title = "资源id", example = "sy_123456789")
+    @Schema(title = "资源id", example = "fy_123456789")
     @NotEmpty(message = "资源id不能为空")
     private String fileId;
 

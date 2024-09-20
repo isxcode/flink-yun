@@ -1,8 +1,8 @@
 package com.isxcode.acorn.modules.user.service;
 
-import com.isxcode.star.backend.api.base.exceptions.IsxAppException;
-import com.isxcode.star.security.user.UserEntity;
-import com.isxcode.star.security.user.UserRepository;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.security.user.UserEntity;
+import com.isxcode.acorn.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

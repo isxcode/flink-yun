@@ -1,13 +1,13 @@
 drop table SY_CONTAINER;
 
--- standalone集群节点支持安装spark-local组件
+-- standalone集群节点支持安装flink-local组件
 alter table SY_CLUSTER_NODE
-  add INSTALL_SPARK_LOCAL BOOLEAN default FALSE;
+  add INSTALL_FLINK_LOCAL BOOLEAN default FALSE;
 
-comment on column SY_CLUSTER_NODE.INSTALL_SPARK_LOCAL is '是否安装spark-local组件';
+comment on column SY_CLUSTER_NODE.INSTALL_FLINK_LOCAL is '是否安装flink-local组件';
 
 -- 将ojdbc10-19.20.0.0.jar更新为ojdbc8-19.23.0.0.jar
-UPDATE SY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0'
+UPDATE SY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0';
 
 -- 大屏组件
 create table SY_VIEW_CARD
@@ -149,7 +149,7 @@ comment on column SY_WORKFLOW_CONFIG.INVOKE_STATUS is '是否启动外部调用'
 
 -- 扩长running_log
 alter table SY_REAL
-    alter column RUNNING_LOG longtext
+    alter column RUNNING_LOG longtext;
 
 -- 新增excel同步配置字段
 alter table SY_WORK_CONFIG

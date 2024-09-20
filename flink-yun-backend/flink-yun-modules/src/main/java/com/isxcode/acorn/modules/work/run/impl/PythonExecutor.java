@@ -1,11 +1,13 @@
-package com.isxcode.acorn.modules.work.run;
+package com.isxcode.acorn.modules.work.run.impl;
 
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.common.utils.ssh.SshUtils;
+import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.mapper.ClusterNodeMapper;
@@ -13,6 +15,10 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
+import com.isxcode.acorn.modules.work.run.WorkExecutor;
+import com.isxcode.acorn.modules.work.run.WorkRunContext;
+import com.isxcode.acorn.modules.work.sql.SqlFunctionService;
+import com.isxcode.acorn.modules.work.sql.SqlValueService;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -40,18 +46,33 @@ public class PythonExecutor extends WorkExecutor {
 
     private final ClusterRepository clusterRepository;
 
+    private final SqlValueService sqlValueService;
+
+    private final SqlFunctionService sqlFunctionService;
+
     public PythonExecutor(WorkInstanceRepository workInstanceRepository,
         WorkflowInstanceRepository workflowInstanceRepository, ClusterNodeRepository clusterNodeRepository,
-        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository,
+        SqlValueService sqlValueService, SqlFunctionService sqlFunctionService, AlarmService alarmService) {
 
-        super(workInstanceRepository, workflowInstanceRepository);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService);
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
         this.aesUtils = aesUtils;
         this.clusterRepository = clusterRepository;
+        this.sqlValueService = sqlValueService;
+        this.sqlFunctionService = sqlFunctionService;
+    }
+
+    @Override
+    public String getWorkType() {
+        return WorkType.PYTHON;
     }
 
     public void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
+
+        // 将线程存到Map
+        WORK_THREAD.put(workInstance.getId(), Thread.currentThread());
 
         // 获取日志构造器
         StringBuilder logBuilder = workRunContext.getLogBuilder();
@@ -92,6 +113,15 @@ public class PythonExecutor extends WorkExecutor {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测集群失败 : 指定运行节点不存在  \n");
         }
 
+        // 翻译脚本中的系统变量
+        String parseValueSql = sqlValueService.parseSqlValue(workRunContext.getScript());
+
+        // 翻译脚本中的系统函数
+        String script = sqlFunctionService.parseSqlFunction(parseValueSql);
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("Python脚本: \n").append(script)
+            .append("\n");
+        workInstance = updateInstance(workInstance, logBuilder);
+
         // 脚本检查通过
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始执行作业 \n");
         workInstance = updateInstance(workInstance, logBuilder);
@@ -103,7 +133,7 @@ public class PythonExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\nprint('zhiliuyun_success')",
+            scpText(scpFileEngineNodeDto, script + "\nprint('zhiliuyun_success')",
                 clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py");
 
             // 执行命令获取pid
@@ -114,7 +144,7 @@ public class PythonExecutor extends WorkExecutor {
 
             // 保存pid
             workInstance.setWorkPid(pid);
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("BASH作业提交成功，pid:【").append(pid)
+            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("Python作业提交成功，pid:【").append(pid)
                 .append("】\n");
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (JSchException | SftpException | InterruptedException | IOException e) {
@@ -154,8 +184,8 @@ public class PythonExecutor extends WorkExecutor {
                 // 运行结束
 
                 // 获取日志
-                String getLogCommand =
-                    "cat " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".log";
+                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
+                    + workInstance.getId() + ".log";
                 String logCommand = "";
                 try {
                     logCommand = executeCommand(scpFileEngineNodeDto, getLogCommand, false);

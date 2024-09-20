@@ -3,9 +3,6 @@ package com.isxcode.acorn.modules.workflow.service;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowReq;
 import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowSettingReq;
-import com.isxcode.acorn.api.workflow.pojos.req.OffExternalCallReq;
-import com.isxcode.acorn.api.workflow.pojos.req.OnExternalCallReq;
-import com.isxcode.acorn.api.workflow.pojos.res.OnExternalCallRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.work.entity.WorkEntity;
 import com.isxcode.acorn.modules.work.repository.WorkRepository;
@@ -17,21 +14,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * 用户模块接口的业务逻辑.
- */
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class WorkflowConfigBizService {
-
-    private final WorkflowBizService workflowBizService;
 
     private final WorkflowConfigRepository workflowConfigRepository;
 
@@ -49,15 +40,12 @@ public class WorkflowConfigBizService {
         return workflowConfigEntityOptional.get();
     }
 
-    /**
-     * 配置工作流.
-     */
     public void configWorkflow(ConfigWorkflowReq wfcConfigWorkflowReq) {
 
         String flowWebConfig = JSON.toJSONString(wfcConfigWorkflowReq.getWebConfig());
 
         // 获取工作流
-        WorkflowEntity workflow = workflowBizService.getWorkflowEntity(wfcConfigWorkflowReq.getWorkflowId());
+        WorkflowEntity workflow = workflowService.getWorkflow(wfcConfigWorkflowReq.getWorkflowId());
 
         // 从webConfig中解析出所有节点
         List<String> nodeList = WorkflowUtils.parseNodeList(flowWebConfig);
@@ -101,49 +89,12 @@ public class WorkflowConfigBizService {
         WorkflowConfigEntity workflowConfig = workflowService.getWorkflowConfig(workflow.getConfigId());
 
         workflowConfig.setCronConfig(JSON.toJSONString(configWorkflowSettingReq.getCronConfig()));
+
+        if (configWorkflowSettingReq.getAlarmList() != null) {
+            workflowConfig.setAlarmList(JSON.toJSONString(configWorkflowSettingReq.getAlarmList()));
+        }
+
+        workflowConfig.setInvokeStatus(configWorkflowSettingReq.getInvokeStatus());
         workflowConfigRepository.save(workflowConfig);
     }
-
-    public OnExternalCallRes onExternalCall(OnExternalCallReq onExternalCallReq, HttpServletRequest request) {
-        String workflowConfigId = onExternalCallReq.getWorkflowConfigId();
-        //
-        // WorkflowConfigEntity
-        // workflowConfig
-        // =
-        // getWorkflowConfig(workflowConfigId);
-        // String
-        // accessKey
-        // =
-        // workflowConfig.getAccessKey();
-        // if
-        // (null
-        // ==
-        // accessKey
-        // ||
-        // "".equals(accessKey))
-        // {
-        // accessKey
-        // =
-        // UUID.randomUUID().toString();
-        // workflowConfig.setAccessKey(accessKey);
-        // }
-        // workflowConfig.setExternalCall(ON);
-        // workflowConfigRepository.saveAndFlush(workflowConfig);
-        // String
-        // url =
-        // request.getRequestURL().toString().replace("/workflow/onExternalCall",
-        // "/workflow/invoke");
-        // return
-        // OnExternalCallRes.builder().url(url).accessKey(accessKey).build();
-        return null;
-    }
-
-    public void offExternalCall(OffExternalCallReq offExternalCallReq) {
-        String workflowConfigId = offExternalCallReq.getWorkflowConfigId();
-
-        WorkflowConfigEntity workflowConfig = getWorkflowConfig(workflowConfigId);
-        // workflowConfig.setExternalCall(OFF);
-        workflowConfigRepository.save(workflowConfig);
-    }
-
 }

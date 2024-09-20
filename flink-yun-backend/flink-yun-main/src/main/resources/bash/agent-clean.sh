@@ -19,7 +19,7 @@ done
 # 删除hdfs用户缓存文件
 rm -rf /tmp/hadoop-*/nm-local-dir/usercache/${user}/filecache
 
-# 删除hdfs中失败的spark作业缓存
+# 删除hdfs中失败的flink作业缓存
 if command -v hadoop &>/dev/null; then
   hadoop fs -rm -r /user/${user}/.flinkStaging
 fi

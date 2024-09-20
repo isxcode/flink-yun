@@ -134,7 +134,7 @@ function clickRedirectUrl(): void {
 }
 
 function clickToSPK() {
-  window.open(import.meta.env.VITE_SPARK_URL, '_blank')
+  window.open(import.meta.env.VITE_FLINK_URL, '_blank')
 }
 
 onMounted(() => {

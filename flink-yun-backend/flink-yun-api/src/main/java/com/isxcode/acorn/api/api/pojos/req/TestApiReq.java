@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 public class TestApiReq {
 
-    @Schema(title = "API id", example = "sy_123")
+    @Schema(title = "API id", example = "fy_123")
     @NotEmpty(message = "id不能为空")
     private String id;
 

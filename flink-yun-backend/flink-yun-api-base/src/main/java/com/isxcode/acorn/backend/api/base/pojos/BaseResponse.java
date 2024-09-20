@@ -33,9 +33,9 @@ public class BaseResponse<T> {
         this.msg = message;
     }
 
-    public BaseResponse(AbstractIsxAppExceptionEnum abstractSparkYunExceptionEnum) {
+    public BaseResponse(AbstractIsxAppExceptionEnum abstractFlinkYunExceptionEnum) {
 
-        this.code = abstractSparkYunExceptionEnum.getCode();
-        this.msg = abstractSparkYunExceptionEnum.getMsg();
+        this.code = abstractFlinkYunExceptionEnum.getCode();
+        this.msg = abstractFlinkYunExceptionEnum.getMsg();
     }
 }

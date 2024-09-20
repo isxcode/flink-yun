@@ -64,7 +64,7 @@ public class WorkInstanceEntity {
 
     private String taskManagerLog;
 
-    private String sparkStarRes;
+    private String flinkStarRes;
 
     private String resultData;
 

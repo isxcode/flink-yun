@@ -14,10 +14,10 @@ public abstract class AbstractIsxAppException extends RuntimeException {
     @Getter
     private final String err;
 
-    public AbstractIsxAppException(AbstractIsxAppExceptionEnum abstractSparkYunExceptionEnum) {
+    public AbstractIsxAppException(AbstractIsxAppExceptionEnum abstractFlinkYunExceptionEnum) {
 
-        this.code = abstractSparkYunExceptionEnum.getCode();
-        this.msg = abstractSparkYunExceptionEnum.getMsg();
+        this.code = abstractFlinkYunExceptionEnum.getCode();
+        this.msg = abstractFlinkYunExceptionEnum.getMsg();
         this.err = null;
     }
 

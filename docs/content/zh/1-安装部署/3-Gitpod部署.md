@@ -24,23 +24,23 @@ title: "Gitpod部署"
 
 ##### 开放gitpod端口号，访问至流云
 
-> 注意：此时的至流云没有集群节点安装功能，需要下载内置的spark二进制文件，再重新启动。
+> 注意：此时的至流云没有集群节点安装功能，需要下载内置的flink二进制文件，再重新启动。
 
 ![20230621171419](https://img.isxcode.com/picgo/20230621171419.png)
 
 ![20230621171459](https://img.isxcode.com/picgo/20230621171459.png)
 
-- https://8080-isxcode-sparkyun-tqlt6zl9uzc.ws-us100.gitpod.io
+- https://8080-isxcode-flinkyun-tqlt6zl9uzc.ws-us100.gitpod.io
 - 默认管理员账号: admin
 - 默认管理员密码: admin123
 
-##### 下载内置的spark二进制文件
+##### 下载内置的flink二进制文件
 
 ```bash
 cd /tmp
-nohup wget https://archive.apache.org/dist/spark/spark-3.4.0/spark-3.4.0-bin-hadoop3.tgz >> download_spark.log 2>&1 &  
-tail -f download_spark.log
-tar vzxf spark-3.4.0-bin-hadoop3.tgz --strip-components=1 -C /workspace/flink-yun/flink-yun-dist/src/main/spark-min
+nohup wget https://archive.apache.org/dist/flink/flink-3.4.0/flink-3.4.0-bin-hadoop3.tgz >> download_flink.log 2>&1 &  
+tail -f download_flink.log
+tar vzxf flink-3.4.0-bin-hadoop3.tgz --strip-components=1 -C /workspace/flink-yun/flink-yun-dist/src/main/flink-min
 ```
 
 > 重启项目即可

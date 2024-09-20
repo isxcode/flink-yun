@@ -167,13 +167,13 @@
                     <ZqyFlow ref="zqyFlowRef"></ZqyFlow>
                 </template>
                 <template v-else>
-                    <spark-jar
-                        v-if="showWorkItem && workConfig.workType === 'SPARK_JAR'"
+                    <flink-jar
+                        v-if="showWorkItem && workConfig.workType === 'FLINK_JAR'"
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
                         @back="backToFlow"
                         @locationNode="locationNode"
-                    ></spark-jar>
+                    ></flink-jar>
                     <WorkApi
                         v-if="showWorkItem && workConfig.workType === 'API'"
                         :workItemConfig="workConfig"
@@ -184,7 +184,7 @@
                     <WorkItem
                         v-if="
                             showWorkItem &&
-                            !['SPARK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workConfig.workType)
+                            !['FLINK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workConfig.workType)
                         "
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
@@ -228,7 +228,7 @@ import WorkItem from '../work-item/index.vue'
 import DataSync from '../data-sync/index.vue'
 import ExcelImport from '../excel-import/index.vue'
 import WorkApi from '../work-api/index.vue'
-import sparkJar from '../spark-jar/index.vue'
+import flinkJar from '../flink-jar/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Loading, Sort } from '@element-plus/icons-vue'
 import EllipsisTooltip from '@/components/ellipsis-tooltip/ellipsis-tooltip.vue'
@@ -793,9 +793,9 @@ onMounted(() => {
         } else if (e.type === 'node_result') {
             // 查看结果
             nodeRunningLog(e, 'result')
-        } else if (e.type === 'node_yarnLog') {
+        } else if (e.type === 'node_TaskManagerLog') {
             // 运行日志
-            nodeRunningLog(e, 'yarnLog')
+            nodeRunningLog(e, 'TaskManagerLog')
         } else if (e.type === 'node_break') {
             // 中断
             nodeBreakFlow(e)

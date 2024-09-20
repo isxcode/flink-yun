@@ -73,7 +73,7 @@ export const menuListData: Array<Menu> = [
         childPage: ['computing-detail']
       },
       {
-        code: 'spark-container',
+        code: 'flink-container',
         name: '计算容器',
         icon: 'Box',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],

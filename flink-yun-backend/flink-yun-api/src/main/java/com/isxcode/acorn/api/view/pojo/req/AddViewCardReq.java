@@ -16,7 +16,7 @@ public class AddViewCardReq {
     @NotEmpty(message = "type不能为空")
     private String type;
 
-    @Schema(title = "数据源id", example = "sy_a05cfc7bda0b41c196ada563052f68fe")
+    @Schema(title = "数据源id", example = "fy_a05cfc7bda0b41c196ada563052f68fe")
     @NotEmpty(message = "datasourceId不能为空")
     private String datasourceId;
 

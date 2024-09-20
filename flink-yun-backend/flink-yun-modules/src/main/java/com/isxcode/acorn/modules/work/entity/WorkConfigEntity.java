@@ -46,7 +46,9 @@ public class WorkConfigEntity {
 
     private String syncWorkConfig;
 
-    private String ApiWorkConfig;
+    private String excelSyncConfig;
+
+    private String apiWorkConfig;
 
     private String syncRule;
 
@@ -59,6 +61,8 @@ public class WorkConfigEntity {
     private String libConfig;
 
     private String containerId;
+
+    private String alarmList;
 
     @CreatedDate
     private LocalDateTime createDateTime;

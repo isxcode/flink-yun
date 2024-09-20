@@ -1,11 +1,13 @@
 package com.isxcode.acorn.modules.cluster.service.biz;
 
+import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.cluster.constants.ClusterStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.cluster.pojos.req.*;
 import com.isxcode.acorn.api.cluster.pojos.res.PageClusterRes;
 import com.isxcode.acorn.api.cluster.pojos.res.QueryAllClusterRes;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
@@ -15,12 +17,14 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.run.RunAgentCheckService;
 import com.isxcode.acorn.modules.cluster.service.ClusterService;
+import com.isxcode.acorn.modules.license.repository.LicenseStore;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
@@ -30,9 +34,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-/**
- * 计算引擎模块.
- */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -53,11 +54,26 @@ public class ClusterBizService {
 
     private final ClusterService clusterService;
 
+    private final LicenseStore licenseStore;
+
     public void addCluster(AddClusterReq addClusterReq) {
 
+        // 添加许可证拦截
+        if (licenseStore.getLicense() == null && (AgentType.K8S.equals(addClusterReq.getClusterType())
+            || AgentType.YARN.equals(addClusterReq.getClusterType()))) {
+            throw new IsxAppException("请上传许可证");
+        }
+
+        // 集群名字不能重复
+        Optional<ClusterEntity> clusterByName = clusterRepository.findByName(addClusterReq.getName());
+        if (clusterByName.isPresent()) {
+            throw new IsxAppException("集群名称重复");
+        }
+
+        // 转换对象
         ClusterEntity cluster = clusterMapper.addEngineReqToClusterEntity(addClusterReq);
 
-        // 判断租户中的集群数是否为0
+        // 第一个集群设置为默认集群
         long count = clusterRepository.count();
         cluster.setDefaultCluster(count == 0);
 
@@ -81,6 +97,13 @@ public class ClusterBizService {
 
     public void deleteCluster(DeleteClusterReq deleteClusterReq) {
 
+        // 所有的节点都卸载了，才能删除集群
+        List<ClusterNodeEntity> allNode = clusterNodeRepository.findAllByClusterId(deleteClusterReq.getEngineId());
+        boolean canNoteDelete = allNode.stream().anyMatch(e -> ClusterNodeStatus.RUNNING.equals(e.getStatus()));
+        if (canNoteDelete) {
+            throw new IsxAppException("存在节点未卸载");
+        }
+
         clusterRepository.deleteById(deleteClusterReq.getEngineId());
     }
 
@@ -98,7 +121,7 @@ public class ClusterBizService {
             try {
                 runAgentCheckService.checkAgent(scpFileEngineNodeDto, e);
             } catch (JSchException | IOException | InterruptedException | SftpException ex) {
-                log.error(ex.getMessage());
+                log.error(ex.getMessage(), ex);
                 e.setCheckDateTime(LocalDateTime.now());
                 e.setAgentLog(ex.getMessage());
                 e.setStatus(ClusterNodeStatus.CHECK_ERROR);

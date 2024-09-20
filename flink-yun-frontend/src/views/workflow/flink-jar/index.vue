@@ -1,5 +1,5 @@
 <template>
-    <div class="zqy-work-item zqy-spark-jar">
+    <div class="zqy-work-item zqy-flink-jar">
         <div class="header-options">
             <div class="btn-box" @click="goBack">
                 <el-icon>
@@ -16,7 +16,7 @@
                 </el-icon>
                 <span class="btn-text">运行</span>
             </div>
-            <div v-if="workConfig.workType === 'SPARK_JAR'" class="btn-box" @click="terWorkData">
+            <div v-if="workConfig.workType === 'FLINK_JAR'" class="btn-box" @click="terWorkData">
                 <el-icon v-if="!terLoading">
                     <Close />
                 </el-icon>
@@ -221,7 +221,7 @@ function initData(id?: string, tableLoading?: boolean) {
                 changeStatus.value = false
                 containerInstanceRef.value.initData(id || instanceId.value, (status: string) => {
                     // 运行结束
-                    if (workConfig.workType === 'SPARK_JAR' && id) {
+                    if (workConfig.workType === 'FLINK_JAR' && id) {
                         tabList.forEach((item: any) => {
                             if (['RunningLog', 'TotalDetail'].includes(item.code)) {
                                 item.hide = false
@@ -459,7 +459,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.zqy-spark-jar {
+.zqy-flink-jar {
     position: relative;
     background-color: getCssVar('color', 'white');
     .zqy-loading {

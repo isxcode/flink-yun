@@ -235,7 +235,7 @@ public abstract class Datasource {
         switch (securityColumnDto.getType()) {
             case ColumnType.STRING:
                 if (securityColumnDto.getValue() == null) {
-                    statement.setNull(parameterIndex + 1, Types.VARCHAR);
+                    statement.setNull(parameterIndex + 1, java.sql.Types.VARCHAR);
                 } else {
                     statement.setString(parameterIndex + 1, String.valueOf(securityColumnDto.getValue()));
                 }

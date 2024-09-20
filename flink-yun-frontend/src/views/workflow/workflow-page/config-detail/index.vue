@@ -28,7 +28,7 @@
             </el-form>
             <el-divider />
           </div>
-          <template v-else-if="!['SPARK_CONTAINER_SQL', 'CURL'].includes(workItemConfig.workType)">
+          <template v-else-if="!['FLINK_CONTAINER_SQL', 'CURL'].includes(workItemConfig.workType)">
             <!-- 资源配置 -->
             <div class="config-item" v-if="!['API'].includes(workItemConfig.workType)">
               <div class="item-title">资源配置</div>
@@ -55,10 +55,10 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="是否连接hive" v-if="['SPARK_SQL'].includes(workItemConfig.workType)">
+                <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(workItemConfig.workType)">
                   <el-switch v-model="clusterConfig.enableHive" />
                 </el-form-item>
-                <el-form-item label="Hive数据源" :prop="'datasourceId'" v-if="clusterConfig.enableHive && ['SPARK_SQL'].includes(workItemConfig.workType)">
+                <el-form-item label="Hive数据源" :prop="'datasourceId'" v-if="clusterConfig.enableHive && ['FLINK_SQL'].includes(workItemConfig.workType)">
                   <el-select
                     v-model="clusterConfig.datasourceId"
                     placeholder="请选择"
@@ -82,9 +82,9 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="sparkConfig" v-if="clusterConfig.setMode === 'ADVANCE'" :class="{ 'show-screen__full': sparkJsonFullStatus }">
-                  <el-icon class="modal-full-screen" @click="fullScreenEvent('sparkJsonFullStatus')"><FullScreen v-if="!sparkJsonFullStatus" /><Close v-else /></el-icon>
-                  <code-mirror v-model="clusterConfig.sparkConfigJson" basic :lang="lang"/>
+                <el-form-item label="flinkConfig" v-if="clusterConfig.setMode === 'ADVANCE'" :class="{ 'show-screen__full': flinkJsonFullStatus }">
+                  <el-icon class="modal-full-screen" @click="fullScreenEvent('flinkJsonFullStatus')"><FullScreen v-if="!flinkJsonFullStatus" /><Close v-else /></el-icon>
+                  <code-mirror v-model="clusterConfig.flinkConfigJson" basic :lang="lang"/>
                 </el-form-item>
                 <el-form-item label="资源等级" v-else>
                   <el-select v-model="clusterConfig.resourceLevel" placeholder="请选择">
@@ -310,7 +310,7 @@
             </el-form>
           </div>
           <!-- 函数配置 -->
-          <div class="config-item" v-if="['SPARK_SQL', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">函数配置</div>
             <el-form
               ref="syncRuleForm"
@@ -328,7 +328,7 @@
             </el-form>
           </div>
           <!-- 依赖配置 -->
-          <div class="config-item" v-if="['SPARK_SQL', 'SPARK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'FLINK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">依赖配置</div>
             <el-form
               ref="syncRuleForm"
@@ -346,7 +346,7 @@
             </el-form>
           </div>
           <!-- 容器配置 -->
-          <div class="config-item" v-if="['SPARK_CONTAINER_SQL'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_CONTAINER_SQL'].includes(workItemConfig.workType)">
             <div class="item-title">容器配置</div>
             <el-form
               ref="syncRuleForm"
@@ -400,7 +400,6 @@ import { GetDatasourceList } from '@/services/datasource.service'
 import { jsonFormatter } from '@/utils/formatter'
 import { GetFileCenterList } from '@/services/file-center.service'
 import { GetCustomFuncList } from '@/services/custom-func.service'
-import { GetSparkContainerList } from '@/services/spark-container.service'
 import { GetAlarmPagesList } from '@/services/message-center.service'
 
 const scheduleRange = ref(ScheduleRange);
@@ -425,7 +424,7 @@ const callback = ref(null)
 const alarmConfigList = ref([])
 
 // 输入框全屏
-const sparkJsonFullStatus = ref(false)
+const flinkJsonFullStatus = ref(false)
 
 const drawerConfig = reactive({
   title: '配置',
@@ -456,8 +455,8 @@ let clusterConfig = reactive({
   clusterNodeId: '',        // 集群节点
   enableHive: false,
   datasourceId: '',   // hive数据源
-  // sparkConfig: '',
-  sparkConfigJson: ''
+  // flinkConfig: '',
+  flinkConfigJson: ''
 })
 // 定时配置
 let cronConfig = reactive({
@@ -536,7 +535,7 @@ function showModal(data?: any, cb?: any) {
       // 获取集群参数
       getClusterList()
     }
-    if (['SPARK_CONTAINER_SQL'].includes(data.workType)) {
+    if (['FLINK_CONTAINER_SQL'].includes(data.workType)) {
       getSparkContainerList(true)
     }
     // 获取函数配置和依赖配置
@@ -607,9 +606,9 @@ function getConfigDetailData() {
           clusterConfig[key] = res.data.clusterConfig[key]
         }
       })
-      clusterConfig.sparkConfigJson = jsonFormatter(clusterConfig.sparkConfigJson)
+      clusterConfig.flinkConfigJson = jsonFormatter(clusterConfig.flinkConfigJson)
     }
-    if (['SPARK_SQL'].includes(workItemConfig.value.workType)) {
+    if (['FLINK_SQL'].includes(workItemConfig.value.workType)) {
       clusterConfig.datasourceId = res.data.datasourceId
     }
     if (res.data.cronConfig) {
@@ -653,7 +652,7 @@ function okEvent() {
     if (status) {
       getCron()
       const clusObj = clusterConfig
-      if (['SPARK_SQL'].includes(workItemConfig.value.workType)) {
+      if (['FLINK_SQL'].includes(workItemConfig.value.workType)) {
         dataSourceForm.datasourceId = clusObj.datasourceId
         delete clusObj.datasourceId
       }
@@ -819,8 +818,8 @@ function clusterIdChangeEvent() {
 
 // 全屏
 function fullScreenEvent(type: string) {
-  if (type === 'sparkJsonFullStatus') {
-    sparkJsonFullStatus.value = !sparkJsonFullStatus.value
+  if (type === 'flinkJsonFullStatus') {
+    flinkJsonFullStatus.value = !flinkJsonFullStatus.value
   }
 }
 

@@ -1,7 +1,6 @@
 package com.isxcode.acorn.modules.alarm.message.aciton;
 
 import com.alibaba.fastjson.JSON;
-import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.tea.TeaException;

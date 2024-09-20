@@ -18,7 +18,7 @@ public class Job {
         EnvironmentSettings settings = EnvironmentSettings.newInstance().inStreamingMode().build();
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(env, settings);
 
-        for (String s : acornPluginReq.getFlinkSql().split(";")) {
+        for (String s : acornPluginReq.getSql().split(";")) {
             streamTableEnvironment.executeSql(s);
         }
     }

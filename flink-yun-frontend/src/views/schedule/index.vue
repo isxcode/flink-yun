@@ -132,8 +132,8 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item
-                      v-if="['SPARK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON', 'EXCEL_SYNC_JDBC'].includes(scopeSlot.row.workType)"
-                      @click="showDetailModal(scopeSlot.row, 'yarnLog')"
+                      v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON', 'EXCEL_SYNC_JDBC'].includes(scopeSlot.row.workType)"
+                      @click="showDetailModal(scopeSlot.row, 'TaskManagerLog')"
                     >
                       运行日志
                     </el-dropdown-item>

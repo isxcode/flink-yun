@@ -1,8 +1,8 @@
 drop table SY_CONTAINER;
 
--- standalone集群节点支持安装spark-local组件
+-- standalone集群节点支持安装flink-local组件
 alter table SY_CLUSTER_NODE
-  add INSTALL_SPARK_LOCAL bool default false null comment '是否安装spark-local组件';
+  add INSTALL_FLINK_LOCAL bool default false null comment '是否安装flink-local组件';
 
 -- 将ojdbc10-19.20.0.0.jar更新为ojdbc8-19.23.0.0.jar
 UPDATE SY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0'
@@ -49,7 +49,7 @@ create table SY_VIEW
 
 -- 添加下次执行时间
 alter table SY_WORKFLOW
-  add NEXT_DATE_TIME datetime comment '是否安装spark-local组件';
+  add NEXT_DATE_TIME datetime comment '是否安装flink-local组件';
 
 -- 添加消息体表
 create table SY_MESSAGE

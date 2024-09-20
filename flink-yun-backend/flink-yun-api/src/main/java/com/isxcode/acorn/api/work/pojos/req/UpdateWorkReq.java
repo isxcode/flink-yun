@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UpdateWorkReq {
 
-    @Schema(title = "作业唯一id", example = "sy_123456789")
+    @Schema(title = "作业唯一id", example = "fy_123456789")
     @NotEmpty(message = "作业id不能为空")
     private String id;
 
@@ -15,7 +15,7 @@ public class UpdateWorkReq {
     @NotEmpty(message = "作业名称不能为空")
     private String name;
 
-    @Schema(title = "作业类型", example = "QUERY_SPARK_SQL")
+    @Schema(title = "作业类型", example = "QUERY_FLINK_SQL")
     private String workType;
 
     @Schema(title = "备注", example = "星期一执行的作业")

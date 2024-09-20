@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UpdateWorkflowReq {
 
-    @Schema(title = "作业流唯一id", example = "sy_12345678")
+    @Schema(title = "作业流唯一id", example = "fy_12345678")
     @NotEmpty(message = "作业流id不能为空")
     private String id;
 
@@ -18,6 +18,6 @@ public class UpdateWorkflowReq {
     @Schema(title = "备注", example = "所属安全部门，其他人勿动")
     private String remark;
 
-    @Schema(title = "默认计算引擎", example = "sy_1234")
+    @Schema(title = "默认计算引擎", example = "fy_1234")
     private String defaultClusterId;
 }

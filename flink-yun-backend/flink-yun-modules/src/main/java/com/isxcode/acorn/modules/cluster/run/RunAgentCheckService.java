@@ -10,7 +10,7 @@ import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.acorn.api.cluster.constants.ClusterStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
-import com.isxcode.acorn.api.main.properties.SparkYunProperties;
+import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
@@ -35,13 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(noRollbackFor = {IsxAppException.class})
 public class RunAgentCheckService {
 
-    private final SparkYunProperties sparkYunProperties;
+    private final FlinkYunProperties flinkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
 
     private final ClusterRepository clusterRepository;
 
-    @Async("sparkYunWorkThreadPool")
+    @Async("flinkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
 
         USER_ID.set(userId);
@@ -70,10 +70,10 @@ public class RunAgentCheckService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh",
-            sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh");
+            flinkYunProperties.getTmpDir() + File.separator + "agent-check.sh");
 
         // 运行安装脚本
-        String checkCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "agent-check.sh"
+        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-check.sh"
             + " --home-path=" + engineNode.getAgentHomePath();
 
         log.debug("执行远程命令:{}", checkCommand);

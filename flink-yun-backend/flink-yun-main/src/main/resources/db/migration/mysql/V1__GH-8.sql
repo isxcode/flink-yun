@@ -347,7 +347,7 @@ create table if not exists SY_WORK_CONFIG
     id                      varchar(200)  not null unique primary key comment '作业配置唯一id',
     datasource_id           varchar(200) comment '数据源id',
     cluster_id              varchar(200) comment '集群id',
-    spark_config            text comment 'spark的作业配置',
+    flink_config            text comment 'flink的作业配置',
     sql_script              text comment 'sql脚本',
     corn                    varchar(200) comment '定时表达式',
     create_by               varchar(200)  not null comment '创建人',
@@ -414,7 +414,7 @@ create table if not exists SY_WORK_VERSION
     datasource_id           varchar(200) comment '数据源id',
     cluster_id              varchar(200) comment '集群id',
     sql_script              text comment 'sql脚本',
-    spark_config            text comment 'spark的作业配置',
+    flink_config            text comment 'flink的作业配置',
     corn                    varchar(200)  not null comment '定时表达式',
     create_by               varchar(200)  not null comment '创建人',
     create_date_time        datetime      not null comment '创建时间',
@@ -439,7 +439,7 @@ create table if not exists SY_WORK_INSTANCE
     exec_end_date_time      datetime comment '执行结束时间',
     submit_log              text comment '提交日志',
     yarn_log                text comment 'yarn日志',
-    spark_star_res          varchar(2000) comment 'spark-star插件返回',
+    flink_star_res          varchar(2000) comment 'flink-star插件返回',
     result_data             text comment '结果数据',
     create_by               varchar(200)  not null comment '创建人',
     create_date_time        datetime      not null comment '创建时间',
@@ -672,12 +672,12 @@ alter table SY_WORK_CONFIG
 alter table SY_WORK_CONFIG
     change sql_script script text null comment '统一脚本内容，包括sql、bash、python脚本';
 
--- 将cluster_id和spark_config合并成cluster_config
+-- 将cluster_id和flink_config合并成cluster_config
 alter table SY_WORK_CONFIG
     drop column cluster_id;
 
 alter table SY_WORK_CONFIG
-    drop column spark_config;
+    drop column flink_config;
 
 alter table SY_WORK_CONFIG
     add cluster_config text null comment '计算集群配置' after sync_work_config;
@@ -690,9 +690,9 @@ alter table SY_WORK_CONFIG
 alter table SY_WORK_CONFIG
     add sync_rule text null comment '数据同步规则' after cluster_config;
 
--- 添加spark_home_path
+-- 添加flink_home_path
 alter table SY_CLUSTER_NODE
-    add spark_home_path varchar(200) null comment 'standalone模式spark的安装目录' after hadoop_home_path;
+    add flink_home_path varchar(200) null comment 'standalone模式flink的安装目录' after hadoop_home_path;
 
 -- 添加默认集群
 alter table SY_CLUSTER
@@ -837,9 +837,9 @@ alter table SY_WORK_VERSION
 alter table SY_WORK_VERSION
     change sql_script script text null comment '脚本内容';
 
--- 删除SY_WORK_VERSION的spark_config
+-- 删除SY_WORK_VERSION的flink_config
 alter table SY_WORK_VERSION
-    drop column spark_config;
+    drop column flink_config;
 
 -- 添加同步作业的配置
 alter table SY_WORK_VERSION
@@ -1055,7 +1055,7 @@ create table SY_CONTAINER
     DATASOURCE_ID           varchar(200)      not null comment '数据源id',
     CLUSTER_ID              varchar(200)      not null comment '集群id',
     RESOURCE_LEVEL          varchar(200)      not null comment '消耗资源等级',
-    SPARK_CONFIG            varchar(2000) comment 'spark配置',
+    FLINK_CONFIG            varchar(2000) comment 'flink配置',
     PORT                    int comment '容器端口号',
     SUBMIT_LOG              text comment '容器端口号',
     RUNNING_LOG             text comment '容器端口号',
@@ -1092,7 +1092,7 @@ create table SY_REAL
     name                    varchar(200)  not null comment '实时作业名称',
     status                  varchar(200)  not null comment '运行状态',
     cluster_id              varchar(500)  not null comment '集群id',
-    spark_config            text          not null comment '集群配置',
+    flink_config            text          not null comment '集群配置',
     sync_config             text comment '数据同步配置',
     lib_config              varchar(500) comment '依赖配置',
     func_config             varchar(500) comment '函数配置',
@@ -1143,7 +1143,7 @@ create table SY_MONITOR
 
 -- 兼容flink
 ALTER TABLE SY_CLUSTER_NODE
-    CHANGE COLUMN SPARK_HOME_PATH FLINK_HOME_PATH VARCHAR(255);
+    CHANGE COLUMN FLINK_HOME_PATH FLINK_HOME_PATH VARCHAR(255);
 
 ALTER TABLE SY_CLUSTER_NODE
     MODIFY COLUMN FLINK_HOME_PATH VARCHAR(255) COMMENT 'flink的安装目录';

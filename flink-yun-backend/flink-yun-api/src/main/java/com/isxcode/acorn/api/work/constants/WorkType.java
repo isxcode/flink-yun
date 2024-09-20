@@ -6,9 +6,9 @@ package com.isxcode.acorn.api.work.constants;
 public interface WorkType {
 
     /**
-     * sparkSql执行作业.
+     * flinkSql执行作业.
      */
-    String EXECUTE_FLINK_SQL = "FLINK_SQL";
+    String FLINK_SQL = "FLINK_SQL";
 
     /**
      * jdbcSql执行作业
@@ -41,9 +41,9 @@ public interface WorkType {
     String FLINK_JAR = "FLINK_JAR";
 
     /**
-     * spark容器sql.
+     * flink容器sql.
      */
-    String SPARK_CONTAINER_SQL = "SPARK_CONTAINER_SQL";
+    String FLINK_CONTAINER_SQL = "FLINK_CONTAINER_SQL";
 
     String API = "API";
 

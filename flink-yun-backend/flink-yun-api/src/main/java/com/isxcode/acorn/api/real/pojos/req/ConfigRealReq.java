@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class ConfigRealReq {
 
-    @Schema(title = "实时同步作业id", example = "sy_123")
+    @Schema(title = "实时同步作业id", example = "fy_123")
     @NotEmpty(message = "id不能为空")
     private String realId;
 

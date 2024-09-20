@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class QueryTopicReq {
 
-    @Schema(title = "数据源id", example = "sy_123")
+    @Schema(title = "数据源id", example = "fy_123")
     @NotEmpty(message = "datasourceId不能为空")
     private String datasourceId;
 }

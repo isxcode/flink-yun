@@ -23,14 +23,14 @@ public class AddWorkReq {
         message = "作业类型不支持")
     private String workType;
 
-    @Schema(title = "工作流唯一id", example = "sy_48c4304593ea4897b6af999e48685896")
+    @Schema(title = "工作流唯一id", example = "fy_48c4304593ea4897b6af999e48685896")
     @NotEmpty(message = "工作流id不能为空")
     private String workflowId;
 
     @Schema(title = "备注", example = "星期一执行的作业")
     private String remark;
 
-    @Schema(title = "数据源", example = "新建sparksql作业和jdbc执行作业和jdbc查询作业，需要选择数据源，必填")
+    @Schema(title = "数据源", example = "新建flinksql作业和jdbc执行作业和jdbc查询作业，需要选择数据源，必填")
     private String datasourceId;
 
     @Schema(title = "集群id", example = "计算集群id")

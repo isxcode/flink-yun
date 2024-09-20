@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class GetMetaTableColumnReq {
 
-    @Schema(title = "数据源id", example = "sy_e4d80a6b561d47afa81504e93054e8e8")
+    @Schema(title = "数据源id", example = "fy_e4d80a6b561d47afa81504e93054e8e8")
     @NotEmpty(message = "datasourceId不能为空")
     private String datasourceId;
 

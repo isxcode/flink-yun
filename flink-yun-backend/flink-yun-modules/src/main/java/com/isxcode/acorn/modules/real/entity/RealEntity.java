@@ -45,7 +45,7 @@ public class RealEntity {
 
     private String clusterId;
 
-    private String sparkConfig;
+    private String flinkConfig;
 
     private String syncConfig;
 

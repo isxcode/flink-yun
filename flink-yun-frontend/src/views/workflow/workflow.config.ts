@@ -172,12 +172,12 @@ export const TypeList = [
     value: 'CURL'
   },
   {
-    label: 'SparkSql查询作业',
-    value: 'SPARK_SQL'
+    label: 'FlinkSql查询作业',
+    value: 'FLINK_SQL'
   },
   {
-    label: 'SparkSql容器作业',
-    value: 'SPARK_CONTAINER_SQL'
+    label: 'FlinkSql容器作业',
+    value: 'FLINK_CONTAINER_SQL'
   },
   {
     label: '数据同步作业',
@@ -193,7 +193,7 @@ export const TypeList = [
   },
   {
     label: '自定义作业',
-    value: 'SPARK_JAR'
+    value: 'FLINK_JAR'
   },
   {
     label: '接口调用作业',

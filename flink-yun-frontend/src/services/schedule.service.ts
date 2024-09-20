@@ -59,10 +59,10 @@ export function GetLogData(params: LogParam): Promise<any> {
 }
 
 // 获取Yarn日志
-export function GetYarnLogData(params: LogParam): Promise<any> {
+export function GetTaskManagerLogData(params: LogParam): Promise<any> {
   return http.request({
     method: 'post',
-    url: '/work/getYarnLog',
+    url: '/work/getTaskManagerLog',
     params: params
   })
 }
