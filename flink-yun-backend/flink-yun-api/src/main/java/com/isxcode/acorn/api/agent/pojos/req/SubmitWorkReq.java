@@ -1,7 +1,7 @@
 package com.isxcode.acorn.api.agent.pojos.req;
 
 import com.isxcode.acorn.api.func.pojos.dto.FuncInfo;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 

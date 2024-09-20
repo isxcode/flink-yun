@@ -47,8 +47,8 @@
           placeholder="请输入"
         />
       </el-form-item>
-      <el-form-item v-if="clusterType === 'flinkCluster'" label="默认安装Flink">
-        <el-switch v-model="formData.installSparkLocal" />
+      <el-form-item v-if="clusterType === 'standalone'" label="默认安装Flink">
+        <el-switch v-model="formData.installFlinkLocal" />
       </el-form-item>
       <el-form-item label="备注">
         <el-input
@@ -194,7 +194,7 @@ function showModal(cb: () => void, data: any): void {
     formData.agentHomePath = ''
     formData.agentPort = ''
     formData.hadoopHomePath = ''
-    formData.installSparkLocal = false
+    formData.installFlinkLocal = false
     formData.remark = ''
     formData.id = ''
     modelConfig.title = '添加节点'

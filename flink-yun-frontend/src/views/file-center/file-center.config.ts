@@ -57,7 +57,6 @@ export const colConfigs: colConfig[] = [
         JOB: '作业',
         FUNC: '函数',
         LIB: '依赖',
-        EXCEL: 'Excel'
       }
       return obj[data.cellValue]
     }
