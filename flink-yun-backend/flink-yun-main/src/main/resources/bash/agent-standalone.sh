@@ -20,7 +20,7 @@ else
                       \"log\": \"该系统不支持安装\" \
                     }"
       echo $json_output
-      rm ${BASE_PATH}/agent-flinkcluster.sh
+      rm ${BASE_PATH}/agent-standalone.sh
       exit 0
 fi
 
@@ -66,7 +66,7 @@ if [ -e "${agent_path}/zhiliuyun-agent.pid" ]; then
             \"log\": \"正在运行中\" \
           }"
     echo $json_output
-    rm ${BASE_PATH}/agent-flinkcluster.sh
+    rm ${BASE_PATH}/agent-standalone.sh
     exit 0
   else
     json_output="{ \
@@ -74,7 +74,7 @@ if [ -e "${agent_path}/zhiliuyun-agent.pid" ]; then
             \"log\": \"已安装，请启动\" \
           }"
     echo $json_output
-    rm ${BASE_PATH}/agent-flinkcluster.sh
+    rm ${BASE_PATH}/agent-standalone.sh
     exit 0
   fi
 fi
@@ -86,7 +86,7 @@ if ! command -v tar &>/dev/null; then
         \"log\": \"未检测到tar命令\" \
       }"
   echo $json_output
-  rm ${BASE_PATH}/agent-flinkcluster.sh
+  rm ${BASE_PATH}/agent-standalone.sh
   exit 0
 fi
 
@@ -99,7 +99,7 @@ if ! command -v java &>/dev/null; then
     \"log\": \"未检测到java1.8.x环境,节点请安装java 推荐命令: sudo yum install java-1.8.0-openjdk-devel java-1.8.0-openjdk -y,或者配置 ${agent_path}/conf/agent-env.sh文件中的JAVA_HOME变量\" \
     }"
     echo $json_output
-    rm ${BASE_PATH}/agent-flinkcluster.sh
+    rm ${BASE_PATH}/agent-standalone.sh
     exit 0
   fi
 fi
@@ -111,7 +111,7 @@ if ! netstat -tln | awk '$4 ~ /:'"$agent_port"'$/ {exit 1}'; then
           \"log\": \"${agent_port} 端口号已被占用\" \
         }"
   echo $json_output
-  rm ${BASE_PATH}/agent-flinkcluster.sh
+  rm ${BASE_PATH}/agent-standalone.sh
   exit 0
 fi
 
@@ -124,4 +124,4 @@ json_output="{ \
 echo $json_output
 
 # 删除检测脚本
-rm ${BASE_PATH}/agent-flinkcluster.sh
+rm ${BASE_PATH}/agent-standalone.sh

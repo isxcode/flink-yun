@@ -95,7 +95,7 @@ function getTaskManagerLogData() {
         instanceId: info.value
     })
         .then((res: any) => {
-            logMsg.value = res.data.taskManagerLog
+            logMsg.value = res.data.log
             if (['SUCCESS', 'FAIL'].includes(res.data.status)) {
                 if (timer.value) {
                     clearInterval(timer.value)

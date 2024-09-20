@@ -16,22 +16,35 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class FlinkClusterAgentService implements AgentService {
+public class StandaloneAgentService implements AgentService {
 
     public String getRestUrl(String flinkHome) {
 
-        return "localhost:8081";
+        // 获取本地flink的配置，并从中获取rest.port、rest.address，如果获取不到默认8081、localhost
+        String flinkConfigPath = flinkHome + File.separator + "conf" + File.separator + "flink-conf.yaml";
+
+        try (InputStream inputStream = Files.newInputStream(new File(flinkConfigPath).toPath())) {
+            Yaml yaml = new Yaml();
+            Map<String, String> flinkYaml = yaml.load(inputStream);
+
+            String restAddress = flinkYaml.getOrDefault("rest.address", "localhost");
+            String restPort = flinkYaml.getOrDefault("rest.port", "8081");
+            return restAddress + ":" + restPort;
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException("获取flink配置文件异常", e);
+        }
     }
 
     public String uploadAppResource(SubmitWorkReq submitWorkReq, String restUrl) {
@@ -46,7 +59,7 @@ public class FlinkClusterAgentService implements AgentService {
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
         param.add("jarfile",
             new FileSystemResource(
-                new File(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+                new File(submitWorkReq.getAgentHomePath()
                     + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource())));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(param, headers);
 
@@ -64,7 +77,8 @@ public class FlinkClusterAgentService implements AgentService {
 
     @Override
     public String getAgentType() {
-        return AgentType.FlinkCluster;
+
+        return AgentType.StandAlone;
     }
 
     @Override

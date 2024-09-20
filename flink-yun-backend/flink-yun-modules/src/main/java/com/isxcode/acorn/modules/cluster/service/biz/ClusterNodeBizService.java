@@ -92,7 +92,7 @@ public class ClusterNodeBizService {
             clusterNodeService.getDefaultAgentHomePath(addClusterNodeReq.getUsername().trim(), clusterNode));
 
         // 如果是默认安装flink,设置默认路径
-        if (addClusterNodeReq.getInstallFlinkLocal() || !AgentType.FlinkCluster.equals(cluster.getClusterType())) {
+        if (addClusterNodeReq.getInstallFlinkLocal() || !AgentType.StandAlone.equals(cluster.getClusterType())) {
             clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
                 + File.separator + PathConstants.FLINK_MIN_HOME);
         } else {
@@ -132,7 +132,7 @@ public class ClusterNodeBizService {
             clusterNodeService.getDefaultAgentHomePath(updateClusterNodeReq.getUsername(), clusterNode));
 
         // 如果是默认安装flink,设置默认路径
-        if (updateClusterNodeReq.getInstallFlinkLocal() || !AgentType.FlinkCluster.equals(cluster.getClusterType())) {
+        if (updateClusterNodeReq.getInstallFlinkLocal() || !AgentType.StandAlone.equals(cluster.getClusterType())) {
             clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
                 + File.separator + PathConstants.FLINK_MIN_HOME);
         } else {

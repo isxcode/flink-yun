@@ -331,7 +331,7 @@ public class WorkBizService {
         if (Strings.isEmpty(workInstanceEntity.getTaskManagerLog())) {
             throw new IsxAppException("日志尚未生成,请等待作业运行完毕");
         }
-        return GetWorkLogRes.builder().TaskManagerLog(workInstanceEntity.getTaskManagerLog()).build();
+        return GetWorkLogRes.builder().log(workInstanceEntity.getTaskManagerLog()).build();
     }
 
     public GetWorkRes getWork(GetWorkReq getWorkReq) {
