@@ -179,7 +179,6 @@ public class FlinkSqlExecutor extends WorkExecutor {
         Integer lock = locker.lock("REQUEST_" + workInstance.getId());
         SubmitWorkRes submitJobRes;
         try {
-
             baseResponse = HttpUtils.doPost(
                 httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.SUBMIT_WORK_URL),
                 submitJobReq, BaseResponse.class);
@@ -199,6 +198,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 .append(submitJobRes.getAppId()).append("\n");
             workInstance.setFlinkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
+        }catch (WorkRunException exception){
+            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + exception.getMsg() + "\n");
         } catch (Exception e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + e.getMessage() + "\n");
         } finally {
