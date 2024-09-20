@@ -84,22 +84,21 @@ public class KubernetesAgentService implements AgentService {
         List<String> volumes = new ArrayList<>();
 
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
-            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-                + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "file" + File.separator
+            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
                 + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
         } else {
             volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-                + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "plugins" + File.separator
+                + File.separator + "plugins" + File.separator
                 + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
         }
 
         volumes.add("   - name: flink-log\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-            + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "k8s-logs" + File.separator
+            + File.separator + "k8s-logs" + File.separator
             + submitWorkReq.getWorkInstanceId() + "\n");
 
         File[] jarFiles = new File(
-            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "lib")
-                .listFiles();
+            submitWorkReq.getAgentHomePath() + File.separator + "lib")
+            .listFiles();
         if (jarFiles != null) {
             for (File jarFile : jarFiles) {
                 if (jarFile.getName().contains("fastjson") || jarFile.getName().contains("flink")
@@ -107,8 +106,7 @@ public class KubernetesAgentService implements AgentService {
                     volumeMounts.add("       - name: " + jarFile.getName().replace(".", "-") + "\n"
                         + "          mountPath: /opt/flink/lib/" + jarFile.getName() + "\n");
                     volumes.add("   - name: " + jarFile.getName().replace(".", "-") + "\n" + "      hostPath:\n"
-                        + "        path: " + submitWorkReq.getAgentHomePath() + File.separator
-                        + PathConstants.AGENT_PATH_NAME + File.separator + "lib" + File.separator + jarFile.getName()
+                        + "        path: " + submitWorkReq.getAgentHomePath() + File.separator + "lib" + File.separator + jarFile.getName()
                         + "\n");
                 }
             }
@@ -119,37 +117,25 @@ public class KubernetesAgentService implements AgentService {
 
         // 判断pod文件夹是否存在
         if (!new File(
-            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod")
-                .exists()) {
-            try {
-                Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator
-                    + PathConstants.AGENT_PATH_NAME + File.separator + "pod"));
-            } catch (IOException e) {
-                throw new IsxAppException(e.getMessage());
-            }
+            submitWorkReq.getAgentHomePath() + File.separator + "pod")
+            .exists()) {
+            Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "pod"));
         }
 
         // 判断k8s-logs文件夹是否存在
-        if (!new File(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator
+        if (!new File(submitWorkReq.getAgentHomePath() + File.separator
             + "k8s-logs").exists()) {
-            try {
-                Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator
-                    + PathConstants.AGENT_PATH_NAME + File.separator + "k8s-logs"));
-            } catch (IOException e) {
-                throw new IsxAppException(e.getMessage());
-            }
+            Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "k8s-logs"));
         }
 
-        // 先把许可证保存下来
         try (InputStream inputStream = new ByteArrayInputStream(podTemplateContent.getBytes())) {
             Files.copy(inputStream,
-                Paths.get(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-                    + File.separator + "pod").resolve(submitWorkReq.getWorkInstanceId() + ".yaml"),
+                Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "pod").resolve(submitWorkReq.getWorkInstanceId() + ".yaml"),
                 StandardCopyOption.REPLACE_EXISTING);
         }
 
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE,
-            submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator + "pod"
+            submitWorkReq.getAgentHomePath() + File.separator + "pod"
                 + File.separator + submitWorkReq.getWorkInstanceId() + ".yaml");
 
         flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/log");
@@ -167,7 +153,7 @@ public class KubernetesAgentService implements AgentService {
         applicationConfiguration.applyToConfiguration(flinkConfig);
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             ClusterClientProvider<String> clusterClientProvider =
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitWorkRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
@@ -185,9 +171,9 @@ public class KubernetesAgentService implements AgentService {
         String command = String.format(getStatusJobManagerFormat, getWorkInfoReq.getAppId());
         Process process = Runtime.getRuntime().exec(command);
         try (InputStream inputStream = process.getInputStream();
-            InputStream errStream = process.getErrorStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
+             InputStream errStream = process.getErrorStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+             BufferedReader errReader = new BufferedReader(new InputStreamReader(errStream, StandardCharsets.UTF_8))) {
 
             while ((line = reader.readLine()) != null) {
                 errLog.append(line).append("\n");
@@ -213,45 +199,37 @@ public class KubernetesAgentService implements AgentService {
             }
         }
 
-        throw new IsxAppException("获取状态异常");
+        throw new Exception("获取状态异常");
     }
 
     @Override
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
-        File[] logFiles = new File(getWorkLogReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
+        File[] logFiles = new File(getWorkLogReq.getAgentHomePath()
             + File.separator + "k8s-logs" + File.separator + getWorkLogReq.getWorkInstanceId()).listFiles();
 
         StringBuilder logBuilder = new StringBuilder();
         if (logFiles != null) {
             for (File logFile : logFiles) {
                 if (logFile.getName().contains("taskmanager")) {
-                    try {
-                        FileReader fileReader = new FileReader(logFile);
-                        BufferedReader bufferedReader = new BufferedReader(fileReader);
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            logBuilder.append(line).append("\n");
-                        }
-                        bufferedReader.close();
-                        fileReader.close();
-                    } catch (IOException e) {
-                        throw new IsxAppException(e.getMessage());
+                    FileReader fileReader = new FileReader(logFile);
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        logBuilder.append(line).append("\n");
                     }
+                    bufferedReader.close();
+                    fileReader.close();
                     break;
                 }
                 if (logFile.getName().contains("application")) {
-                    try {
-                        FileReader fileReader = new FileReader(logFile);
-                        BufferedReader bufferedReader = new BufferedReader(fileReader);
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            logBuilder.append(line).append("\n");
-                        }
-                        bufferedReader.close();
-                        fileReader.close();
-                    } catch (IOException e) {
-                        throw new IsxAppException(e.getMessage());
+                    FileReader fileReader = new FileReader(logFile);
+                    BufferedReader bufferedReader = new BufferedReader(fileReader);
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        logBuilder.append(line).append("\n");
                     }
+                    bufferedReader.close();
+                    fileReader.close();
                     break;
                 }
             }
@@ -270,7 +248,7 @@ public class KubernetesAgentService implements AgentService {
 
         KubernetesClusterClientFactory kubernetesClusterClientFactory = new KubernetesClusterClientFactory();
         try (KubernetesClusterDescriptor clusterDescriptor =
-            kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
+                 kubernetesClusterClientFactory.createClusterDescriptor(flinkConfig)) {
             clusterDescriptor.killCluster(stopWorkReq.getAppId());
             return StopWorkRes.builder().build();
         }
