@@ -198,8 +198,9 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 .append(submitJobRes.getAppId()).append("\n");
             workInstance.setFlinkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
-        }catch (WorkRunException exception){
-            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + exception.getMsg() + "\n");
+        } catch (WorkRunException exception) {
+            throw new WorkRunException(
+                LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + exception.getMsg() + "\n");
         } catch (Exception e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + e.getMessage() + "\n");
         } finally {
