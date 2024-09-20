@@ -43,12 +43,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -85,11 +82,11 @@ public class FlinkSqlExecutor extends WorkExecutor {
     private final DatasourceService datasourceService;
 
     public FlinkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
-                            HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
-                            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-                            FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService) {
+        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+        WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
+        HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
+        FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService) {
 
         super(workInstanceRepository, workflowInstanceRepository, alarmService);
         this.workInstanceRepository = workInstanceRepository;
@@ -166,7 +163,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
         PluginReq pluginReq = PluginReq.builder().sql(workRunContext.getScript()).build();
         submitJobReq.setPluginReq(pluginReq);
 
-        FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName("zhiliuyun-job").entryClass("com.isxcode.acorn.plugin.sql.execute.Job").appResource("flink-sql-execute-plugin.jar").build();
+        FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName("zhiliuyun-job")
+            .entryClass("com.isxcode.acorn.plugin.sql.execute.Job").appResource("flink-sql-execute-plugin.jar").build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
 
         // 构建作业完成，并打印作业配置信息
@@ -211,13 +209,13 @@ public class FlinkSqlExecutor extends WorkExecutor {
         while (true) {
 
             // 获取作业状态并保存
-            GetWorkInfoReq jobInfoReq = GetWorkInfoReq.builder().agentHome(engineNode.getAgentHomePath()).flinkHome(engineNode.getFlinkHomePath())
-                .appId(submitJobRes.getAppId()).clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
+            GetWorkInfoReq jobInfoReq = GetWorkInfoReq.builder().agentHome(engineNode.getAgentHomePath())
+                .flinkHome(engineNode.getFlinkHomePath()).appId(submitJobRes.getAppId())
+                .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
             GetWorkInfoRes getJobInfoRes;
             try {
-                baseResponse = HttpUtils.doPost(
-                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.GET_WORK_INFO_URL),
-                    jobInfoReq, BaseResponse.class);
+                baseResponse = HttpUtils.doPost(httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(),
+                    AgentUrl.GET_WORK_INFO_URL), jobInfoReq, BaseResponse.class);
             } catch (Exception e) {
                 throw new WorkRunException(
                     LocalDateTime.now() + WorkLog.ERROR_INFO + "获取作业状态异常 : " + e.getMessage() + "\n");
@@ -255,10 +253,10 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 }
 
                 // 获取日志并保存
-                GetWorkLogReq getJobLogReq = GetWorkLogReq.builder().agentHomePath(engineNode.getAgentHomePath())
-                    .appId(submitJobRes.getAppId()).workInstanceId(workInstance.getId())
-                    .flinkHome(engineNode.getFlinkHomePath())
-                    .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
+                GetWorkLogReq getJobLogReq =
+                    GetWorkLogReq.builder().agentHomePath(engineNode.getAgentHomePath()).appId(submitJobRes.getAppId())
+                        .workInstanceId(workInstance.getId()).flinkHome(engineNode.getFlinkHomePath())
+                        .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
 
                 baseResponse = HttpUtils.doPost(
                     httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.GET_WORK_LOG_URL),
@@ -271,7 +269,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("日志保存成功 \n");
 
-                GetWorkLogRes getWorkLogRes = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), GetWorkLogRes.class);
+                GetWorkLogRes getWorkLogRes =
+                    JSON.parseObject(JSON.toJSONString(baseResponse.getData()), GetWorkLogRes.class);
                 if (getWorkLogRes != null) {
                     workInstance.setTaskManagerLog(getWorkLogRes.getLog());
                 }
@@ -303,7 +302,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 RunWorkRes wokRunWorkRes = JSON.parseObject(workInstance.getFlinkStarRes(), RunWorkRes.class);
                 if (!Strings.isEmpty(wokRunWorkRes.getAppId())) {
 
-                     // 关闭远程线程
+                    // 关闭远程线程
                     WorkEntity work = workRepository.findById(workInstance.getWorkId()).get();
                     WorkConfigEntity workConfig = workConfigRepository.findById(work.getConfigId()).get();
                     ClusterConfig clusterConfig = JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class);
@@ -318,11 +317,12 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     // 节点选择随机数
                     ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
 
-                    StopWorkReq stopWorkReq = StopWorkReq.builder().flinkHome(engineNode.getFlinkHomePath()).appId(wokRunWorkRes.getAppId()).clusterType(cluster.getClusterType()).build();
+                    StopWorkReq stopWorkReq = StopWorkReq.builder().flinkHome(engineNode.getFlinkHomePath())
+                        .appId(wokRunWorkRes.getAppId()).clusterType(cluster.getClusterType()).build();
 
-                    BaseResponse<?> baseResponse = new RestTemplate().postForObject(
-                        httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_WORK_URL),
-                        stopWorkReq, BaseResponse.class);
+                    BaseResponse<?> baseResponse =
+                        new RestTemplate().postForObject(httpUrlUtils.genHttpUrl(engineNode.getHost(),
+                            engineNode.getAgentPort(), AgentUrl.STOP_WORK_URL), stopWorkReq, BaseResponse.class);
 
                     if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
                         throw new IsxAppException(baseResponse.getCode(), baseResponse.getMsg(), baseResponse.getErr());

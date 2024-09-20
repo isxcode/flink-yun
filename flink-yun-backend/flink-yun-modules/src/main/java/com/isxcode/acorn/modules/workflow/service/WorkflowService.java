@@ -188,8 +188,8 @@ public class WorkflowService {
         // 直接执行一次作业流的点击
         List<String> startNodes = JSON.parseArray(workflowVersion.getDagStartList(), String.class);
         List<String> endNodes = JSON.parseArray(workflowVersion.getDagEndList(), String.class);
-        List<List<String>> nodeMapping = JSON.parseObject(workflowVersion.getNodeMapping(),
-            new TypeReference<List<List<String>>>() {});
+        List<List<String>> nodeMapping =
+            JSON.parseObject(workflowVersion.getNodeMapping(), new TypeReference<List<List<String>>>() {});
 
         // 封装event推送时间，开始执行任务
         // 异步触发工作流
