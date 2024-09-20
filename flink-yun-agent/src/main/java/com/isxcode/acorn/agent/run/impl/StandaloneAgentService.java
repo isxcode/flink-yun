@@ -6,7 +6,6 @@ import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.pojos.dto.FlinkVerticesDto;
 import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.*;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -57,10 +56,8 @@ public class StandaloneAgentService implements AgentService {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("jarfile",
-            new FileSystemResource(
-                new File(submitWorkReq.getAgentHomePath()
-                    + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource())));
+        param.add("jarfile", new FileSystemResource(new File(submitWorkReq.getAgentHomePath() + File.separator
+            + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource())));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(param, headers);
 
         ResponseEntity<FlinkRestUploadRes> result =

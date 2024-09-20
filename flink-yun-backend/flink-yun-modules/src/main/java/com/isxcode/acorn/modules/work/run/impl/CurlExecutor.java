@@ -76,7 +76,8 @@ public class CurlExecutor extends WorkExecutor {
         String result = RuntimeUtil.execForStr(executeBashWorkCommand);
 
         // 保存运行日志
-        workInstance.setTaskManagerLog(result.replace("&& echo 'zhiliuyun_success'", "").replace("zhiliuyun_success", ""));
+        workInstance
+            .setTaskManagerLog(result.replace("&& echo 'zhiliuyun_success'", "").replace("zhiliuyun_success", ""));
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存结果成功 \n");
         updateInstance(workInstance, logBuilder);
 
