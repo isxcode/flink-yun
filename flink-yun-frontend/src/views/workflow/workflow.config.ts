@@ -172,16 +172,8 @@ export const TypeList = [
     value: 'CURL'
   },
   {
-    label: 'FlinkSql查询作业',
+    label: 'FlinkSql作业',
     value: 'FLINK_SQL'
-  },
-  {
-    label: 'FlinkSql容器作业',
-    value: 'FLINK_CONTAINER_SQL'
-  },
-  {
-    label: '数据同步作业',
-    value: 'DATA_SYNC_JDBC'
   },
   {
     label: 'bash作业',
@@ -198,9 +190,5 @@ export const TypeList = [
   {
     label: '接口调用作业',
     value: 'API'
-  },
-  {
-    label: 'Excel导入作业',
-    value: 'EXCEL_SYNC_JDBC'
   }
 ]
