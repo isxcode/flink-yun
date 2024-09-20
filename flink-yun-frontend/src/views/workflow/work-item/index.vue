@@ -19,7 +19,7 @@
               </el-icon>
               <span class="btn-text">运行</span>
             </div>
-            <div v-if="workConfig.workType === 'SPARK_SQL'" class="btn-box" @click="terWorkData">
+            <div v-if="workConfig.workType === 'FLINK_SQL'" class="btn-box" @click="terWorkData">
               <el-icon v-if="!terLoading">
                 <Close />
               </el-icon>
@@ -161,7 +161,7 @@ let workConfig = reactive({
   workType: '',
   workflowId: '',
   applicationId: '',
-  sparkConfig: ''
+  flinkConfig: ''
 })
 
 const tabList = reactive([
@@ -204,7 +204,7 @@ function initData(id?: string, tableLoading?: boolean) {
 
           if (id) {
             // 运行结束
-            if (workConfig.workType === 'SPARK_SQL') {
+            if (workConfig.workType === 'FLINK_SQL') {
               tabList.forEach((item: any) => {
                 if (['RunningLog', 'TotalDetail'].includes(item.code)) {
                   item.hide = false
@@ -213,7 +213,7 @@ function initData(id?: string, tableLoading?: boolean) {
                   item.hide = status === 'FAIL' ? true : false
                 }
               })
-            } else if (['QUERY_JDBC', 'SPARK_CONTAINER_SQL', 'PRQL'].includes(workConfig.workType)) {
+            } else if (['QUERY_JDBC', 'FLINK_CONTAINER_SQL', 'PRQL'].includes(workConfig.workType)) {
               tabList.forEach((item: any) => {
                 if (['ReturnData'].includes(item.code)) {
                   item.hide = status === 'FAIL' ? true : false
@@ -370,7 +370,7 @@ function saveData() {
     script: sqltextData.value,
     workId: props.workItemConfig.id,
     datasourceId: workConfig.datasourceId,
-    // sparkConfig: workConfig.sparkConfig,
+    // flinkConfig: workConfig.flinkConfig,
     // clusterId: workConfig.clusterId,
     // corn: workConfig.corn
   })

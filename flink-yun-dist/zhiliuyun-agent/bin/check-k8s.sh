@@ -38,7 +38,7 @@ fi
 
 # 执行拉取flink镜像命令
 if ! docker image inspect flink:1.18.1-scala_2.12 &>/dev/null; then
-  echo "【结果】：没有flink:1.18.1-scala_2.12镜像，需要执行拉取镜像命令，docker pull flink:1.18.1-scala_2.12 或者 docker pull registry.cn-shanghai.aliyuncs.com/isxcode/spark:3.4.1-amd64 && docker tag registry.cn-shanghai.aliyuncs.com/isxcode/spark:3.4.1-amd64 spark:3.4.1"
+  echo "【结果】：没有flink:1.18.1-scala_2.12镜像，需要执行拉取镜像命令，docker pull flink:1.18.1-scala_2.12 或者 docker pull registry.cn-shanghai.aliyuncs.com/isxcode/flink:3.4.1-amd64 && docker tag registry.cn-shanghai.aliyuncs.com/isxcode/flink:3.4.1-amd64 flink:3.4.1"
   exit 0
 fi
 

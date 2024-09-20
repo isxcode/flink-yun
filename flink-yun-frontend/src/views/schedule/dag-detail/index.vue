@@ -50,9 +50,9 @@ function showModal(data: any): void {
         } else if (e.type === 'node_result') {
             // 查看结果
             nodeRunningLog(e, 'result')
-        } else if (e.type === 'node_yarnLog') {
+        } else if (e.type === 'node_TaskManagerLog') {
             // 运行日志
-            nodeRunningLog(e, 'yarnLog')
+            nodeRunningLog(e, 'TaskManagerLog')
         } else if (e.type === 'node_break') {
             // 中断
             nodeBreakFlow(e)

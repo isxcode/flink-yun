@@ -2,7 +2,7 @@
     <BlockModal :model-config="modelConfig" @close="closeEvent">
         <div id="content" class="content-box">
             <!-- 日志展示 -->
-            <template v-if="['log', 'yarnLog'].includes(modalType)">
+            <template v-if="['log', 'TaskManagerLog'].includes(modalType)">
                 <LogContainer v-if="logMsg" :logMsg="logMsg" :status="true"></LogContainer>
             </template>
             <!-- 结果展示 -->
@@ -18,7 +18,7 @@ import { reactive, ref, onUnmounted } from 'vue'
 import BlockModal from '../block-modal/index.vue'
 import BlockTable from '../block-table/index.vue'
 
-import { GetLogData, GetYarnLogData, GetResultData } from '@/services/schedule.service'
+import { GetLogData, GetTaskManagerLogData, GetResultData } from '@/services/schedule.service'
 
 const callback = ref<any>()
 const logMsg = ref('')
@@ -63,9 +63,9 @@ function showModal(cb: () => void, data: any): void {
         getResultDatalist()
         modelConfig.width = '64%'
         modelConfig.title = '结果'
-    } else if (modalType.value === 'yarnLog') {
+    } else if (modalType.value === 'TaskManagerLog') {
         modelConfig.title = '运行日志'
-        getYarnLogData()
+        getTaskManagerLogData()
     }
     modelConfig.visible = true
 }
@@ -90,12 +90,12 @@ function getLogData() {
 }
 
 // 获取yarn日志
-function getYarnLogData() {
-    GetYarnLogData({
+function getTaskManagerLogData() {
+    GetTaskManagerLogData({
         instanceId: info.value
     })
         .then((res: any) => {
-            logMsg.value = res.data.yarnLog
+            logMsg.value = res.data.TaskManagerLog
             if (['SUCCESS', 'FAIL'].includes(res.data.status)) {
                 if (timer.value) {
                     clearInterval(timer.value)

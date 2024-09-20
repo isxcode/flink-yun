@@ -28,9 +28,6 @@ import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * 用户模块接口的业务逻辑.
- */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -58,16 +55,17 @@ public class WorkConfigBizService {
 
     public void configWork(ConfigWorkReq wocConfigWorkReq) {
 
-        // 先转换sparkConfigJson和sqlConfigJson
+        // 先转换flinkConfigJson和sqlConfigJson
         try {
             if (wocConfigWorkReq.getClusterConfig() != null
-                && !Strings.isEmpty(wocConfigWorkReq.getClusterConfig().getSparkConfigJson())) {
+                && !Strings.isEmpty(wocConfigWorkReq.getClusterConfig().getFlinkConfigJson())) {
                 wocConfigWorkReq.getClusterConfig()
-                    .setSparkConfig(JSON.parseObject(wocConfigWorkReq.getClusterConfig().getSparkConfigJson(),
+                    .setFlinkConfig(JSON.parseObject(wocConfigWorkReq.getClusterConfig().getFlinkConfigJson(),
                         new TypeReference<Map<String, String>>() {}));
             }
         } catch (Exception e) {
-            throw new IsxAppException("集群spark配置json格式不合法");
+            log.debug(e.getMessage(), e);
+            throw new IsxAppException("集群flink配置json格式不合法");
         }
 
         try {
@@ -77,6 +75,7 @@ public class WorkConfigBizService {
                     wocConfigWorkReq.getSyncRule().getSqlConfigJson(), new TypeReference<Map<String, String>>() {}));
             }
         } catch (Exception e) {
+            log.debug(e.getMessage(), e);
             throw new IsxAppException("数据同步sqlConfig配置json格式不合法");
         }
 
@@ -94,6 +93,11 @@ public class WorkConfigBizService {
             workConfig.setSyncWorkConfig(JSON.toJSONString(wocConfigWorkReq.getSyncWorkConfig()));
         }
 
+        // 用户更新Excel数据同步
+        if (wocConfigWorkReq.getExcelSyncConfig() != null) {
+            workConfig.setExcelSyncConfig(JSON.toJSONString(wocConfigWorkReq.getExcelSyncConfig()));
+        }
+
         // 用户更新接口调用
         if (wocConfigWorkReq.getApiWorkConfig() != null) {
             workConfig.setApiWorkConfig(JSON.toJSONString(wocConfigWorkReq.getApiWorkConfig()));
@@ -102,11 +106,11 @@ public class WorkConfigBizService {
         // 用户更新集群配置
         if (wocConfigWorkReq.getClusterConfig() != null) {
 
-            // 如果是等级的模式，需要帮用户默认填充sparkConfig
+            // 如果是等级的模式，需要帮用户默认填充flinkConfig
             if (SetMode.SIMPLE.equals(wocConfigWorkReq.getClusterConfig().getSetMode())) {
-                Map<String, String> sparkConfig =
-                    workConfigService.initSparkConfig(wocConfigWorkReq.getClusterConfig().getResourceLevel());
-                wocConfigWorkReq.getClusterConfig().setSparkConfig(sparkConfig);
+                Map<String, String> flinkConfig =
+                    workConfigService.initFlinkConfig(wocConfigWorkReq.getClusterConfig().getResourceLevel());
+                wocConfigWorkReq.getClusterConfig().setFlinkConfig(flinkConfig);
             }
 
             workConfig.setClusterConfig(JSON.toJSONString(wocConfigWorkReq.getClusterConfig()));
@@ -133,7 +137,7 @@ public class WorkConfigBizService {
             workConfig.setCronConfig(JSON.toJSONString(wocConfigWorkReq.getCronConfig()));
         }
 
-        // 设置hive.metastore.uris的值,要么是sparkSql支持hive，要是数据同步中有hive数据源
+        // 设置hive.metastore.uris的值,要么是flinkSql支持hive，要是数据同步中有hive数据源
         if (!Strings.isEmpty(workConfig.getClusterConfig())) {
             workConfig.setClusterConfig(JSON.toJSONString(getHiveStoreUri(workConfig)));
         }
@@ -166,6 +170,11 @@ public class WorkConfigBizService {
             workConfig.setContainerId(wocConfigWorkReq.getContainerId());
         }
 
+        // 设置容器id
+        if (wocConfigWorkReq.getAlarmList() != null) {
+            workConfig.setAlarmList(JSON.toJSONString(wocConfigWorkReq.getAlarmList()));
+        }
+
         // 保存配置
         workConfigRepository.save(workConfig);
     }
@@ -175,7 +184,7 @@ public class WorkConfigBizService {
         String hiveMetaStoreUris = null;
         ClusterConfig clusterConfig = JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class);
 
-        // 如果是sparkSql作业，且开启hive数据源
+        // 如果是flinkSql作业，且开启hive数据源
         if (clusterConfig.getEnableHive() != null && clusterConfig.getEnableHive()) {
             Optional<DatasourceEntity> datasourceEntity = datasourceRepository.findById(workConfig.getDatasourceId());
             if (datasourceEntity.isPresent()) {
@@ -197,14 +206,15 @@ public class WorkConfigBizService {
         }
 
         if (hiveMetaStoreUris != null) {
-            clusterConfig.getSparkConfig().put("hive.metastore.uris", hiveMetaStoreUris);
+            clusterConfig.getFlinkConfig().put("hive.metastore.uris", hiveMetaStoreUris);
         }
 
-        // 补上spark.executor.instances
+        // 根据分区配置修改并发数instances
         if (!Strings.isEmpty(workConfig.getSyncRule()) && !Strings.isEmpty(workConfig.getSyncWorkConfig())) {
             SyncRule syncRule = JSON.parseObject(workConfig.getSyncRule(), SyncRule.class);
-            clusterConfig.getSparkConfig().put("spark.executor.instances",
+            clusterConfig.getFlinkConfig().put("flink.executor.instances",
                 String.valueOf(syncRule.getNumConcurrency()));
+            clusterConfig.getFlinkConfig().put("flink.cores.max", String.valueOf(syncRule.getNumConcurrency()));
         }
 
         return clusterConfig;

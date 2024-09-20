@@ -14,7 +14,7 @@ public class AddFuncReq {
     @Pattern(regexp = "^(UDF|UDAF)$", message = "类型不支持")
     private String type;
 
-    @Schema(title = "udf文件id", example = "sy_48c4304593ea4897b6af999e48685896")
+    @Schema(title = "udf文件id", example = "fy_48c4304593ea4897b6af999e48685896")
     @NotEmpty(message = "udf文件id不能为空")
     private String fileId;
 
@@ -22,7 +22,7 @@ public class AddFuncReq {
     @NotEmpty(message = "函数名称不能为空")
     private String funcName;
 
-    @Schema(title = "udf文件类名称", example = "org.example.spark.udf.MyUdf")
+    @Schema(title = "udf文件类名称", example = "org.example.flink.udf.MyUdf")
     @NotEmpty(message = "类名称不能为空")
     private String className;
 

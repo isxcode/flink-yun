@@ -91,8 +91,8 @@ const typeList = reactive([
     value: 'QUERY_JDBC'
   },
   {
-    label: 'SparkSql查询作业',
-    value: 'SPARK_SQL'
+    label: 'FlinkSql查询作业',
+    value: 'FLINK_SQL'
   },
   {
     label: '数据同步作业',

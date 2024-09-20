@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing(auditorAwareRef = "jpaAuditorConfig")
 public class AppConfig {
 
-    @Bean("sparkYunWorkThreadPool")
-    public Executor sparkYunWorkThreadPool() {
+    @Bean("flinkYunWorkThreadPool")
+    public Executor flinkYunWorkThreadPool() {
 
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(100);
@@ -30,15 +30,15 @@ public class AppConfig {
         threadPoolTaskExecutor.setQueueCapacity(200);
         threadPoolTaskExecutor.setKeepAliveSeconds(60);
         threadPoolTaskExecutor.setAllowCoreThreadTimeOut(false);
-        threadPoolTaskExecutor.setThreadNamePrefix("sparkYunWorkThreadPool-");
+        threadPoolTaskExecutor.setThreadNamePrefix("flinkYunWorkThreadPool-");
         threadPoolTaskExecutor.setRejectedExecutionHandler((r, executor) -> log.info("未执行的异常进程"));
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         threadPoolTaskExecutor.setAwaitTerminationSeconds(300);
         return threadPoolTaskExecutor;
     }
 
-    @Bean("sparkYunThreadPool")
-    public Executor sparkYunThreadPool() {
+    @Bean("flinkYunThreadPool")
+    public Executor flinkYunThreadPool() {
 
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(100);
@@ -46,7 +46,7 @@ public class AppConfig {
         threadPoolTaskExecutor.setQueueCapacity(200);
         threadPoolTaskExecutor.setKeepAliveSeconds(60);
         threadPoolTaskExecutor.setAllowCoreThreadTimeOut(false);
-        threadPoolTaskExecutor.setThreadNamePrefix("sparkYunWorkThreadPool-");
+        threadPoolTaskExecutor.setThreadNamePrefix("flinkYunWorkThreadPool-");
         threadPoolTaskExecutor.setRejectedExecutionHandler((r, executor) -> log.info("未执行的异常进程"));
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         threadPoolTaskExecutor.setAwaitTerminationSeconds(300);

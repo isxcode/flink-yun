@@ -12,6 +12,7 @@ import com.isxcode.acorn.common.utils.path.PathUtils;
 import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.file.mapper.FileMapper;
 import com.isxcode.acorn.modules.file.repository.FileRepository;
+import com.isxcode.acorn.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
@@ -34,9 +35,6 @@ import java.util.Optional;
 
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
-/**
- * 资源文件接口的业务逻辑.
- */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -50,6 +48,7 @@ public class FileBizService {
     private final IsxAppProperties isxAppProperties;
 
     private final FileMapper fileMapper;
+    private final UserService userService;
 
     public void uploadFile(MultipartFile file, String type, String remark) {
 
@@ -66,6 +65,7 @@ public class FileBizService {
             try {
                 Files.createDirectories(Paths.get(fileDir));
             } catch (IOException e) {
+                log.debug(e.getMessage(), e);
                 throw new IsxAppException("上传资源文件，目录创建失败");
             }
         }
@@ -82,6 +82,7 @@ public class FileBizService {
             File dest = new File(folder.getAbsolutePath());
             file.transferTo(dest);
         } catch (IOException e) {
+            log.debug(e.getMessage(), e);
             throw new IsxAppException("上传资源文件失败");
         }
     }
@@ -150,6 +151,7 @@ public class FileBizService {
             // 返回文件
             return ResponseEntity.ok().headers(headers).body(resource);
         } catch (IOException e) {
+            log.debug(e.getMessage(), e);
             throw new IsxAppException("读取文件失败");
         }
     }
@@ -166,6 +168,7 @@ public class FileBizService {
             File localFile = PathUtils.createFile(fileDir + File.separator + file.getId());
             localFile.renameTo(new File(fileDir + File.separator + file.getId() + ".deleted"));
         } catch (IOException e) {
+            log.debug(e.getMessage(), e);
             throw new IsxAppException("本地文件无法获取");
         }
 
@@ -178,6 +181,10 @@ public class FileBizService {
         Page<FileEntity> fileEntitiePage = fileRepository.searchAll(pageFileReq.getSearchKeyWord(),
             pageFileReq.getType(), PageRequest.of(pageFileReq.getPage(), pageFileReq.getPageSize()));
 
-        return fileEntitiePage.map(fileMapper::fileEntityToPageFileRes);
+        Page<PageFileRes> map = fileEntitiePage.map(fileMapper::fileEntityToPageFileRes);
+
+        map.getContent().forEach(e -> e.setCreateUsername(userService.getUserName(e.getCreateBy())));
+
+        return map;
     }
 }

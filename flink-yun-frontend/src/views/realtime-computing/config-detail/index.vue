@@ -28,12 +28,12 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="sparkConfig" :class="{ 'show-screen__full': sparkJsonFullStatus }">
-                  <el-icon class="modal-full-screen" @click="fullScreenEvent('sparkJsonFullStatus')"><FullScreen v-if="!sparkJsonFullStatus" /><Close v-else /></el-icon>
-                  <code-mirror v-model="clusterConfig.sparkConfigJson" basic :lang="lang"/>
+              <el-form-item label="flinkConfig" :class="{ 'show-screen__full': flinkJsonFullStatus }">
+                  <el-icon class="modal-full-screen" @click="fullScreenEvent('flinkJsonFullStatus')"><FullScreen v-if="!flinkJsonFullStatus" /><Close v-else /></el-icon>
+                  <code-mirror v-model="clusterConfig.flinkConfigJson" basic :lang="lang"/>
               </el-form-item>
-              <!-- <el-form-item label="sparkConfig" v-if="clusterConfig.setMode === 'ADVANCE'">
-                <code-mirror v-model="clusterConfig.sparkConfigJson" basic :lang="lang"/>
+              <!-- <el-form-item label="flinkConfig" v-if="clusterConfig.setMode === 'ADVANCE'">
+                <code-mirror v-model="clusterConfig.flinkConfigJson" basic :lang="lang"/>
               </el-form-item>
               <el-form-item label="资源等级" v-else>
                 <el-select v-model="clusterConfig.resourceLevel" placeholder="请选择">
@@ -109,7 +109,7 @@ const clusterConfigForm = ref<FormInstance>()
 const lang = ref<any>(json())
 const resourceLevelOptions = ref(ResourceLevelOptions) // 资源等级
 // 输入框全屏
-const sparkJsonFullStatus = ref(false)
+const flinkJsonFullStatus = ref(false)
 
 const drawerConfig = reactive({
   title: '配置',
@@ -137,8 +137,8 @@ let clusterConfig = reactive({
   clusterNodeId: '',        // 集群节点
   enableHive: false,
   datasourceId: '',   // hive数据源
-  // sparkConfig: '',
-  sparkConfigJson: ''
+  // flinkConfig: '',
+  flinkConfigJson: ''
 })
 const fileConfig = reactive({
   funcList: [],
@@ -222,7 +222,7 @@ function getConfigDetailData() {
     //     }
     //   })
     // }
-    clusterConfig.sparkConfigJson = jsonFormatter(res.data.sparkConfigJson || res.data.sparkConfig)
+    clusterConfig.flinkConfigJson = jsonFormatter(res.data.flinkConfigJson || res.data.flinkConfig)
     clusterConfig.clusterId = res.data.clusterId
     fileConfig.funcList = res.data.funcConfig || []
     fileConfig.libList = res.data.libConfig || []
@@ -246,7 +246,7 @@ function okEvent() {
       ConifgTimeComputingData({
         realId: workItemConfig.value.id,
         clusterId: clusterConfig.clusterId,
-        sparkConfigJson: clusterConfig.sparkConfigJson,
+        flinkConfigJson: clusterConfig.flinkConfigJson,
         ...fileConfig
       }).then((res: any) => {
         ElMessage.success('保存成功')
@@ -261,8 +261,8 @@ function okEvent() {
 }
 // 全屏
 function fullScreenEvent(type: string) {
-  if (type === 'sparkJsonFullStatus') {
-    sparkJsonFullStatus.value = !sparkJsonFullStatus.value
+  if (type === 'flinkJsonFullStatus') {
+    flinkJsonFullStatus.value = !flinkJsonFullStatus.value
   }
 }
 

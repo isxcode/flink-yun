@@ -8,11 +8,11 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class CheckMessageReq {
 
-    @Schema(title = "消息体id", example = "sy_123")
+    @Schema(title = "消息体id", example = "fy_123")
     @NotEmpty(message = "消息体id不能为空")
     private String id;
 
-    @Schema(title = "发送的人", example = "sy_123")
+    @Schema(title = "发送的人", example = "fy_123")
     @NotEmpty(message = "发送人不能为空")
     private String receiver;
 

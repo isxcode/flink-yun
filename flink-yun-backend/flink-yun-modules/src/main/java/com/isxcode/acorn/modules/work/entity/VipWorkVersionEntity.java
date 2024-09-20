@@ -3,6 +3,7 @@ package com.isxcode.acorn.modules.work.entity;
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -12,6 +13,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -50,6 +52,8 @@ public class VipWorkVersionEntity {
 
     private String syncWorkConfig;
 
+    private String excelSyncConfig;
+
     private String apiWorkConfig;
 
     private String syncRule;
@@ -61,6 +65,8 @@ public class VipWorkVersionEntity {
     private String libConfig;
 
     private String funcConfig;
+
+    private String alarmList;
 
     @CreatedDate
     private LocalDateTime createDateTime;

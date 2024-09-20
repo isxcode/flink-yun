@@ -5,7 +5,7 @@ interface SerchParams {
   searchKeyWord: string;
 }
 
-// spark容器-查询
+// flink容器-查询
 export function GetSparkContainerList(params: SerchParams): Promise<any> {
   return http.request({
     method: 'post',
@@ -14,7 +14,7 @@ export function GetSparkContainerList(params: SerchParams): Promise<any> {
   })
 }
 
-// spark容器-添加
+// flink容器-添加
 export function AddSparkContainerData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -23,7 +23,7 @@ export function AddSparkContainerData(params: any): Promise<any> {
   })
 }
 
-// spark容器-更新
+// flink容器-更新
 export function UpdateSparkContainerData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -32,7 +32,7 @@ export function UpdateSparkContainerData(params: any): Promise<any> {
   })
 }
 
-// spark容器-检测
+// flink容器-检测
 export function ChecSparkContainerkData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -41,7 +41,7 @@ export function ChecSparkContainerkData(params: any): Promise<any> {
   })
 }
 
-// spark容器-删除
+// flink容器-删除
 export function DeleteSparkContainerkData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -50,7 +50,7 @@ export function DeleteSparkContainerkData(params: any): Promise<any> {
   })
 }
 
-// spark容器-启动
+// flink容器-启动
 export function StartSparkContainerkData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -59,7 +59,7 @@ export function StartSparkContainerkData(params: any): Promise<any> {
   })
 }
 
-// spark容器-停止
+// flink容器-停止
 export function StopSparkContainerkData(params: any): Promise<any> {
   return http.request({
     method: 'post',
@@ -68,7 +68,7 @@ export function StopSparkContainerkData(params: any): Promise<any> {
   })
 }
 
-// spark容器-获取日志信息
+// flink容器-获取日志信息
 export function GetSparkContainerkDetail(params: any): Promise<any> {
   return http.request({
     method: 'post',

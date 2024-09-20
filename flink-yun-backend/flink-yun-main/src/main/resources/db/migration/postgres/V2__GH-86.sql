@@ -529,7 +529,7 @@ CREATE TABLE IF NOT EXISTS SY_WORK_CONFIG
   id                      varchar(200)  not null unique primary key,
   datasource_id           varchar(200),
   cluster_id              varchar(200),
-  spark_config            text,
+  flink_config            text,
   sql_script              text,
   corn                    varchar(200),
   create_by               varchar(200)  not null,
@@ -544,7 +544,7 @@ CREATE TABLE IF NOT EXISTS SY_WORK_CONFIG
 COMMENT ON COLUMN SY_WORK_CONFIG.id IS '作业配置唯一id';
 COMMENT ON COLUMN SY_WORK_CONFIG.datasource_id IS '数据源id';
 COMMENT ON COLUMN SY_WORK_CONFIG.cluster_id IS '集群id';
-COMMENT ON COLUMN SY_WORK_CONFIG.spark_config IS 'spark的作业配置';
+COMMENT ON COLUMN SY_WORK_CONFIG.flink_config IS 'flink的作业配置';
 COMMENT ON COLUMN SY_WORK_CONFIG.sql_script IS 'sql脚本';
 COMMENT ON COLUMN SY_WORK_CONFIG.corn IS '定时表达式';
 COMMENT ON COLUMN SY_WORK_CONFIG.create_by IS '创建人';
@@ -648,7 +648,7 @@ CREATE TABLE IF NOT EXISTS SY_WORK_VERSION
   datasource_id           varchar(200),
   cluster_id              varchar(200),
   sql_script              text,
-  spark_config            text,
+  flink_config            text,
   corn                    varchar(200)  not null,
   create_by               varchar(200)  not null,
   create_date_time        timestamp     not null,
@@ -665,7 +665,7 @@ COMMENT ON COLUMN SY_WORK_VERSION.work_type IS '作业类型';
 COMMENT ON COLUMN SY_WORK_VERSION.datasource_id IS '数据源id';
 COMMENT ON COLUMN SY_WORK_VERSION.cluster_id IS '集群id';
 COMMENT ON COLUMN SY_WORK_VERSION.sql_script IS 'sql脚本';
-COMMENT ON COLUMN SY_WORK_VERSION.spark_config IS 'spark的作业配置';
+COMMENT ON COLUMN SY_WORK_VERSION.flink_config IS 'flink的作业配置';
 COMMENT ON COLUMN SY_WORK_VERSION.corn IS '定时表达式';
 COMMENT ON COLUMN SY_WORK_VERSION.create_by IS '创建人';
 COMMENT ON COLUMN SY_WORK_VERSION.create_date_time IS '创建时间';
@@ -689,7 +689,7 @@ CREATE TABLE IF NOT EXISTS SY_WORK_INSTANCE
   exec_end_date_time      timestamp,
   submit_log              text,
   yarn_log                text,
-  spark_star_res          varchar(2000),
+  flink_star_res          varchar(2000),
   result_data             text,
   create_by               varchar(200)  not null,
   create_date_time        timestamp     not null,
@@ -710,7 +710,7 @@ COMMENT ON COLUMN SY_WORK_INSTANCE.exec_start_date_time IS '执行开始时间';
 COMMENT ON COLUMN SY_WORK_INSTANCE.exec_end_date_time IS '执行结束时间';
 COMMENT ON COLUMN SY_WORK_INSTANCE.submit_log IS '提交日志';
 COMMENT ON COLUMN SY_WORK_INSTANCE.yarn_log IS 'yarn日志';
-COMMENT ON COLUMN SY_WORK_INSTANCE.spark_star_res IS 'spark-star插件返回';
+COMMENT ON COLUMN SY_WORK_INSTANCE.flink_star_res IS 'flink-star插件返回';
 COMMENT ON COLUMN SY_WORK_INSTANCE.result_data IS '结果数据';
 COMMENT ON COLUMN SY_WORK_INSTANCE.create_by IS '创建人';
 COMMENT ON COLUMN SY_WORK_INSTANCE.create_date_time IS '创建时间';
@@ -989,11 +989,11 @@ ALTER TABLE SY_WORK_CONFIG
   RENAME COLUMN sql_script TO script;
 COMMENT ON COLUMN SY_WORK_CONFIG.script IS '统一脚本内容，包括sql、bash、python脚本';
 
--- 将cluster_id和spark_config合并成cluster_config
+-- 将cluster_id和flink_config合并成cluster_config
 ALTER TABLE SY_WORK_CONFIG
   DROP COLUMN cluster_id;
 ALTER TABLE SY_WORK_CONFIG
-  DROP COLUMN spark_config;
+  DROP COLUMN flink_config;
 
 ALTER TABLE SY_WORK_CONFIG
   ADD COLUMN cluster_config text null;
@@ -1008,10 +1008,10 @@ ALTER TABLE SY_WORK_CONFIG
   ADD COLUMN sync_rule text null;
 COMMENT ON COLUMN SY_WORK_CONFIG.sync_rule IS '数据同步规则';
 
--- 添加spark_home_path
+-- 添加flink_home_path
 ALTER TABLE SY_CLUSTER_NODE
-  ADD COLUMN spark_home_path varchar(200) null;
-COMMENT ON COLUMN SY_CLUSTER_NODE.spark_home_path IS 'standalone模式spark的安装目录';
+  ADD COLUMN flink_home_path varchar(200) null;
+COMMENT ON COLUMN SY_CLUSTER_NODE.flink_home_path IS 'standalone模式flink的安装目录';
 
 -- 添加默认集群
 ALTER TABLE SY_CLUSTER
@@ -1124,9 +1124,9 @@ ALTER TABLE SY_WORK_VERSION
   ALTER COLUMN script TYPE TEXT using script::text;
 COMMENT ON COLUMN SY_WORK_VERSION.script IS '脚本内容';
 
--- 删除SY_WORK_VERSION的spark_config
+-- 删除SY_WORK_VERSION的flink_config
 alter table SY_WORK_VERSION
-  drop column spark_config;
+  drop column flink_config;
 
 -- 添加同步作业的配置
 ALTER TABLE SY_WORK_VERSION
@@ -1373,7 +1373,7 @@ CREATE TABLE SY_CONTAINER
   DATASOURCE_ID           varchar(200)      NOT NULL,
   CLUSTER_ID              varchar(200)      NOT NULL,
   RESOURCE_LEVEL          varchar(200)      NOT NULL,
-  SPARK_CONFIG            varchar(2000),
+  FLINK_CONFIG            varchar(2000),
   PORT                    int,
   SUBMIT_LOG              text,
   RUNNING_LOG             text,
@@ -1392,7 +1392,7 @@ COMMENT ON COLUMN SY_CONTAINER.STATUS IS '容器状态';
 COMMENT ON COLUMN SY_CONTAINER.DATASOURCE_ID IS '数据源id';
 COMMENT ON COLUMN SY_CONTAINER.CLUSTER_ID IS '集群id';
 COMMENT ON COLUMN SY_CONTAINER.RESOURCE_LEVEL IS '消耗资源等级';
-COMMENT ON COLUMN SY_CONTAINER.SPARK_CONFIG IS 'spark配置';
+COMMENT ON COLUMN SY_CONTAINER.FLINK_CONFIG IS 'flink配置';
 COMMENT ON COLUMN SY_CONTAINER.PORT IS '容器端口号';
 COMMENT ON COLUMN SY_CONTAINER.SUBMIT_LOG IS '提交日志';
 COMMENT ON COLUMN SY_CONTAINER.RUNNING_LOG IS '运行日志';
@@ -1431,7 +1431,7 @@ CREATE TABLE SY_REAL
   name                    varchar(200)  NOT NULL,
   status                  varchar(200)  NOT NULL,
   cluster_id              varchar(500)  NOT NULL,
-  spark_config            text          NOT NULL,
+  flink_config            text          NOT NULL,
   sync_config             text,
   lib_config              varchar(500),
   func_config             varchar(500),
@@ -1454,7 +1454,7 @@ COMMENT ON COLUMN SY_REAL.id IS '分享表单链接id';
 COMMENT ON COLUMN SY_REAL.name IS '实时作业名称';
 COMMENT ON COLUMN SY_REAL.status IS '运行状态';
 COMMENT ON COLUMN SY_REAL.cluster_id IS '集群id';
-COMMENT ON COLUMN SY_REAL.spark_config IS '集群配置';
+COMMENT ON COLUMN SY_REAL.flink_config IS '集群配置';
 COMMENT ON COLUMN SY_REAL.sync_config IS '数据同步配置';
 COMMENT ON COLUMN SY_REAL.lib_config IS '依赖配置';
 COMMENT ON COLUMN SY_REAL.func_config IS '函数配置';
@@ -1517,10 +1517,10 @@ COMMENT ON COLUMN SY_MONITOR.deleted IS '逻辑删除';
 COMMENT ON COLUMN SY_MONITOR.tenant_id IS '租户id';
 
 -- 596
--- standalone集群节点支持安装spark-local组件
+-- standalone集群节点支持安装flink-local组件
 ALTER TABLE SY_CLUSTER_NODE
-  ADD COLUMN INSTALL_SPARK_LOCAL BOOLEAN DEFAULT FALSE;
-COMMENT ON COLUMN SY_CLUSTER_NODE.INSTALL_SPARK_LOCAL IS '是否安装spark-local组件';
+  ADD COLUMN INSTALL_FLINK_LOCAL BOOLEAN DEFAULT FALSE;
+COMMENT ON COLUMN SY_CLUSTER_NODE.INSTALL_FLINK_LOCAL IS '是否安装flink-local组件';
 
 -- 931
 -- 将ojdbc10-19.20.0.0.jar更新为ojdbc8-19.23.0.0.jar
@@ -1550,7 +1550,7 @@ CREATE TABLE SY_VIEW_CARD
   LAST_MODIFIED_DATE_TIME TIMESTAMP     NOT NULL,
   DELETED                 INT           NOT NULL DEFAULT 0,
   TENANT_ID               VARCHAR(200)  NOT NULL,
-  CONSTRAINT pk_sy_view_card PRIMARY KEY (ID)
+  CONSTRAINT pk_fy_view_card PRIMARY KEY (ID)
 );
 
 -- 为列添加注释
@@ -1588,7 +1588,7 @@ CREATE TABLE SY_VIEW
   LAST_MODIFIED_DATE_TIME TIMESTAMP    NOT NULL,
   DELETED                 INT          NOT NULL DEFAULT 0,
   TENANT_ID               VARCHAR(200) NOT NULL,
-  CONSTRAINT pk_sy_view PRIMARY KEY (ID)
+  CONSTRAINT pk_fy_view PRIMARY KEY (ID)
 );
 
 -- 为列添加注释
@@ -1631,7 +1631,7 @@ CREATE TABLE SY_MESSAGE
   version_number          int          NOT NULL,
   deleted                 int          NOT NULL DEFAULT 0,
   tenant_id               varchar(200) NOT NULL,
-  CONSTRAINT pk_sy_message PRIMARY KEY (id)
+  CONSTRAINT pk_fy_message PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1669,7 +1669,7 @@ CREATE TABLE SY_ALARM
   version_number          int          NOT NULL,
   deleted                 int          NOT NULL DEFAULT 0,
   tenant_id               varchar(200) NOT NULL,
-  CONSTRAINT pk_sy_alarm PRIMARY KEY (id)
+  CONSTRAINT pk_fy_alarm PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1707,7 +1707,7 @@ CREATE TABLE SY_ALARM_INSTANCE
   create_date_time timestamp    NOT NULL,
   deleted          int          NOT NULL DEFAULT 0,
   tenant_id        varchar(200) NOT NULL,
-  CONSTRAINT pk_sy_alarm_instance PRIMARY KEY (id)
+  CONSTRAINT pk_fy_alarm_instance PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1876,7 +1876,7 @@ DTOP TABLE SY_CONTAINER;
 
 -- 兼容flink
 ALTER TABLE SY_CLUSTER_NODE
-    RENAME COLUMN SPARK_HOME_PATH TO FLINK_HOME_PATH;
+    RENAME COLUMN FLINK_HOME_PATH TO FLINK_HOME_PATH;
 
 COMMENT ON COLUMN SY_CLUSTER_NODE.FLINK_HOME_PATH IS 'flink的安装目录';
 

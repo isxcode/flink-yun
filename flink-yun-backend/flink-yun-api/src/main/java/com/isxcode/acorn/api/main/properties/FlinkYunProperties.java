@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "flink-yun")
-@EnableConfigurationProperties(SparkYunProperties.class)
-public class SparkYunProperties {
+@EnableConfigurationProperties(FlinkYunProperties.class)
+public class FlinkYunProperties {
 
     /** 可以让脚本临时复制的目录. */
     private String tmpDir = "/tmp";

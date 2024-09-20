@@ -21,9 +21,9 @@ public class ClusterConfig {
 
     private String clusterNodeId;
 
-    private Map<String, String> sparkConfig;
+    private Map<String, String> flinkConfig;
 
-    private String sparkConfigJson;
+    private String flinkConfigJson;
 
     private Boolean enableHive;
 }

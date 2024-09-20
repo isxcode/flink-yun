@@ -18,7 +18,7 @@
                 <el-form-item
                     label="计算集群"
                     prop="clusterId"
-                    v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'SPARK_SQL', 'SPARK_JAR','EXCEL_SYNC_JDBC'].includes(formData.workType)"
+                    v-if="['BASH', 'PYTHON', 'DATA_SYNC_JDBC', 'FLINK_SQL', 'FLINK_JAR','EXCEL_SYNC_JDBC'].includes(formData.workType)"
                 >
                     <el-select
                         v-model="formData.clusterId"
@@ -52,13 +52,13 @@
                         />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="是否连接hive" v-if="['SPARK_SQL'].includes(formData.workType)">
+                <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(formData.workType)">
                     <el-switch v-model="formData.enableHive" @change="enableHiveChange" />
                 </el-form-item>
                 <el-form-item
                     label="Hive数据源"
                     :prop="formData.enableHive ? 'datasourceId' : ''"
-                    v-if="formData.enableHive && ['SPARK_SQL'].includes(formData.workType)"
+                    v-if="formData.enableHive && ['FLINK_SQL'].includes(formData.workType)"
                 >
                     <el-select
                         v-model="formData.datasourceId"
@@ -90,7 +90,7 @@
                 <el-form-item
                     label="计算容器"
                     prop="containerId"
-                    v-if="['SPARK_CONTAINER_SQL'].includes(formData.workType)"
+                    v-if="['FLINK_CONTAINER_SQL'].includes(formData.workType)"
                 >
                     <el-select
                         v-model="formData.containerId"
@@ -98,7 +98,7 @@
                         @visible-change="getSparkContainerList"
                     >
                         <el-option
-                            v-for="item in sparkContainerList"
+                            v-for="item in flinkContainerList"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value"
@@ -126,7 +126,6 @@ import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { GetComputerGroupList, GetComputerPointData } from '@/services/computer-group.service'
 import { GetDatasourceList } from '@/services/datasource.service'
-import { GetSparkContainerList } from '@/services/spark-container.service'
 import { TypeList } from '../../workflow.config'
 
 const form = ref<FormInstance>()
@@ -136,7 +135,7 @@ const clusterNodeList = ref([]) // 集群节点
 const dataSourceList = ref([]) // 数据源
 const showForm = ref(true)
 const renderSense = ref('')
-const sparkContainerList = ref([]) // spark容器
+const flinkContainerList = ref([]) // flink容器
 
 const modelConfig = reactive({
     title: '添加作业',
@@ -163,7 +162,7 @@ const formData = reactive({
     clusterId: '', // 计算集群
     clusterNodeId: '', // 集群节点
     datasourceId: '', // 数据源
-    containerId: '', // spark容器
+    containerId: '', // flink容器
     enableHive: false,
     remark: '',
     id: ''
@@ -350,7 +349,7 @@ function getSparkContainerList(e: boolean, searchType?: string) {
             searchKeyWord: ''
         })
             .then((res: any) => {
-                sparkContainerList.value = res.data.content.map((item: any) => {
+                flinkContainerList.value = res.data.content.map((item: any) => {
                     return {
                         label: item.name,
                         value: item.id
@@ -358,7 +357,7 @@ function getSparkContainerList(e: boolean, searchType?: string) {
                 })
             })
             .catch(() => {
-                sparkContainerList.value = []
+                flinkContainerList.value = []
             })
     }
 }

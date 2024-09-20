@@ -2,8 +2,8 @@ package com.isxcode.acorn.backend.api.base.exceptions;
 
 public class IsxAppException extends AbstractIsxAppException {
 
-    public IsxAppException(AbstractIsxAppExceptionEnum abstractSparkYunExceptionEnum) {
-        super(abstractSparkYunExceptionEnum);
+    public IsxAppException(AbstractIsxAppExceptionEnum abstractFlinkYunExceptionEnum) {
+        super(abstractFlinkYunExceptionEnum);
     }
 
     public IsxAppException(String code, String msg, String err) {

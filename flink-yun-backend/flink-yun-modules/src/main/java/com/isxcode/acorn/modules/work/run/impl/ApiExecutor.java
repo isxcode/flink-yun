@@ -1,13 +1,17 @@
-package com.isxcode.acorn.modules.work.run;
+package com.isxcode.acorn.modules.work.run.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.api.constants.ApiType;
 import com.isxcode.acorn.api.work.constants.WorkLog;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.api.work.pojos.dto.ApiWorkConfig;
 import com.isxcode.acorn.common.utils.http.HttpUtils;
+import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
+import com.isxcode.acorn.modules.work.run.WorkExecutor;
+import com.isxcode.acorn.modules.work.run.WorkRunContext;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,13 +26,21 @@ import java.util.Map;
 public class ApiExecutor extends WorkExecutor {
 
     public ApiExecutor(WorkInstanceRepository workInstanceRepository,
-        WorkflowInstanceRepository workflowInstanceRepository) {
+        WorkflowInstanceRepository workflowInstanceRepository, AlarmService alarmService) {
 
-        super(workInstanceRepository, workflowInstanceRepository);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService);
+    }
+
+    @Override
+    public String getWorkType() {
+        return WorkType.API;
     }
 
     @Override
     protected void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
+
+        // 将线程存到Map
+        WORK_THREAD.put(workInstance.getId(), Thread.currentThread());
 
         // 获取日志构造器
         StringBuilder logBuilder = workRunContext.getLogBuilder();

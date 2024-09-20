@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class GetViewCardDataReq {
 
-    @Schema(title = "大屏id", example = "sy_123")
+    @Schema(title = "大屏id", example = "fy_123")
     @NotEmpty(message = "id不能为空")
     private String id;
 

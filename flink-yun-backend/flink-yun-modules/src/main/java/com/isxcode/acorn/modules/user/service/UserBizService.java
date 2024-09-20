@@ -29,9 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-/**
- * 用户模块.
- */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -47,9 +44,6 @@ public class UserBizService {
 
     private final TenantUserRepository tenantUserRepository;
 
-    /**
-     * 用户登录.
-     */
     public LoginRes login(LoginReq usrLoginReq) {
 
         // 判断用户是否存在
@@ -179,11 +173,6 @@ public class UserBizService {
         System.out.println("用户退出登录");
     }
 
-    public void addUser() {}
-
-    /**
-     * 创建用户.
-     */
     public void addUser(AddUserReq usrAddUserReq) {
 
         // 判断账号是否存在
@@ -208,10 +197,10 @@ public class UserBizService {
             }
         }
 
-        // UsrAddUserReq
-        // To
-        // UserEntity
-        UserEntity userEntity = userMapper.usrAddUserReqToUserEntity(usrAddUserReq);
+        // UsrAddUserReq To UserEntity
+        UserEntity userEntity = userMapper.addUserReqToUserEntity(usrAddUserReq);
+        userEntity.setStatus(UserStatus.ENABLE);
+        userEntity.setRoleCode(RoleType.NORMAL_MEMBER);
         userEntity.setPasswd(Md5Utils.hashStr(userEntity.getPasswd()));
 
         // 数据持久化
@@ -226,10 +215,7 @@ public class UserBizService {
             throw new IsxAppException("用户不存在");
         }
 
-        // UsrUpdateUserReq
-        // To
-        // UserEntity
-        UserEntity userEntity = userMapper.usrUpdateUserReqToUserEntity(usrUpdateUserReq, userEntityOptional.get());
+        UserEntity userEntity = userMapper.updateUserReqToUserEntity(usrUpdateUserReq, userEntityOptional.get());
 
         userRepository.save(userEntity);
     }
@@ -293,14 +279,14 @@ public class UserBizService {
             throw new IsxAppException("用户不存在");
         }
 
-        UserEntity userEntity = userMapper.usrUpdateUserInfoToUserEntity(updateUserInfoReq, userEntityOptional.get());
+        UserEntity userEntity = userMapper.updateUserInfoToUserEntity(updateUserInfoReq, userEntityOptional.get());
 
         userRepository.save(userEntity);
     }
 
     public GetAnonymousTokenRes getAnonymousToken(GetAnonymousTokenReq getAnonymousTokenReq) {
 
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "sy_anonymous", isxAppProperties.getJwtKey(),
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "fy_anonymous", isxAppProperties.getJwtKey(),
             getAnonymousTokenReq.getValidDay() * 24 * 60);
 
         return GetAnonymousTokenRes.builder().token(jwtToken).build();

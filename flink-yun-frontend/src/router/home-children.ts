@@ -21,7 +21,6 @@ import CustomFormList from '@/views/custom-form/custom-form-list.vue'
 import CustomFormQuery from '@/views/custom-form/custom-form-query/index.vue'
 import CustomFormSetting from '@/views/custom-form/form-setting/index.vue'
 import CustomApi from '@/views/custom-api/index.vue'
-import SparkContainer from '@/views/spark-container/index.vue'
 import RealtimeComputing from '@/views/realtime-computing/index.vue'
 import ComputingDetail from '@/views/realtime-computing/computing-detail/index.vue'
 
@@ -153,11 +152,6 @@ export default [
     path: 'custom-api',
     name: 'custom-api',
     component: CustomApi
-  },
-  {
-    path: 'spark-container',
-    name: 'spark-container',
-    component: SparkContainer
   },
   {
     path: 'custom-func',

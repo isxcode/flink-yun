@@ -11,7 +11,5 @@ public interface FormComponentRepository extends JpaRepository<FormComponentEnti
 
     List<FormComponentEntity> findAllByFormId(String formId);
 
-    FormComponentEntity findByFormIdAndUuid(String formId, String uuid);
-
     void deleteByFormId(String formId);
 }

@@ -5,8 +5,8 @@ import com.isxcode.acorn.backend.api.base.exceptions.AbstractIsxAppExceptionEnum
 
 public class WorkRunException extends AbstractIsxAppException {
 
-    public WorkRunException(AbstractIsxAppExceptionEnum abstractSparkYunExceptionEnum) {
-        super(abstractSparkYunExceptionEnum);
+    public WorkRunException(AbstractIsxAppExceptionEnum abstractFlinkYunExceptionEnum) {
+        super(abstractFlinkYunExceptionEnum);
     }
 
     public WorkRunException(String code, String msg, String err) {

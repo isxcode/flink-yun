@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class UpdateFormReq {
 
-    @Schema(title = "formId", example = "sy_213")
+    @Schema(title = "formId", example = "fy_213")
     @NotEmpty(message = "id不能为空")
     private String id;
 

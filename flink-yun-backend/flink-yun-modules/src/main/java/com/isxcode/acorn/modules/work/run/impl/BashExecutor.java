@@ -1,11 +1,13 @@
-package com.isxcode.acorn.modules.work.run;
+package com.isxcode.acorn.modules.work.run.impl;
 
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.common.utils.ssh.SshUtils;
+import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.mapper.ClusterNodeMapper;
@@ -13,6 +15,10 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
+import com.isxcode.acorn.modules.work.run.WorkExecutor;
+import com.isxcode.acorn.modules.work.run.WorkRunContext;
+import com.isxcode.acorn.modules.work.sql.SqlFunctionService;
+import com.isxcode.acorn.modules.work.sql.SqlValueService;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -22,7 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.isxcode.acorn.common.utils.ssh.SshUtils.*;
@@ -39,18 +45,33 @@ public class BashExecutor extends WorkExecutor {
 
     private final ClusterRepository clusterRepository;
 
+    private final SqlValueService sqlValueService;
+
+    private final SqlFunctionService sqlFunctionService;
+
     public BashExecutor(WorkInstanceRepository workInstanceRepository,
         WorkflowInstanceRepository workflowInstanceRepository, ClusterNodeRepository clusterNodeRepository,
-        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository) {
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository,
+        SqlValueService sqlValueService, SqlFunctionService sqlFunctionService, AlarmService alarmService) {
 
-        super(workInstanceRepository, workflowInstanceRepository);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService);
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
         this.aesUtils = aesUtils;
         this.clusterRepository = clusterRepository;
+        this.sqlValueService = sqlValueService;
+        this.sqlFunctionService = sqlFunctionService;
+    }
+
+    @Override
+    public String getWorkType() {
+        return WorkType.BASH;
     }
 
     public void execute(WorkRunContext workRunContext, WorkInstanceEntity workInstance) {
+
+        // 将线程存到Map
+        WORK_THREAD.put(workInstance.getId(), Thread.currentThread());
 
         // 获取日志构造器
         StringBuilder logBuilder = workRunContext.getLogBuilder();
@@ -61,8 +82,17 @@ public class BashExecutor extends WorkExecutor {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测脚本失败 : BASH内容为空不能执行  \n");
         }
 
+        // 翻译脚本中的系统变量
+        String parseValueSql = sqlValueService.parseSqlValue(workRunContext.getScript());
+
+        // 翻译脚本中的系统函数
+        String script = sqlFunctionService.parseSqlFunction(parseValueSql);
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("Bash脚本: \n").append(script)
+            .append("\n");
+        workInstance = updateInstance(workInstance, logBuilder);
+
         // 禁用rm指令
-        if (Pattern.compile("\\brm\\b", Pattern.CASE_INSENSITIVE).matcher(workRunContext.getScript()).find()) {
+        if (Pattern.compile("\\brm\\b", Pattern.CASE_INSENSITIVE).matcher(script).find()) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测语句失败 : BASH内容包含rm指令不能执行  \n");
         }
 
@@ -102,7 +132,7 @@ public class BashExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, workRunContext.getScript() + "\necho 'zhiliuyun_success'",
+            scpText(scpFileEngineNodeDto, script + "\necho 'zhiliuyun_success'",
                 clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".sh");
 
             // 执行命令获取pid
@@ -117,6 +147,8 @@ public class BashExecutor extends WorkExecutor {
                 .append("】\n");
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (JSchException | SftpException | InterruptedException | IOException e) {
+
+            log.debug(e.getMessage(), e);
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业异常 : " + e.getMessage() + "\n");
         }
 
@@ -137,7 +169,7 @@ public class BashExecutor extends WorkExecutor {
                     LocalDateTime.now() + WorkLog.ERROR_INFO + "获取pid状态异常 : " + e.getMessage() + "\n");
             }
 
-            // 保存作业运行状体
+            // 保存作业运行状态
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:").append(pidStatus)
                 .append("\n");
             workInstance = updateInstance(workInstance, logBuilder);
@@ -153,8 +185,8 @@ public class BashExecutor extends WorkExecutor {
                 // 运行结束
 
                 // 获取日志
-                String getLogCommand =
-                    "cat " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".log";
+                String getLogCommand = "cat " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
+                    + workInstance.getId() + ".log";
                 String logCommand = "";
                 try {
                     logCommand = executeCommand(scpFileEngineNodeDto, getLogCommand, false);

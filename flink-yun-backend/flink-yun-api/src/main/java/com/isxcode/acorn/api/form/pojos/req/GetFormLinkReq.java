@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GetFormLinkReq {
 
-    @Schema(title = "表单id", example = "sy_123")
+    @Schema(title = "表单id", example = "fy_123")
     @NotEmpty(message = "formId不能为空")
     private String formId;
 

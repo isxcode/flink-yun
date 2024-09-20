@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { ref, defineExpose } from 'vue'
 import EmptyPage from '@/components/empty-page/index.vue'
-import { GetYarnLogData } from '@/services/schedule.service'
+import { GetTaskManagerLogData } from '@/services/schedule.service'
 
 const logMsg = ref('')
 const pubId = ref('')
@@ -35,11 +35,11 @@ function getLogData(id: string) {
     logMsg.value = ''
     return
   }
-  GetYarnLogData({
+  GetTaskManagerLogData({
     instanceId: id
   })
     .then((res: any) => {
-      logMsg.value = res.data.yarnLog
+      logMsg.value = res.data.TaskManagerLog
     })
     .catch(() => {
       logMsg.value = ''
