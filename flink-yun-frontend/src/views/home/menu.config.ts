@@ -66,20 +66,6 @@ export const menuListData: Array<Menu> = [
         childPage: ['workflow-page']
       },
       {
-        code: 'realtime-computing',
-        name: '实时计算',
-        icon: 'Iphone',
-        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
-        childPage: ['computing-detail']
-      },
-      {
-        code: 'flink-container',
-        name: '计算容器',
-        icon: 'Box',
-        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
-        childPage: []
-      },
-      {
         code: 'custom-func',
         name: '函数仓库',
         icon: 'Mouse',

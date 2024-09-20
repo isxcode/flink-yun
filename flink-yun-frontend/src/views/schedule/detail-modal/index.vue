@@ -99,7 +99,7 @@ function getTaskManagerLogData() {
     instanceId: info.value
   })
     .then((res: any) => {
-      logMsg.value = res.data.TaskManagerLog
+      logMsg.value = res.data.taskManagerLog
     })
     .catch(() => {
       logMsg.value = ''
