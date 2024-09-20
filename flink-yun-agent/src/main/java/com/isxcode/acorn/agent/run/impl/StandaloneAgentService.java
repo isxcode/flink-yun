@@ -188,9 +188,9 @@ public class StandaloneAgentService implements AgentService {
             result = new RestTemplate().getForEntity(stopJobUrl, FlinkRestStopRes.class);
         } catch (HttpClientErrorException exception) {
             if (HttpStatus.NOT_FOUND.equals(exception.getStatusCode())) {
-                throw new IsxAppException("作业已停止");
+                throw new Exception("作业已停止");
             }
-            throw new IsxAppException("停止作业失败");
+            throw new Exception("停止作业失败");
         }
 
         return StopWorkRes.builder().requestId(result.getBody().getRequestId()).build();
