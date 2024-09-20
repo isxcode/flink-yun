@@ -68,6 +68,19 @@ if [ ! -f "${FLINK_MIN_DIR}"/README.txt ]; then
   rm "${FLINK_MIN_DIR}"/NOTICE
 fi
 
+# 下载spark的jars依赖
+FLINK_JAR_DIR="${FLINK_MIN_DIR}"/lib
+if [ ! -f "${FLINK_JAR_DIR}"/bcpkix-jdk18on-1.78.1.jar ]; then
+  echo "bcpkix-jdk18on-1.78.1.jar开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/bcpkix-jdk18on-1.78.1.jar -o "${FLINK_JAR_DIR}"/bcpkix-jdk18on-1.78.1.jar
+  echo "bcpkix-jdk18on-1.78.1.jar下载成功"
+fi
+if [ ! -f "${FLINK_JAR_DIR}"/bcprov-jdk18on-1.78.1.jar ]; then
+  echo "bcprov-jdk18on-1.78.1.jar开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/bcprov-jdk18on-1.78.1.jar -o "${FLINK_JAR_DIR}"/bcprov-jdk18on-1.78.1.jar
+  echo "bcprov-jdk18on-1.78.1.jar下载成功"
+fi
+
 # 创建cdc文件夹
 CDC_DIR="${BASE_PATH}"/resources/cdc
 if [ ! -d "${CDC_DIR}" ]; then
