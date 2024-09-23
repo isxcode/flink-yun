@@ -280,7 +280,9 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 // 运行结束逻辑
 
                 // 如果是中止，直接退出
-                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
+                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
                 }
 
