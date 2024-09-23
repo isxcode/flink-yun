@@ -1,7 +1,7 @@
 package com.isxcode.acorn.common.exception;
 
 import com.isxcode.acorn.backend.api.base.exceptions.AbstractIsxAppException;
-import com.isxcode.acorn.backend.api.base.exceptions.AgentResponseException;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxErrorException;
 import com.isxcode.acorn.backend.api.base.exceptions.SuccessResponseException;
 import com.isxcode.acorn.backend.api.base.pojos.BaseResponse;
 import java.nio.file.AccessDeniedException;
@@ -29,24 +29,33 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AbstractIsxAppException.class)
-    public ResponseEntity<BaseResponse<?>> customException(AbstractIsxAppException abstractSparkYunException) {
+    public ResponseEntity<BaseResponse<?>> customException(AbstractIsxAppException abstractFlinkYunException) {
 
         BaseResponse<?> errorResponse = new BaseResponse<>();
-        errorResponse.setMsg(abstractSparkYunException.getMsg());
+        errorResponse.setMsg(abstractFlinkYunException.getMsg());
         errorResponse.setCode(
-            abstractSparkYunException.getCode() == null ? String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                : abstractSparkYunException.getCode());
-        errorResponse.setErr(abstractSparkYunException.getErr() == null ? null : abstractSparkYunException.getErr());
+            abstractFlinkYunException.getCode() == null ? String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                : abstractFlinkYunException.getCode());
+        errorResponse.setErr(abstractFlinkYunException.getErr() == null ? null : abstractFlinkYunException.getErr());
 
-        if ("401".equals(abstractSparkYunException.getCode())) {
+        if ("401".equals(abstractFlinkYunException.getCode())) {
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
 
-        if ("403".equals(abstractSparkYunException.getCode())) {
+        if ("403".equals(abstractFlinkYunException.getCode())) {
             return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
         }
 
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(IsxErrorException.class)
+    public ResponseEntity<BaseResponse<?>> customException(IsxErrorException isxErrorException) {
+
+        BaseResponse<?> errorResponse = new BaseResponse<>();
+        errorResponse.setMsg(isxErrorException.getMsg());
+        errorResponse.setCode("500");
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(SuccessResponseException.class)
@@ -55,14 +64,20 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(successException.getBaseResponse(), HttpStatus.OK);
     }
 
-    @ExceptionHandler(AgentResponseException.class)
-    public ResponseEntity<String> agentResponseException(AgentResponseException successException) {
-
-        return new ResponseEntity<>(successException.getMsg(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<BaseResponse<Object>> accessDeniedException(AccessDeniedException accessDeniedException) {
+
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setCode("401");
+        baseResponse.setMsg("当前用户没有权限");
+        baseResponse.setErr(accessDeniedException.getMessage());
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<BaseResponse<Object>> accessDeniedException(
+        org.springframework.security.access.AccessDeniedException accessDeniedException) {
 
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode("401");

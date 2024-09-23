@@ -46,7 +46,7 @@ public class IsxAppProperties {
     /**
      * 资源目录.
      */
-    private String resourcesPath = "/var/lib/zhiqingyun";
+    private String resourcesPath = "/var/lib/zhiliuyun";
 
     /**
      * 系统管理员admin密码.
@@ -67,4 +67,16 @@ public class IsxAppProperties {
      * 使用端口号访问接口.
      */
     private boolean usePort = true;
+
+    /**
+     * docker镜像部署模式.
+     */
+    private boolean dockerMode = false;
+
+    /**
+     * 简单配置模式 simple. 高级配置模式 advance.
+     */
+    private String configMode = "simple";
+
+
 }

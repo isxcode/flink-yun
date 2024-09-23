@@ -11,7 +11,7 @@ import com.isxcode.acorn.api.cluster.constants.ClusterStatus;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.datasource.constants.DatasourceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
-import com.isxcode.acorn.api.main.properties.SparkYunProperties;
+import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.api.monitor.constants.MonitorStatus;
 import com.isxcode.acorn.api.monitor.pojos.ao.MonitorLineAo;
 import com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo;
@@ -74,7 +74,7 @@ public class MonitorBizService {
 
     private final ClusterNodeRepository clusterNodeRepository;
 
-    private final SparkYunProperties sparkYunProperties;
+    private final FlinkYunProperties flinkYunProperties;
 
     private final ClusterNodeMapper clusterNodeMapper;
 
@@ -172,17 +172,14 @@ public class MonitorBizService {
                 || TimeType.ONE_HOUR.equals(getClusterMonitorReq.getTimeType())
                 || TimeType.TWO_HOUR.equals(getClusterMonitorReq.getTimeType())
                 || TimeType.SIX_HOUR.equals(getClusterMonitorReq.getTimeType())) {
-                // 30分钟/1小时/2小时/6小时/
-                // 小时:分
+                // 30分钟/1小时/2小时/6小时/ 小时:分
                 nowTime = DateUtil.format(e.getDateTime(), "HH:mm");
             } else if (TimeType.TWELVE_HOUR.equals(getClusterMonitorReq.getTimeType())
                 || TimeType.ONE_DAY.equals(getClusterMonitorReq.getTimeType())) {
-                // 12小时/1天
-                // 小时:00
+                // 12小时/1天 小时:00
                 nowTime = DateUtil.format(e.getDateTime(), "HH:00");
             } else {
-                // 7天/30天
-                // 月-日
+                // 7天/30天 月-日
                 nowTime = DateUtil.format(e.getDateTime(), "MM-dd");
             }
             lineMap.put(nowTime, e);
@@ -196,14 +193,10 @@ public class MonitorBizService {
                 .cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%")
                 .usedStorageSize(v.getUsedStorageSize() == null ? null : DataSizeUtil.format(v.getUsedStorageSize()))
                 .usedMemorySize(v.getUsedMemorySize() == null ? null : DataSizeUtil.format(v.getUsedMemorySize()))
-                .diskIoReadSpeed(
-                    v.getDiskIoReadSpeed() == null ? null : DataSizeUtil.format(v.getDiskIoReadSpeed() * 1024) + "/s")
-                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null
-                    : DataSizeUtil.format(v.getDiskIoWriteSpeed() / 1024 / 1024) + "/s")
-                .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null
-                    : DataSizeUtil.format(v.getNetworkIoReadSpeed() * 1024) + "/s")
-                .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null
-                    : DataSizeUtil.format(v.getNetworkIoWriteSpeed() / 1024 / 1024) + "/s")
+                .diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null : v.getDiskIoReadSpeed() + "KB/s")
+                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null : v.getDiskIoWriteSpeed() + "KB/s")
+                .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null : v.getNetworkIoReadSpeed() + "KB/s")
+                .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null : v.getNetworkIoWriteSpeed() + "KB/s")
                 .build();
             line.add(date);
         });
@@ -225,7 +218,12 @@ public class MonitorBizService {
 
         // 初始化数组
         List<WorkflowInstanceLineDto> lines = new ArrayList<>();
-        long allNum = DateUtil.between(DateUtil.beginOfDay(new Date()), new Date(), DateUnit.HOUR);
+        long allNum;
+        if (DateUtil.isSameDay(new Date(), getInstanceMonitorReq.getLocalDate())) {
+            allNum = DateUtil.between(DateUtil.beginOfDay(new Date()), new Date(), DateUnit.HOUR);
+        } else {
+            allNum = 24;
+        }
         for (int i = 0; i < allNum; i++) {
             lines.add(WorkflowInstanceLineDto.builder().localTime(String.format("%02d", i + 1) + ":00").successNum(0L)
                 .failNum(0L).runningNum(0L).build());
@@ -302,6 +300,7 @@ public class MonitorBizService {
                     nodeMonitor.setCreateDateTime(now);
                     return nodeMonitor;
                 } catch (Exception ex) {
+                    log.debug(ex.getMessage(), ex);
                     return NodeMonitorInfo.builder().clusterNodeId(e.getId()).clusterId(e.getClusterId())
                         .status(MonitorStatus.FAIL).log(ex.getMessage()).tenantId(e.getTenantId()).createDateTime(now)
                         .build();
@@ -322,10 +321,10 @@ public class MonitorBizService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/node-monitor.sh",
-            sparkYunProperties.getTmpDir() + File.separator + "node-monitor.sh");
+            flinkYunProperties.getTmpDir() + File.separator + "node-monitor.sh");
 
         // 运行安装脚本
-        String getMonitorCommand = "bash " + sparkYunProperties.getTmpDir() + File.separator + "node-monitor.sh";
+        String getMonitorCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "node-monitor.sh";
 
         // 获取返回结果
         String executeLog = executeCommand(scpFileEngineNodeDto, getMonitorCommand, false);
@@ -339,9 +338,21 @@ public class MonitorBizService {
             return nodeMonitorInfo;
         }
 
+        long diskIoReadSpeed = 0L, diskIoWriteSpeed = 0L, networkIoReadSpeed = 0L, networkIoWriteSpeed = 0L;
+        if (!Strings.isEmpty(nodeMonitorInfo.getDiskIoReadSpeedStr())) {
+            for (int i = 0; i < nodeMonitorInfo.getDiskIoReadSpeedStr().split(" ").length; i++) {
+                diskIoReadSpeed += Long.parseLong(nodeMonitorInfo.getDiskIoReadSpeedStr().split(" ")[i]);
+                diskIoWriteSpeed += Long.parseLong(nodeMonitorInfo.getDiskIoWriteSpeedStr().split(" ")[i]);
+                networkIoReadSpeed += Long.parseLong(nodeMonitorInfo.getNetworkIoReadSpeedStr().split(" ")[i]);
+                networkIoWriteSpeed += Long.parseLong(nodeMonitorInfo.getNetworkIoWriteSpeedStr().split(" ")[i]);
+            }
+        }
+
         // 解析一下速度
-        nodeMonitorInfo.setDiskIoReadSpeed(Long.parseLong(nodeMonitorInfo.getDiskIoReadSpeedStr().split(" ")[0]));
-        nodeMonitorInfo.setDiskIoWriteSpeed(Long.parseLong(nodeMonitorInfo.getDiskIoWriteSpeedStr().split(" ")[0]));
+        nodeMonitorInfo.setDiskIoReadSpeed(diskIoReadSpeed);
+        nodeMonitorInfo.setDiskIoWriteSpeed(diskIoWriteSpeed);
+        nodeMonitorInfo.setNetworkIoReadSpeed(networkIoReadSpeed);
+        nodeMonitorInfo.setNetworkIoWriteSpeed(networkIoWriteSpeed);
 
         return nodeMonitorInfo;
     }

@@ -30,9 +30,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE SY_CLUSTER_NODE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE FY_CLUSTER_NODE SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_CLUSTER_NODE")
+@Table(name = "FY_CLUSTER_NODE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class ClusterNodeEntity {
@@ -69,6 +69,8 @@ public class ClusterNodeEntity {
     private String username;
 
     private String passwd;
+
+    private Boolean installFlinkLocal;
 
     private String agentHomePath;
 

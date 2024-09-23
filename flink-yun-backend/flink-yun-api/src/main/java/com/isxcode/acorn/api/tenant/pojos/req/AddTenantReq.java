@@ -11,7 +11,7 @@ public class AddTenantReq {
     @NotEmpty(message = "租户名称不能为空")
     private String name;
 
-    @Schema(title = "租户描述", example = "这是中国超轻量级大数据平台")
+    @Schema(title = "租户描述", example = "企业级流式计算平台")
     private String remark;
 
     @Schema(title = "最大工作流数", example = "10")
@@ -20,7 +20,7 @@ public class AddTenantReq {
     @Schema(title = "最大成员数", example = "10")
     private Integer maxMemberNum;
 
-    @Schema(title = "管理员用户id", example = "sy_1234567890")
+    @Schema(title = "管理员用户id", example = "fy_1234567890")
     @NotEmpty(message = "租户管理员不能为空")
     private String adminUserId;
 }

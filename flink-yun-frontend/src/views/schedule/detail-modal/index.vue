@@ -8,12 +8,11 @@
       class="content-box"
     >
       <!-- 日志展示 -->
-      <template v-if="['log', 'yarnLog'].includes(modalType)">
-        <pre
-          v-if="logMsg"
-          ref="preContentRef"
-          @mousewheel="mousewheelEvent"
-        >{{ logMsg }}</pre>
+      <template v-if="['log', 'TaskManagerLog'].includes(modalType)">
+        <LogContainer v-if="logMsg" :logMsg="logMsg" :status="true"></LogContainer>
+        <template v-else>
+          <empty-page label="暂无日志"></empty-page>
+        </template>
       </template>
       <!-- 结果展示 -->
       <template v-else-if="modalType === 'result'">
@@ -28,15 +27,13 @@ import { reactive, defineExpose, ref, nextTick, onUnmounted } from 'vue'
 import BlockModal from '@/components/block-modal/index.vue'
 import BlockTable from '@/components/block-table/index.vue'
 
-import { GetLogData, GetYarnLogData, GetResultData } from '@/services/schedule.service'
+import { GetLogData, GetTaskManagerLogData, GetResultData } from '@/services/schedule.service'
 
 const callback = ref<any>()
 const logMsg = ref('')
 const info = ref('')
 const modalType = ref('')
-const position = ref(false)
 const timer = ref(null)
-const preContentRef = ref(null)
 
 const tableConfig = reactive({
   tableData: [],
@@ -65,7 +62,6 @@ function showModal(cb: () => void, data: any, type: string): void {
   modalType.value = type
 
   if (modalType.value === 'log') {
-    position.value = true
     getLogData()
     if (!timer.value) {
       timer.value = setInterval(() => {
@@ -77,10 +73,9 @@ function showModal(cb: () => void, data: any, type: string): void {
     getResultDatalist()
     modelConfig.width = '64%'
     modelConfig.title = '结果'
-  } else if (modalType.value === 'yarnLog') {
-    position.value = true
+  } else if (modalType.value === 'TaskManagerLog') {
     modelConfig.title = '运行日志'
-    getYarnLogData()
+    getTaskManagerLogData()
   }
   modelConfig.visible = true
 }
@@ -92,11 +87,6 @@ function getLogData() {
   })
     .then((res: any) => {
       logMsg.value = res.data.log
-      if (position.value) {
-        nextTick(() => {
-          scrollToButtom()
-        })
-      }
     })
     .catch(() => {
       logMsg.value = ''
@@ -104,12 +94,12 @@ function getLogData() {
 }
 
 // 获取yarn日志
-function getYarnLogData() {
-  GetYarnLogData({
+function getTaskManagerLogData() {
+  GetTaskManagerLogData({
     instanceId: info.value
   })
     .then((res: any) => {
-      logMsg.value = res.data.yarnLog
+      logMsg.value = res.data.log
     })
     .catch(() => {
       logMsg.value = ''
@@ -151,18 +141,6 @@ function getResultDatalist() {
     })
 }
 
-function scrollToButtom() {
-  if (preContentRef.value) {
-    document.getElementById('content').scrollTop = preContentRef.value.scrollHeight // 滚动高度
-  }
-}
-
-function mousewheelEvent(e: any) {
-  if (!(e.deltaY > 0)) {
-    position.value = false
-  }
-}
-
 function closeEvent() {
   if (timer.value) {
     clearInterval(timer.value)
@@ -182,23 +160,3 @@ defineExpose({
   showModal
 })
 </script>
-
-<style lang="scss">
-.zqy-log-modal {
-  .modal-content {
-    .content-box {
-      min-height: 60vh;
-      max-height: 60vh;
-      padding: 12px 20px;
-      box-sizing: border-box;
-      overflow: auto;
-      pre {
-        color: getCssVar('text-color', 'primary');
-        font-size: 12px;
-        line-height: 21px;
-        margin: 0;
-      }
-    }
-  }
-}
-</style>

@@ -45,10 +45,10 @@
       </template>
       <el-form-item
         v-if="workType === 'FLINK_SQL'"
-        label="Spark配置"
+        label="Flink配置"
       >
         <el-input
-          v-model="formData.sparkConfig"
+          v-model="formData.flinkConfig"
           show-word-limit
           type="textarea"
           :autosize="{ minRows: 4, maxRows: 4 }"
@@ -99,7 +99,7 @@ const modelConfig = reactive({
 const formData = reactive({
   clusterId: '',
   datasourceId: '',
-  sparkConfig: '',
+  flinkConfig: '',
   corn: ''
 })
 const rules = reactive<FormRules>({
@@ -126,7 +126,7 @@ function showModal(cb: () => void, data: any): void {
 
   if (workType.value === 'FLINK_SQL') {
     formData.clusterId = data.clusterId
-    formData.sparkConfig = data.sparkConfig
+    formData.flinkConfig = data.flinkConfig
     getComputeEngine()
   } else {
     formData.datasourceId = data.datasourceId

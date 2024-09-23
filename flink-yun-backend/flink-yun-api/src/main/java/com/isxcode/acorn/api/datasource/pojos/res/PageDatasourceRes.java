@@ -1,6 +1,7 @@
 package com.isxcode.acorn.api.datasource.pojos.res;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.isxcode.acorn.api.datasource.pojos.dto.KafkaConfig;
 import lombok.Data;
 
 @Data
@@ -30,4 +31,8 @@ public class PageDatasourceRes {
     private String driverName;
 
     private String metastoreUris;
+
+    private String kafkaConfigStr;
+
+    private KafkaConfig kafkaConfig;
 }

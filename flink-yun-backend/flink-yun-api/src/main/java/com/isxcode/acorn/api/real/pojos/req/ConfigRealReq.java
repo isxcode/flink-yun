@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class ConfigRealReq {
 
-    @Schema(title = "实时同步作业id", example = "sy_123")
+    @Schema(title = "实时同步作业id", example = "fy_123")
     @NotEmpty(message = "id不能为空")
     private String realId;
 
@@ -23,8 +23,8 @@ public class ConfigRealReq {
     @Schema(title = "依赖选择")
     private List<String> LibList;
 
-    @Schema(title = "spark配置")
-    private String sparkConfig;
+    @Schema(title = "flink配置字符串")
+    private String flinkConfigJson;
 
     @Schema(title = "集群id")
     private String clusterId;

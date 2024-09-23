@@ -8,6 +8,7 @@ import com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.api.user.constants.UserStatus;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.modules.license.repository.LicenseStore;
 import com.isxcode.acorn.modules.tenant.entity.TenantEntity;
 import com.isxcode.acorn.modules.tenant.service.TenantService;
 import com.isxcode.acorn.security.user.TenantUserEntity;
@@ -25,9 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-/**
- * 数据源模块service.
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +38,8 @@ public class TenantUserBizService {
 
     private final TenantService tenantService;
 
+    private final LicenseStore licenseStore;
+
     public void addTenantUser(AddTenantUserReq turAddTenantUserReq) {
 
         // 已req中的tenantId为主
@@ -51,6 +51,12 @@ public class TenantUserBizService {
         long memberCount = tenantUserRepository.countByTenantId(tenantId);
         if (memberCount + 1 > tenant.getMaxMemberNum()) {
             throw new IsxAppException("超出租户的最大成员限制");
+        }
+        // 判断是否超过许可证成员最大值
+        if (licenseStore.getLicense() != null) {
+            if (memberCount + 1 > licenseStore.getLicense().getMaxMemberNum()) {
+                throw new IsxAppException("超出许可证租户的最大成员限制");
+            }
         }
 
         // 判断对象用户是否合法

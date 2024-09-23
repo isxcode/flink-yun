@@ -3,15 +3,12 @@ package com.isxcode.acorn.modules.cluster.mapper;
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.cluster.pojos.req.AddClusterNodeReq;
 import com.isxcode.acorn.api.cluster.pojos.req.UpdateClusterNodeReq;
-import com.isxcode.acorn.api.cluster.pojos.res.EnoQueryNodeRes;
+import com.isxcode.acorn.api.cluster.pojos.res.QueryNodeRes;
 import com.isxcode.acorn.api.cluster.pojos.res.GetClusterNodeRes;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/**
- * mapstruct映射.
- */
 @Mapper(componentModel = "spring")
 public interface ClusterNodeMapper {
 
@@ -21,6 +18,7 @@ public interface ClusterNodeMapper {
     @Mapping(target = "allStorage", expression = "java(0.0)")
     @Mapping(target = "cpuPercent", expression = "java(0.0)")
     @Mapping(target = "checkDateTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "installFlinkLocal", expression = "java(false)")
     ClusterNodeEntity addClusterNodeReqToClusterNodeEntity(AddClusterNodeReq addClusterNodeReq);
 
     @Mapping(target = "id", source = "clusterNodeEntity.id")
@@ -34,6 +32,8 @@ public interface ClusterNodeMapper {
     @Mapping(target = "agentHomePath", source = "clusterNodeEntity.agentHomePath")
     @Mapping(target = "agentPort", source = "clusterNodeEntity.agentPort")
     @Mapping(target = "hadoopHomePath", source = "clusterNodeEntity.hadoopHomePath")
+    @Mapping(target = "installFlinkLocal", source = "enoUpdateNodeReq.installFlinkLocal")
+    @Mapping(target = "flinkHomePath", ignore = true)
     ClusterNodeEntity updateNodeReqToNodeEntity(UpdateClusterNodeReq enoUpdateNodeReq,
         ClusterNodeEntity clusterNodeEntity);
 
@@ -43,7 +43,7 @@ public interface ClusterNodeMapper {
         expression = "java( nodeEntity.getUsedStorage()+ \"G/\" +nodeEntity.getAllStorage()+\"G\")")
     @Mapping(target = "cpu", source = "cpuPercent")
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    EnoQueryNodeRes nodeEntityToQueryNodeRes(ClusterNodeEntity nodeEntity);
+    QueryNodeRes nodeEntityToQueryNodeRes(ClusterNodeEntity nodeEntity);
 
     ScpFileEngineNodeDto engineNodeEntityToScpFileEngineNodeDto(ClusterNodeEntity engineNode);
 

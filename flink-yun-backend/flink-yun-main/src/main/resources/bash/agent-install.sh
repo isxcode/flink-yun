@@ -27,12 +27,12 @@ fi
 # 获取外部参数
 home_path=""
 agent_port=""
-agent_type=""
+flink_local="false"
 for arg in "$@"; do
   case "$arg" in
   --home-path=*) home_path="${arg#*=}" ;;
   --agent-port=*) agent_port="${arg#*=}" ;;
-  --agent-type=*) agent_type="${arg#*=}" ;;
+  --flink-local=*) flink_local="${arg#*=}" ;;
   *) echo "未知参数: $arg" && exit 1 ;;
   esac
 done
@@ -67,7 +67,7 @@ fi
 echo $! >${agent_path}/zhiliuyun-agent.pid
 
 # 如果用户需要默认flink
-if [ ${agent_type} = "flinkcluster" ]; then
+if [ ${flink_local} = "true" ]; then
   nohup bash ${agent_path}/flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
 fi
 

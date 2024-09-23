@@ -1,7 +1,7 @@
 application:
   title: 至流云
   website: https://zhiliuyun.isxcode.com
-  describe: 打造企业级流数据分析平台
+  describe: 打造企业级流式计算平台
 
 server:
   tomcat:
@@ -15,6 +15,9 @@ spring:
   security:
     user:
       roles: ADMIN
+
+  main:
+    banner-mode: log
 
   servlet:
     multipart:
@@ -82,7 +85,13 @@ spring:
     path: /swagger-ui.html
   packages-to-scan: com.isxcode.acorn
 
+  flyway:
+    enabled: true
+
 logging:
+  level:
+    root: info
+    com.isxcode.acorn: info
   exception-conversion-word: '%wEx'
   file:
     name: ./logs/flink-yun.log
@@ -96,6 +105,9 @@ logging:
     rollingpolicy:
       clean-history-on-start: false
       file-name-pattern: '${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz'
+      total-size-cap: 100MB
+      max-history: 30
+      max-file-size: 10MB
 
 isx-app:
   admin-url:
@@ -105,7 +117,7 @@ isx-app:
     - /druid/** # http://localhost:8080/druid/index.html
     - /tools/setLogLevel # http://localhost:8080/tools/setLogLevel?level=debug
     - /tools/getCacheList # http://localhost:8080/tools/getCacheList
-    - /tools/getCache # http://localhost:8080/tools/getCache?name=SY_USERS
+    - /tools/getCache # http://localhost:8080/tools/getCache?name=FY_USERS
   anonymous-url:
     - / # 让页面可以访问前端
     - /static/** # 放行前端资源文件

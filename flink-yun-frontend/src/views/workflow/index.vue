@@ -64,21 +64,31 @@
               <el-tag v-if="scopeSlot.row.status === 'UN_AUTO'">
                 未运行
               </el-tag>
-              <el-tag v-if="scopeSlot.row.status === 'STOP'">
+              <el-tag v-if="scopeSlot.row.status === 'STOP'" class="ml-2" type="danger">
                 已下线
               </el-tag>
-              <el-tag v-if="scopeSlot.row.status === 'PUBLISHED'">
+              <el-tag v-if="scopeSlot.row.status === 'PUBLISHED'" class="ml-2" type="success">
                 已发布
               </el-tag>
             </div>
           </template>
           <template #options="scopeSlot">
             <div class="btn-group">
-              <span @click="editData(scopeSlot.row)">编辑</span>
-              <span @click="deleteData(scopeSlot.row)">删除</span>
-              <span v-if="scopeSlot.row.status !== 'STOP'" @click="underlineWorkFlow(scopeSlot.row)">下线</span>
+              <span v-if="!['UN_AUTO', 'STOP'].includes(scopeSlot.row.status)" @click="underlineWorkFlow(scopeSlot.row)">下线</span>
               <span v-else @click="publishWorkFlow(scopeSlot.row)">发布</span>
-              <!-- <el-icon v-else class="is-loading"><Loading /></el-icon> -->
+              <el-dropdown trigger="click">
+                <span class="click-show-more">更多</span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="editData(scopeSlot.row)">
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="deleteData(scopeSlot.row)">
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
           </template>
         </BlockTable>
@@ -238,6 +248,8 @@ function handleCurrentChange(e: number) {
 }
 
 onMounted(() => {
+  tableConfig.pagination.currentPage = 1
+  tableConfig.pagination.pageSize = 10
   initData()
 })
 </script>

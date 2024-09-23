@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SY_LOCKER")
+@Table(name = "FY_LOCKER")
 public class LockerEntity {
 
     @Id

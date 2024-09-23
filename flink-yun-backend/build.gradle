@@ -7,7 +7,7 @@ tasks.register('clean_resources_agent', Delete) {
 // 把插件拷贝到resource中
 tasks.register('copy_resources_agent', Copy) {
 
-  mustRunAfter("clean_resources_agent")
+  mustRunAfter(":flink-yun-dist:build_agent", "clean_resources_agent")
 
   from rootDir.getAbsolutePath() + '/flink-yun-dist/build/distributions/zhiliuyun-agent.tar.gz'
   into rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-main/src/main/resources/agent'

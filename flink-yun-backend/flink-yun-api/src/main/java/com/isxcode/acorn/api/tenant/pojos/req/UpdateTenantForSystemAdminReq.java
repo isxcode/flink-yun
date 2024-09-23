@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UpdateTenantForSystemAdminReq {
 
-    @Schema(title = "租户唯一id", example = "sy_123456789")
+    @Schema(title = "租户唯一id", example = "fy_123456789")
     @NotEmpty(message = "租户id不能为空")
     private String id;
 
@@ -15,7 +15,7 @@ public class UpdateTenantForSystemAdminReq {
     @NotEmpty(message = "租户名称不能为空")
     private String name;
 
-    @Schema(title = "租户描述", example = "这是中国超轻量级大数据平台")
+    @Schema(title = "租户描述", example = "企业级流式计算平台")
     private String remark;
 
     @Schema(title = "最大工作流数", example = "10")

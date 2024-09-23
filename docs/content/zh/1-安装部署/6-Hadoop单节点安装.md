@@ -21,7 +21,7 @@ title: "Hadoop单节点安装"
 
 ```bash
 mkdir -p /data/hadoop
-chown -R zhiqingyun:zhiqingyun /data/hadoop 
+chown -R zhiliuyun:zhiliuyun /data/hadoop 
 ```
 
 ##### 修改hostname
@@ -37,8 +37,8 @@ sudo yum install java-1.8.0-openjdk-devel java-1.8.0-openjdk -y
 ##### 下载hadoop
 
 ```bash
-# 使用zhiqingyun用户下载解压hadoop
-su zhiqingyun
+# 使用zhiliuyun用户下载解压hadoop
+su zhiliuyun
 cd /tmp
 nohup wget https://archive.apache.org/dist/hadoop/common/hadoop-3.3.5/hadoop-3.3.5.tar.gz >> download_hadoop.log 2>&1 &
 tail -f download_hadoop.log
@@ -65,16 +65,16 @@ source /etc/profile
 ```
 
 ```bash
-su zhiqingyun
+su zhiliuyun
 tee -a /opt/hadoop/etc/hadoop/hadoop-env.sh <<-'EOF'
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-export HDFS_NAMENODE_USER=zhiqingyun
-export HDFS_DATANODE_USER=zhiqingyun
-export HDFS_SECONDARYNAMENODE_USER=zhiqingyun
-export YARN_RESOURCEMANAGER_USER=zhiqingyun
-export YARN_NODEMANAGER_USER=zhiqingyun
-export HDFS_ZKFC_USER=zhiqingyun
-export HDFS_JOURNALNODE_USER=zhiqingyun
+export HDFS_NAMENODE_USER=zhiliuyun
+export HDFS_DATANODE_USER=zhiliuyun
+export HDFS_SECONDARYNAMENODE_USER=zhiliuyun
+export YARN_RESOURCEMANAGER_USER=zhiliuyun
+export YARN_NODEMANAGER_USER=zhiliuyun
+export HDFS_ZKFC_USER=zhiliuyun
+export HDFS_JOURNALNODE_USER=zhiliuyun
 EOF
 ```
 
@@ -99,12 +99,12 @@ vim /opt/hadoop/etc/hadoop/core-site.xml
     </property>
   
     <property>
-        <name>hadoop.proxyuser.zhiqingyun.hosts</name>
+        <name>hadoop.proxyuser.zhiliuyun.hosts</name>
         <value>*</value>
     </property>
   
     <property>
-        <name>hadoop.proxyuser.zhiqingyun.groups</name>
+        <name>hadoop.proxyuser.zhiliuyun.groups</name>
         <value>*</value>
     </property>
 

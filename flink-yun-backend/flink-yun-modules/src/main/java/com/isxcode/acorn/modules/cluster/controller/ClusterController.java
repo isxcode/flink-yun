@@ -4,6 +4,7 @@ import com.isxcode.acorn.api.cluster.pojos.req.*;
 import com.isxcode.acorn.api.cluster.pojos.res.PageClusterRes;
 import com.isxcode.acorn.api.cluster.pojos.res.QueryAllClusterRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
+import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.cluster.service.biz.ClusterBizService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Tag(name = "计算引擎模块")
-@RestController
 @RequestMapping(ModuleCode.CLUSTER)
+@RestController
 @RequiredArgsConstructor
 public class ClusterController {
 
@@ -50,6 +52,7 @@ public class ClusterController {
         return clusterBizService.pageCluster(pageClusterReq);
     }
 
+    @Secured({RoleType.TENANT_ADMIN})
     @Operation(summary = "删除计算集群接口")
     @PostMapping("/deleteCluster")
     @SuccessResponse("删除成功")
@@ -66,7 +69,7 @@ public class ClusterController {
         clusterBizService.checkCluster(checkClusterReq);
     }
 
-    @Operation(summary = "设置默认集群")
+    @Operation(summary = "设置默认集群接口")
     @PostMapping("/setDefaultCluster")
     @SuccessResponse("设置成功")
     public void setDefaultCluster(@Valid @RequestBody SetDefaultClusterReq setDefaultClusterReq) {
@@ -74,7 +77,7 @@ public class ClusterController {
         clusterBizService.setDefaultCluster(setDefaultClusterReq);
     }
 
-    @Operation(summary = "查询所有集群列表")
+    @Operation(summary = "查询所有集群列表接口")
     @PostMapping("/queryAllCluster")
     @SuccessResponse("查询成功")
     public List<QueryAllClusterRes> queryAllCluster() {

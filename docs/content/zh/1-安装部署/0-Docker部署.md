@@ -7,7 +7,7 @@ title: "Docker部署"
 <br/>
 
 <h5>
-  <a href="https://hub.docker.com/r/isxcode/zhiqingyun/tags">点击跳转Docker Hub</a>
+  <a href="https://hub.docker.com/r/isxcode/zhiliuyun/tags">点击跳转Docker Hub</a>
 </h5>
 
 <br/>
@@ -26,7 +26,7 @@ title: "Docker部署"
 管理员默认密码：`admin123`
 
 ```bash
-docker run -p 8080:8080 -d isxcode/zhiqingyun
+docker run -p 8080:8080 -d isxcode/zhiliuyun
 ```
 
 ### 如何初始化管理员密码？
@@ -34,13 +34,13 @@ docker run -p 8080:8080 -d isxcode/zhiqingyun
 `ADMIN_PASSWORD`: 系统管理员密码，注意: 首次运行后，密码会存入数据库中，再次启动容器以数据库为准，配置不生效。
 
 ```bash
-docker run -p 8080:8080 -e ADMIN_PASSWORD=123456 -d isxcode/zhiqingyun
+docker run -p 8080:8080 -e ADMIN_PASSWORD=123456 -d isxcode/zhiliuyun
 ```
 
 ### 如何挂载资源目录？
 
 ```bash
-docker run -v /zhiqingyun/resources:/var/lib/flink-yun -p 8080:8080 -d isxcode/zhiqingyun
+docker run -v /zhiliuyun/resources:/var/lib/flink-yun -p 8080:8080 -d isxcode/zhiliuyun
 ```
 
 ### 如何自定义配置？
@@ -48,8 +48,8 @@ docker run -v /zhiqingyun/resources:/var/lib/flink-yun -p 8080:8080 -d isxcode/z
 注意：需要提前创建配置文件，目前只支持`h2`和`mysql`数据库
 
 ```bash
-mkdir -p  /zhiqingyun/config
-vim /zhiqingyun/config/application-demo.yml
+mkdir -p  /zhiliuyun/config
+vim /zhiliuyun/config/application-demo.yml
 ```
 
 ```yml
@@ -80,5 +80,5 @@ spring:
 ```
 
 ```bash
-docker run -v /zhiqingyun/config:/etc/flink-yun/conf -e ACTIVE_ENV=demo -p 8080:8080 -d isxcode/zhiqingyun
+docker run -v /zhiliuyun/config:/etc/flink-yun/conf -e ACTIVE_ENV=demo -p 8080:8080 -d isxcode/zhiliuyun
 ```

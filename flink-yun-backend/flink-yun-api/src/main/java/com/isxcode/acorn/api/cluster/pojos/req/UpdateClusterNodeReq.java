@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class UpdateClusterNodeReq {
 
-    @Schema(title = "引擎节点唯一id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "引擎节点唯一id", example = "fy_fd34e4a53db640f5943a4352c4d549b9")
     @NotEmpty(message = "id不能为空")
     private String id;
 
-    @Schema(title = "计算引擎唯一id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "计算引擎唯一id", example = "fy_fd34e4a53db640f5943a4352c4d549b9")
     @NotEmpty(message = "clusterId不能为空")
     private String clusterId;
 
@@ -27,6 +27,7 @@ public class UpdateClusterNodeReq {
     private String username;
 
     @Schema(title = "节点服务器密码", example = "ispong123")
+    @NotEmpty(message = "密码或者令牌不能为空")
     private String passwd;
 
     @Schema(title = "备注", example = "本地测试节点")
@@ -44,4 +45,10 @@ public class UpdateClusterNodeReq {
 
     @Schema(title = "hadoop的home目录", example = "/opt/homebrew/Cellar/hadoop/3.3.4/libexec")
     private String hadoopHomePath;
+
+    @Schema(title = "是否安装flink-local组件", example = "true")
+    private Boolean installFlinkLocal;
+
+    @Schema(title = "flinkHome", example = "/xxx")
+    private String flinkHomePath;
 }

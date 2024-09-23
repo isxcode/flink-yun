@@ -14,7 +14,7 @@ dependencies {
 jar {
     archiveFileName = "flink-sql-execute-plugin.jar"
     manifest {
-        attributes 'Main-Class': 'com.isxcode.acorn.execute.sql.ExecuteSqlJob'
+        attributes 'Main-Class': 'com.isxcode.acorn.plugin.sql.execute.Job'
     }
 }
 

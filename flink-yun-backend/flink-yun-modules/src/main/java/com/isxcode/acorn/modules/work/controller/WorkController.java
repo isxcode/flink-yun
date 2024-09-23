@@ -1,9 +1,11 @@
 package com.isxcode.acorn.modules.work.controller;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
+import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.api.work.pojos.req.*;
 import com.isxcode.acorn.api.work.pojos.res.*;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
+import com.isxcode.acorn.modules.work.service.ExcelSyncService;
 import com.isxcode.acorn.modules.work.service.biz.SyncWorkBizService;
 import com.isxcode.acorn.modules.work.service.biz.WorkBizService;
 import com.isxcode.acorn.modules.work.service.biz.WorkConfigBizService;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @Tag(name = "作业模块")
-@RestController
 @RequestMapping(ModuleCode.WORK)
+@RestController
 @RequiredArgsConstructor
 public class WorkController {
 
@@ -29,6 +32,8 @@ public class WorkController {
     private final WorkConfigBizService workConfigBizService;
 
     private final SyncWorkBizService syncWorkBizService;
+
+    private final ExcelSyncService excelSyncService;
 
     @Operation(summary = "添加作业接口")
     @PostMapping("/addWork")
@@ -55,11 +60,11 @@ public class WorkController {
     }
 
     @Operation(summary = "查询作业运行日志接口")
-    @PostMapping("/getYarnLog")
+    @PostMapping("/getTaskManagerLog")
     @SuccessResponse("查询成功")
-    public GetWorkLogRes getYarnLog(@Valid @RequestBody GetYarnLogReq getYarnLogReq) {
+    public GetWorkLogRes getTaskManagerLog(@Valid @RequestBody GetTaskManagerLogReq getTaskManagerLogReq) {
 
-        return workBizService.getWorkLog(getYarnLogReq);
+        return workBizService.getWorkLog(getTaskManagerLogReq);
     }
 
     @Operation(summary = "查询作业返回数据接口")
@@ -86,6 +91,7 @@ public class WorkController {
         return workBizService.getStatus(getStatusReq);
     }
 
+    @Secured({RoleType.TENANT_ADMIN})
     @Operation(summary = "删除作业接口")
     @PostMapping("/deleteWork")
     @SuccessResponse("删除成功")
@@ -150,7 +156,7 @@ public class WorkController {
         workBizService.topWork(topWorkReq);
     }
 
-    @Operation(summary = "获取数据源表信息")
+    @Operation(summary = "获取数据源表信息接口")
     @PostMapping("/getDataSourceTables")
     @SuccessResponse("查询成功")
     public GetDataSourceTablesRes getDataSourceTables(@Valid @RequestBody GetDataSourceTablesReq getDataSourceTablesReq)
@@ -159,7 +165,7 @@ public class WorkController {
         return syncWorkBizService.getDataSourceTables(getDataSourceTablesReq);
     }
 
-    @Operation(summary = "获取数据表字段信息")
+    @Operation(summary = "获取数据表字段信息接口")
     @PostMapping("/getDataSourceColumns")
     @SuccessResponse("查询成功")
     public GetDataSourceColumnsRes getDataSourceColumns(
@@ -168,7 +174,7 @@ public class WorkController {
         return syncWorkBizService.getDataSourceColumns(getDataSourceColumnsReq);
     }
 
-    @Operation(summary = "数据预览")
+    @Operation(summary = "数据预览接口")
     @PostMapping("/getDataSourceData")
     @SuccessResponse("查询成功")
     public GetDataSourceDataRes getDataSourceData(@Valid @RequestBody GetDataSourceDataReq getDataSourceDataReq)
@@ -177,13 +183,37 @@ public class WorkController {
         return syncWorkBizService.getDataSourceData(getDataSourceDataReq);
     }
 
-    @Operation(summary = "DDL预生成")
+    @Operation(summary = "DDL预生成接口")
     @PostMapping("/getCreateTableSql")
     @SuccessResponse("查询成功")
     public GetCreateTableSqlRes getCreateTableSql(@Valid @RequestBody GetCreateTableSqlReq getCreateTableSqlReq)
         throws Exception {
 
         return syncWorkBizService.getCreateTableSql(getCreateTableSqlReq);
+    }
+
+    @Operation(summary = "获取Excel文件的字段信息接口")
+    @PostMapping("/getExcelColumns")
+    @SuccessResponse("查询成功")
+    public GetExcelColumnsRes getExcelColumns(@Valid @RequestBody GetExcelColumnsReq getExcelColumnsReq) {
+
+        return excelSyncService.getExcelColumns(getExcelColumnsReq);
+    }
+
+    @Operation(summary = "excel数据预览接口")
+    @PostMapping("/getExcelData")
+    @SuccessResponse("查询成功")
+    public GetExcelDataRes getExcelData(@Valid @RequestBody GetExcelDataReq getExcelDataReq) {
+
+        return excelSyncService.getExcelData(getExcelDataReq);
+    }
+
+    @Operation(summary = "预览excel文件名接口")
+    @PostMapping("/parseExcelName")
+    @SuccessResponse("查询成功")
+    public ParseExcelNameRes parseExcelName(@Valid @RequestBody ParseExcelNameReq parseExcelNameReq) {
+
+        return excelSyncService.parseExcelName(parseExcelNameReq);
     }
 
 }

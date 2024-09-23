@@ -12,11 +12,11 @@ import java.util.List;
 @Data
 public class ConfigWorkReq {
 
-    @Schema(title = "作业唯一id", example = "sy_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "作业唯一id", example = "fy_4f07ab7b1fe54dab9be884e410c53af4")
     @NotEmpty(message = "workId不能为空")
     private String workId;
 
-    @Schema(title = "数据源唯一id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "数据源唯一id", example = "fy_fd34e4a53db640f5943a4352c4d549b9")
     private String datasourceId;
 
     @Schema(title = "运行脚本", example = "show databases;")
@@ -27,6 +27,9 @@ public class ConfigWorkReq {
 
     @Schema(title = "数据同步作业配置")
     private SyncWorkConfig syncWorkConfig;
+
+    @Schema(title = "Excel导入作业配置")
+    private ExcelSyncConfig excelSyncConfig;
 
     @Schema(title = "接口调用作业配置")
     private ApiWorkConfig apiWorkConfig;
@@ -46,6 +49,9 @@ public class ConfigWorkReq {
     @Schema(title = "依赖选择")
     private List<String> LibList;
 
-    @Schema(title = "容器id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "容器id", example = "fy_fd34e4a53db640f5943a4352c4d549b9")
     private String containerId;
+
+    @Schema(title = "告警")
+    private List<String> alarmList;
 }

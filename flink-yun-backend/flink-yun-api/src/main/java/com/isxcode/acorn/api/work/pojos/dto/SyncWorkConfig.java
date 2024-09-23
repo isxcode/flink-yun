@@ -9,13 +9,13 @@ import java.util.List;
 @Data
 public class SyncWorkConfig {
 
-    @Schema(title = "作业唯一id", example = "sy_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "作业唯一id", example = "fy_4f07ab7b1fe54dab9be884e410c53af4")
     private String workId;
 
     @Schema(title = "来源数据库类型", example = "mysql")
     private String sourceDBType;
 
-    @Schema(title = "来源数据库唯一id", example = "sy_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "来源数据库唯一id", example = "fy_4f07ab7b1fe54dab9be884e410c53af4")
     private String sourceDBId;
 
     @Schema(title = "来源数据库表名", example = "part_table")
@@ -30,7 +30,7 @@ public class SyncWorkConfig {
     @Schema(title = "目标数据库类型", example = "mysql")
     private String targetDBType;
 
-    @Schema(title = "目标数据库唯一id", example = "sy_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "目标数据库唯一id", example = "fy_4f07ab7b1fe54dab9be884e410c53af4")
     private String targetDBId;
 
     @Schema(title = "目标数据库表名", example = "part")
@@ -68,4 +68,9 @@ public class SyncWorkConfig {
     private DatasourceConfig sourceDatabase;
 
     private DatasourceConfig targetDatabase;
+
+    @Schema(title = "实时作业监听的类型， u/d/c")
+    private List<String> cat;
+
+    private String kafkaSourceId;
 }

@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.cluster.service;
 
 import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
-import com.isxcode.acorn.api.main.properties.SparkYunProperties;
+import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.common.utils.ssh.SshUtils;
@@ -25,7 +25,7 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 @RequiredArgsConstructor
 public class ClusterNodeService {
 
-    private final SparkYunProperties sparkYunProperties;
+    private final FlinkYunProperties flinkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
 
@@ -33,12 +33,6 @@ public class ClusterNodeService {
 
     private final AesUtils aesUtils;
 
-    /**
-     * 获取代理安装路径
-     *
-     * @param username 节点的用户名
-     * @return 代理安装的路径
-     */
     public String getDefaultAgentHomePath(String username, ClusterNodeEntity clusterNode) {
 
         ScpFileEngineNodeDto scpFileEngineNodeDto =
@@ -59,31 +53,20 @@ public class ClusterNodeService {
             }
             throw new IsxAppException("不支持该节点服务器系统");
         } catch (JSchException | InterruptedException | IOException e) {
+            log.error(e.getMessage(), e);
             throw new IsxAppException("无法获取节点信息");
         }
     }
 
-    /**
-     * 获取代理默认端口号
-     *
-     * @param agentPort 代理端口号
-     * @return 代理端口号
-     */
     public String getDefaultAgentPort(String agentPort) {
 
         if (Strings.isEmpty(agentPort)) {
-            return sparkYunProperties.getDefaultAgentPort();
+            return flinkYunProperties.getDefaultAgentPort();
         } else {
             return agentPort;
         }
     }
 
-    /**
-     * 获取集群节点
-     *
-     * @param clusterNodeId 集群节点id
-     * @return 集群节点entity对象
-     */
     public ClusterNodeEntity getClusterNode(String clusterNodeId) {
 
         return clusterNodeRepository.findById(clusterNodeId).orElseThrow(() -> new IsxAppException("节点不存在"));
@@ -125,6 +108,7 @@ public class ClusterNodeService {
             try {
                 attrs = channel.stat(dstPath);
             } catch (Exception e) {
+                log.debug("上传文件不存在，继续获取文件，不影响安装");
                 continue;
             }
 
@@ -145,7 +129,7 @@ public class ClusterNodeService {
         session.disconnect();
     }
 
-    @Async("sparkYunThreadPool")
+    @Async("flinkYunThreadPool")
     public void scpAgentFile(ScpFileEngineNodeDto clusterNode, String srcPath, String dstPath)
         throws JSchException, SftpException, IOException, InterruptedException {
 

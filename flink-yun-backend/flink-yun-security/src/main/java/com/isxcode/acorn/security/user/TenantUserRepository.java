@@ -1,5 +1,6 @@
 package com.isxcode.acorn.security.user;
 
+import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_DATASOURCE"})
+@CacheConfig(cacheNames = {ModuleCode.TENANT_USER})
 public interface TenantUserRepository extends JpaRepository<TenantUserEntity, String> {
 
     Optional<TenantUserEntity> findByTenantIdAndUserId(String tenantId, String userId);
@@ -20,7 +21,7 @@ public interface TenantUserRepository extends JpaRepository<TenantUserEntity, St
     List<TenantUserEntity> findAllByUserId(String userId);
 
     @Query(value = "select " + "   new com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes(T.id , "
-        + "   U.account , " + "   U.username , " + "   U.phone , " + "   U.email , " + "   T.roleCode) "
+        + "   U.account , " + "   U.username , " + "   U.phone , " + "   U.email , " + "   T.roleCode,U.id) "
         + "from TenantUserEntity T left join UserEntity U on T.userId = U.id  "
         + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' " + "   and T.tenantId=:tenantId "
         + "   and (U.username LIKE %:searchKeyWord% " + "OR U.account LIKE %:searchKeyWord% "

@@ -32,7 +32,7 @@ export interface TableConfig {
   tableData: Array<any>;
   colConfigs: Array<colConfig>;
   seqType: string;
-  pagination?: Pagination; // 分页数据
+  pagination: Pagination; // 分页数据
   loading?: boolean; // 表格loading
 }
 
@@ -141,7 +141,7 @@ export const colConfigsWorkflow: colConfig[] = [
   },
   {
     prop: 'workflowName',
-    title: '作业流名称',
+    title: '作业流',
     minWidth: 120,
     showOverflowTooltip: true
   },
@@ -183,7 +183,7 @@ export const colConfigsWorkflow: colConfig[] = [
   {
     prop: 'duration',
     title: '耗时',
-    minWidth: 110,
+    minWidth: 80,
     customSlot: 'duration'
   },
   {

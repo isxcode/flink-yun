@@ -24,9 +24,9 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE SY_DATABASE_DRIVER SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE FY_DATABASE_DRIVER SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_DATABASE_DRIVER")
+@Table(name = "FY_DATABASE_DRIVER")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class DatabaseDriverEntity {

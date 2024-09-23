@@ -1,6 +1,8 @@
 package com.isxcode.acorn.modules.datasource.mapper;
 
+import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
 import com.isxcode.acorn.api.datasource.pojos.req.AddDatasourceReq;
+import com.isxcode.acorn.api.datasource.pojos.req.CheckConnectReq;
 import com.isxcode.acorn.api.datasource.pojos.req.UpdateDatasourceReq;
 import com.isxcode.acorn.api.datasource.pojos.res.GetDefaultDatabaseDriverRes;
 import com.isxcode.acorn.api.datasource.pojos.res.PageDatabaseDriverRes;
@@ -10,17 +12,14 @@ import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/**
- * mapstruct映射.
- */
 @Mapper(componentModel = "spring")
 public interface DatasourceMapper {
 
-    /**
-     * dasAddDatasourceReq转DatasourceEntity.
-     */
     @Mapping(target = "kafkaConfig", ignore = true)
     DatasourceEntity dasAddDatasourceReqToDatasourceEntity(AddDatasourceReq dasAddDatasourceReq);
+
+    @Mapping(target = "kafkaConfig", ignore = true)
+    DatasourceEntity checkConnectReqToDatasourceEntity(CheckConnectReq checkConnectReq);
 
     @Mapping(source = "dasUpdateDatasourceReq.passwd", target = "passwd")
     @Mapping(source = "dasUpdateDatasourceReq.remark", target = "remark")
@@ -36,6 +35,8 @@ public interface DatasourceMapper {
         DatasourceEntity datasourceEntity);
 
     @Mapping(target = "checkDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @Mapping(target = "kafkaConfigStr", source = "kafkaConfig")
+    @Mapping(target = "kafkaConfig", ignore = true)
     PageDatasourceRes datasourceEntityToQueryDatasourceRes(DatasourceEntity datasourceEntity);
 
     @Mapping(target = "createDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
@@ -43,4 +44,6 @@ public interface DatasourceMapper {
 
     GetDefaultDatabaseDriverRes databaseDriverEntityToGetDefaultDatabaseDriverRes(
         DatabaseDriverEntity databaseDriverEntity);
+
+    ConnectInfo datasourceEntityToConnectInfo(DatasourceEntity datasourceEntity);
 }

@@ -11,11 +11,7 @@
     id="content"
     class="publish-log"
   >
-    <pre
-      v-if="logMsg"
-      ref="preContentRef"
-      @mousewheel="mousewheelEvent"
-    >{{ logMsg + loadingMsg }}</pre>
+    <LogContainer v-if="logMsg" :logMsg="logMsg" :status="status"></LogContainer>
     <EmptyPage v-else />
   </div>
 </template>
@@ -26,32 +22,16 @@ import { GetSubmitLogData } from '@/services/workflow.service'
 import EmptyPage from '@/components/empty-page/index.vue'
 
 const logMsg = ref('')
-const position = ref(true)
 const timer = ref(null)
-const preContentRef = ref(null)
 const runId = ref('')
 const status = ref(false)
 const callback = ref()
-const loadingPoint = ref('.')
-const loadingTimer = ref()
-
-const loadingMsg = computed(() => {
-  const str = !status.value ? `加载中${loadingPoint.value}` : ''
-  return str
-})
+const loading = ref<boolean>(false)
 
 function initData(id: string, cb: any): void {
-
-  loadingTimer.value = setInterval(() => {
-    if (loadingPoint.value.length < 5) {
-      loadingPoint.value = loadingPoint.value + '.'
-    } else {
-      loadingPoint.value = '.'
-    }
-  }, 1000)
-
   runId.value = id
   callback.value = cb
+  loading.value = true
   getLogData(runId.value)
   if (!timer.value) {
     timer.value = setInterval(() => {
@@ -70,12 +50,7 @@ function getLogData(id: string) {
   })
     .then((res: any) => {
       logMsg.value = res.data.log
-      status.value = ['FAIL', 'SUCCESS'].includes(res.data.status) ? true : false
-      if (position.value) {
-        nextTick(() => {
-          scrollToButtom()
-        })
-      }
+      status.value = ['FAIL', 'SUCCESS','ABORT'].includes(res.data.status) ? true : false
       if (status.value && callback.value) {
         callback.value(res.data.status)
         if (timer.value) {
@@ -89,23 +64,17 @@ function getLogData(id: string) {
           }
           timer.value = null
       }
+      setTimeout(() => {
+        loading.value = false
+      }, 300)
     })
     .catch((err: any) => {
       console.log('err', err)
       logMsg.value = ''
+      setTimeout(() => {
+        loading.value = false
+      }, 300)
     })
-}
-
-function scrollToButtom() {
-  if (preContentRef.value) {
-    document.getElementById('content').scrollTop = preContentRef.value?.scrollHeight // 滚动高度
-  }
-}
-
-function mousewheelEvent(e: any) {
-  if (!(e.deltaY > 0)) {
-    position.value = false
-  }
 }
 
 onUnmounted(() => {
@@ -113,11 +82,6 @@ onUnmounted(() => {
     clearInterval(timer.value)
   }
   timer.value = null
-
-  if (loadingTimer.value) {
-    clearInterval(loadingTimer.value)
-  }
-  loadingTimer.value = null
 })
 
 defineExpose({
@@ -127,14 +91,10 @@ defineExpose({
 
 <style lang="scss">
 .publish-log {
-  pre {
-    color: getCssVar('text-color', 'primary');
-    font-size: getCssVar('font-size', 'extra-small');
-    line-height: 21px;
-    margin: 0;
-  }
+  height: 100%;
+  position: static;
   .empty-page {
-    height: 50%;
+    height: 100%;
   }
 }
 </style>

@@ -11,9 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-/**
- * 应用配置中心.
- */
+/** 应用配置中心. */
 @Slf4j
 @Configuration
 @EnableCaching
@@ -23,8 +21,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing(auditorAwareRef = "jpaAuditorConfig")
 public class AppConfig {
 
-    @Bean("sparkYunWorkThreadPool")
-    public Executor sparkYunWorkThreadPool() {
+    @Bean("flinkYunWorkThreadPool")
+    public Executor flinkYunWorkThreadPool() {
 
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(100);
@@ -32,15 +30,15 @@ public class AppConfig {
         threadPoolTaskExecutor.setQueueCapacity(200);
         threadPoolTaskExecutor.setKeepAliveSeconds(60);
         threadPoolTaskExecutor.setAllowCoreThreadTimeOut(false);
-        threadPoolTaskExecutor.setThreadNamePrefix("sparkYunWorkThreadPool-");
+        threadPoolTaskExecutor.setThreadNamePrefix("flinkYunWorkThreadPool-");
         threadPoolTaskExecutor.setRejectedExecutionHandler((r, executor) -> log.info("未执行的异常进程"));
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         threadPoolTaskExecutor.setAwaitTerminationSeconds(300);
         return threadPoolTaskExecutor;
     }
 
-    @Bean("sparkYunThreadPool")
-    public Executor sparkYunThreadPool() {
+    @Bean("flinkYunThreadPool")
+    public Executor flinkYunThreadPool() {
 
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(100);
@@ -48,7 +46,7 @@ public class AppConfig {
         threadPoolTaskExecutor.setQueueCapacity(200);
         threadPoolTaskExecutor.setKeepAliveSeconds(60);
         threadPoolTaskExecutor.setAllowCoreThreadTimeOut(false);
-        threadPoolTaskExecutor.setThreadNamePrefix("sparkYunWorkThreadPool-");
+        threadPoolTaskExecutor.setThreadNamePrefix("flinkYunWorkThreadPool-");
         threadPoolTaskExecutor.setRejectedExecutionHandler((r, executor) -> log.info("未执行的异常进程"));
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         threadPoolTaskExecutor.setAwaitTerminationSeconds(300);
@@ -67,11 +65,8 @@ public class AppConfig {
         threadPoolTaskExecutor.setKeepAliveSeconds(100); // 用于设置线程池中空闲线程的存活时间
         threadPoolTaskExecutor.setPrestartAllCoreThreads(true); // 是否需要一下子把线程创建满，提高速度，ture会把核心线程创满，即使没有任务。
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true); // 设置线程池关闭时是否等待，将任务全部提交后，再关闭线程池
-        threadPoolTaskExecutor.setAwaitTerminationSeconds(300); // 手动关闭停止线程池的时候，线程池还会停留的时间，
-                                                                // 0表示不等待任务完成。
-        // threadPoolTaskExecutor.setTaskDecorator(new
-        // CustomTaskDecorator());
-        // //
+        threadPoolTaskExecutor.setAwaitTerminationSeconds(300); // 手动关闭停止线程池的时候，线程池还会停留的时间， 0表示不等待任务完成。
+        // threadPoolTaskExecutor.setTaskDecorator(new CustomTaskDecorator()); //
         // 控制任务执行前，执行后
         threadPoolTaskExecutor.setRejectedExecutionHandler((r, executor) -> log.info("未执行的异常进程" + executor.toString())); // 被拒绝的事件
         return threadPoolTaskExecutor;

@@ -6,5 +6,5 @@ public interface AgentType {
 
     String YARN = "yarn";
 
-    String FlinkCluster = "flinkCluster";
+    String StandAlone = "standalone";
 }

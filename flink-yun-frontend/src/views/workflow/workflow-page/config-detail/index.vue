@@ -28,7 +28,7 @@
             </el-form>
             <el-divider />
           </div>
-          <template v-else-if="!['SPARK_CONTAINER_SQL'].includes(workItemConfig.workType)">
+          <template v-else-if="!['FLINK_CONTAINER_SQL', 'CURL'].includes(workItemConfig.workType)">
             <!-- 资源配置 -->
             <div class="config-item" v-if="!['API'].includes(workItemConfig.workType)">
               <div class="item-title">资源配置</div>
@@ -82,8 +82,9 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="sparkConfig" v-if="clusterConfig.setMode === 'ADVANCE'">
-                  <code-mirror v-model="clusterConfig.sparkConfigJson" basic :lang="lang"/>
+                <el-form-item label="flinkConfig" v-if="clusterConfig.setMode === 'ADVANCE'" :class="{ 'show-screen__full': flinkJsonFullStatus }">
+                  <el-icon class="modal-full-screen" @click="fullScreenEvent('flinkJsonFullStatus')"><FullScreen v-if="!flinkJsonFullStatus" /><Close v-else /></el-icon>
+                  <code-mirror v-model="clusterConfig.flinkConfigJson" basic :lang="lang"/>
                 </el-form-item>
                 <el-form-item label="资源等级" v-else>
                   <el-select v-model="clusterConfig.resourceLevel" placeholder="请选择">
@@ -267,7 +268,7 @@
           </div>
           <el-divider />
           <!-- 同步规则 -->
-          <div class="config-item" v-if="workItemConfig.workType === 'DATA_SYNC_JDBC'">
+          <div class="config-item" v-if="['EXCEL_SYNC_JDBC', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">同步规则</div>
             <el-form
               ref="syncRuleForm"
@@ -287,6 +288,9 @@
               </el-form-item>
               <template v-else>
                 <el-form-item label="分区数">
+                  <el-tooltip content="推荐：分区数大于等于并发数,且成倍数关系" placement="top">
+                      <el-icon style="left: -80px" class="tooltip-msg"><QuestionFilled /></el-icon>
+                  </el-tooltip>
                   <el-input-number
                     v-model="syncRule.numPartitions"
                     :min="0"
@@ -306,7 +310,7 @@
             </el-form>
           </div>
           <!-- 函数配置 -->
-          <div class="config-item" v-if="['FLINK_SQL', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">函数配置</div>
             <el-form
               ref="syncRuleForm"
@@ -324,7 +328,7 @@
             </el-form>
           </div>
           <!-- 依赖配置 -->
-          <div class="config-item" v-if="['FLINK_SQL', 'FLINK_JAR', 'DATA_SYNC_JDBC'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_SQL', 'FLINK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workItemConfig.workType)">
             <div class="item-title">依赖配置</div>
             <el-form
               ref="syncRuleForm"
@@ -342,7 +346,7 @@
             </el-form>
           </div>
           <!-- 容器配置 -->
-          <div class="config-item" v-if="['SPARK_CONTAINER_SQL'].includes(workItemConfig.workType)">
+          <div class="config-item" v-if="['FLINK_CONTAINER_SQL'].includes(workItemConfig.workType)">
             <div class="item-title">容器配置</div>
             <el-form
               ref="syncRuleForm"
@@ -359,6 +363,24 @@
               </el-form-item>
             </el-form>
           </div>
+          <!-- 基线告警 -->
+          <div class="config-item">
+            <div class="item-title">基线告警</div>
+            <el-form
+              ref="syncRuleForm"
+              label-position="left"
+              label-width="120px"
+              :model="messageConfig"
+            >
+              <el-form-item label="告警">
+                <el-select v-model="messageConfig.alarmList" clearable multiple collapse-tags collapse-tags-tooltip
+                    filterable placeholder="请选择">
+                    <el-option v-for="item in alarmConfigList" :key="item.id" :label="item.name"
+                        :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </div>
         </div>
       </el-scrollbar>
   </BlockDrawer>
@@ -371,14 +393,14 @@ import BlockDrawer from '@/components/block-drawer/index.vue'
 import {ScheduleRange, WeekDateList, ResourceLevelOptions, DataSourceRules, ClusterConfigRules, SyncRuleConfigRules, CronConfigRules} from './config-detail'
 import {json} from '@codemirror/lang-json'
 import {sql} from '@codemirror/lang-sql'
-import CodeMirror from 'vue-codemirror6'
+// import CodeMirror from 'vue-codemirror6'
 import { GetWorkItemConfig, SaveWorkItemConfig } from '@/services/workflow.service';
 import { GetComputerGroupList, GetComputerPointData } from '@/services/computer-group.service';
 import { GetDatasourceList } from '@/services/datasource.service'
 import { jsonFormatter } from '@/utils/formatter'
 import { GetFileCenterList } from '@/services/file-center.service'
 import { GetCustomFuncList } from '@/services/custom-func.service'
-import { GetSparkContainerList } from '@/services/spark-container.service'
+import { GetAlarmPagesList } from '@/services/message-center.service'
 
 const scheduleRange = ref(ScheduleRange);
 const weekDateList = ref(WeekDateList)
@@ -399,6 +421,10 @@ const cronConfigForm = ref<FormInstance>()
 const syncRuleForm = ref<FormInstance>()
 const containerIdList = ref([]) // 容器列表
 const callback = ref(null)
+const alarmConfigList = ref([])
+
+// 输入框全屏
+const flinkJsonFullStatus = ref(false)
 
 const drawerConfig = reactive({
   title: '配置',
@@ -429,8 +455,8 @@ let clusterConfig = reactive({
   clusterNodeId: '',        // 集群节点
   enableHive: false,
   datasourceId: '',   // hive数据源
-  // sparkConfig: '',
-  sparkConfigJson: ''
+  // flinkConfig: '',
+  flinkConfigJson: ''
 })
 // 定时配置
 let cronConfig = reactive({
@@ -461,6 +487,10 @@ let syncRule = reactive({
 // 容器配置
 let containerConfig = reactive({
   containerId: ''
+})
+// 基线告警
+let messageConfig = reactive({
+  alarmList: []
 })
 const fileConfig = reactive({
   funcList: [],
@@ -505,7 +535,7 @@ function showModal(data?: any, cb?: any) {
       // 获取集群参数
       getClusterList()
     }
-    if (['SPARK_CONTAINER_SQL'].includes(data.workType)) {
+    if (['FLINK_CONTAINER_SQL'].includes(data.workType)) {
       getSparkContainerList(true)
     }
     // 获取函数配置和依赖配置
@@ -516,6 +546,8 @@ function showModal(data?: any, cb?: any) {
     workItemConfig.value = data
     getConfigDetailData()
   }
+
+  getAlarmConfigList()
 
   drawerConfig.visible = true;
 }
@@ -549,6 +581,18 @@ function getFuncList() {
     })
 }
 
+function getAlarmConfigList() {
+    GetAlarmPagesList({
+        page: 0,
+        pageSize: 10000,
+        searchKeyWord: ''
+    }).then((res: any) => {
+      alarmConfigList.value = res.data.content.filter((item: any) => item.alarmType === 'WORK')
+    }).catch(() => {
+      alarmConfigList.value = []
+    })
+}
+
 function getConfigDetailData() {
   GetWorkItemConfig({
       workId: workItemConfig.value.id
@@ -562,7 +606,7 @@ function getConfigDetailData() {
           clusterConfig[key] = res.data.clusterConfig[key]
         }
       })
-      clusterConfig.sparkConfigJson = jsonFormatter(clusterConfig.sparkConfigJson)
+      clusterConfig.flinkConfigJson = jsonFormatter(clusterConfig.flinkConfigJson)
     }
     if (['FLINK_SQL'].includes(workItemConfig.value.workType)) {
       clusterConfig.datasourceId = res.data.datasourceId
@@ -584,6 +628,8 @@ function getConfigDetailData() {
     cronConfig.setMode = cronConfig.setMode || 'SIMPLE'
     syncRule.setMode = syncRule.setMode || 'SIMPLE'
     containerConfig.containerId = res.data.containerId
+
+    messageConfig.alarmList = res.data.alarmList
 
     getClusterNodeList(true)
   }).catch((err: any) => {
@@ -623,7 +669,8 @@ function okEvent() {
         },
         syncRule: syncRule,
         ...fileConfig,
-        ...containerConfig
+        ...containerConfig,
+        ...messageConfig
       }).then((res: any) => {
         if (callback.value && callback.value instanceof Function) {
           callback.value()
@@ -769,6 +816,13 @@ function clusterIdChangeEvent() {
   clusterConfig.clusterNodeId = ''
 }
 
+// 全屏
+function fullScreenEvent(type: string) {
+  if (type === 'flinkJsonFullStatus') {
+    flinkJsonFullStatus.value = !flinkJsonFullStatus.value
+  }
+}
+
 defineExpose({
   showModal,
 })
@@ -788,6 +842,44 @@ defineExpose({
       padding: 12px 0 0;
       box-sizing: border-box;
       .el-form-item {
+        position: relative;
+        .tooltip-msg {
+            position: absolute;
+            top: 7px;
+            color: getCssVar('color', 'info');
+            font-size: 16px;
+        }
+        // 全屏样式
+        &.show-screen__full {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background-color: #ffffff;
+          padding: 12px 20px;
+          box-sizing: border-box;
+          transition: all 0.15s linear;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          .el-form-item__content {
+            align-items: flex-start;
+            height: 100%;
+            margin-top: 18px;
+            .modal-full-screen {
+              top: -36px;
+              right: 0;
+              left: unset;
+            }
+            .vue-codemirror {
+              height: calc(100% - 48px);
+            }
+          }
+        }
+        .el-form-item__label {
+          pointer-events: none;
+        }
         .el-form-item__content {
           .el-radio-group {
             justify-content: flex-end;
@@ -834,6 +926,17 @@ defineExpose({
                   opacity: 0;
                 }
               }
+            }
+          }
+
+          // 全屏样式
+          .modal-full-screen {
+            position: absolute;
+            top: 8px;
+            left: -22px;
+            cursor: pointer;
+            &:hover {
+              color: getCssVar('color', 'primary');;
             }
           }
         }

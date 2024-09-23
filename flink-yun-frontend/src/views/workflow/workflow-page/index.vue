@@ -1,38 +1,64 @@
 <template>
     <Breadcrumb :bread-crumb-list="breadCrumbList" />
-    <div class="workflow-page">
+    <LoadingPage
+        :visible="loading"
+    >
+        <div class="workflow-page">
             <div class="work-list">
                 <div class="option-container">
                     <div class="option-title">
-                        <span class="option-title__href" @click="backToFlow">{{ workFlowData.name }}</span>
+                        <span class="option-title__href" @click="backToFlow">
+                            <EllipsisTooltip class="title-tooltip" :label="workFlowData.name" />
+                        </span>
                     </div>
                     <el-dropdown trigger="click">
                         <el-icon class="change-workflow">
-                            <Switch />
+                            <Sort />
                         </el-icon>
                         <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item @click="changeWorkFlow(workFlow)" v-for="workFlow in workFlowList">{{ workFlow.name }}</el-dropdown-item>
+                            <el-dropdown-menu style="max-height: 340px; overflow: auto; padding: 12px 8px;">
+                                <el-dropdown-item
+                                    @click="changeWorkFlow(workFlow)"
+                                    v-for="workFlow in workFlowList"
+                                    class="workflow-page__change-item"
+                                    :class="{ 'workflow-choose-item': workFlow.id === workFlowData.id }"
+                                >
+                                    {{ workFlow.name }}
+                                </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </div>
                 <div class="search-box">
-                    <el-input v-model="searchParam" placeholder="回车搜索作业名称" @input="inputEvent"
-                        @keyup.enter="initData"></el-input>
-                    <el-button type="primary" circle @click="addData"><el-icon><Plus /></el-icon></el-button>
+                    <el-input
+                        v-model="searchParam"
+                        placeholder="回车搜索作业名称"
+                        @input="inputEvent"
+                        @keyup.enter="initData"
+                    ></el-input>
+                    <el-button type="primary" circle @click="addData">
+                        <el-icon><Plus /></el-icon>
+                    </el-button>
                 </div>
                 <el-scrollbar>
                     <div class="list-box">
                         <template v-if="workListItem.length" v-for="work in workListItem" :key="work.id">
-                            <div class="list-item" :class="{ 'choose-item': workConfig && workConfig.id === work.id }" :draggable="true" @click="showWorkConfig(work)" @dragstart="handleDragEnd($event, work)">
+                            <div
+                                class="list-item"
+                                :class="{ 'choose-item': workConfig && workConfig.id === work.id }"
+                                :draggable="true"
+                                @click="showWorkConfig(work)"
+                                @dragstart="handleDragEnd($event, work)"
+                            >
                                 <!-- {{ work.name }} -->
                                 <!-- <div class="item-left">
-                                    <el-icon v-if="work.workType === 'QUERY_JDBC'"><Search /></el-icon>
-                                    <el-icon v-if="work.workType === 'DATA_SYNC_JDBC'"><Van /></el-icon>
-                                </div> -->
+                                        <el-icon v-if="work.workType === 'QUERY_JDBC'"><Search /></el-icon>
+                                        <el-icon v-if="work.workType === 'DATA_SYNC_JDBC'"><Van /></el-icon>
+                                    </div> -->
                                 <div class="item-right">
-                                    <span class="label-type"><EllipsisTooltip class="label-name-text" :label="work.name" /></span>
+                                    <span class="label-type">
+                                        <EllipsisTooltip class="label-name-text" :label="work.name" />
+                                    </span>
                                     <!-- <span class="label-name">{{ work.name + work.name + work.name || '-' }}</span> -->
                                     <span class="label-name">{{ workTypeName(work.workType) }}</span>
                                 </div>
@@ -43,11 +69,16 @@
                                     <template #dropdown>
                                         <el-dropdown-menu>
                                             <el-dropdown-item @click="editData(work)">编辑</el-dropdown-item>
-                                            <el-dropdown-item v-if="containerType === 'flow'" @click="changeContianer(work, 'config')">作业配置</el-dropdown-item>
+                                            <!-- <el-dropdown-item
+                                                v-if="containerType === 'flow'"
+                                                @click="changeContianer(work, 'config')"
+                                            >
+                                                作业配置
+                                            </el-dropdown-item> -->
                                             <el-dropdown-item @click="deleteData(work)">删除</el-dropdown-item>
-                                            <!-- <el-dropdown-item>复制</el-dropdown-item>
-                                            <el-dropdown-item>导出</el-dropdown-item>
-                                            <el-dropdown-item>置顶</el-dropdown-item> -->
+                                            <el-dropdown-item @click="copyData(work)">复制</el-dropdown-item>
+                                            <!-- <el-dropdown-item>导出</el-dropdown-item>
+                                                <el-dropdown-item>置顶</el-dropdown-item> -->
                                         </el-dropdown-menu>
                                     </template>
                                 </el-dropdown>
@@ -129,20 +160,20 @@
                         </div>
 
                         <!-- <span v-if="!btnLoadingConfig.exportLoading" @click="exportWorkFlow">导出</span>
-                        <el-icon v-else class="is-loading"><Loading /></el-icon>
-                        <span v-if="!btnLoadingConfig.importLoading" @click="importWorkFlow">导入</span>
-                        <el-icon v-else class="is-loading"><Loading /></el-icon> -->
+                            <el-icon v-else class="is-loading"><Loading /></el-icon>
+                            <span v-if="!btnLoadingConfig.importLoading" @click="importWorkFlow">导入</span>
+                            <el-icon v-else class="is-loading"><Loading /></el-icon> -->
                     </div>
                     <ZqyFlow ref="zqyFlowRef"></ZqyFlow>
                 </template>
                 <template v-else>
-                    <spark-jar
+                    <flink-jar
                         v-if="showWorkItem && workConfig.workType === 'FLINK_JAR'"
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
                         @back="backToFlow"
                         @locationNode="locationNode"
-                    ></spark-jar>
+                    ></flink-jar>
                     <WorkApi
                         v-if="showWorkItem && workConfig.workType === 'API'"
                         :workItemConfig="workConfig"
@@ -151,7 +182,10 @@
                         @locationNode="locationNode"
                     ></WorkApi>
                     <WorkItem
-                        v-if="showWorkItem && workConfig.workType !== 'DATA_SYNC_JDBC' && workConfig.workType !== 'FLINK_JAR'"
+                        v-if="
+                            showWorkItem &&
+                            !['FLINK_JAR', 'DATA_SYNC_JDBC', 'EXCEL_SYNC_JDBC'].includes(workConfig.workType)
+                        "
                         :workItemConfig="workConfig"
                         :workFlowData="workFlowData"
                         @back="backToFlow"
@@ -163,31 +197,64 @@
                         @back="backToFlow"
                         @locationNode="locationNode"
                     ></data-sync>
+                    <ExcelImport
+                        v-if="showWorkItem && workConfig.workType === 'EXCEL_SYNC_JDBC'"
+                        :workItemConfig="workConfig"
+                        @back="backToFlow"
+                        @locationNode="locationNode"
+                    ></ExcelImport>
                 </template>
             </div>
-        <AddModal ref="addModalRef" />
-        <workflow-config ref="workflowConfigRef"></workflow-config>
-        <zqyLog ref="zqyLogRef"></zqyLog>
-    </div>
+            <AddModal ref="addModalRef" />
+            <CopyModal ref="copyModalRef"></CopyModal>
+            <workflow-config ref="workflowConfigRef"></workflow-config>
+            <zqyLog ref="zqyLogRef"></zqyLog>
+        </div>
+    </LoadingPage>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import LoadingPage from '@/components/loading/index.vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import ZqyFlow from '@/lib/packages/zqy-flow/flow.vue'
 import AddModal from './add-modal/index.vue'
+import CopyModal from './copy-modal/index.vue'
 import WorkflowConfig from './workflow-config/index.vue'
 import eventBus from '@/utils/eventBus'
 import zqyLog from '@/components/zqy-log/index.vue'
 import WorkItem from '../work-item/index.vue'
 import DataSync from '../data-sync/index.vue'
+import ExcelImport from '../excel-import/index.vue'
 import WorkApi from '../work-api/index.vue'
-import sparkJar from '../spark-jar/index.vue';
+import flinkJar from '../flink-jar/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Loading } from '@element-plus/icons-vue'
+import { Loading, Sort } from '@element-plus/icons-vue'
 import EllipsisTooltip from '@/components/ellipsis-tooltip/ellipsis-tooltip.vue'
-import { AddWorkflowDetailList, BreakFlowData, DeleteWorkflowDetailList, ExportWorkflowData, GetWorkflowData, GetWorkflowDetailList, GetWorkflowList, ImportWorkflowData, PublishWorkflowData, QueryRunWorkInstances, ReRunWorkflow, RerunCurrentNodeFlowData, RunAfterFlowData, RunWorkflowData, SaveWorkflowConfigData, SaveWorkflowData, StopWorkflowData, UnderlineWorkflowData, UpdateWorkflowDetailList } from '@/services/workflow.service'
+import {
+    AddWorkflowDetailList,
+    BreakFlowData,
+    DeleteWorkflowDetailList,
+    ExportWorkflowData,
+    GetWorkflowData,
+    GetWorkflowDetailList,
+    GetWorkflowList,
+    ImportWorkflowData,
+    PublishWorkflowData,
+    QueryRunWorkInstances,
+    ReRunWorkflow,
+    RerunCurrentNodeFlowData,
+    RunAfterFlowData,
+    RunWorkflowData,
+    SaveWorkflowConfigData,
+    SaveWorkflowData,
+    StopWorkflowData,
+    UnderlineWorkflowData,
+    UpdateWorkflowDetailList,
+    CopyWorkflowDetailList
+} from '@/services/workflow.service'
+import { TypeList } from '../workflow.config'
 
 const route = useRoute()
 
@@ -206,9 +273,13 @@ const workFlowData = ref({
     id: ''
 })
 const cronConfig = ref()
+const alarmList = ref([])
+const otherConfig = ref()
 const workflowInstanceId = ref('')
 const timer = ref()
 const runningStatus = ref(false)
+const copyModalRef = ref()
+const loading = ref<boolean>(false)
 
 const btnLoadingConfig = reactive({
     runningLoading: false,
@@ -230,52 +301,11 @@ const breadCrumbList = reactive([
         code: 'workflow-page'
     }
 ])
-const typeList = reactive([
-  {
-    label: 'Jdbc执行作业',
-    value: 'EXE_JDBC'
-  },
-  {
-    label: 'Jdbc查询作业',
-    value: 'QUERY_JDBC'
-  },
-  {
-    label: 'Prql查询作业',
-    value: 'PRQL'
-  },
-  {
-    label: 'FlinkSql执行作业',
-    value: 'FLINK_SQL'
-  },
-  {
-    label: 'SparkSql容器作业',
-    value: 'SPARK_CONTAINER_SQL'
-  },
-  {
-    label: '数据同步作业',
-    value: 'DATA_SYNC_JDBC'
-  },
-  {
-    label: 'bash作业',
-    value: 'BASH'
-  },
-  {
-    label: 'python作业',
-    value: 'PYTHON'
-  },
-  {
-    label: '自定义作业',
-    value: 'FLINK_JAR'
-  },
-  {
-    label: '接口调用作业',
-    value: 'API'
-  }
-])
+const typeList = reactive(TypeList)
 
 const workTypeName = computed(() => {
     return (code: string) => {
-        return typeList.find(t => t.value === code)?.label
+        return typeList.find((t) => t.value === code)?.label
     }
 })
 
@@ -285,11 +315,13 @@ function initData() {
         pageSize: 99999,
         searchKeyWord: searchParam.value,
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        workListItem.value = res.data.content
-    }).catch(() => {
-        workListItem.value = []
     })
+        .then((res: any) => {
+            workListItem.value = res.data.content
+        })
+        .catch(() => {
+            workListItem.value = []
+        })
 }
 
 function getWorkFlows() {
@@ -297,11 +329,13 @@ function getWorkFlows() {
         page: 0,
         pageSize: 100000,
         searchKeyWord: ''
-    }).then((res: any) => {
-        workFlowList.value = res.data.content
-    }).catch(() => {
-        workFlowList.value = []
     })
+        .then((res: any) => {
+            workFlowList.value = res.data.content
+        })
+        .catch(() => {
+            workFlowList.value = []
+        })
 }
 
 // 拖动后松开鼠标触发事件
@@ -339,35 +373,37 @@ function saveData() {
                 return item
             }
         })
-    }).then((res: any) => {
-        btnLoadingConfig.saveLoading = false
-        ElMessage.success('保存成功')
-    }).catch(() => {
-        btnLoadingConfig.saveLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.saveLoading = false
+            ElMessage.success('保存成功')
+        })
+        .catch(() => {
+            btnLoadingConfig.saveLoading = false
+        })
 }
 
 // 删除
 function deleteData(data: any) {
-  ElMessageBox.confirm('确定删除该作业吗？', '警告', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    DeleteWorkflowDetailList({
-      workId: data.id
+    ElMessageBox.confirm('确定删除该作业吗？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        DeleteWorkflowDetailList({
+            workId: data.id
+        })
+            .then((res: any) => {
+                initData()
+                if (data.id === workConfig.value.id) {
+                    backToFlow()
+                }
+                ElMessage.success(res.msg)
+            })
+            .catch((error: any) => {
+                console.error(error)
+            })
     })
-      .then((res: any) => {
-        initData()
-        if (data.id === workConfig.value.id) {
-            backToFlow()
-        }
-        ElMessage.success(res.msg)
-      })
-      .catch((error: any) => {
-        console.error(error)
-      })
-  })
 }
 
 // 运行作业流
@@ -375,43 +411,47 @@ function runWorkFlowDataEvent() {
     btnLoadingConfig.runningLoading = true
     RunWorkflowData({
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        workflowInstanceId.value = res.data
-        ElMessage.success(res.msg)
-        zqyFlowRef.value.hideGrid(true)
-        // 判断是否开始运行
-        runningStatus.value = true
-        queryRunWorkInstancesEvent()
-        if (!timer.value) {
-            timer.value = setInterval(() => {
-                queryRunWorkInstancesEvent()
-            }, 2000)
-        }
-        btnLoadingConfig.runningLoading = false
-    }).catch(() => {
-        btnLoadingConfig.runningLoading = false
     })
+        .then((res: any) => {
+            workflowInstanceId.value = res.data
+            ElMessage.success(res.msg)
+            zqyFlowRef.value.hideGrid(true)
+            // 判断是否开始运行
+            runningStatus.value = true
+            queryRunWorkInstancesEvent()
+            if (!timer.value) {
+                timer.value = setInterval(() => {
+                    queryRunWorkInstancesEvent()
+                }, 2000)
+            }
+            btnLoadingConfig.runningLoading = false
+        })
+        .catch(() => {
+            btnLoadingConfig.runningLoading = false
+        })
 }
 // 重跑工作流
 function reRunWorkFlowDataEvent() {
     btnLoadingConfig.reRunLoading = true
     ReRunWorkflow({
         workflowInstanceId: workflowInstanceId.value
-    }).then((res: any) => {
-        ElMessage.success(res.msg)
-        zqyFlowRef.value.hideGrid(true)
-        // 判断是否开始运行
-        runningStatus.value = true
-        queryRunWorkInstancesEvent()
-        if (!timer.value) {
-            timer.value = setInterval(() => {
-                queryRunWorkInstancesEvent()
-            }, 1000)
-        }
-        btnLoadingConfig.reRunLoading = false
-    }).catch(() => {
-        btnLoadingConfig.reRunLoading = false
     })
+        .then((res: any) => {
+            ElMessage.success(res.msg)
+            zqyFlowRef.value.hideGrid(true)
+            // 判断是否开始运行
+            runningStatus.value = true
+            queryRunWorkInstancesEvent()
+            if (!timer.value) {
+                timer.value = setInterval(() => {
+                    queryRunWorkInstancesEvent()
+                }, 1000)
+            }
+            btnLoadingConfig.reRunLoading = false
+        })
+        .catch(() => {
+            btnLoadingConfig.reRunLoading = false
+        })
 }
 
 // 运行作业流后获取节点运行状态
@@ -419,24 +459,23 @@ function queryRunWorkInstancesEvent() {
     if (workflowInstanceId.value) {
         QueryRunWorkInstances({
             workflowInstanceId: workflowInstanceId.value
-        }).then((res: any) => {
-            const statusList = ['SUCCESS', 'FAIL', 'ABORT']
-            if (statusList.includes(res.data.flowStatus)) {
-                clearInterval(timer.value)
-                timer.value = null
-                zqyFlowRef.value.hideGrid(false)
-                // 这里关闭运行状态
-                runningStatus.value = false
-            }
-            zqyFlowRef.value.updateFlowStatus(res.data.workInstances, runningStatus.value)
-        }).catch(() => {
-
         })
+            .then((res: any) => {
+                const statusList = ['SUCCESS', 'FAIL', 'ABORT']
+                if (statusList.includes(res.data.flowStatus)) {
+                    clearInterval(timer.value)
+                    timer.value = null
+                    zqyFlowRef.value.hideGrid(false)
+                    // 这里关闭运行状态
+                    runningStatus.value = false
+                }
+                zqyFlowRef.value.updateFlowStatus(res.data.workInstances, runningStatus.value)
+            })
+            .catch(() => {})
     } else {
         // ElMessage.warning('请先运行作业流')
     }
 }
-
 
 // 添加作业
 function addData() {
@@ -481,19 +520,42 @@ function editData(data: any) {
     }, data)
 }
 
+function copyData(data: any) {
+    copyModalRef.value.showModal((formData: any) => {
+        return new Promise((resolve: any, reject: any) => {
+            CopyWorkflowDetailList(formData)
+                .then((res: any) => {
+                    ElMessage.success(res.msg)
+                    initData()
+                    resolve()
+                })
+                .catch((error: any) => {
+                    reject(error)
+                })
+        })
+    }, data)
+}
+
 function initFlowData() {
     return new Promise((resolve, reject) => {
+        loading.value = true
         GetWorkflowData({
             workflowId: workFlowData.value.id
-        }).then((res: any) => {
-            cronConfig.value = res.data?.cronConfig
-            if (res.data?.webConfig) {
-                zqyFlowRef.value.initCellList(res.data.webConfig)
-            }
-            resolve()
-        }).catch(() => {
-            reject()
         })
+            .then((res: any) => {
+                cronConfig.value = res.data?.cronConfig
+                alarmList.value = res.data?.alarmList
+                otherConfig.value = res.data
+                if (res.data?.webConfig) {
+                    zqyFlowRef.value.initCellList(res.data.webConfig)
+                }
+                loading.value = false
+                resolve()
+            })
+            .catch(() => {
+                loading.value = false
+                reject()
+            })
     })
 }
 
@@ -502,25 +564,29 @@ function publishWorkFlow() {
     btnLoadingConfig.publishLoading = true
     PublishWorkflowData({
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        btnLoadingConfig.publishLoading = false
-        ElMessage.success(res.msg)
-    }).catch(() => {
-        btnLoadingConfig.publishLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.publishLoading = false
+            ElMessage.success(res.msg)
+        })
+        .catch(() => {
+            btnLoadingConfig.publishLoading = false
+        })
 }
 // 下线工作流
 function underlineWorkFlow() {
     btnLoadingConfig.underlineLoading = true
     UnderlineWorkflowData({
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        btnLoadingConfig.underlineLoading = false
-        ElMessage.success(res.msg)
-        queryRunWorkInstancesEvent()
-    }).catch(() => {
-        btnLoadingConfig.underlineLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.underlineLoading = false
+            ElMessage.success(res.msg)
+            queryRunWorkInstancesEvent()
+        })
+        .catch(() => {
+            btnLoadingConfig.underlineLoading = false
+        })
 }
 
 // 中止工作流
@@ -528,13 +594,15 @@ function stopWorkFlow() {
     btnLoadingConfig.stopWorkFlowLoading = true
     StopWorkflowData({
         workflowInstanceId: workflowInstanceId.value
-    }).then((res: any) => {
-        btnLoadingConfig.stopWorkFlowLoading = false
-        ElMessage.success(res.msg)
-        queryRunWorkInstancesEvent()
-    }).catch(() => {
-        btnLoadingConfig.stopWorkFlowLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.stopWorkFlowLoading = false
+            ElMessage.success(res.msg)
+            queryRunWorkInstancesEvent()
+        })
+        .catch(() => {
+            btnLoadingConfig.stopWorkFlowLoading = false
+        })
 }
 
 // 导入工作流
@@ -542,12 +610,14 @@ function importWorkFlow() {
     btnLoadingConfig.importLoading = true
     ImportWorkflowData({
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        btnLoadingConfig.importLoading = false
-        ElMessage.success(res.msg)
-    }).catch(() => {
-        btnLoadingConfig.importLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.importLoading = false
+            ElMessage.success(res.msg)
+        })
+        .catch(() => {
+            btnLoadingConfig.importLoading = false
+        })
 }
 
 // 导出工作流
@@ -555,12 +625,14 @@ function exportWorkFlow() {
     btnLoadingConfig.exportLoading = true
     ExportWorkflowData({
         workflowId: workFlowData.value.id
-    }).then((res: any) => {
-        btnLoadingConfig.exportLoading = false
-        ElMessage.success(res.msg)
-    }).catch(() => {
-        btnLoadingConfig.exportLoading = false
     })
+        .then((res: any) => {
+            btnLoadingConfig.exportLoading = false
+            ElMessage.success(res.msg)
+        })
+        .catch(() => {
+            btnLoadingConfig.exportLoading = false
+        })
 }
 
 function inputEvent(e: string) {
@@ -571,75 +643,94 @@ function inputEvent(e: string) {
 
 // 配置设置
 function showConfigDetail() {
-    workflowConfigRef.value.showModal((data: any) => {
-        return new Promise((resolve: any, reject: any) => {
-            SaveWorkflowConfigData({
-                workflowId: workFlowData.value.id,
-                cronConfig: data
-            }).then((res: any) => {
-                initFlowData()
-                ElMessage.success(res.msg)
-                resolve()
-            }).catch((err) => {
-                reject(err)
+    workflowConfigRef.value.showModal(
+        (data: any) => {
+            return new Promise((resolve: any, reject: any) => {
+                const saveParam = {
+                    workflowId: workFlowData.value.id,
+                    ...data,
+                    invokeStatus: data.invokeStatus ? 'ON' : 'OFF'
+                }
+                SaveWorkflowConfigData(saveParam)
+                    .then((res: any) => {
+                        initFlowData()
+                        ElMessage.success(res.msg)
+                        resolve()
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
             })
-        })
-    }, cronConfig.value)
+        },
+        {
+            workflowId: workFlowData.value.id,
+            cronConfig: cronConfig.value,
+            alarmList: alarmList.value,
+            ...otherConfig.value
+        }
+    )
 }
 
 // 节点运行日志
 function nodeRunningLog(e: any, type: string) {
-    zqyLogRef.value.showModal(() => {
-      console.log('关闭')
-    }, { id: e.data.workInstanceId, type: type }
-  )
+    zqyLogRef.value.showModal(
+        () => {
+            console.log('关闭')
+        },
+        { id: e.data.workInstanceId, type: type }
+    )
 }
 
 // 节点重跑下游
 function nodeRunAfterFlow(e: any) {
     RunAfterFlowData({
         workInstanceId: e.data.workInstanceId
-    }).then((res: any) => {
-        ElMessage.success(res.msg)
-        zqyFlowRef.value.hideGrid(true)
-        // 判断是否开始运行
-        runningStatus.value = true
-        queryRunWorkInstancesEvent()
-        if (!timer.value) {
-            timer.value = setInterval(() => {
-                queryRunWorkInstancesEvent()
-            }, 1000)
-        }
-    }).catch(() => {
     })
+        .then((res: any) => {
+            ElMessage.success(res.msg)
+            zqyFlowRef.value.hideGrid(true)
+            // 判断是否开始运行
+            runningStatus.value = true
+            queryRunWorkInstancesEvent()
+            if (!timer.value) {
+                timer.value = setInterval(() => {
+                    queryRunWorkInstancesEvent()
+                }, 1000)
+            }
+        })
+        .catch(() => {})
 }
 
 // 节点中断
 function nodeBreakFlow(e: any) {
     BreakFlowData({
         workInstanceId: e.data.workInstanceId
-    }).then((res: any) => {
-        ElMessage.success(res.msg)
-        queryRunWorkInstancesEvent()
-    }).catch(() => {})
+    })
+        .then((res: any) => {
+            ElMessage.success(res.msg)
+            queryRunWorkInstancesEvent()
+        })
+        .catch(() => {})
 }
 
 // 重跑当前节点
 function reRunCurrentNodeFlow(e: any) {
     RerunCurrentNodeFlowData({
         workInstanceId: e.data.workInstanceId
-    }).then((res: any) => {
-        ElMessage.success(res.msg)
-        zqyFlowRef.value.hideGrid(true)
-        // 判断是否开始运行
-        runningStatus.value = true
-        queryRunWorkInstancesEvent()
-        if (!timer.value) {
-            timer.value = setInterval(() => {
-                queryRunWorkInstancesEvent()
-            }, 1000)
-        }
-    }).catch(() => {})
+    })
+        .then((res: any) => {
+            ElMessage.success(res.msg)
+            zqyFlowRef.value.hideGrid(true)
+            // 判断是否开始运行
+            runningStatus.value = true
+            queryRunWorkInstancesEvent()
+            if (!timer.value) {
+                timer.value = setInterval(() => {
+                    queryRunWorkInstancesEvent()
+                }, 1000)
+            }
+        })
+        .catch(() => {})
 }
 
 // 切换拖拽以及作业配置页面
@@ -702,9 +793,9 @@ onMounted(() => {
         } else if (e.type === 'node_result') {
             // 查看结果
             nodeRunningLog(e, 'result')
-        } else if (e.type === 'node_yarnLog') {
+        } else if (e.type === 'node_TaskManagerLog') {
             // 运行日志
-            nodeRunningLog(e, 'yarnLog')
+            nodeRunningLog(e, 'TaskManagerLog')
         } else if (e.type === 'node_break') {
             // 中断
             nodeBreakFlow(e)
@@ -738,6 +829,7 @@ onUnmounted(() => {
         max-width: 200px;
         height: 100%;
         border-right: 1px solid getCssVar('border-color');
+        border-left: 1px solid getCssVar('border-color');
         background-color: getCssVar('color', 'white');
 
         .option-container {
@@ -760,8 +852,11 @@ onUnmounted(() => {
                 box-sizing: border-box;
                 .option-title__href {
                     cursor: pointer;
+                    .title-tooltip {
+                        max-width: 150px;
+                    }
                     &:hover {
-                        color: getCssVar('color', 'primary');;
+                        color: getCssVar('color', 'primary');
                         text-decoration: underline;
                     }
                 }
@@ -809,25 +904,21 @@ onUnmounted(() => {
                     box-sizing: border-box;
                     position: relative;
                     height: 100%;
+                    padding: 8px;
 
                     .list-item {
                         height: 52px;
-                        // height: getCssVar('menu', 'item-height');
-                        // line-height: getCssVar('menu', 'item-height');
-                        // padding-left: 12px;
                         padding-right: 12px;
                         box-sizing: border-box;
-                        border-bottom: 1px solid getCssVar('border-color');
+                        border: 1px solid getCssVar('border-color');
+                        border-radius: 8px;
                         cursor: pointer;
                         font-size: getCssVar('font-size', 'extra-small');
                         position: relative;
                         display: flex;
                         align-items: center;
-
-                        // .item-left {
-                        //     font-size: 16px;
-                        //     margin-left: 12px;
-                        // }
+                        margin-bottom: 8px;
+                        box-shadow: getCssVar('box-shadow', 'lighter');
 
                         .item-right {
                             margin-left: 8px;
@@ -840,11 +931,14 @@ onUnmounted(() => {
                             height: 80%;
                             .label-type {
                                 color: getCssVar('color', 'primary');
+                                .label-name-text {
+                                    max-width: 170px;
+                                }
                             }
                             .label-name {
                                 color: getCssVar('color', 'info');
                                 .label-name-text {
-                                    max-width: 166px;
+                                    max-width: 170px;
                                 }
                             }
                         }
@@ -878,8 +972,6 @@ onUnmounted(() => {
                 }
             }
         }
-
-
     }
 
     .workflow-btn-container {
@@ -894,6 +986,8 @@ onUnmounted(() => {
 
     .flow-container {
         width: 100%;
+        max-width: calc(100vw - 282px);
+        background-color: getCssVar('color', 'white');
 
         .option-btns {
             height: 51px;
@@ -922,10 +1016,17 @@ onUnmounted(() => {
                 }
 
                 &:hover {
-                    color: getCssVar('color', 'primary');;
+                    color: getCssVar('color', 'primary');
                 }
             }
         }
+    }
+}
+.workflow-page__change-item {
+    border-radius: 4px;
+    &.workflow-choose-item {
+        background-color: getCssVar('color', 'primary', 'light-9');
+        color: getCssVar('color', 'primary');
     }
 }
 </style>

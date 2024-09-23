@@ -18,7 +18,7 @@ public class GetRealRes {
 
     private List<String> funcConfig;
 
-    private String sparkConfig;
+    private String flinkConfig;
 
     private String clusterId;
 

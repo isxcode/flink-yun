@@ -18,9 +18,9 @@ title: "Hadoop单节点安装"
 ```bash
 su
 mkdir -p /data/hive
-chown -R zhiqingyun:zhiqingyun /data/hive
+chown -R zhiliuyun:zhiliuyun /data/hive
 
-su zhiqingyun
+su zhiliuyun
 cd /tmp
 nohup wget https://archive.apache.org/dist/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz >> download_hive.log 2>&1 &
 tail -f download_hive.log
@@ -50,7 +50,7 @@ hive --version
 ###### 下载mysql驱动
 
 ```bash
-su zhiqingyun
+su zhiliuyun
 cd /tmp
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.22.tar.gz
 tar vzxf mysql-connector-java-8.0.22.tar.gz
@@ -75,7 +75,7 @@ exit;
 ##### 修改日志路径
 
 ```bash
-su zhiqingyun
+su zhiliuyun
 mkdir -p /data/hive/logs
 cp /opt/hive/conf/hive-log4j2.properties.template /opt/hive/conf/hive-log4j2.properties
 vim /opt/hive/conf/hive-log4j2.properties
@@ -88,7 +88,7 @@ property.hive.log.dir=/data/hive/logs
 ##### 修改hive-env.sh
 
 ```bash
-su zhiqingyun
+su zhiliuyun
 cp /opt/hive/conf/hive-env.sh.template /opt/hive/conf/hive-env.sh
 tee -a /opt/hive/conf/hive-env.sh <<-'EOF'
 export HADOOP_HOME=/opt/hadoop
@@ -135,12 +135,12 @@ vim /opt/hive/conf/hive-site.xml
   
     <property>
         <name>hive.server2.thrift.client.user</name>
-        <value>zhiqingyun</value>
+        <value>zhiliuyun</value>
     </property>
   
     <property>
         <name>hive.server2.thrift.client.password</name>
-        <value>zhiqingyun</value>
+        <value>zhiliuyun</value>
     </property>
   
     <property>
@@ -150,7 +150,7 @@ vim /opt/hive/conf/hive-site.xml
   
     <property>
       <name>system:user.name</name>
-      <value>zhiqingyun</value>
+      <value>zhiliuyun</value>
     </property>
   
     <property>
@@ -205,6 +205,6 @@ tail -f /data/hive/logs/hiveserver2.log
 ##### hive链接
 
 - jdbcUrl : jdbc:hive2://47.92.152.18:40005/isxcode_db
-- username: zhiqingyun
+- username: zhiliuyun
 - password: 无
 - hive.metastore.uris: thrift://isxcode:9083

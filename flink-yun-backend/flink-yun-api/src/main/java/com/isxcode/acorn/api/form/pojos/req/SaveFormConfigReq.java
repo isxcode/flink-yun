@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class SaveFormConfigReq {
 
-    @Schema(title = "表单唯一id", example = "sy_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "表单唯一id", example = "fy_fd34e4a53db640f5943a4352c4d549b9")
     @NotEmpty(message = "formId不能为空")
     private String formId;
 

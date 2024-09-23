@@ -21,12 +21,26 @@ import CustomFormList from '@/views/custom-form/custom-form-list.vue'
 import CustomFormQuery from '@/views/custom-form/custom-form-query/index.vue'
 import CustomFormSetting from '@/views/custom-form/form-setting/index.vue'
 import CustomApi from '@/views/custom-api/index.vue'
-import SparkContainer from '@/views/spark-container/index.vue'
 import RealtimeComputing from '@/views/realtime-computing/index.vue'
 import ComputingDetail from '@/views/realtime-computing/computing-detail/index.vue'
 
 import fileCenter from '@/views/file-center/index.vue'
 import CustomFunc from '@/views/custom-func/index.vue'
+
+import ReportComponents from '@/views/report-components/index.vue'
+import ReportItem from '@/views/report-components/report-item/index.vue'
+import ReportViews from '@/views/report-views/index.vue'
+import ReportViewsDetail from '@/views/report-views/report-views-detail/index.vue'
+
+// 消息告警
+import MessageNotifications from '@/views/message-center/message-notification/index.vue'
+import WarningConfig from '@/views/message-center/warning-config/index.vue'
+import WarningSchedule from '@/views/message-center/warning-schedule/index.vue'
+
+// 元数据
+import AcquisitionTask from '@/views/metadata-page/acquisition-task/index.vue'
+import AcquisitionInstance from '@/views/metadata-page/acquisition-instance/index.vue'
+import MetadataManagement from '@/views/metadata-page/metadata-management/index.vue'
 
 export default [
   {
@@ -140,11 +154,6 @@ export default [
     component: CustomApi
   },
   {
-    path: 'spark-container',
-    name: 'spark-container',
-    component: SparkContainer
-  },
-  {
     path: 'custom-func',
     name: 'custom-func',
     component: CustomFunc
@@ -158,5 +167,55 @@ export default [
     path: 'computing-detail',
     name: 'computing-detail',
     component: ComputingDetail
-  }
+  },
+  {
+    path: 'report-components',
+    name: 'report-components',
+    component: ReportComponents,
+  },
+  {
+    path: 'report-item',
+    name: 'report-item',
+    component: ReportItem
+  },
+  {
+    path: 'report-views',
+    name: 'report-views',
+    component: ReportViews
+  },
+  {
+    path: 'report-views-detail',
+    name: 'report-views-detail',
+    component: ReportViewsDetail
+  },
+  {
+    path: 'message-notifications',
+    name: 'message-notifications',
+    component: MessageNotifications
+  },
+  {
+    path: 'warning-config',
+    name: 'warning-config',
+    component: WarningConfig
+  },
+  {
+    path: 'warning-schedule',
+    name: 'warning-schedule',
+    component: WarningSchedule
+  },
+  {
+    path: 'acquisition-task',
+    name: 'acquisition-task',
+    component: AcquisitionTask
+  },
+  {
+    path: 'acquisition-instance',
+    name: 'acquisition-instance',
+    component: AcquisitionInstance
+  },
+  {
+    path: 'metadata-management',
+    name: 'metadata-management',
+    component: MetadataManagement
+  },
 ]
