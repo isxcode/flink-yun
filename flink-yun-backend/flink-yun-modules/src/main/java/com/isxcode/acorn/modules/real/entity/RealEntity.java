@@ -25,9 +25,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_REAL SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE FY_REAL SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_REAL")
+@Table(name = "FY_REAL")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class RealEntity {

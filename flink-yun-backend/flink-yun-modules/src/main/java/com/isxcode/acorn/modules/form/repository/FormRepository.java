@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_FORM"})
+@CacheConfig(cacheNames = {"FY_FORM"})
 public interface FormRepository extends JpaRepository<FormEntity, String> {
 
     @Query("select F from FormEntity F where F.name LIKE %:keyword% or F.remark LIKE %:keyword% order by F.createDateTime desc")

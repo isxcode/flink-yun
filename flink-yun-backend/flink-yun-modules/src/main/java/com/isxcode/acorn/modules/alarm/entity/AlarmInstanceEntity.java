@@ -17,9 +17,9 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_ALARM_INSTANCE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE FY_ALARM_INSTANCE SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_ALARM_INSTANCE")
+@Table(name = "FY_ALARM_INSTANCE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 @Builder(toBuilder = true)

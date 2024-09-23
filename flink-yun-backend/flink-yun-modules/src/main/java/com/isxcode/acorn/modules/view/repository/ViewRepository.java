@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_VIEW"})
+@CacheConfig(cacheNames = {"FY_VIEW"})
 public interface ViewRepository extends JpaRepository<ViewEntity, String> {
 
     Optional<ViewEntity> findByName(String name);

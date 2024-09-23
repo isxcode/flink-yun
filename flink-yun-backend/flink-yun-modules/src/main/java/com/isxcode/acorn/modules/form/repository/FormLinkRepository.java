@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_FORM"})
+@CacheConfig(cacheNames = {"FY_FORM"})
 public interface FormLinkRepository extends JpaRepository<FormLinkEntity, String> {
 
     List<FormLinkEntity> findAllByInvalidDateTimeBefore(LocalDateTime localDateTime);

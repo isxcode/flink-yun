@@ -1,16 +1,16 @@
-drop table SY_CONTAINER;
+drop table FY_CONTAINER;
 
 -- standalone集群节点支持安装flink-local组件
-alter table SY_CLUSTER_NODE
+alter table FY_CLUSTER_NODE
   add INSTALL_FLINK_LOCAL BOOLEAN default FALSE;
 
-comment on column SY_CLUSTER_NODE.INSTALL_FLINK_LOCAL is '是否安装flink-local组件';
+comment on column FY_CLUSTER_NODE.INSTALL_FLINK_LOCAL is '是否安装flink-local组件';
 
 -- 将ojdbc10-19.20.0.0.jar更新为ojdbc8-19.23.0.0.jar
-UPDATE SY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0';
+UPDATE FY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0';
 
 -- 大屏组件
-create table SY_VIEW_CARD
+create table FY_VIEW_CARD
 (
   ID                      CHARACTER VARYING(200)  not null primary key unique comment '大屏组件id',
   NAME                    CHARACTER VARYING(200)  not null comment '大屏组件名称',
@@ -31,7 +31,7 @@ create table SY_VIEW_CARD
 );
 
 -- 数据大屏
-create table SY_VIEW
+create table FY_VIEW
 (
   ID                      CHARACTER VARYING(200) not null primary key unique comment '数据大屏id',
   NAME                    CHARACTER VARYING(200) not null comment '大屏名称',
@@ -50,13 +50,13 @@ create table SY_VIEW
 );
 
 -- 添加下次执行时间
-alter table SY_WORKFLOW
+alter table FY_WORKFLOW
     add next_date_time datetime;
 
-comment on column SY_WORKFLOW.next_date_time is '下次执行时间';
+comment on column FY_WORKFLOW.next_date_time is '下次执行时间';
 
 -- 添加消息体表
-create table SY_MESSAGE
+create table FY_MESSAGE
 (
   id                      varchar(200)  not null comment '消息消息体id'
     primary key,
@@ -76,7 +76,7 @@ create table SY_MESSAGE
 );
 
 -- 添加告警表
-create table SY_ALARM
+create table FY_ALARM
 (
   id                      varchar(200)  not null comment '告警id'
     primary key,
@@ -98,7 +98,7 @@ create table SY_ALARM
 );
 
 -- 添加消息告警实例表
-create table SY_ALARM_INSTANCE
+create table FY_ALARM_INSTANCE
 (
   id               varchar(200)  not null comment '告警实例id'
     primary key,
@@ -118,50 +118,50 @@ create table SY_ALARM_INSTANCE
 );
 
 -- 作业添加基线
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
   add ALARM_LIST text;
 
-comment on column SY_WORK_CONFIG.ALARM_LIST is '绑定的基线';
+comment on column FY_WORK_CONFIG.ALARM_LIST is '绑定的基线';
 
 -- 作业流添加基线
-alter table SY_WORKFLOW_CONFIG
+alter table FY_WORKFLOW_CONFIG
   add ALARM_LIST text;
 
-comment on column SY_WORKFLOW_CONFIG.ALARM_LIST is '绑定的基线';
+comment on column FY_WORKFLOW_CONFIG.ALARM_LIST is '绑定的基线';
 
 -- 作业添加基线
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
   add ALARM_LIST text;
 
-comment on column SY_WORK_VERSION.ALARM_LIST is '绑定的基线';
+comment on column FY_WORK_VERSION.ALARM_LIST is '绑定的基线';
 
 -- 作业流添加基线
-alter table SY_WORKFLOW_VERSION
+alter table FY_WORKFLOW_VERSION
   add ALARM_LIST text;
 
-comment on column SY_WORKFLOW_VERSION.ALARM_LIST is '绑定的基线';
+comment on column FY_WORKFLOW_VERSION.ALARM_LIST is '绑定的基线';
 
 -- 添加外部调用开关状态
-alter table SY_WORKFLOW_CONFIG
+alter table FY_WORKFLOW_CONFIG
     add INVOKE_STATUS varchar(100) default 'OFF' not null;
 
-comment on column SY_WORKFLOW_CONFIG.INVOKE_STATUS is '是否启动外部调用';
+comment on column FY_WORKFLOW_CONFIG.INVOKE_STATUS is '是否启动外部调用';
 
 -- 扩长running_log
-alter table SY_REAL
+alter table FY_REAL
     alter column RUNNING_LOG longtext;
 
 -- 新增excel同步配置字段
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add EXCEL_SYNC_CONFIG longtext;
 
 -- 实例表中添加EXCEL_SYNC_CONFIG字段
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add EXCEL_SYNC_CONFIG longtext;
 
 -- 元数据相关联的表
 -- 元数据db表
-create table SY_META_DATABASE
+create table FY_META_DATABASE
 (
     datasource_id           varchar(200)  not null comment '元数据数据源id'
         primary key,
@@ -179,7 +179,7 @@ create table SY_META_DATABASE
 );
 
 -- 元数据表信息
-create table SY_META_TABLE
+create table FY_META_TABLE
 (
     datasource_id           varchar(200)  not null comment '元数据表id',
     table_name              varchar(200)  not null comment '表名',
@@ -195,7 +195,7 @@ create table SY_META_TABLE
 );
 
 -- 元数据字段信息
-create table SY_META_COLUMN
+create table FY_META_COLUMN
 (
     datasource_id           varchar(200)  not null comment '元数据表id',
     table_name              varchar(200)  not null comment '表名',
@@ -214,7 +214,7 @@ create table SY_META_COLUMN
 );
 
 -- 元数据采集任务表
-create table SY_META_WORK
+create table FY_META_WORK
 (
     id                      varchar(200)  not null comment '元数据采集任务id'
         primary key,
@@ -236,7 +236,7 @@ create table SY_META_WORK
 );
 
 -- 元数据采集实例表
-create table SY_META_INSTANCE
+create table FY_META_INSTANCE
 (
     id                      varchar(200)  not null comment '元数据采集实例id'
         primary key,
@@ -256,7 +256,7 @@ create table SY_META_INSTANCE
 );
 
 -- 元数据表基础信息表
-create table SY_META_TABLE_INFO
+create table FY_META_TABLE_INFO
 (
     datasource_id           varchar(200)  not null comment '元数据表id',
     table_name              varchar(200)  not null comment '表名',
