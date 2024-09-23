@@ -13,6 +13,7 @@ import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClientProvider;
@@ -97,12 +98,25 @@ public class KubernetesAgentService implements AgentService {
             for (File jarFile : jarFiles) {
                 if (jarFile.getName().contains("fastjson") || jarFile.getName().contains("flink")
                     || jarFile.getName().contains("connector")) {
-                    volumeMounts.add("       - name: " + jarFile.getName().replace(".", "-") + "\n"
-                        + "          mountPath: /opt/flink/lib/" + jarFile.getName() + "\n");
-                    volumes.add("   - name: " + jarFile.getName().replace(".", "-") + "\n" + "      hostPath:\n"
-                        + "        path: " + submitWorkReq.getAgentHomePath() + File.separator + "lib" + File.separator
-                        + jarFile.getName() + "\n");
+                    volumeMounts.add("       - name: " + jarFile.getName().replace(".", "-").toLowerCase() + "\n"
+                        + "          mountPath: /opt/flink/lib/" + jarFile.getName().toLowerCase() + "\n");
+                    volumes.add("   - name: " + jarFile.getName().replace(".", "-").toLowerCase() + "\n"
+                        + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath() + File.separator
+                        + "lib" + File.separator + jarFile.getName().toLowerCase() + "\n");
                 }
+            }
+        }
+
+        // 引入用户上传的jar
+        if (submitWorkReq.getLibConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
+                String libFileName =
+                    (submitWorkReq.getLibConfig().get(i) + ".jar").replace(".", "-").replace("_", "-").toLowerCase();
+                volumeMounts.add("       - name: " + libFileName + "\n" + "          mountPath: /opt/flink/lib/"
+                    + submitWorkReq.getLibConfig().get(i) + ".jar" + "\n");
+                volumes.add("   - name: " + libFileName + "\n" + "      hostPath:\n" + "        path: "
+                    + submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + (submitWorkReq.getLibConfig().get(i) + ".jar") + "\n");
             }
         }
 
@@ -147,6 +161,8 @@ public class KubernetesAgentService implements AgentService {
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitWorkRes.builder().webUrl(clusterClientProvider.getClusterClient().getWebInterfaceURL())
                 .appId(String.valueOf(clusterClientProvider.getClusterClient().getClusterId())).build();
+        } catch (ClusterDeploymentException clusterDeploymentException) {
+            throw new Exception(clusterDeploymentException.getCause().getMessage());
         }
     }
 

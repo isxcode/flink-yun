@@ -7,6 +7,7 @@ import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
+import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
@@ -20,6 +21,7 @@ import com.isxcode.acorn.common.locker.Locker;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.common.utils.http.HttpUrlUtils;
 import com.isxcode.acorn.common.utils.http.HttpUtils;
+import com.isxcode.acorn.common.utils.path.PathUtils;
 import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
@@ -27,6 +29,7 @@ import com.isxcode.acorn.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.datasource.service.DatasourceService;
+import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.file.repository.FileRepository;
 import com.isxcode.acorn.modules.func.mapper.FuncMapper;
 import com.isxcode.acorn.modules.func.repository.FuncRepository;
@@ -39,6 +42,8 @@ import com.isxcode.acorn.modules.work.repository.WorkRepository;
 import com.isxcode.acorn.modules.work.run.WorkExecutor;
 import com.isxcode.acorn.modules.work.run.WorkRunContext;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
@@ -46,8 +51,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpJar;
 
 @Service
 @Slf4j
@@ -167,6 +176,27 @@ public class FlinkSqlExecutor extends WorkExecutor {
             .entryClass("com.isxcode.acorn.plugin.sql.execute.Job").appResource("flink-sql-execute-plugin.jar").build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
 
+        ScpFileEngineNodeDto scpFileEngineNodeDto =
+            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
+        scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+        String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+            + File.separator + TENANT_ID.get();
+
+        // 上传依赖到制定节点路径
+        if (workRunContext.getLibConfig() != null) {
+            List<FileEntity> libFile = fileRepository.findAllById(workRunContext.getLibConfig());
+            libFile.forEach(e -> {
+                try {
+                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
+                        engineNode.getAgentHomePath() + File.separator + "zhiliuyun-agent" + File.separator + "file"
+                            + File.separator + e.getId() + ".jar");
+                } catch (JSchException | SftpException | InterruptedException | IOException ex) {
+                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
+                }
+            });
+            submitJobReq.setLibConfig(workRunContext.getLibConfig());
+        }
+
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业  \n");
@@ -237,7 +267,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
             workInstance = updateInstance(workInstance, logBuilder);
 
             // 如果状态是运行中，更新日志，继续执行
-            List<String> runningStatus = Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING");
+            List<String> runningStatus =
+                Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING", "PENDING");
             if (runningStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
                 try {
                     Thread.sleep(4000);
@@ -249,16 +280,16 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 // 运行结束逻辑
 
                 // 如果是中止，直接退出
-                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())) {
+                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
                 }
 
                 // 获取日志并保存
-                GetWorkLogReq getJobLogReq =
-                    GetWorkLogReq.builder().agentHomePath(engineNode.getAgentHomePath()).appId(submitJobRes.getAppId())
-                        .workInstanceId(workInstance.getId()).flinkHome(engineNode.getFlinkHomePath())
-                        .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
+                GetWorkLogReq getJobLogReq = GetWorkLogReq.builder()
+                    .agentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME)
+                    .appId(submitJobRes.getAppId()).workInstanceId(workInstance.getId())
+                    .flinkHome(engineNode.getFlinkHomePath())
+                    .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
 
                 baseResponse = HttpUtils.doPost(
                     httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.GET_WORK_LOG_URL),

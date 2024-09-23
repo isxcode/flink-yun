@@ -18,7 +18,6 @@ tasks.register('build_agent_lib', Copy) {
   from rootDir.getAbsolutePath() + '/flink-yun-backend/flink-yun-api/build/libs'
   from rootDir.getAbsolutePath() + '/flink-yun-agent/build/libs'
   from rootDir.getAbsolutePath() + '/resources/jdbc/system'
-  from rootDir.getAbsolutePath() + '/resources/cdc'
   into 'build/zhiliuyun-agent/lib'
 }
 

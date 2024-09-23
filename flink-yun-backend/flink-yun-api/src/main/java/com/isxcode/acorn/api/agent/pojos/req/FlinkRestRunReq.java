@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -13,15 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 public class FlinkRestRunReq {
 
+    private boolean allowNonRestoredState;
+
     private String entryClass;
 
-    private String parallelism;
+    private String jobId;
+
+    private Integer parallelism;
 
     private String programArgs;
 
     private List<String> programArgsList;
 
+    private String restoreMode;
+
     private String savepointPath;
 
-    private boolean allowNonRestoredState;
+    private Map<String, String> flinkConfiguration;
 }
