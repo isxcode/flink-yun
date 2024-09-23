@@ -24,9 +24,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_DATASOURCE SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE FY_DATASOURCE SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_DATASOURCE")
+@Table(name = "FY_DATASOURCE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class DatasourceEntity {

@@ -18,9 +18,9 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_FORM SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE FY_FORM SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_FORM")
+@Table(name = "FY_FORM")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class FormEntity {

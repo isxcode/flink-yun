@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_REAL"})
+@CacheConfig(cacheNames = {"FY_REAL"})
 public interface RealRepository extends JpaRepository<RealEntity, String> {
 
     @Query("SELECT R FROM RealEntity R WHERE R.name LIKE %:keyword% OR R.remark LIKE %:keyword% order by R.createDateTime desc ")

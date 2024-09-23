@@ -165,7 +165,7 @@ CREATE TABLE QRTZ_LOCKS
 );
 
 -- 租户表
-create table if not exists SY_TENANT
+create table if not exists FY_TENANT
 (
     id                      varchar(200)  not null unique primary key comment '租户唯一id',
     name                    varchar(200)  not null comment '租户名称',
@@ -186,7 +186,7 @@ create table if not exists SY_TENANT
 );
 
 -- 用户表
-create table if not exists SY_USER
+create table if not exists FY_USER
 (
     id                      varchar(200)  not null unique primary key comment '用户唯一id',
     username                varchar(200)  not null comment '用户名称',
@@ -208,13 +208,13 @@ create table if not exists SY_USER
 );
 
 -- 初始化系统管理员
-insert into SY_USER (id, username, account, passwd, role_code, status, create_by, create_date_time, last_modified_by,
+insert into FY_USER (id, username, account, passwd, role_code, status, create_by, create_date_time, last_modified_by,
                      last_modified_date_time, version_number)
 values ('admin_id', '系统管理员', 'admin', '', 'ROLE_SYS_ADMIN', 'ENABLE', 'admin_id', now(), 'admin_id', now(),
         0);
 
 -- 租户用户关系表
-create table if not exists SY_TENANT_USERS
+create table if not exists FY_TENANT_USERS
 (
     id                      varchar(200)  not null unique primary key comment '关系唯一id',
     user_id                 varchar(200)  not null comment '用户id',
@@ -231,7 +231,7 @@ create table if not exists SY_TENANT_USERS
 );
 
 -- 集群表
-create table if not exists SY_CLUSTER
+create table if not exists FY_CLUSTER
 (
     id                      varchar(200)  not null unique primary key comment '集群唯一id',
     name                    varchar(200)  not null comment '集群名称',
@@ -254,7 +254,7 @@ create table if not exists SY_CLUSTER
 );
 
 -- 集群节点表
-create table if not exists SY_CLUSTER_NODE
+create table if not exists FY_CLUSTER_NODE
 (
     id                      varchar(200)  not null unique primary key comment '集群节点唯一id',
     name                    varchar(200)  not null comment '节点名称',
@@ -284,7 +284,7 @@ create table if not exists SY_CLUSTER_NODE
 );
 
 -- 数据源表
-create table if not exists SY_DATASOURCE
+create table if not exists FY_DATASOURCE
 (
     id                      varchar(200)  not null unique primary key comment '数据源唯一id',
     name                    varchar(200)  not null comment '数据源名称',
@@ -306,7 +306,7 @@ create table if not exists SY_DATASOURCE
 );
 
 -- 作业流表
-create table if not exists SY_WORKFLOW
+create table if not exists FY_WORKFLOW
 (
     id                      varchar(200)  not null unique primary key comment '作业流唯一id',
     name                    varchar(200)  not null comment '作业流名称',
@@ -322,7 +322,7 @@ create table if not exists SY_WORKFLOW
 );
 
 -- 作业表
-create table if not exists SY_WORK
+create table if not exists FY_WORK
 (
     id                      varchar(200)  not null unique primary key comment '作业唯一id',
     name                    varchar(200)  not null comment '作业名称',
@@ -342,7 +342,7 @@ create table if not exists SY_WORK
 );
 
 -- 作业配置表
-create table if not exists SY_WORK_CONFIG
+create table if not exists FY_WORK_CONFIG
 (
     id                      varchar(200)  not null unique primary key comment '作业配置唯一id',
     datasource_id           varchar(200) comment '数据源id',
@@ -360,7 +360,7 @@ create table if not exists SY_WORK_CONFIG
 );
 
 -- 许可证表
-create table if not exists SY_LICENSE
+create table if not exists FY_LICENSE
 (
     id                      varchar(200)  not null unique primary key comment '许可证唯一id',
     code                    varchar(200)  not null comment '许可证编号',
@@ -383,7 +383,7 @@ create table if not exists SY_LICENSE
 );
 
 -- 自定义API表
-create table if not exists SY_API
+create table if not exists FY_API
 (
     id                      varchar(200)  not null unique primary key comment '唯一API的id',
     name                    varchar(200)  not null comment 'API名称',
@@ -406,7 +406,7 @@ create table if not exists SY_API
 );
 
 -- 作业配置版本表
-create table if not exists SY_WORK_VERSION
+create table if not exists FY_WORK_VERSION
 (
     id                      varchar(200)  not null unique primary key comment '版本唯一id',
     work_id                 varchar(200)  not null comment '作业id',
@@ -426,7 +426,7 @@ create table if not exists SY_WORK_VERSION
 );
 
 -- 作业运行实例表
-create table if not exists SY_WORK_INSTANCE
+create table if not exists FY_WORK_INSTANCE
 (
     id                      varchar(200)  not null unique primary key comment '实例唯一id',
     version_id              varchar(200) comment '实例版本id',
@@ -450,7 +450,7 @@ create table if not exists SY_WORK_INSTANCE
 );
 
 -- 用户行为记录表
-create table if not exists SY_USER_ACTION
+create table if not exists FY_USER_ACTION
 (
     id               varchar(200) not null unique primary key comment '用户行为唯一id',
     user_id          varchar(200) comment '用户id',
@@ -467,7 +467,7 @@ create table if not exists SY_USER_ACTION
 );
 
 -- 自定义表单表
-create table if not exists SY_FORM
+create table if not exists FY_FORM
 (
     id                      varchar(200)  not null unique primary key comment '自定义表单唯一id',
     name                    varchar(200)  not null comment '表单名称',
@@ -488,7 +488,7 @@ create table if not exists SY_FORM
 );
 
 -- 自定义表单组件表
-create table if not exists SY_FORM_COMPONENT
+create table if not exists FY_FORM_COMPONENT
 (
     id                      varchar(200)  not null unique primary key comment '表单字段组件唯一id',
     form_id                 varchar(200) comment '自定义表单id',
@@ -508,23 +508,23 @@ create table if not exists SY_FORM_COMPONENT
     tenant_id               varchar(200)  not null comment '租户id'
 );
 
-alter table SY_CLUSTER
+alter table FY_CLUSTER
     add cluster_type varchar(100) null comment '集群的类型';
 
-update SY_CLUSTER
+update FY_CLUSTER
 set cluster_type='yarn'
 where 1 = 1;
 
 -- 给作业实例，添加作业流实例id
-alter table SY_WORK_INSTANCE
+alter table FY_WORK_INSTANCE
     add workflow_instance_id varchar(100) null comment '工作流实例id';
 
 -- 给作业实例，添加是否被定时器触发过
-alter table SY_WORK_INSTANCE
+alter table FY_WORK_INSTANCE
     add quartz_has_run tinyint(1) null comment '是否被定时器触发过';
 
 -- 创建工作流配置表
-create table SY_WORKFLOW_CONFIG
+create table FY_WORKFLOW_CONFIG
 (
     id                      varchar(200)  not null comment '作业流配置唯一id'
         primary key,
@@ -546,7 +546,7 @@ create table SY_WORKFLOW_CONFIG
 );
 
 -- 创建工作流实例表
-create table SY_WORKFLOW_INSTANCE
+create table FY_WORKFLOW_INSTANCE
 (
     id                      varchar(200)  not null comment '实例唯一id'
         primary key,
@@ -571,7 +571,7 @@ create table SY_WORKFLOW_INSTANCE
 );
 
 -- 创建工作流版本表
-create table SY_WORKFLOW_VERSION
+create table FY_WORKFLOW_VERSION
 (
     id                      varchar(200)  not null comment '工作流版本唯一id'
         primary key,
@@ -596,23 +596,23 @@ create table SY_WORKFLOW_VERSION
 );
 
 -- 工作流添加工作流配置id
-alter table SY_WORKFLOW
+alter table FY_WORKFLOW
     add config_id varchar(100) null comment '工作流配置id';
 
 -- 工作流添加工作流当前版本id
-alter table SY_WORKFLOW
+alter table FY_WORKFLOW
     add version_id varchar(100) null comment '版本id';
 
 -- 工作流添加工作流类型
-alter table SY_WORKFLOW
+alter table FY_WORKFLOW
     add type varchar(200) null comment '工作流类型';
 
 -- 作业添加置顶标志
-alter table SY_WORK
+alter table FY_WORK
     add top_index int null comment '作业置顶标志';
 
 -- 工作流收藏表
-create table SY_WORKFLOW_FAVOUR
+create table FY_WORKFLOW_FAVOUR
 (
     id                      varchar(200)  not null comment '工作流收藏唯一id'
         primary key,
@@ -629,23 +629,23 @@ create table SY_WORKFLOW_FAVOUR
 );
 
 -- 自定义锁表
-create table SY_LOCKER
+create table FY_LOCKER
 (
     id   bigint,
     name varchar(2000) not null,
     box  varchar(2000) null,
-    constraint SY_LOCKER_pk
+    constraint FY_LOCKER_pk
         primary key (id)
 );
 
-alter table SY_LOCKER
+alter table FY_LOCKER
     modify id int auto_increment;
 
-alter table SY_CLUSTER_NODE
+alter table FY_CLUSTER_NODE
     modify passwd varchar(5000) not null comment '节点服务器密码';
 
 -- 创建资源文件表
-create table SY_FILE
+create table FY_FILE
 (
     id                      varchar(200)  not null comment '文件配置唯一id'
         primary key,
@@ -665,53 +665,53 @@ create table SY_FILE
 );
 
 -- 添加同步作业的配置
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add sync_work_config text null comment '同步作业的配置' after corn;
 
 -- 统一脚本内容
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     change sql_script script text null comment '统一脚本内容，包括sql、bash、python脚本';
 
 -- 将cluster_id和flink_config合并成cluster_config
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     drop column cluster_id;
 
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     drop column flink_config;
 
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add cluster_config text null comment '计算集群配置' after sync_work_config;
 
 -- 将cron扩展成cron_config
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     change corn cron_config text null comment '定时表达式';
 
 -- 添加数据同步规则
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add sync_rule text null comment '数据同步规则' after cluster_config;
 
 -- 添加flink_home_path
-alter table SY_CLUSTER_NODE
+alter table FY_CLUSTER_NODE
     add flink_home_path varchar(200) null comment 'standalone模式flink的安装目录' after hadoop_home_path;
 
 -- 添加默认集群
-alter table SY_CLUSTER
+alter table FY_CLUSTER
     add default_cluster boolean null default false comment '默认计算集群' after used_storage_num;
 
 -- 作业运行实例中，添加作业运行的pid
-alter table SY_WORK_INSTANCE
+alter table FY_WORK_INSTANCE
     add work_pid varchar(100) null comment '作业运行的进程pid' after result_data;
 
 -- hive数据源，添加hive.metastore.uris配置项
-alter table SY_DATASOURCE
+alter table FY_DATASOURCE
     add metastore_uris varchar(200) null comment 'hive数据源 hive.metastore.uris 配置' after db_type;
 
 -- 数据源支持驱动添加
-alter table SY_DATASOURCE
+alter table FY_DATASOURCE
     add driver_id varchar(100) not null comment '数据库驱动id' after metastore_uris;
 
 -- 新增数据源驱动表
-create table SY_DATABASE_DRIVER
+create table FY_DATABASE_DRIVER
 (
     id                      varchar(200)  not null comment '数据源驱动唯一id'
         primary key,
@@ -731,82 +731,82 @@ create table SY_DATABASE_DRIVER
 );
 
 -- 初始化系统驱动
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('clickhouse_0.5.0', 'clickhouse_0.5.0', 'CLICKHOUSE', 'clickhouse-jdbc-0.5.0.jar', 'SYSTEM_DRIVER',
         'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动',
         1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('db2_11.5.8.0', 'db2_11.5.8.0', 'DB2', 'jcc-11.5.8.0.jar', 'SYSTEM_DRIVER', 'zhiliuyun', '2023-11-01 16:54:34',
         'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('dm_8.1.1.49', 'dm_8.1.1.49', 'DM', 'Dm8JdbcDriver18-8.1.1.49.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('doris_mysql_5.1.49', 'doris_mysql_5.1.49', 'DORIS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER',
         'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动',
         1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('hana_2.18.13', 'hana_2.18.13', 'HANA_SAP', 'ngdbc-2.18.13.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('hive_uber_2.6.3.jar', 'hive_uber_2.6.3.jar', 'HIVE', 'hive-jdbc-uber-2.6.3.0-235.jar', 'SYSTEM_DRIVER',
         'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动',
         1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('hive_3.1.3', 'hive_3.1.3', 'HIVE', 'hive-jdbc-3.1.3-standalone.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 0);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('mysql_5.1.49', 'mysql_5.1.49', 'MYSQL', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 0);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('mysql_8.1.0', 'mysql_8.1.0', 'MYSQL', 'mysql-connector-j-8.1.0.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('oceanbase_2.4.6', 'oceanbase_2.4.6', 'OCEANBASE', 'oceanbase-client-2.4.6.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('oracle_19.20.0.0', 'oracle_19.20.0.0', 'ORACLE', 'ojdbc10-19.20.0.0.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('postgre_42.6.0', 'postgre_42.6.0', 'POSTGRE_SQL', 'postgresql-42.6.0.jar', 'SYSTEM_DRIVER', 'zhiliuyun',
         '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('sqlServer_12.4.2.jre8', 'sqlServer_12.4.2.jre8', 'SQL_SERVER', 'mssql-jdbc-12.4.2.jre8.jar', 'SYSTEM_DRIVER',
         'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun', '系统自带驱动',
         1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('star_rocks(mysql_5.1.49)', 'star_rocks(mysql_5.1.49)', 'STAR_ROCKS', 'mysql-connector-java-5.1.49.jar',
         'SYSTEM_DRIVER', 'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun',
         '系统自带驱动', 1);
-INSERT INTO SY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
                                 is_default_driver)
 VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER',
@@ -814,69 +814,69 @@ VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-jav
         1);
 
 -- 工作流添加默认计算引擎配置
-alter table SY_WORKFLOW
+alter table FY_WORKFLOW
     add default_cluster_id varchar(200) null comment '默认计算引擎' after status;
 
 -- 数据源日志长度扩大
-alter table SY_DATASOURCE
+alter table FY_DATASOURCE
     change connect_log connect_log text null comment '测试连接日志';
 
--- SY_WORKFLOW_CONFIG将cron扩展成cron_config
-alter table SY_WORKFLOW_CONFIG
+-- FY_WORKFLOW_CONFIG将cron扩展成cron_config
+alter table FY_WORKFLOW_CONFIG
     change corn cron_config text null comment '定时表达式';
 
--- SY_WORK_VERSION将cron扩展成cron_config
-alter table SY_WORK_VERSION
+-- FY_WORK_VERSION将cron扩展成cron_config
+alter table FY_WORK_VERSION
     change corn cron_config text null comment '定时表达配置';
 
--- SY_WORK_VERSION将cluster_id扩展成cluster_config
-alter table SY_WORK_VERSION
+-- FY_WORK_VERSION将cluster_id扩展成cluster_config
+alter table FY_WORK_VERSION
     change cluster_id cluster_config text null comment '集群配置';
 
--- SY_WORK_VERSION将sql_script扩展成script
-alter table SY_WORK_VERSION
+-- FY_WORK_VERSION将sql_script扩展成script
+alter table FY_WORK_VERSION
     change sql_script script text null comment '脚本内容';
 
--- 删除SY_WORK_VERSION的flink_config
-alter table SY_WORK_VERSION
+-- 删除FY_WORK_VERSION的flink_config
+alter table FY_WORK_VERSION
     drop column flink_config;
 
 -- 添加同步作业的配置
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add sync_work_config text null comment '同步作业的配置' after cron_config;
 
 -- 添加数据同步规则
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add sync_rule text null comment '数据同步规则' after sync_work_config;
 
 -- 修改错别字
-alter table SY_WORKFLOW_VERSION
+alter table FY_WORKFLOW_VERSION
     change corn cron varchar(200) not null comment '定时表达式';
 
 -- 作业流版本里加dag图
-alter table SY_WORKFLOW_VERSION
+alter table FY_WORKFLOW_VERSION
     add web_config text null comment '作业流的dag图' after cron;
 
 -- 作业流实例添加耗时
-alter table SY_WORKFLOW_INSTANCE
+alter table FY_WORKFLOW_INSTANCE
     add duration int null comment '耗时时间（秒）' after exec_end_date_time;
 
 -- 作业流实例添加耗时
-alter table SY_WORK_INSTANCE
+alter table FY_WORK_INSTANCE
     add duration int null comment '耗时时间（秒）' after exec_end_date_time;
 
--- SY_WORK_VERSION将cron扩展成cron_config
-alter table SY_WORKFLOW_VERSION
+-- FY_WORK_VERSION将cron扩展成cron_config
+alter table FY_WORKFLOW_VERSION
     change cron cron_config text not null comment '调度配置';
 
 -- 作业添加udf函数开关
-ALTER TABLE SY_WORK_CONFIG
+ALTER TABLE FY_WORK_CONFIG
     ADD udf_status BOOL DEFAULT false NULL;
-ALTER TABLE SY_WORK_CONFIG
+ALTER TABLE FY_WORK_CONFIG
     CHANGE udf_status udf_status BOOL DEFAULT false NULL AFTER cron_config;
 
 -- 新增udf定义表
-create table SY_WORK_UDF
+create table FY_WORK_UDF
 (
     id                      varchar(200)  not null comment 'udf唯一id'
         primary key,
@@ -895,93 +895,93 @@ create table SY_WORK_UDF
     tenant_id               varchar(200)  not null comment '租户id'
 );
 
-ALTER TABLE SY_WORK_CONFIG
+ALTER TABLE FY_WORK_CONFIG
     ADD jar_conf text NULL;
-ALTER TABLE SY_WORK_CONFIG
+ALTER TABLE FY_WORK_CONFIG
     CHANGE jar_conf jar_conf text NULL AFTER sync_rule;
 
-ALTER TABLE SY_WORKFLOW_CONFIG
+ALTER TABLE FY_WORKFLOW_CONFIG
     ADD external_call CHAR NULL;
-ALTER TABLE SY_WORKFLOW_CONFIG
+ALTER TABLE FY_WORKFLOW_CONFIG
     CHANGE external_call external_call CHAR NULL AFTER dag_end_list;
-ALTER TABLE SY_WORKFLOW_CONFIG
+ALTER TABLE FY_WORKFLOW_CONFIG
     ADD access_key varchar(100) NULL;
-ALTER TABLE SY_WORKFLOW_CONFIG
+ALTER TABLE FY_WORKFLOW_CONFIG
     CHANGE access_key access_key varchar(100) NULL AFTER external_call;
 
 -- 新增字段 createMode 创建模式
-alter table SY_FORM
+alter table FY_FORM
     add create_mode varchar(100) null comment '表单创建模式' after status;
 
 -- 表单新增表单备注字段
-alter table SY_FORM
+alter table FY_FORM
     add remark varchar(500) null comment '表单备注' after create_mode;
 
-alter table SY_FORM
+alter table FY_FORM
     modify insert_sql varchar(2000) null comment '增sql语句';
 
-alter table SY_FORM
+alter table FY_FORM
     modify delete_sql varchar(2000) null comment '删sql语句';
 
-alter table SY_FORM
+alter table FY_FORM
     modify update_sql varchar(2000) null comment '改sql语句';
 
-alter table SY_FORM
+alter table FY_FORM
     modify select_sql varchar(2000) null comment '查sql语句';
 
-alter table SY_FORM
+alter table FY_FORM
     drop column create_mode;
 
-alter table SY_FORM
+alter table FY_FORM
     add form_web_config longtext null comment '前端所有的配置' after select_sql;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     add uuid varchar(50) not null comment '前端的uuid' after form_id;;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     add component_config text null comment '组件的配置' after value_sql;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column name;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column component_type;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column component_key;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column is_display;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column is_primary_key;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column show_value;
 
-alter table SY_FORM_COMPONENT
+alter table FY_FORM_COMPONENT
     drop column value_sql;
 
-alter table SY_FORM
+alter table FY_FORM
     add form_version varchar(50) null comment '表单版本号' after form_web_config;
 
-alter table SY_API
+alter table FY_API
     add token_type varchar(200) null comment '认证方式' after status;
 
-alter table SY_API
+alter table FY_API
     add page_type varchar(50) null comment '分页状态' after token_type;
 
-alter table SY_FORM
+alter table FY_FORM
     add create_mode varchar(50) not null comment '该表单主表的创建模式' after form_version;
 
-alter table SY_API
+alter table FY_API
     modify page_type boolean null comment '分页状态';
 
-alter table SY_API
+alter table FY_API
     modify api_sql varchar(2000) null comment '执行的sql';
 
 -- 添加分享表单的链接表
-create table SY_FORM_LINK
+create table FY_FORM_LINK
 (
     id                      varchar(200)  not null comment '分享表单链接id'
         primary key,
@@ -999,52 +999,52 @@ create table SY_FORM_LINK
 );
 
 -- 删除资源文件的路径
-alter table SY_FILE
+alter table FY_FILE
     drop column FILE_PATH;
 
 -- 添加备注字段
-alter table SY_FILE
+alter table FY_FILE
     add REMARK varchar(500) comment '备注';
 
 -- 添加自定义jar作业配置
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add JAR_JOB_CONFIG text comment '自定义jar作业配置';
 
 -- 版本添加自定义作业配置
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add JAR_JOB_CONFIG text comment '自定义作业配置';
 
 -- 依赖配置
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add LIB_CONFIG text comment '作业依赖文件';
 
 -- 自定义配置
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add FUNC_CONFIG text comment '自定义函数配置';
 
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add LIB_CONFIG text comment '依赖配置';
 
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add FUNC_CONFIG text comment '自定义函数配置';
 
 -- 修改自定义函数表
-alter table SY_WORK_UDF
-    rename to SY_FUNC;
+alter table FY_WORK_UDF
+    rename to FY_FUNC;
 
 -- 加注释TYPE
-alter table SY_FUNC
+alter table FY_FUNC
     modify type varchar(20) not null comment 'UDF或者UDAF';
 
 -- 删除自定义函数的STATUS
-alter table SY_FUNC
+alter table FY_FUNC
     drop column STATUS;
 
 -- 添加自定义函数备注字段
-alter table SY_FUNC
+alter table FY_FUNC
     add REMARK varchar(500) comment '备注';
 
-create table SY_CONTAINER
+create table FY_CONTAINER
 (
     ID                      varchar(200)      not null
         primary key
@@ -1069,23 +1069,23 @@ create table SY_CONTAINER
 );
 
 -- 作业支持容器sql
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add CONTAINER_ID varchar(200);
 
 -- 作业版本支持容器sql
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add CONTAINER_ID varchar(200);
 
 -- 添加接口调用作业配置
-alter table SY_WORK_CONFIG
+alter table FY_WORK_CONFIG
     add API_WORK_CONFIG text null comment '接口调用作业的配置';
 
 -- 版本中添加接口调用作业配置
-alter table SY_WORK_VERSION
+alter table FY_WORK_VERSION
     add API_WORK_CONFIG text null comment '接口调用作业的配置';
 
 -- 新增实时作业表
-create table SY_REAL
+create table FY_REAL
 (
     id                      varchar(200)  not null comment '分享表单链接id'
         primary key,
@@ -1109,18 +1109,18 @@ create table SY_REAL
 );
 
 -- 新增kafka数据源配置
-alter table SY_DATASOURCE
+alter table FY_DATASOURCE
     add KAFKA_CONFIG text null comment 'kafka数据源配置';
 
 -- 新增kafka驱动
-INSERT INTO SY_DATABASE_DRIVER (ID, NAME, DB_TYPE, FILE_NAME, DRIVER_TYPE, IS_DEFAULT_DRIVER, REMARK, CREATE_BY,
+INSERT INTO FY_DATABASE_DRIVER (ID, NAME, DB_TYPE, FILE_NAME, DRIVER_TYPE, IS_DEFAULT_DRIVER, REMARK, CREATE_BY,
                                 CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED,
                                 TENANT_ID)
 VALUES ('kafka_client_3.1.2', 'kafka_client_3.1.2', 'KAFKA', 'kafka_client_3.1.2.jar', 'SYSTEM_DRIVER', true,
         '系统自带驱动', 'zhiliuyun', '2023-11-01 16:54:34', 'zhiliuyun', '2023-11-01 16:54:39', 1, 0, 'zhiliuyun');
 
 -- 添加监控表
-create table SY_MONITOR
+create table FY_MONITOR
 (
     id                     varchar(200)  not null comment '分享表单链接id'
         primary key,
@@ -1142,17 +1142,17 @@ create table SY_MONITOR
 );
 
 -- 兼容flink
-ALTER TABLE SY_CLUSTER_NODE
+ALTER TABLE FY_CLUSTER_NODE
     CHANGE COLUMN FLINK_HOME_PATH FLINK_HOME_PATH VARCHAR(255);
 
-ALTER TABLE SY_CLUSTER_NODE
+ALTER TABLE FY_CLUSTER_NODE
     MODIFY COLUMN FLINK_HOME_PATH VARCHAR(255) COMMENT 'flink的安装目录';
 
-ALTER TABLE SY_WORK_INSTANCE
+ALTER TABLE FY_WORK_INSTANCE
     CHANGE COLUMN YARN_LOG TASK_MANAGER_LOG VARCHAR(255);
 
-ALTER TABLE SY_WORK_INSTANCE
+ALTER TABLE FY_WORK_INSTANCE
     MODIFY COLUMN TASK_MANAGER_LOG VARCHAR(255) COMMENT 'taskManagerLog记录';
 
-alter table SY_WORK_INSTANCE
+alter table FY_WORK_INSTANCE
     add JOB_MANAGER_LOG text null comment 'jobManagerLog日志';

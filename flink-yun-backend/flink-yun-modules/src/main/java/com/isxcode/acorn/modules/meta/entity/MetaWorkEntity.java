@@ -20,9 +20,9 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE SY_META_WORK SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE FY_META_WORK SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_META_WORK")
+@Table(name = "FY_META_WORK")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 @Builder(toBuilder = true)

@@ -45,7 +45,7 @@
       </template>
       <el-form-item
         v-if="workType === 'FLINK_SQL'"
-        label="Spark配置"
+        label="Flink配置"
       >
         <el-input
           v-model="formData.flinkConfig"
