@@ -7,18 +7,18 @@
             至流云
           </div>
           <div class="slogan">
-            企业级流数据分析平台
+            企业级流式计算平台
           </div>
           <div class="command">
             <p id="command-shell">docker run -p 8080:8080 isxcode/zhiliuyun</p>
             <SvgIcon
-                class="copy-icon"
-                name="copy"
-                @click="handleCommandCopyClick"
+              class="copy-icon"
+              name="copy"
+              @click="handleCommandCopyClick"
             ></SvgIcon>
           </div>
           <div class="btn-div">
-            <div class="guide-btn" @click="clickOther">
+            <div class="guide-btn" @click="handleGuideClick">
               <p>快速入门</p>
             </div>
             <div class="quick-btn" @click="handleQuickClick">
@@ -41,40 +41,35 @@
           选择至流云
         </div>
         <div class="why-content">
-          至流云是一款企业级流数据分析平台。具有一键Docker部署，开箱即用特色。无需额外数据组件安装，即可快速实现流数据实时ETL、数据同步、复杂作业运行等场景。项目持续更新迭代，源码永久免费开源。助力企业探索实时数据分析领域，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="why-content-mobile">
-          至流云是一款企业级流数据分析平台。具有一键Docker部署，开箱即用特色。无需额外数据组件安装，即可快速实现流数据实时ETL、数据同步、复杂作业运行等场景。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="tech-title">
           相关技术
         </div>
         <div class="tech-img-div">
-          <img class="tech-img" @click="handleK8sClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
-          <img class="tech-img" @click="handleHadoopClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hadoop.png" alt="">
-          <img class="tech-img" @click="handleFlinkClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-flink.png" alt="">
-          <img class="tech-img" @click="handleEsClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-es.png" alt="">
-          <img class="tech-img" @click="handleDorisClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-doris.png" alt="">
-          <img class="tech-img" @click="handleMongoClick"
-               src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-mongodb.png" alt="">
+          <img class="tech-img" @click="handleK8sClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
+          <img class="tech-img" @click="handleHadoopClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hadoop.png" alt="">
+          <img class="tech-img" @click="handleFlinkClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-flink.png" alt="">
+          <img class="tech-img" @click="handleDorisClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-doris.png" alt="">
+          <img class="tech-img" @click="handleHiveClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hive.png" alt="">
+          <img class="tech-img" @click="handleEsClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-es.png" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
+          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-1.jpg" alt="">
+        </div>
+        <div class="left-phone">
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-1.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">多平台部署，从不娇生惯养</div>
-          <div class="line-2">支持各类资源调度平台，如Kubernetes、Flink Standalone、Flink
-            Cluster、Yarn、CDH等。可无缝切换，敏捷迁移，帮助企业更优分配集群资源。
-          </div>
+          <div class="line-1">能写代码？不单单只有Sql</div>
+          <div class="line-2">支持超多作业类型，包括FlinkSql、FlinkJar、JdbcSql、Prql、Python脚本、Bash脚本、Curl脚本、接口调用等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
@@ -85,35 +80,34 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">驱动上传，任何姿势都能连</div>
-          <div class="line-2">
-            支持海量数据源，如Mysql、Hive、Oracle、SqlServer、TiDB、Oceanbase、Doris、Clickhouse等，支持自定义驱动上传。
-          </div>
+          <div class="line-1">作业调度，横竖都能拖拽</div>
+          <div class="line-2">支持全量的作业生命周期指令，包括运行、中止、中断、下线、发布、重跑、重跑下游、重跑当前、外部调用等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
         <div class="right">
-          <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
+          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
+          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
+        </div>
+        <div class="left-phone">
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">创建租户，再大也能装下</div>
-          <div class="line-2">
-            支持多租户模式，确保租户数据隔离。租户内可单独协调集群资源、数据源驱动、作业流配置等。解决企业中部门规模较大、用户众多、权限难解的问题。
-          </div>
+          <div class="line-1">自定义接口，千变万化</div>
+          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在数据下放场景中的多样化需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
     </div>
     <div class="module-business">
       <div class="content">
-        <div class="line-1">实时分析，让数据创造更多价值</div>
-        <div class="line-2">AI已至，至流云与您携手实现企业级流数据平台落地</div>
+        <div class="line-1">流式计算，让数据分析更高效</div>
+        <div class="line-2">至流云与您携手实现企业级流式计算平台落地</div>
         <div class="business-img">
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-1.png" alt="">
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-2.png" alt="">
@@ -124,8 +118,7 @@
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-7.png" alt="">
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-8.png" alt="">
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-9.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-10.png"
-               alt="">
+          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-10.png" alt="">
         </div>
       </div>
     </div>
@@ -135,34 +128,33 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">编排作业，横竖都能拖拽</div>
-          <div class="line-2">
-            支持全量的作业生命周期指令，包括运行、中止、重跑、重跑下游、重跑当前、中断、发布等。且具备可视化定时调度设置，适配企业中各种复杂应用场景。
-          </div>
+          <div class="line-1">多平台部署，从不娇生惯养</div>
+          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、Flink Standalone、Flink Cluster等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
         <div class="right">
-          <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
+          <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
+          <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-5.jpg" alt="">
+        </div>
+         <div class="left-phone">
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-5.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">能写代码？不单单只有FlinkSql</div>
-          <div class="line-2">
-            支持超多作业类型，包括数据同步、Bash脚本、Python、FlinkSql、自定义FlinkJar、Prql等。免费提供用户开发模版，任何复杂的场景都可以通过写代码的方式解决。
-          </div>
+          <div class="line-1">数据大屏，实时展示数据</div>
+          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业决策，灵活适应行业内需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
     </div>
     <div class="module-end">
       <div class="content">
-        <div class="line-1">开源助力企业探索实时数据</div>
+        <div class="line-1">开源助力企业探索流式计算</div>
         <div class="end-btn" @click="handleQuickClick">免费试用</div>
       </div>
     </div>
@@ -174,6 +166,16 @@
 import {ElMessage} from 'element-plus'
 import Artplayer from "artplayer";
 import {defineProps} from "vue";
+import mediumZoom from "medium-zoom";
+
+onMounted(async () => {
+    await nextTick()
+    mediumZoom(document.querySelectorAll('#zoom'),{
+       margin: 100,
+       scrollOffset: 1,
+       background: '#fffaf8',
+    })
+})
 
 definePageMeta({
   title: "首页",
@@ -183,7 +185,7 @@ definePageMeta({
 useSeoMeta({
   title: "至流云",
   ogTitle: "至爻数据",
-  description: "企业级流数据分析平台",
+  description: "企业级流式计算平台",
   ogDescription: "打造企业级开源软件全家桶"
 });
 
@@ -206,19 +208,20 @@ onMounted(() => {
   const art = new Artplayer({
     container: '.artplayer-app',
     url: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/product.mp4',
+    poster:'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/product.jpg',
     fullscreen: true,
     fullscreenWeb: true,
     pip: true,
     autoplay: false,
     theme: '#7573d1',
-    muted: true,
+    muted: false,
     autoSize: true
   });
   window.addEventListener("scroll", handleScroll);
 })
 
 function handleScroll() {
-  if (window.scrollY > 100) {
+  if (window.scrollY > 50) {
     showVideo.value = false;
   }
 }
@@ -244,8 +247,8 @@ function handleDorisClick() {
   window.open("https://doris.apache.org/");
 }
 
-function handleMongoClick() {
-  window.open("https://www.mongodb.com/");
+function handleHiveClick() {
+  window.open("https://hive.apache.org/");
 }
 
 function handleK8sClick() {
@@ -277,28 +280,19 @@ const copyContent = async (text: string) => {
   }
 };
 
-function clickOther() {
-    const router = useRouter();
-    router.push("/docs/zh/0/0");
-}
-
 </script>
 
 <style lang="scss" scoped>
 
 @font-face {
-  font-family: "阿里妈妈数黑体 Bold";
-  font-weight: 700;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/2T83tSn1sblX.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/8wJy1XYcTuuO.woff") format("woff");
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/g6I3FTsV0Grv.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/suHrbUaSmK9Z.woff") format("woff");
   font-display: swap;
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/vQGbds15o00D.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/aLfcBe0NUcAu.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/arDgoLSU6MPO.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/ENdaHGMvBbvD.woff") format("woff");
   font-display: swap;
 }
 
@@ -460,9 +454,9 @@ $module-intro-img-width: 600px;
       .why-content {
         margin: 25px auto auto;
         text-indent: 2em;
-        width: 800px;
-        line-height: 24px;
-        font-size: 17px;
+        width: 810px;
+        line-height: 26px;
+        font-size: 18px;
       }
 
       .why-content-mobile {
@@ -549,6 +543,10 @@ $module-intro-img-width: 600px;
 
   .content {
     display: flex;
+
+    .left-phone {
+      display: none;
+    }
 
     .left {
       width: 600px;;
@@ -864,6 +862,11 @@ $module-intro-img-width: 600px;
       flex-direction: column;
 
       .left {
+        display: none;
+      }
+
+      .left-phone{
+        display: block;
         width: 300px;
 
         img {
