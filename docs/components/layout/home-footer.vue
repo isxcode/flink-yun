@@ -16,8 +16,8 @@
       <div class="right">
         <div class="column">
           <div class="title">产品</div>
-          <div class="link" @click="clickzhiliuyun">至流云</div>
-          <div class="link" @click="clickZhiliuyun">至轻云</div>
+          <div class="link" @click="clickZhiliuyun">至流云</div>
+          <div class="link" @click="clickzhiqingyun">至轻云</div>
           <div class="link" @click="clickZhihuiyun">至慧云</div>
           <div class="link" @click="clickZhishiyun">至视云</div>
           <div class="link" @click="clickZhishuyun">至数云</div>
@@ -31,16 +31,16 @@
         </div>
         <div class="column">
           <div class="title">资源</div>
-          <div class="link" @click="clickOther">产品手册</div>
-          <div class="link" @click="clickOther">博客</div>
+          <div class="link" @click="clickDocs">产品手册</div>
+          <div class="link" @click="clickBlogs">博客</div>
           <div class="link" @click="clickDockerHub">Docker Hub</div>
           <div class="link" @click="downloadPackage">安装包下载</div>
           <div class="link" @click="downloadLicense">许可证下载</div>
         </div>
         <div class="column">
           <div class="title">关于</div>
-          <div class="link" @click="clickOther">至爻数据</div>
-          <div class="link" @click="clickOther">加入我们</div>
+          <div class="link" @click="aboutUs">至爻数据</div>
+          <div class="link" @click="joinUs">加入我们</div>
           <div class="link" @click="clickGithubProject">开发进度</div>
         </div>
         <div class="column">
@@ -345,8 +345,8 @@ function clickGitee() {
   window.open("https://gitee.com/isxcode/flink-yun");
 }
 
-function clickzhiliuyun() {
-  window.open("https://zhiliuyun.isxcode.com");
+function clickzhiqingyun() {
+  window.open("https://zhiqingyun.isxcode.com");
 }
 
 function clickZhishuyun() {
@@ -404,6 +404,16 @@ function clickIcp() {
 
 function callPhoneNumber() {
   window.location.href = `tel:4008848170`;
+}
+
+function aboutUs(){
+  const router = useRouter();
+  router.push("/docs/zh/8/0");
+}
+
+function joinUs(){
+  const router = useRouter();
+  router.push("/docs/zh/7/0");
 }
 
 </script>
