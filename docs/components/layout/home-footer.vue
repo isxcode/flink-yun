@@ -16,7 +16,7 @@
       <div class="right">
         <div class="column">
           <div class="title">产品</div>
-          <div class="link" @click="clickZhiqingyun">至流云</div>
+          <div class="link" @click="clickzhiliuyun">至流云</div>
           <div class="link" @click="clickZhiliuyun">至流云</div>
           <div class="link" @click="clickZhishuyun">至数云</div>
           <div class="link" @click="clickZhishiyun">至视云</div>
@@ -345,7 +345,7 @@ function clickGitee() {
   window.open("https://gitee.com/isxcode/flink-yun");
 }
 
-function clickZhiqingyun() {
+function clickzhiliuyun() {
   window.open("https://zhiliuyun.isxcode.com");
 }
 
