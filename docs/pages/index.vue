@@ -7,7 +7,7 @@
             至流云
           </div>
           <div class="slogan">
-            企业级流数据计算平台
+            企业级流式计算平台
           </div>
           <div class="command">
             <p id="command-shell">docker run -p 8080:8080 isxcode/zhiliuyun</p>
@@ -41,10 +41,10 @@
           选择至流云
         </div>
         <div class="why-content">
-          至流云是一款超轻量级、企业级大数据计算平台。一键部署，开箱即用。可快速实现大数据ETL、实时计算、可视化调度、自定义接口、数据大屏等场景。助力企业处理海量数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="why-content-mobile">
-          至流云是一款超轻量级、企业级大数据计算平台。一键部署，开箱即用。可快速实现大数据ETL、实时计算、可视化调度、自定义接口、数据大屏等场景。助力企业处理海量数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="tech-title">
           相关技术
@@ -69,7 +69,7 @@
         </div>
         <div class="right">
           <div class="line-1">能写代码？不单单只有Sql</div>
-          <div class="line-2">支持超多作业类型，包括flinkSql、flinkJar、可视化数据同步、JdbcSql、Prql、Excel导入、Python脚本、Bash脚本、Curl脚本、接口调用等。</div>
+          <div class="line-2">支持超多作业类型，包括FlinkSql、FlinkJar、JdbcSql、Prql、Python脚本、Bash脚本、Curl脚本、接口调用等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
@@ -98,16 +98,16 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">数据大屏，展示大数据</div>
-          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业决策，灵活适应行业内需求。</div>
+          <div class="line-1">自定义接口，千变万化</div>
+          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在数据下放场景中的多样化需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
     </div>
     <div class="module-business">
       <div class="content">
-        <div class="line-1">实时计算，让数据价值更高效</div>
-        <div class="line-2">AI已至，至流云与您携手实现企业级流数据平台落地</div>
+        <div class="line-1">流式计算，让数据分析更高效</div>
+        <div class="line-2">至流云与您携手实现企业级流式计算平台落地</div>
         <div class="business-img">
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-1.png" alt="">
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-2.png" alt="">
@@ -128,8 +128,8 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">实时计算，让数据更高效</div>
-          <div class="line-2">支持实时计算和数据库实时同步功能，利用Kafka和Debezium高效处理数据流，确保快速传输和更新，保证数据一致性与可靠性。</div>
+          <div class="line-1">多平台部署，从不娇生惯养</div>
+          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、Flink Standalone、Flink Cluster等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
         <div class="right">
@@ -146,15 +146,15 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-5.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">多平台部署，从不娇生惯养</div>
-          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、flink Standalone、flink Cluster等。</div>
+          <div class="line-1">数据大屏，实时展示数据</div>
+          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业决策，灵活适应行业内需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
     </div>
     <div class="module-end">
       <div class="content">
-        <div class="line-1">开源助力企业探索数据实时分析</div>
+        <div class="line-1">开源助力企业探索流式计算</div>
         <div class="end-btn" @click="handleQuickClick">免费试用</div>
       </div>
     </div>
@@ -185,7 +185,7 @@ definePageMeta({
 useSeoMeta({
   title: "至流云",
   ogTitle: "至爻数据",
-  description: "企业级流数据计算平台",
+  description: "企业级流式计算平台",
   ogDescription: "打造企业级开源软件全家桶"
 });
 
@@ -285,18 +285,14 @@ const copyContent = async (text: string) => {
 <style lang="scss" scoped>
 
 @font-face {
-  font-family: "阿里妈妈数黑体 Bold";
-  font-weight: 700;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/2T83tSn1sblX.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/8wJy1XYcTuuO.woff") format("woff");
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/g6I3FTsV0Grv.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/suHrbUaSmK9Z.woff") format("woff");
   font-display: swap;
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";
-  font-weight: 300;
-  src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/vQGbds15o00D.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/aLfcBe0NUcAu.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/arDgoLSU6MPO.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/ENdaHGMvBbvD.woff") format("woff");
   font-display: swap;
 }
 
