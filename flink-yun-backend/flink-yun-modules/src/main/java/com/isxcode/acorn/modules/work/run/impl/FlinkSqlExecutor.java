@@ -279,13 +279,6 @@ public class FlinkSqlExecutor extends WorkExecutor {
             } else {
                 // 运行结束逻辑
 
-                // 如果是中止，直接退出
-                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
-                }
-
                 // 获取日志并保存
                 GetWorkLogReq getJobLogReq = GetWorkLogReq.builder()
                     .agentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME)
@@ -310,6 +303,13 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     workInstance.setTaskManagerLog(getWorkLogRes.getLog());
                 }
                 updateInstance(workInstance, logBuilder);
+
+                // 如果是中止，直接退出
+                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
+                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
+                }
 
                 // 如果运行成功，则保存返回数据
                 List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED");
