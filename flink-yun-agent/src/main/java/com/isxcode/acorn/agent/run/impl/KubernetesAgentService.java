@@ -41,6 +41,32 @@ import java.util.regex.Pattern;
 @Service
 public class KubernetesAgentService implements AgentService {
 
+    public void generatePodTemplate(List<String> volumeMounts, List<String> volumes, String agentHomePath,
+        String workInstanceId) throws IOException {
+
+        String podTemplate = "apiVersion: v1 \n" + "kind: Pod \n" + "metadata: \n" + "  name: pod-template \n"
+            + "spec:\n" + "  containers:\n" + "    - name: flink-main-container\n" + "      volumeMounts:\n" + " %s"
+            + "  volumes:\n" + " %s";
+
+        String podTemplateContent =
+            String.format(podTemplate, Strings.join(volumeMounts, ' '), Strings.join(volumes, ' '));
+
+        // 判断pod文件夹是否存在
+        if (!new File(agentHomePath + File.separator + "pod").exists()) {
+            Files.createDirectories(Paths.get(agentHomePath + File.separator + "pod"));
+        }
+
+        // 判断k8s-logs文件夹是否存在
+        if (!new File(agentHomePath + File.separator + "k8s-logs").exists()) {
+            Files.createDirectories(Paths.get(agentHomePath + File.separator + "k8s-logs"));
+        }
+
+        try (InputStream inputStream = new ByteArrayInputStream(podTemplateContent.getBytes())) {
+            Files.copy(inputStream, Paths.get(agentHomePath + File.separator + "pod").resolve(workInstanceId + ".yaml"),
+                StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
     @Override
     public String getAgentType() {
         return AgentType.K8S;
@@ -50,17 +76,21 @@ public class KubernetesAgentService implements AgentService {
     public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
-        flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
-        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
 
+        // flink的args配置
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
             flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitWorkReq.getFlinkSubmit().getProgramArgs());
         } else {
             flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
                 Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
         }
+
+        // flink on k8s配置
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
             submitWorkReq.getFlinkSubmit().getEntryClass());
+        flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
+        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
+        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
         flinkConfig.set(KubernetesConfigOptions.REST_SERVICE_EXPOSED_TYPE,
@@ -71,83 +101,60 @@ public class KubernetesAgentService implements AgentService {
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_SERVICE_ACCOUNT, "zhiliuyun");
         flinkConfig.set(KubernetesConfigOptions.CONTAINER_IMAGE, "flink:1.18.1-scala_2.12");
         flinkConfig.set(KubernetesConfigOptions.TASK_MANAGER_CPU, 2.0);
-
-        String podTemplate = "apiVersion: v1\n" + "kind: Pod\n" + "metadata:\n" + "  name: pod-template\n" + "spec:\n"
-            + "  containers:\n" + "    - name: flink-main-container\n" + "      volumeMounts:\n" + "%s" + "  volumes:\n"
-            + "%s";
-
-        List<String> volumeMounts = new ArrayList<>();
-        volumeMounts.add("        - name: app\n" + "          mountPath: /opt/flink/examples/app.jar\n");
-        volumeMounts.add("       - name: flink-log\n" + "          mountPath: /log\n");
-
-        List<String> volumes = new ArrayList<>();
-
-        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
-            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-                + File.separator + "file" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
-        } else {
-            volumes.add("    - name: app\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-                + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource() + "\n");
-        }
-
-        volumes.add("   - name: flink-log\n" + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath()
-            + File.separator + "k8s-logs" + File.separator + submitWorkReq.getWorkInstanceId() + "\n");
-
-        File[] jarFiles = new File(submitWorkReq.getAgentHomePath() + File.separator + "lib").listFiles();
-        if (jarFiles != null) {
-            for (File jarFile : jarFiles) {
-                if (jarFile.getName().contains("fastjson") || jarFile.getName().contains("flink")
-                    || jarFile.getName().contains("connector")) {
-                    volumeMounts.add("       - name: " + jarFile.getName().replace(".", "-").toLowerCase() + "\n"
-                        + "          mountPath: /opt/flink/lib/" + jarFile.getName().toLowerCase() + "\n");
-                    volumes.add("   - name: " + jarFile.getName().replace(".", "-").toLowerCase() + "\n"
-                        + "      hostPath:\n" + "        path: " + submitWorkReq.getAgentHomePath() + File.separator
-                        + "lib" + File.separator + jarFile.getName().toLowerCase() + "\n");
-                }
-            }
-        }
-
-        // 引入用户上传的jar
-        if (submitWorkReq.getLibConfig() != null) {
-            for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
-                String libFileName =
-                    (submitWorkReq.getLibConfig().get(i) + ".jar").replace(".", "-").replace("_", "-").toLowerCase();
-                volumeMounts.add("       - name: " + libFileName + "\n" + "          mountPath: /opt/flink/lib/"
-                    + submitWorkReq.getLibConfig().get(i) + ".jar" + "\n");
-                volumes.add("   - name: " + libFileName + "\n" + "      hostPath:\n" + "        path: "
-                    + submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
-                    + (submitWorkReq.getLibConfig().get(i) + ".jar") + "\n");
-            }
-        }
-
-        String podTemplateContent =
-            String.format(podTemplate, Strings.join(volumeMounts, ' '), Strings.join(volumes, ' '));
-
-        // 判断pod文件夹是否存在
-        if (!new File(submitWorkReq.getAgentHomePath() + File.separator + "pod").exists()) {
-            Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "pod"));
-        }
-
-        // 判断k8s-logs文件夹是否存在
-        if (!new File(submitWorkReq.getAgentHomePath() + File.separator + "k8s-logs").exists()) {
-            Files.createDirectories(Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "k8s-logs"));
-        }
-
-        try (InputStream inputStream = new ByteArrayInputStream(podTemplateContent.getBytes())) {
-            Files.copy(inputStream, Paths.get(submitWorkReq.getAgentHomePath() + File.separator + "pod")
-                .resolve(submitWorkReq.getWorkInstanceId() + ".yaml"), StandardCopyOption.REPLACE_EXISTING);
-        }
-
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE, submitWorkReq.getAgentHomePath()
             + File.separator + "pod" + File.separator + submitWorkReq.getWorkInstanceId() + ".yaml");
-
+        flinkConfig.set(KubernetesConfigOptions.KUBERNETES_HOSTNETWORK_ENABLED, true);
         flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/log");
-        flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
-        flinkConfig.set(KubernetesConfigOptions.KUBERNETES_HOSTNETWORK_ENABLED, true);
 
+        // 映射文件路径
+        List<String> volumeMounts = new ArrayList<>();
+        String volumeTemplate = "   - name: %s\n      hostPath:\n        path: %s\n";
+        List<String> volumes = new ArrayList<>();
+        String volumeMountsTemplate = "       - name: %s\n" + "          mountPath: %s\n";
+
+        // app文件映射
+        volumeMounts.add(String.format(volumeMountsTemplate, "app", "/opt/flink/examples/app.jar"));
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            volumes.add(String.format(volumeTemplate, "app", submitWorkReq.getAgentHomePath() + File.separator + "file"
+                + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+        } else {
+            volumes.add(String.format(volumeTemplate, "app", submitWorkReq.getAgentHomePath() + File.separator
+                + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+        }
+
+        // 日志文件映射
+        volumeMounts.add(String.format(volumeMountsTemplate, "flink-log", "/log"));
+        volumes.add(String.format(volumeTemplate, "flink-log", submitWorkReq.getAgentHomePath() + File.separator
+            + "k8s-logs" + File.separator + submitWorkReq.getWorkInstanceId()));
+
+        // 至流云lib映射
+        File[] jarFiles = new File(submitWorkReq.getAgentHomePath() + File.separator + "lib").listFiles();
+        if (jarFiles != null) {
+            for (int i = 0; i < jarFiles.length; i++) {
+                volumeMounts.add(String.format(volumeMountsTemplate, "zhiliuyun-lib-" + i,
+                    "/opt/flink/lib/" + jarFiles[i].getName()));
+                volumes.add(String.format(volumeTemplate, "zhiliuyun-lib-" + i, submitWorkReq.getAgentHomePath()
+                    + File.separator + "lib" + File.separator + jarFiles[i].getName()));
+            }
+        }
+
+        // 自定义依赖
+        if (submitWorkReq.getLibConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
+                volumeMounts.add(String.format(volumeMountsTemplate, "lib-" + i,
+                    "/opt/flink/lib/" + submitWorkReq.getLibConfig().get(i) + ".jar"));
+                volumes.add(String.format(volumeTemplate, "lib-" + i, submitWorkReq.getAgentHomePath() + File.separator
+                    + "file" + File.separator + submitWorkReq.getLibConfig().get(i) + ".jar"));
+            }
+        }
+
+        // 生成pod文件
+        generatePodTemplate(volumeMounts, volumes, submitWorkReq.getAgentHomePath(), submitWorkReq.getWorkInstanceId());
+
+        // 提交flink作业
         ClusterSpecification clusterSpecification =
             new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024)
                 .setSlotsPerTaskManager(2).createClusterSpecification();
