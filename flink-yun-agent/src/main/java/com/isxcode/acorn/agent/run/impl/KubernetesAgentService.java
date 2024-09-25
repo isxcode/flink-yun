@@ -104,7 +104,7 @@ public class KubernetesAgentService implements AgentService {
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE, submitWorkReq.getAgentHomePath()
             + File.separator + "pod" + File.separator + submitWorkReq.getWorkInstanceId() + ".yaml");
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_HOSTNETWORK_ENABLED, true);
-        flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/log");
+        flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/tmp/log");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
@@ -126,7 +126,7 @@ public class KubernetesAgentService implements AgentService {
         }
 
         // 日志文件映射
-        volumeMounts.add(String.format(volumeMountsTemplate, "flink-log", "/log"));
+        volumeMounts.add(String.format(volumeMountsTemplate, "flink-log", "/tmp/log"));
         volumes.add(String.format(volumeTemplate, "flink-log", submitWorkReq.getAgentHomePath() + File.separator
             + "k8s-logs" + File.separator + submitWorkReq.getWorkInstanceId()));
 
@@ -216,6 +216,17 @@ public class KubernetesAgentService implements AgentService {
 
     @Override
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
+
+        // 判断是否有
+
+        // 先判断是否提交成功
+
+        // 在判断kubectl logs -f zhiliuyun-cluster-1727233056083-69ff88c8b9-7rx4b -n zhiliuyun-space 是否有日志
+
+        // 再去k8s-logs中拿日志
+
+        // kubectl logs -f zhiliuyun-cluster-1727233056083-69ff88c8b9-7rx4b -n zhiliuyun-space
+
         File[] logFiles = new File(getWorkLogReq.getAgentHomePath() + File.separator + "k8s-logs" + File.separator
             + getWorkLogReq.getWorkInstanceId()).listFiles();
 
