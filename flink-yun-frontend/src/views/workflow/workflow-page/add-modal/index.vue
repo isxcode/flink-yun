@@ -52,7 +52,7 @@
                         />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(formData.workType)">
+                <el-form-item label="是否连接hive" v-if="['FLINK_SQL_BAK'].includes(formData.workType)">
                     <el-switch v-model="formData.enableHive" @change="enableHiveChange" />
                 </el-form-item>
                 <el-form-item

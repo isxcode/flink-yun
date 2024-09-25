@@ -55,7 +55,7 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="是否连接hive" v-if="['FLINK_SQL'].includes(workItemConfig.workType)">
+                <el-form-item label="是否连接hive" v-if="['FLINK_SQL_BAK'].includes(workItemConfig.workType)">
                   <el-switch v-model="clusterConfig.enableHive" />
                 </el-form-item>
                 <el-form-item label="Hive数据源" :prop="'datasourceId'" v-if="clusterConfig.enableHive && ['FLINK_SQL'].includes(workItemConfig.workType)">
