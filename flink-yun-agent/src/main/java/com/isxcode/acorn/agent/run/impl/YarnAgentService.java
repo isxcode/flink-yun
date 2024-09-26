@@ -56,28 +56,23 @@ public class YarnAgentService implements AgentService {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
 
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitWorkReq.getFlinkSubmit().getEntryClass());
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
         flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
-        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitWorkReq.getFlinkSubmit().getAppName());
-
-        // 使用application模式部署
+        flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
-
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
-
-        flinkConfig.set(PipelineOptions.JARS,
-            singletonList(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-                + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
-
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
-            Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
-            submitWorkReq.getFlinkSubmit().getEntryClass());
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
+        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitWorkReq.getFlinkSubmit().getAppName());
 
-        // 配置yarn文件
-        Path path = new Path(System.getenv("HADOOP_CONF_DIR") + "/yarn-site.xml");
+        // 加载yarn配置文件
+        String hadoopConfDir = System.getenv("HADOOP_CONF_DIR");
+        if (hadoopConfDir == null) {
+            throw new Exception("Hadoop conf dir is null");
+        }
+        Path path = new Path(hadoopConfDir + "/yarn-site.xml");
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
         conf.addResource(path);
         Map<String, String> yarn = conf.getPropsWithPrefix("yarn");
@@ -86,13 +81,13 @@ public class YarnAgentService implements AgentService {
         // 添加flink dist
         flinkConfig.set(YarnConfigOptions.FLINK_DIST_JAR, submitWorkReq.getFlinkHome() + "/lib/flink-dist-1.18.1.jar");
 
-        // 添加lib
+        // 初始化要加载到lib包
         List<String> libFile = new ArrayList<>();
         libFile.add(submitWorkReq.getFlinkHome() + "/lib");
-        libFile.add(submitWorkReq.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME + File.separator
-            + "/lib");
+        libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "/lib");
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
+        // 提交作业到yarn中
         ClusterSpecification clusterSpecification =
             new ClusterSpecification.ClusterSpecificationBuilder().setMasterMemoryMB(1024).setTaskManagerMemoryMB(1024)
                 .setSlotsPerTaskManager(1).createClusterSpecification();
