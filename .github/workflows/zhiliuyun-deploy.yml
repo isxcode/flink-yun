@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: ${{ inputs.repository_account }}"/flink-yun"
+          repository: ${{ inputs.repository_account }}/flink-yun
           ref: ${{ inputs.branch_number }}
 
       - name: deploy demo
