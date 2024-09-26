@@ -28,12 +28,11 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +60,22 @@ public class KubernetesAgentService implements AgentService {
             Files.createDirectories(Paths.get(agentHomePath + File.separator + "k8s-logs"));
         }
 
+        // 创建日志目录
+        Path k8sLog = Paths.get(agentHomePath + File.separator + "k8s-logs" + File.separator + workInstanceId);
+        Files.createDirectories(k8sLog);
+        Set<PosixFilePermission> perms = new HashSet<>();
+        perms.add(PosixFilePermission.OWNER_READ);
+        perms.add(PosixFilePermission.OWNER_WRITE);
+        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        perms.add(PosixFilePermission.GROUP_READ);
+        perms.add(PosixFilePermission.GROUP_WRITE);
+        perms.add(PosixFilePermission.GROUP_EXECUTE);
+        perms.add(PosixFilePermission.OTHERS_READ);
+        perms.add(PosixFilePermission.OTHERS_WRITE);
+        perms.add(PosixFilePermission.OTHERS_EXECUTE);
+        Files.setPosixFilePermissions(k8sLog, perms);
+
+        // 创建pod文件
         try (InputStream inputStream = new ByteArrayInputStream(podTemplateContent.getBytes())) {
             Files.copy(inputStream, Paths.get(agentHomePath + File.separator + "pod").resolve(workInstanceId + ".yaml"),
                 StandardCopyOption.REPLACE_EXISTING);
