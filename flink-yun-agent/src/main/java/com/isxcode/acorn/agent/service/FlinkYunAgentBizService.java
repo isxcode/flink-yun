@@ -17,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static com.ibm.icu.text.PluralRules.Operand.e;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
