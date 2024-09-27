@@ -8,7 +8,6 @@ import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -84,18 +83,6 @@ public class StandaloneAgentService implements AgentService {
 
         String restUrl = getRestUrl(submitWorkReq.getFlinkHome());
         String fileName = uploadAppResource(submitWorkReq, restUrl);
-
-        // 添加额外依赖
-        if (submitWorkReq.getLibConfig() != null && !submitWorkReq.getLibConfig().isEmpty()) {
-            Map<String, String> flinkConfig = new HashMap<>();
-            List<String> pipelineClasspath = new ArrayList<>();
-            submitWorkReq.getLibConfig().forEach(e -> pipelineClasspath
-                .add(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator + e + ".jar"));
-            flinkConfig.put("pipeline.jars", Strings.join(pipelineClasspath, ';'));
-            flinkConfig.put("jobmanager.memory.jvm-overhead.max", "1gb");
-            flinkConfig.put("jobmanager.memory.off-heap.size", "128mb");
-            submitWorkReq.getFlinkSubmit().setConf(flinkConfig);
-        }
 
         // 提交作业
         String submitUrl = "http://" + restUrl + "/jars/" + fileName + "/run";
