@@ -13,7 +13,9 @@ import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
@@ -27,6 +29,14 @@ public class FlinkYunAgentBizService {
         AgentService agentService = agentFactory.getAgentService(submitWorkReq.getClusterType());
         try {
             return agentService.submitWork(submitWorkReq);
+        } catch (HttpClientErrorException httpClientErrorException) {
+            log.error(httpClientErrorException.getMessage(), httpClientErrorException);
+            if (HttpStatus.BAD_REQUEST.equals(httpClientErrorException.getStatusCode())) {
+                String errStr = httpClientErrorException.getMessage().replace("400 Bad Request: \"{\"errors\":[\"", "");
+                String substring = errStr.substring(0, errStr.length() - 4);
+                throw new IsxAppException(substring);
+            }
+            throw new IsxAppException(httpClientErrorException.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new IsxAppException(e.getMessage());

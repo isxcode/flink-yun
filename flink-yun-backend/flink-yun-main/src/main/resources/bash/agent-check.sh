@@ -30,6 +30,9 @@ if [ -e "${agent_path}/README.md" ]; then
         # 未启动
         CHECK_STATUS="STOP"
     fi
+  else
+    # 未启动
+    CHECK_STATUS="STOP"
   fi
 else
   # 未安装

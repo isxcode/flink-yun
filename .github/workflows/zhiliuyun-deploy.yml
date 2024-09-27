@@ -11,6 +11,16 @@ on:
         description: '发布日期,例如2023-12-12'
         required: true
         type: string
+      repository_account:
+        description: '仓库名'
+        required: true
+        type: string
+        default: 'isxcode'
+      branch_number:
+        description: '分支号'
+        required: true
+        type: string
+        default: 'main'
 
 env:
   ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
@@ -36,8 +46,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: "isxcode/flink-yun"
-          ref: 'main'
+          repository: ${{ inputs.repository_account }}/flink-yun
+          ref: ${{ inputs.branch_number }}
 
       - name: deploy demo
         uses: appleboy/ssh-action@v1.0.3

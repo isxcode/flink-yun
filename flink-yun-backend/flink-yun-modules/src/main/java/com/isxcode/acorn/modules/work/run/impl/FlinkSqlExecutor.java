@@ -199,7 +199,6 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
-        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业  \n");
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始提交作业
@@ -229,8 +228,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
             workInstance.setFlinkStarRes(JSON.toJSONString(submitJobRes));
             workInstance = updateInstance(workInstance, logBuilder);
         } catch (WorkRunException exception) {
-            throw new WorkRunException(
-                LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + exception.getMsg() + "\n");
+            throw new WorkRunException(exception.getMsg());
         } catch (Exception e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "提交作业失败 : " + e.getMessage() + "\n");
         } finally {
@@ -238,6 +236,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
         }
 
         // 提交作业成功后，开始循环判断状态
+        String oldStatus = "";
         while (true) {
 
             // 获取作业状态并保存
@@ -262,8 +261,14 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
             // 解析返回状态，并保存
             workInstance.setFlinkStarRes(JSON.toJSONString(getJobInfoRes));
-            logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:")
-                .append(getJobInfoRes.getStatus()).append("\n");
+
+            // 状态发生变化，则添加日志状态
+            if (!oldStatus.equals(getJobInfoRes.getStatus())) {
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:")
+                    .append(getJobInfoRes.getStatus()).append("\n");
+            }
+            oldStatus = getJobInfoRes.getStatus();
+
             workInstance = updateInstance(workInstance, logBuilder);
 
             // 如果状态是运行中，更新日志，继续执行
@@ -278,13 +283,6 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 }
             } else {
                 // 运行结束逻辑
-
-                // 如果是中止，直接退出
-                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
-                }
 
                 // 获取日志并保存
                 GetWorkLogReq getJobLogReq = GetWorkLogReq.builder()
@@ -310,6 +308,13 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     workInstance.setTaskManagerLog(getWorkLogRes.getLog());
                 }
                 updateInstance(workInstance, logBuilder);
+
+                // 如果是中止，直接退出
+                if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
+                    || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
+                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
+                }
 
                 // 如果运行成功，则保存返回数据
                 List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED");
