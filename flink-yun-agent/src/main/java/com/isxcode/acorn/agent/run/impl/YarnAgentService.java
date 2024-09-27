@@ -94,7 +94,8 @@ public class YarnAgentService implements AgentService {
         File[] jarFiles = new File(submitWorkReq.getAgentHomePath() + File.separator + "lib").listFiles();
         if (jarFiles != null) {
             for (File jarFile : jarFiles) {
-                if (!"hive-jdbc-3.1.3-standalone.jar".equals(jarFile.getName())) {
+                if (!"hive-jdbc-3.1.3-standalone.jar".equals(jarFile.getName())
+                    && !"hive-jdbc-uber-2.6.3.0-235.jar".equals(jarFile.getName())) {
                     libFile.add(jarFile.getPath());
                 }
             }
