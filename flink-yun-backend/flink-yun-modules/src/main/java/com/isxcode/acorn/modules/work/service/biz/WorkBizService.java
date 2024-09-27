@@ -419,8 +419,9 @@ public class WorkBizService {
         }
         WorkInstanceEntity workInstanceEntity = workInstanceEntityOptional.get();
 
-        return GetSubmitLogRes.builder().log(workInstanceEntity.getSubmitLog()).status(workInstanceEntity.getStatus())
-            .build();
+        return GetSubmitLogRes.builder()
+            .log(workInstanceEntity.getSubmitLog().replace("\\n", "\n").replace("\\t", "\t"))
+            .status(workInstanceEntity.getStatus()).build();
     }
 
     public void renameWork(RenameWorkReq wokRenameWorkReq) {

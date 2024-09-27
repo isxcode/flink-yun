@@ -108,7 +108,7 @@ public class StandaloneAgentService implements AgentService {
             new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
         if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
             || flinkRestRunResResult.getBody().getJobid() == null) {
-            throw new IsxAppException("提交作业失败");
+            throw new Exception("提交作业失败");
         }
         return SubmitWorkRes.builder().appId(flinkRestRunResResult.getBody().getJobid()).build();
     }
