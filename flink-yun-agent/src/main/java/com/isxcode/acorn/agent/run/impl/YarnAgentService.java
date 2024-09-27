@@ -11,10 +11,10 @@ import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
-import com.isxcode.acorn.api.api.constants.PathConstants;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClientProvider;
@@ -56,10 +56,13 @@ public class YarnAgentService implements AgentService {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
 
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS, submitWorkReq.getFlinkSubmit().getEntryClass());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
+            submitWorkReq.getFlinkSubmit().getEntryClass());
+        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
+            Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
         flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
-        flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+        flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator
+            + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
@@ -83,8 +86,28 @@ public class YarnAgentService implements AgentService {
 
         // 初始化要加载到lib包
         List<String> libFile = new ArrayList<>();
+
+        // 加载flink的lib
         libFile.add(submitWorkReq.getFlinkHome() + "/lib");
-        libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "/lib");
+
+        // 加载至流云的依赖
+        File[] jarFiles = new File(submitWorkReq.getAgentHomePath() + File.separator + "lib").listFiles();
+        if (jarFiles != null) {
+            for (File jarFile : jarFiles) {
+                if (!"hive-jdbc-3.1.3-standalone.jar".equals(jarFile.getName())) {
+                    libFile.add(jarFile.getPath());
+                }
+            }
+        }
+
+        // 添加自定义依赖
+        if (submitWorkReq.getLibConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
+                libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getLibConfig().get(i) + ".jar");
+            }
+        }
+
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
         // 提交作业到yarn中
@@ -99,6 +122,14 @@ public class YarnAgentService implements AgentService {
                 clusterDescriptor.deployApplicationCluster(clusterSpecification, applicationConfiguration);
             return SubmitWorkRes.builder()
                 .appId(String.valueOf(applicationIdClusterClientProvider.getClusterClient().getClusterId())).build();
+        } catch (ClusterDeploymentException clusterDeploymentException) {
+            log.error(clusterDeploymentException.getMessage(), clusterDeploymentException);
+            Pattern pattern = Pattern.compile("application_\\d+_\\d+");
+            Matcher matcher = pattern.matcher(clusterDeploymentException.getCause().getMessage());
+            if (matcher.find()) {
+                return SubmitWorkRes.builder().appId(matcher.group()).build();
+            }
+            throw new Exception(clusterDeploymentException.getCause().getMessage());
         }
     }
 
