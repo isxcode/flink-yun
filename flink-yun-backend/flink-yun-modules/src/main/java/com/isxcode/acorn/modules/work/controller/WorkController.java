@@ -1,5 +1,7 @@
 package com.isxcode.acorn.modules.work.controller;
 
+import com.isxcode.acorn.api.instance.pojos.req.QueryInstanceReq;
+import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.api.work.pojos.req.*;
@@ -216,4 +218,11 @@ public class WorkController {
         return excelSyncService.parseExcelName(parseExcelNameReq);
     }
 
+    @Operation(summary = "查看作业实例接口")
+    @PostMapping("/queryInstance")
+    @SuccessResponse("查询成功")
+    public Page<QueryInstanceRes> queryInstance(@Valid @RequestBody QueryInstanceReq woiQueryInstanceReq) {
+
+        return workBizService.queryInstance(woiQueryInstanceReq);
+    }
 }
