@@ -6,9 +6,10 @@ tasks.register('build_agent_lib', Copy) {
 
   def dependencies = configurations.runtimeClasspath.findAll {
     it.name.contains('fastjson2') ||
-      it.name.contains('fastjson') ||
-      it.name.contains('flink-yun-api') ||
-      it.name.contains('log4j-api')
+            it.name.contains('fastjson') ||
+            it.name.contains('flink-yun-api') ||
+            it.name.contains('log4j-api') ||
+            it.name.contains('hadoop-hdfs-client')
   }
   dependencies.each { dependency ->
     from dependency
@@ -107,4 +108,5 @@ tasks.register('make', GradleBuild) {
 // 添加依赖
 dependencies {
 
+  implementation "org.apache.hadoop:hadoop-hdfs-client:${HADOOP_VERSION}"
 }

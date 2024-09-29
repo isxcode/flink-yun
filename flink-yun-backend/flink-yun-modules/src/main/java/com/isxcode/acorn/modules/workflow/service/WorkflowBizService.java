@@ -2,12 +2,14 @@ package com.isxcode.acorn.modules.workflow.service;
 
 import static com.isxcode.acorn.api.workflow.constants.WorkflowExternalCallStatus.OFF;
 import static com.isxcode.acorn.api.workflow.constants.WorkflowExternalCallStatus.ON;
-import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
-import static com.isxcode.acorn.common.config.CommonConfig.USER_ID;
+import static com.isxcode.acorn.common.config.CommonConfig.*;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
+import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
+import com.isxcode.acorn.api.instance.pojos.req.QueryWorkFlowInstancesReq;
+import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.work.constants.SetMode;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkStatus;
@@ -788,4 +790,16 @@ public class WorkflowBizService {
 
         return GetInvokeUrlRes.builder().url(invokeUrl).build();
     }
+
+    public Page<QueryWorkFlowInstancesRes> queryWorkFlowInstances(QueryWorkFlowInstancesReq queryWorkFlowInstancesReq) {
+
+        // 因为是自定义sql，不使用多租户模式
+        JPA_TENANT_MODE.set(false);
+        Page<WorkflowInstanceAo> workflowInstanceAoPage = workflowInstanceRepository.pageWorkFlowInstances(
+            TENANT_ID.get(), queryWorkFlowInstancesReq.getSearchKeyWord(), queryWorkFlowInstancesReq.getExecuteStatus(),
+            PageRequest.of(queryWorkFlowInstancesReq.getPage(), queryWorkFlowInstancesReq.getPageSize()));
+
+        return workflowInstanceAoPage.map(workflowMapper::wfiWorkflowInstanceAo2WfiQueryWorkFlowInstancesRes);
+    }
+
 }

@@ -36,6 +36,12 @@ public class FlinkYunAgentBizService {
                 String substring = errStr.substring(0, errStr.length() - 4);
                 throw new IsxAppException(substring);
             }
+            if (HttpStatus.METHOD_NOT_ALLOWED.equals(httpClientErrorException.getStatusCode())) {
+                String errStr =
+                    httpClientErrorException.getMessage().replace("405 Method Not Allowed: \"{\"errors\":[\"", "");
+                String substring = errStr.substring(0, errStr.length() - 4);
+                throw new IsxAppException(substring);
+            }
             throw new IsxAppException(httpClientErrorException.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage(), e);

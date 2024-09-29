@@ -44,8 +44,8 @@ public class KubernetesAgentService implements AgentService {
         String workInstanceId) throws IOException {
 
         String podTemplate = "apiVersion: v1 \n" + "kind: Pod \n" + "metadata: \n" + "  name: pod-template \n"
-            + "spec:\n" + "  containers:\n" + "    - name: flink-main-container\n" + "      volumeMounts:\n" + " %s"
-            + "  volumes:\n" + " %s";
+            + "spec:\n" + "  terminationGracePeriodSeconds: 600\n" + "  containers:\n"
+            + "    - name: flink-main-container\n" + "      volumeMounts:\n" + " %s" + "  volumes:\n" + " %s";
 
         String podTemplateContent =
             String.format(podTemplate, Strings.join(volumeMounts, ' '), Strings.join(volumes, ' '));
@@ -217,7 +217,7 @@ public class KubernetesAgentService implements AgentService {
                     errLog.append(line).append("\n");
                 }
                 if (errLog.toString().contains("No resources found in zhiliuyun-space namespace")) {
-                    return GetWorkInfoRes.builder().status("FINISHED").appId(getWorkInfoReq.getAppId()).build();
+                    return GetWorkInfoRes.builder().status("Over").appId(getWorkInfoReq.getAppId()).build();
                 }
             }
             int exitCode = process.waitFor();
@@ -247,6 +247,9 @@ public class KubernetesAgentService implements AgentService {
 
         StringBuilder logBuilder = new StringBuilder();
         if (logFiles != null) {
+            if (logFiles.length == 1) {
+                return GetWorkLogRes.builder().log("").build();
+            }
             for (File logFile : logFiles) {
                 if (logFile.getName().contains("taskmanager")) {
                     FileReader fileReader = new FileReader(logFile);

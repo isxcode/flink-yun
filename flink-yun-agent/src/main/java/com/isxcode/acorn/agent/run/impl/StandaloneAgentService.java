@@ -35,10 +35,10 @@ public class StandaloneAgentService implements AgentService {
 
         try (InputStream inputStream = Files.newInputStream(new File(flinkConfigPath).toPath())) {
             Yaml yaml = new Yaml();
-            Map<String, String> flinkYaml = yaml.load(inputStream);
+            Map<String, Object> flinkYaml = yaml.load(inputStream);
 
-            String restAddress = flinkYaml.getOrDefault("rest.address", "localhost");
-            String restPort = flinkYaml.getOrDefault("rest.port", "8081");
+            String restAddress = String.valueOf(flinkYaml.getOrDefault("rest.address", "localhost"));
+            String restPort = String.valueOf(flinkYaml.getOrDefault("rest.port", "8081"));
             return restAddress + ":" + restPort;
         } catch (IOException e) {
             log.error(e.getMessage(), e);

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
+import com.isxcode.acorn.api.instance.pojos.req.QueryInstanceReq;
+import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
 import com.isxcode.acorn.api.work.constants.WorkStatus;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.pojos.dto.*;
@@ -35,7 +37,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.isxcode.acorn.common.config.CommonConfig.JPA_TENANT_MODE;
+import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -467,5 +473,16 @@ public class WorkBizService {
             work.setTopIndex(maxTopIndex + 1);
         }
         workRepository.save(work);
+    }
+
+    public Page<QueryInstanceRes> queryInstance(QueryInstanceReq woiQueryInstanceReq) {
+
+        JPA_TENANT_MODE.set(false);
+        Page<Map> instancePage = workInstanceRepository.searchAll(TENANT_ID.get(),
+            woiQueryInstanceReq.getSearchKeyWord(), woiQueryInstanceReq.getExecuteStatus(),
+            PageRequest.of(woiQueryInstanceReq.getPage(), woiQueryInstanceReq.getPageSize()));
+        JPA_TENANT_MODE.set(true);
+
+        return instancePage.map(workMapper::mapToWoiQueryInstanceRes);
     }
 }
