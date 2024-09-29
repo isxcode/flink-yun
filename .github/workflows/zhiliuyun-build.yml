@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       version_number:
-        description: '版本号，默认latest'
+        description: 'docker版本号，默认latest'
         required: true
         type: string
         default: latest
