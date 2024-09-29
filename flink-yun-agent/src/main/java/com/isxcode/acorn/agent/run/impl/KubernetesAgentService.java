@@ -44,7 +44,7 @@ public class KubernetesAgentService implements AgentService {
         String workInstanceId) throws IOException {
 
         String podTemplate = "apiVersion: v1 \n" + "kind: Pod \n" + "metadata: \n" + "  name: pod-template \n"
-            + "spec:\n" + "  containers:\n" + "    - name: flink-main-container\n" + "      volumeMounts:\n" + " %s"
+            + "spec:\n" + "  terminationGracePeriodSeconds: 15\n" + "  containers:\n" + "    - name: flink-main-container\n" + "      volumeMounts:\n" + " %s"
             + "  volumes:\n" + " %s";
 
         String podTemplateContent =
@@ -217,7 +217,7 @@ public class KubernetesAgentService implements AgentService {
                     errLog.append(line).append("\n");
                 }
                 if (errLog.toString().contains("No resources found in zhiliuyun-space namespace")) {
-                    return GetWorkInfoRes.builder().status("FINISHED").appId(getWorkInfoReq.getAppId()).build();
+                    return GetWorkInfoRes.builder().status("Over").appId(getWorkInfoReq.getAppId()).build();
                 }
             }
             int exitCode = process.waitFor();

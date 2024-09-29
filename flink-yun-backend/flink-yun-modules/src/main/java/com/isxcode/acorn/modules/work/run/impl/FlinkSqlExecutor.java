@@ -273,7 +273,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
             // 如果状态是运行中，更新日志，继续执行
             List<String> runningStatus =
-                Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING", "PENDING");
+                Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING", "PENDING", "TERMINATING");
             if (runningStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
                 try {
                     Thread.sleep(4000);
@@ -311,13 +311,12 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
                 // 如果是中止，直接退出
                 if ("KILLED".equalsIgnoreCase(getJobInfoRes.getStatus())
-                    || "TERMINATING".equalsIgnoreCase(getJobInfoRes.getStatus())
                     || "TERMINATED".equalsIgnoreCase(getJobInfoRes.getStatus())) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
                 }
 
                 // 如果运行成功，则保存返回数据
-                List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED");
+                List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED", "OVER");
                 if (successStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
                     // 没有数据保存
                 } else {
