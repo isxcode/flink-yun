@@ -7,20 +7,6 @@ on:
         description: '管理员github token'
         required: true
         type: string
-      deploy_date:
-        description: '发布日期,例如2023-12-12'
-        required: true
-        type: string
-      repository_account:
-        description: '仓库名'
-        required: true
-        type: string
-        default: 'isxcode'
-      branch_number:
-        description: '分支号'
-        required: true
-        type: string
-        default: 'main'
 
 env:
   ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
@@ -46,8 +32,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: ${{ inputs.repository_account }}/flink-yun
-          ref: ${{ inputs.branch_number }}
+          repository: isxcode/flink-yun
+          ref: main
 
       - name: deploy demo
         uses: appleboy/ssh-action@v1.0.3
@@ -115,8 +101,7 @@ jobs:
             bash /opt/zhiliuyun/bin/stop.sh
             rm -rf /opt/zhiliuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
-            rm -rf /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
-            cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_${{ inputs.deploy_date }}_bak
+            cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
             bash /opt/zhiliuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhiliuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
