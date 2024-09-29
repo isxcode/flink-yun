@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="600" alt="image" src="https://img.isxcode.com/picgo/20240914152345.png">
+  <img width="600" alt="image" src="https://img.isxcode.com/picgo/20240929113526.png">
 </div>
 
 ---
@@ -9,7 +9,7 @@
 </h1>
 
 <h3 align="center">
-  打造企业级/超轻量流式计算平台
+  超轻量级Flink计算平台
 </h3>
 
 <div align="center">
@@ -25,15 +25,13 @@
 
 ### 产品介绍
   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [**至流云**](https://zhiliuyun.isxcode.com)是一款超轻量级、企业级流式计算平台。具有一键部署，开箱即用特色。无需额外数据组件安装，即可快速实现流数据实时ETL、数据同步、复杂作业运行等场景。助力企业探索实时数据分析领域，获得更多商业价值。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [**至流云**](https://zhiliuyun.isxcode.com)是一款超轻量级、企业级流式计算产品，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现Flink计算、作业调度、数据ETL、数据同步、实时计算等场景。
 
 ### 功能特点
 
-- **超轻量**: 无需预装任何中间组件，一键部署即可实现流数据计算。
-- **多租户**: 支持创建多租户，实现租户间的数据完全隔离。
-- **高可用**: 兼容云原生架构，支持多节点安装，确保高可用性。
-- **私有化部署**: 支持内网部署与访问，提升系统安全性。
-- **代码开源**: 永久开源且免费，实时公开产品进度，内容持续更新。
+- **超轻量级**: 无需预装任何组件，一键部署，开箱即用。
+- **私有化部署**: 兼容云原生架构，支持多节点安装，私有化部署。
+- **可视化**: 基于Flink原生打造，快速便捷执行Flink计算。
 
 ### 立即体验
 
@@ -43,34 +41,12 @@
 
 ### 快速部署
 
-> 至流云地址：http://localhost:8080 <br/>
-> 管理员账号：admin <br/>
+> 本地访问地址：http://localhost:8080 </br>
+> 管理员账号：admin </br>
 > 管理员密码：admin123
 
 ```bash
 docker run -p 8080:8080 -d isxcode/zhiliuyun
-```
-
-### 源码构建
-
-##### mac/linux
-
-> 打包结果路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
-
-```bash
-git clone https://github.com/isxcode/flink-yun.git
-cd flink-yun
-./gradlew install package
-```
-
-##### windows
-
-> 注意！请使用git bash工具执行命令
-
-```bash
-git clone https://github.com/isxcode/flink-yun.git
-cd flink-yun
-./gradlew.bat install package
 ```
 
 ### 相关文档
@@ -80,9 +56,31 @@ cd flink-yun
 - [安装文档](https://zhiliuyun.isxcode.com/docs/zh/1/0-docker)
 - [博客](https://ispong.isxcode.com/tags/flink/)
 
+### 源码构建
+
+##### mac/linux
+
+> 打包路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
+
+```bash
+git clone https://github.com/isxcode/flink-yun.git
+cd flink-yun
+./gradlew install package
+```
+
+##### windows
+
+> 注意！请使用git bash工具执行
+
+```bash
+git clone https://github.com/isxcode/flink-yun.git
+cd flink-yun
+./gradlew.bat install package
+```
+
 ### 联系我们
 
-邮箱：hello@isxcode.com
+邮箱：ispong@outlook.com
 
 ---
 
