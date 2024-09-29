@@ -70,7 +70,7 @@ cd flink-yun
 
 ##### windows
 
-> 注意！请使用git bash工具执行
+> 注意！请使用Git Bash工具执行
 
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
