@@ -1,6 +1,7 @@
 package com.isxcode.acorn.modules.work.run.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.isxcode.acorn.api.agent.constants.AgentType;
 import com.isxcode.acorn.api.agent.constants.AgentUrl;
 import com.isxcode.acorn.api.agent.pojos.req.*;
 import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
@@ -318,7 +319,15 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 // 如果运行成功，则保存返回数据
                 List<String> successStatus = Arrays.asList("FINISHED", "SUCCEEDED", "COMPLETED", "OVER");
                 if (successStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
-                    // 没有数据保存
+                    // 如果是k8s容器部署需要注意，成功状态需要通过日志中内容判断
+                    if (AgentType.K8S.equals(calculateEngineEntityOptional.get().getClusterType())) {
+                        if (Strings.isEmpty(workInstance.getTaskManagerLog())) {
+                            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
+                        } else if (workInstance.getTaskManagerLog().contains("Caused by:")
+                            || workInstance.getTaskManagerLog().contains("Exception:")) {
+                            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
+                        }
+                    }
                 } else {
                     // 任务运行错误
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");

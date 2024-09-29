@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Data
 @Builder
@@ -17,6 +16,6 @@ public class FlinkRestExceptionRes {
     @JsonAlias("root-exception")
     private String rootException;
 
-    @JsonAlias("all-exceptions")
-    private List<String> allExceptions;
+    // @JsonAlias("all-exceptions")
+    // private List<String> allExceptions;
 }

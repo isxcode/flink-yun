@@ -17,4 +17,3 @@ jar {
         attributes 'Main-Class': 'com.isxcode.acorn.plugin.sql.execute.Job'
     }
 }
-
