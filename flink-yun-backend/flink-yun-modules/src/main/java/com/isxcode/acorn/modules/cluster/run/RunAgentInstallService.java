@@ -86,7 +86,8 @@ public class RunAgentInstallService {
         log.debug("执行远程命令:{}", envCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashInstallFilePath, envCommand), false);
+        String executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashInstallFilePath, envCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentEnvInfo = JSON.parseObject(executeLog, AgentInfo.class);
