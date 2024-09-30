@@ -64,10 +64,10 @@ public class RunAgentRemoveService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-uninstall.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh");
+            flinkYunProperties.getTmpDir() + "/agent-uninstall.sh");
 
         // 运行停止脚本
-        String removeCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-uninstall.sh"
+        String removeCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-uninstall.sh"
             + " --home-path=" + engineNode.getAgentHomePath();
         log.debug("执行远程命令:{}", removeCommand);
 

@@ -53,10 +53,10 @@ public class RunAgentCleanService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-clean.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-clean.sh");
+            flinkYunProperties.getTmpDir() + "/agent-clean.sh");
 
         // 运行清理脚本
-        String cleanCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-clean.sh" + " --user="
+        String cleanCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-clean.sh" + " --user="
             + engineNode.getUsername();
         log.debug("执行远程命令:{}", cleanCommand);
 

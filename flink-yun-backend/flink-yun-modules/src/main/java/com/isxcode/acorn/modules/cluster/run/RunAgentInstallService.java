@@ -71,11 +71,11 @@ public class RunAgentInstallService {
 
         // 先检查节点是否可以安装
         scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType),
-            flinkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType));
+            flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType));
 
         // 运行安装脚本
         String envCommand =
-            "bash " + flinkYunProperties.getTmpDir() + File.separator + String.format("agent-%s.sh", clusterType)
+            "bash " + flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType)
                 + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             envCommand = envCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
@@ -99,21 +99,21 @@ public class RunAgentInstallService {
 
         // 异步上传安装包
         clusterNodeService.scpAgentFile(scpFileEngineNodeDto, "classpath:agent/zhiliuyun-agent.tar.gz",
-            flinkYunProperties.getTmpDir() + File.separator + "zhiliuyun-agent.tar.gz");
+            flinkYunProperties.getTmpDir() + "/zhiliuyun-agent.tar.gz");
         log.debug("代理安装包上传中");
 
         // 同步监听进度
         clusterNodeService.checkScpPercent(scpFileEngineNodeDto, "classpath:agent/zhiliuyun-agent.tar.gz",
-            flinkYunProperties.getTmpDir() + File.separator + "zhiliuyun-agent.tar.gz", engineNode);
+            flinkYunProperties.getTmpDir() + "/zhiliuyun-agent.tar.gz", engineNode);
         log.debug("下载安装包成功");
 
         // 拷贝安装脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-install.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-install.sh");
+            flinkYunProperties.getTmpDir() + "/agent-install.sh");
         log.debug("下载安装脚本成功");
 
         // 运行安装脚本
-        String installCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-install.sh"
+        String installCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-install.sh"
             + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             installCommand = installCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
