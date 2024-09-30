@@ -233,6 +233,7 @@ public class KubernetesAgentService implements AgentService {
     @Override
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
 
+        log.info("路径" + getWorkLogReq.getAgentHomePath() + File.separator + "k8s-logs" + File.separator + getWorkLogReq.getWorkInstanceId());
         File[] logFiles = new File(getWorkLogReq.getAgentHomePath() + File.separator + "k8s-logs" + File.separator
             + getWorkLogReq.getWorkInstanceId()).listFiles();
 
