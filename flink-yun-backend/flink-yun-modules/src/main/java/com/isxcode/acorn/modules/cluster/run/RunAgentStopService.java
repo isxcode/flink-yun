@@ -74,7 +74,8 @@ public class RunAgentStopService {
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, stopCommand), false);
+        String executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, stopCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentStopInfo = JSON.parseObject(executeLog, AgentInfo.class);

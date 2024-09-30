@@ -74,7 +74,8 @@ public class RunAgentRemoveService {
         log.debug("执行远程命令:{}", removeCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, removeCommand), false);
+        String executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, removeCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentStartInfo = JSON.parseObject(executeLog, AgentInfo.class);

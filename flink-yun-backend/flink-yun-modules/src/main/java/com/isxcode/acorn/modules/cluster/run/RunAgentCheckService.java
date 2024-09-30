@@ -81,7 +81,8 @@ public class RunAgentCheckService {
         log.debug("执行远程命令:{}", checkCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, checkCommand), false);
+        String executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, checkCommand), false);
 
         log.debug("远程返回值:{}", executeLog);
         AgentInfo agentCheckInfo = JSON.parseObject(executeLog, AgentInfo.class);
