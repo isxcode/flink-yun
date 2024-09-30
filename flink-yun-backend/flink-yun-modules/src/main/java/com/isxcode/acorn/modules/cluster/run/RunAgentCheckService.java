@@ -18,7 +18,6 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -73,8 +72,8 @@ public class RunAgentCheckService {
             flinkYunProperties.getTmpDir() + "/agent-check.sh");
 
         // 运行安装脚本
-        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-check.sh"
-            + " --home-path=" + engineNode.getAgentHomePath();
+        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-check.sh" + " --home-path="
+            + engineNode.getAgentHomePath();
 
         log.debug("执行远程命令:{}", checkCommand);
 

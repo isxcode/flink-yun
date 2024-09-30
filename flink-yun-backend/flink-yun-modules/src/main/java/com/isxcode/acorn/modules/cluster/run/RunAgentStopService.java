@@ -15,7 +15,6 @@ import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -67,8 +66,8 @@ public class RunAgentStopService {
             flinkYunProperties.getTmpDir() + "/agent-stop.sh");
 
         // 运行停止脚本
-        String stopCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-stop.sh"
-            + " --home-path=" + engineNode.getAgentHomePath();
+        String stopCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-stop.sh" + " --home-path="
+            + engineNode.getAgentHomePath();
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果

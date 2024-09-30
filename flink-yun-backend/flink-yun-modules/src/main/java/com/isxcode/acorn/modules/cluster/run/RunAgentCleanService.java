@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -56,8 +55,8 @@ public class RunAgentCleanService {
             flinkYunProperties.getTmpDir() + "/agent-clean.sh");
 
         // 运行清理脚本
-        String cleanCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-clean.sh" + " --user="
-            + engineNode.getUsername();
+        String cleanCommand =
+            "bash " + flinkYunProperties.getTmpDir() + "/agent-clean.sh" + " --user=" + engineNode.getUsername();
         log.debug("执行远程命令:{}", cleanCommand);
 
         // 获取返回结果

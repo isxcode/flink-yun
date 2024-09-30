@@ -19,7 +19,6 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -74,8 +73,8 @@ public class RunAgentStartService {
             flinkYunProperties.getTmpDir() + "/agent-start.sh");
 
         // 运行启动脚本
-        String startCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-start.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String startCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-start.sh" + " --home-path="
+            + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
 
         if (engineNode.getInstallFlinkLocal() != null) {
             startCommand = startCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
