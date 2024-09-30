@@ -286,7 +286,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
                 // 获取日志并保存
                 GetWorkLogReq getJobLogReq = GetWorkLogReq.builder()
-                    .agentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME)
+                    .agentHomePath(engineNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME)
                     .appId(submitJobRes.getAppId()).workInstanceId(workInstance.getId())
                     .flinkHome(engineNode.getFlinkHomePath()).workStatus(getJobInfoRes.getStatus())
                     .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
