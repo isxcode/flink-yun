@@ -58,7 +58,8 @@ public class ToolController {
     @GetMapping("/open/setLogLevel")
     public String setLogLevel(@RequestParam String level, @RequestParam String name, @RequestParam String password) {
 
-        if (securityProperties.getUser().getName().equals(name) && securityProperties.getUser().getPassword().equals(password)) {
+        if (securityProperties.getUser().getName().equals(name)
+            && securityProperties.getUser().getPassword().equals(password)) {
             LoggingSystem system = LoggingSystem.get(LoggingSystem.class.getClassLoader());
             LogLevel logLevel = LogLevel.valueOf(level.trim().toUpperCase(Locale.ENGLISH));
             system.setLogLevel("com.isxcode.acorn", logLevel);
