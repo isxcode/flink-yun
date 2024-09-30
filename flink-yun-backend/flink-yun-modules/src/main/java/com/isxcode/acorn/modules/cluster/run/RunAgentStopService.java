@@ -64,10 +64,10 @@ public class RunAgentStopService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-stop.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-stop.sh");
+            flinkYunProperties.getTmpDir() + "/agent-stop.sh");
 
         // 运行停止脚本
-        String stopCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-stop.sh"
+        String stopCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-stop.sh"
             + " --home-path=" + engineNode.getAgentHomePath();
         log.debug("执行远程命令:{}", stopCommand);
 

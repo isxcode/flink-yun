@@ -71,10 +71,10 @@ public class RunAgentStartService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-start.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-start.sh");
+            flinkYunProperties.getTmpDir() + "/agent-start.sh");
 
         // 运行启动脚本
-        String startCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-start.sh"
+        String startCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-start.sh"
             + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
 
         if (engineNode.getInstallFlinkLocal() != null) {

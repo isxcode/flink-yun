@@ -70,10 +70,10 @@ public class RunAgentCheckService {
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh",
-            flinkYunProperties.getTmpDir() + File.separator + "agent-check.sh");
+            flinkYunProperties.getTmpDir() + "/agent-check.sh");
 
         // 运行安装脚本
-        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + File.separator + "agent-check.sh"
+        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-check.sh"
             + " --home-path=" + engineNode.getAgentHomePath();
 
         log.debug("执行远程命令:{}", checkCommand);
