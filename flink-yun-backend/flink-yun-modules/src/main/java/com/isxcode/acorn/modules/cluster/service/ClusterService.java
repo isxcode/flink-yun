@@ -27,4 +27,9 @@ public class ClusterService {
         ClusterEntity clusterEntity = clusterRepository.findById(clusterId).orElse(null);
         return clusterEntity == null ? clusterId : clusterEntity.getName();
     }
+
+    public String fixWindowsChar(String path, String command) {
+
+        return "sed -i 's/\\r//g' " + path + " && " + command;
+    }
 }

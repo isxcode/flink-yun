@@ -13,6 +13,7 @@ import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class RunAgentStopService {
     private final FlinkYunProperties flinkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
+
+    private final ClusterService clusterService;
 
     @Async("flinkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
@@ -61,17 +64,17 @@ public class RunAgentStopService {
     public void stopAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
         throws JSchException, IOException, InterruptedException, SftpException {
 
+        String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-stop.sh";
+
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-stop.sh",
-            flinkYunProperties.getTmpDir() + "/agent-stop.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-stop.sh", bashFilePath);
 
         // 运行停止脚本
-        String stopCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-stop.sh" + " --home-path="
-            + engineNode.getAgentHomePath();
+        String stopCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath();
         log.debug("执行远程命令:{}", stopCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, stopCommand, false);
+        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, stopCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentStopInfo = JSON.parseObject(executeLog, AgentInfo.class);

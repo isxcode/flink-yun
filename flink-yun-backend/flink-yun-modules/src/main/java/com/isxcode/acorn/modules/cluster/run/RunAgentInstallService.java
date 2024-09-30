@@ -16,6 +16,7 @@ import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterNodeService;
+import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.*;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ public class RunAgentInstallService {
     private final ClusterNodeRepository clusterNodeRepository;
 
     private final ClusterRepository clusterRepository;
+
+    private final ClusterService clusterService;
 
     @Async("flinkYunWorkThreadPool")
     public void run(String clusterNodeId, String clusterType, ScpFileEngineNodeDto scpFileEngineNodeDto,
@@ -68,13 +71,13 @@ public class RunAgentInstallService {
     public void installAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode,
         String clusterType) throws JSchException, IOException, InterruptedException, SftpException {
 
+        String bashInstallFilePath = flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType);
+
         // 先检查节点是否可以安装
-        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType),
-            flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType));
+        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType), bashInstallFilePath);
 
         // 运行安装脚本
-        String envCommand = "bash " + flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType)
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand = "bash " + bashInstallFilePath + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             envCommand = envCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
@@ -110,16 +113,17 @@ public class RunAgentInstallService {
             flinkYunProperties.getTmpDir() + "/agent-install.sh");
         log.debug("下载安装脚本成功");
 
+        String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-install.sh";
+
         // 运行安装脚本
-        String installCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-install.sh" + " --home-path="
-            + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String installCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             installCommand = installCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
 
         log.debug("执行远程安装命令:{}", installCommand);
 
-        executeLog = executeCommand(scpFileEngineNodeDto, installCommand, false);
+        executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, installCommand), false);
         log.debug("远程安装返回值:{}", executeLog);
 
         AgentInfo agentInstallInfo = JSON.parseObject(executeLog, AgentInfo.class);
