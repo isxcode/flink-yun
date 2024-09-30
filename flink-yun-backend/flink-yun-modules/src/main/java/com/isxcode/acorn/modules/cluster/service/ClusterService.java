@@ -30,7 +30,7 @@ public class ClusterService {
 
     public String fixWindowsChar(String path, String command) {
 
-        System.out.println(System.getProperty("os.name"));
+        log.debug("os.name {}", System.getProperty("os.name"));
 
         return System.getProperty("os.name").contains("Windows") ? "sed -i 's/\\r//g' " + path + " && " + command
             : command;
