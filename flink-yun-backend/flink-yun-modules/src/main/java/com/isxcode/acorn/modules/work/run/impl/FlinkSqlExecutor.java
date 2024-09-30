@@ -322,8 +322,13 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     if (AgentType.K8S.equals(calculateEngineEntityOptional.get().getClusterType())) {
                         if (Strings.isEmpty(workInstance.getTaskManagerLog())) {
                             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
-                        } else if (workInstance.getTaskManagerLog().contains("Caused by:")
-                            || workInstance.getTaskManagerLog().contains("Exception:")) {
+                        } else if (workInstance.getTaskManagerLog().contains("Caused by:")) {
+                            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
+                        }
+                    }
+                    // yarn 状态是finish但是实际可能失败
+                    if (AgentType.YARN.equals(calculateEngineEntityOptional.get().getClusterType())) {
+                        if (workInstance.getTaskManagerLog().contains("Caused by:")) {
                             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
                         }
                     }
