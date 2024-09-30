@@ -118,7 +118,7 @@ public class KubernetesAgentService implements AgentService {
         flinkConfig.set(KubernetesConfigOptions.TASK_MANAGER_CPU, 2.0);
         flinkConfig.set(KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE, submitWorkReq.getAgentHomePath()
             + File.separator + "pod" + File.separator + submitWorkReq.getWorkInstanceId() + ".yaml");
-        flinkConfig.set(KubernetesConfigOptions.KUBERNETES_HOSTNETWORK_ENABLED, true);
+        flinkConfig.set(KubernetesConfigOptions., true);
         flinkConfig.set(KubernetesConfigOptions.FLINK_LOG_DIR, "/tmp/log");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
