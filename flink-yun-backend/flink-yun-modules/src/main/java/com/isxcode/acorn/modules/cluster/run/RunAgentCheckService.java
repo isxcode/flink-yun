@@ -16,6 +16,7 @@ import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
+import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import java.io.IOException;
@@ -39,6 +40,8 @@ public class RunAgentCheckService {
     private final ClusterNodeRepository clusterNodeRepository;
 
     private final ClusterRepository clusterRepository;
+
+    private final ClusterService clusterService;
 
     @Async("flinkYunWorkThreadPool")
     public void run(String clusterNodeId, ScpFileEngineNodeDto scpFileEngineNodeDto, String tenantId, String userId) {
@@ -67,18 +70,18 @@ public class RunAgentCheckService {
     public void checkAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
         throws JSchException, IOException, InterruptedException, SftpException {
 
+        String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-check.sh";
+
         // 拷贝检测脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh",
-            flinkYunProperties.getTmpDir() + "/agent-check.sh");
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-check.sh", bashFilePath);
 
         // 运行安装脚本
-        String checkCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-check.sh" + " --home-path="
-            + engineNode.getAgentHomePath();
+        String checkCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath();
 
         log.debug("执行远程命令:{}", checkCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, checkCommand, false);
+        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, checkCommand), false);
 
         log.debug("远程返回值:{}", executeLog);
         AgentInfo agentCheckInfo = JSON.parseObject(executeLog, AgentInfo.class);
