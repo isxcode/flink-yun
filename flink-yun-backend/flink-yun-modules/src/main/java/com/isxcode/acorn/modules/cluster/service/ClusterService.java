@@ -32,7 +32,7 @@ public class ClusterService {
 
         System.out.println(System.getProperty("os.name"));
 
-        return "Windows".equals(System.getProperty("os.name")) ? "sed -i 's/\\r//g' " + path + " && " + command
+        return System.getProperty("os.name").contains("Windows") ? "sed -i 's/\\r//g' " + path + " && " + command
             : command;
     }
 }
