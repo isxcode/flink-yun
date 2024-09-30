@@ -24,8 +24,6 @@ public class SshUtils {
     public static void scpFile(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath)
         throws JSchException, SftpException, InterruptedException, IOException {
 
-        log.info(engineNode.toString());
-
         // 初始化jsch
         JSch jsch = new JSch();
 
