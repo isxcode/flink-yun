@@ -15,7 +15,6 @@ import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -67,8 +66,8 @@ public class RunAgentRemoveService {
             flinkYunProperties.getTmpDir() + "/agent-uninstall.sh");
 
         // 运行停止脚本
-        String removeCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-uninstall.sh"
-            + " --home-path=" + engineNode.getAgentHomePath();
+        String removeCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-uninstall.sh" + " --home-path="
+            + engineNode.getAgentHomePath();
         log.debug("执行远程命令:{}", removeCommand);
 
         // 获取返回结果

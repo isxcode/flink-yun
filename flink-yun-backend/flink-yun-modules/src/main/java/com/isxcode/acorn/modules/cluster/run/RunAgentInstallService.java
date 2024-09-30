@@ -18,7 +18,6 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterNodeService;
 import com.jcraft.jsch.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -74,9 +73,8 @@ public class RunAgentInstallService {
             flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType));
 
         // 运行安装脚本
-        String envCommand =
-            "bash " + flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType)
-                + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand = "bash " + flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType)
+            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             envCommand = envCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
@@ -113,8 +111,8 @@ public class RunAgentInstallService {
         log.debug("下载安装脚本成功");
 
         // 运行安装脚本
-        String installCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-install.sh"
-            + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String installCommand = "bash " + flinkYunProperties.getTmpDir() + "/agent-install.sh" + " --home-path="
+            + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             installCommand = installCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
