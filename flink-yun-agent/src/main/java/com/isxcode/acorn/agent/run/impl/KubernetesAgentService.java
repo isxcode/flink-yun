@@ -238,7 +238,6 @@ public class KubernetesAgentService implements AgentService {
 
         StringBuilder logBuilder = new StringBuilder();
         if (logFiles != null) {
-            log.info("workStatus {}", getWorkLogReq.getWorkStatus());
             if (!"ERROR".equalsIgnoreCase(getWorkLogReq.getWorkStatus())) {
                 if (Arrays.stream(logFiles).allMatch(file -> file.getName().contains("application"))) {
                     return GetWorkLogRes.builder().log("").build();
@@ -246,7 +245,6 @@ public class KubernetesAgentService implements AgentService {
             }
             for (File logFile : logFiles) {
                 if (logFile.getName().contains("taskmanager")) {
-                    log.info("读取taskManager日志");
                     FileReader fileReader = new FileReader(logFile);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
                     String line;
@@ -258,7 +256,6 @@ public class KubernetesAgentService implements AgentService {
                     break;
                 }
                 if (logFile.getName().contains("application")) {
-                    log.info("读取application日志");
                     FileReader fileReader = new FileReader(logFile);
                     BufferedReader bufferedReader = new BufferedReader(fileReader);
                     String line;
