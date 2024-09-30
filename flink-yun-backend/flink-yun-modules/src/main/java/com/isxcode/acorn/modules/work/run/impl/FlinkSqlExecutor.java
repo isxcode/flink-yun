@@ -165,7 +165,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
         // 开始构造flinkSubmit
         SubmitWorkReq submitJobReq = new SubmitWorkReq();
         submitJobReq.setClusterType(calculateEngineEntityOptional.get().getClusterType());
-        submitJobReq.setAgentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME);
+        submitJobReq.setAgentHomePath(engineNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME);
         submitJobReq.setFlinkHome(engineNode.getFlinkHomePath());
         submitJobReq.setWorkInstanceId(workInstance.getId());
         submitJobReq.setWorkType(workRunContext.getWorkType());
