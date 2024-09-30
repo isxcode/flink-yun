@@ -65,7 +65,7 @@ docker run -p 8080:8080 -d isxcode/zhiliuyun
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
 cd flink-yun
-./gradlew install package
+./gradlew install clean package start
 ```
 
 ##### windows
@@ -75,7 +75,7 @@ cd flink-yun
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
 cd flink-yun
-./gradlew.bat install package
+./gradlew.bat install clean package start
 ```
 
 ### 联系我们

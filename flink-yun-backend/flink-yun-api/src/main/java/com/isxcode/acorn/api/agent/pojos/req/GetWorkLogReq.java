@@ -20,4 +20,6 @@ public class GetWorkLogReq {
     private String agentHomePath;
 
     private String workInstanceId;
+
+    private String workStatus;
 }

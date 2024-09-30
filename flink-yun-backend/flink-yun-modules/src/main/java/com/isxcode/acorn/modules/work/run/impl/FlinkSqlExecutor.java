@@ -165,7 +165,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
         // 开始构造flinkSubmit
         SubmitWorkReq submitJobReq = new SubmitWorkReq();
         submitJobReq.setClusterType(calculateEngineEntityOptional.get().getClusterType());
-        submitJobReq.setAgentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME);
+        submitJobReq.setAgentHomePath(engineNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME);
         submitJobReq.setFlinkHome(engineNode.getFlinkHomePath());
         submitJobReq.setWorkInstanceId(workInstance.getId());
         submitJobReq.setWorkType(workRunContext.getWorkType());
@@ -188,9 +188,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
             List<FileEntity> libFile = fileRepository.findAllById(workRunContext.getLibConfig());
             libFile.forEach(e -> {
                 try {
-                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
-                        engineNode.getAgentHomePath() + File.separator + "zhiliuyun-agent" + File.separator + "file"
-                            + File.separator + e.getId() + ".jar");
+                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(), engineNode.getAgentHomePath()
+                        + "/" + "zhiliuyun-agent" + "/" + "file" + "/" + e.getId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
                 }
@@ -287,9 +286,9 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
                 // 获取日志并保存
                 GetWorkLogReq getJobLogReq = GetWorkLogReq.builder()
-                    .agentHomePath(engineNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME)
+                    .agentHomePath(engineNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME)
                     .appId(submitJobRes.getAppId()).workInstanceId(workInstance.getId())
-                    .flinkHome(engineNode.getFlinkHomePath())
+                    .flinkHome(engineNode.getFlinkHomePath()).workStatus(getJobInfoRes.getStatus())
                     .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
 
                 baseResponse = HttpUtils.doPost(
@@ -323,14 +322,30 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     if (AgentType.K8S.equals(calculateEngineEntityOptional.get().getClusterType())) {
                         if (Strings.isEmpty(workInstance.getTaskManagerLog())) {
                             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "作业运行中止" + "\n");
-                        } else if (workInstance.getTaskManagerLog().contains("Caused by:")
-                            || workInstance.getTaskManagerLog().contains("Exception:")) {
+                        } else if (workInstance.getTaskManagerLog().contains("Caused by:")) {
+                            throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
+                        }
+                    }
+                    // yarn 状态是finish但是实际可能失败
+                    if (AgentType.YARN.equals(calculateEngineEntityOptional.get().getClusterType())) {
+                        if (workInstance.getTaskManagerLog().contains("Caused by:")) {
                             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
                         }
                     }
                 } else {
-                    // 任务运行错误
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
+                    if (AgentType.K8S.equals(calculateEngineEntityOptional.get().getClusterType())) {
+                        if ("ERROR".equalsIgnoreCase(getJobInfoRes.getStatus())) {
+                            // k8s失败主动停止，否则一直重试
+                            StopWorkReq stopWorkReq = StopWorkReq.builder().flinkHome(engineNode.getFlinkHomePath())
+                                .appId(submitJobRes.getAppId())
+                                .clusterType(calculateEngineEntityOptional.get().getClusterType()).build();
+                            new RestTemplate().postForObject(httpUrlUtils.genHttpUrl(engineNode.getHost(),
+                                engineNode.getAgentPort(), AgentUrl.STOP_WORK_URL), stopWorkReq, BaseResponse.class);
+                        }
+                    } else {
+                        // 任务运行错误
+                        throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
+                    }
                 }
 
                 // 运行结束，则退出死循环
