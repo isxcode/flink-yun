@@ -71,13 +71,14 @@ public class RunAgentStartService {
     public void startAgent(ScpFileEngineNodeDto scpFileEngineNodeDto, ClusterNodeEntity engineNode)
         throws JSchException, IOException, InterruptedException, SftpException {
 
-         String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-start.sh";
+        String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-start.sh";
 
         // 拷贝检测脚本
         scpFile(scpFileEngineNodeDto, "classpath:bash/agent-start.sh", bashFilePath);
 
         // 运行启动脚本
-        String startCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String startCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath()
+            + " --agent-port=" + engineNode.getAgentPort();
 
         if (engineNode.getInstallFlinkLocal() != null) {
             startCommand = startCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
@@ -86,7 +87,8 @@ public class RunAgentStartService {
         log.debug("执行远程命令:{}", startCommand);
 
         // 获取返回结果
-        String executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, startCommand), false);
+        String executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, startCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentStartInfo = JSON.parseObject(executeLog, AgentInfo.class);

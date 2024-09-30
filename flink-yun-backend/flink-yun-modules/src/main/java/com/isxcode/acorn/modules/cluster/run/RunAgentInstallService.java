@@ -74,10 +74,12 @@ public class RunAgentInstallService {
         String bashInstallFilePath = flinkYunProperties.getTmpDir() + "/" + String.format("agent-%s.sh", clusterType);
 
         // 先检查节点是否可以安装
-        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType), bashInstallFilePath);
+        scpFile(scpFileEngineNodeDto, "classpath:bash/" + String.format("agent-%s.sh", clusterType),
+            bashInstallFilePath);
 
         // 运行安装脚本
-        String envCommand = "bash " + bashInstallFilePath + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String envCommand = "bash " + bashInstallFilePath + " --home-path=" + engineNode.getAgentHomePath()
+            + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             envCommand = envCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
@@ -116,14 +118,16 @@ public class RunAgentInstallService {
         String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-install.sh";
 
         // 运行安装脚本
-        String installCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath() + " --agent-port=" + engineNode.getAgentPort();
+        String installCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath()
+            + " --agent-port=" + engineNode.getAgentPort();
         if (engineNode.getInstallFlinkLocal() != null) {
             installCommand = installCommand + " --flink-local=" + engineNode.getInstallFlinkLocal();
         }
 
         log.debug("执行远程安装命令:{}", installCommand);
 
-        executeLog = executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, installCommand), false);
+        executeLog =
+            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, installCommand), false);
         log.debug("远程安装返回值:{}", executeLog);
 
         AgentInfo agentInstallInfo = JSON.parseObject(executeLog, AgentInfo.class);
