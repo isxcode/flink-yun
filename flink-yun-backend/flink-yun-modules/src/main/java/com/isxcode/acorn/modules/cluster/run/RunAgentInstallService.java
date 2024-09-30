@@ -111,12 +111,11 @@ public class RunAgentInstallService {
             flinkYunProperties.getTmpDir() + "/zhiliuyun-agent.tar.gz", engineNode);
         log.debug("下载安装包成功");
 
-        // 拷贝安装脚本
-        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-install.sh",
-            flinkYunProperties.getTmpDir() + "/agent-install.sh");
-        log.debug("下载安装脚本成功");
-
         String bashFilePath = flinkYunProperties.getTmpDir() + "/agent-install.sh";
+
+        // 拷贝安装脚本
+        scpFile(scpFileEngineNodeDto, "classpath:bash/agent-install.sh", bashFilePath);
+        log.debug("下载安装脚本成功");
 
         // 运行安装脚本
         String installCommand = "bash " + bashFilePath + " --home-path=" + engineNode.getAgentHomePath()
