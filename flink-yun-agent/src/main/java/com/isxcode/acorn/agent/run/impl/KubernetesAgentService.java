@@ -123,6 +123,7 @@ public class KubernetesAgentService implements AgentService {
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
+        flinkConfig.set(RestartStrategyOptions.RESTART_STRATEGY, "disable");
 
         // 映射文件路径
         List<String> volumeMounts = new ArrayList<>();
@@ -232,23 +233,15 @@ public class KubernetesAgentService implements AgentService {
     @Override
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
 
-        // 判断是否有
-
-        // 先判断是否提交成功
-
-        // 在判断kubectl logs -f zhiliuyun-cluster-1727233056083-69ff88c8b9-7rx4b -n zhiliuyun-space 是否有日志
-
-        // 再去k8s-logs中拿日志
-
-        // kubectl logs -f zhiliuyun-cluster-1727233056083-69ff88c8b9-7rx4b -n zhiliuyun-space
-
         File[] logFiles = new File(getWorkLogReq.getAgentHomePath() + File.separator + "k8s-logs" + File.separator
             + getWorkLogReq.getWorkInstanceId()).listFiles();
 
         StringBuilder logBuilder = new StringBuilder();
         if (logFiles != null) {
-            if (logFiles.length == 1) {
-                return GetWorkLogRes.builder().log("").build();
+            if (!"ERROR".equalsIgnoreCase(getWorkLogReq.getWorkStatus())) {
+                if (Arrays.stream(logFiles).allMatch(file -> file.getName().contains("application"))) {
+                    return GetWorkLogRes.builder().log("").build();
+                }
             }
             for (File logFile : logFiles) {
                 if (logFile.getName().contains("taskmanager")) {
