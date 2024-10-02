@@ -31,13 +31,13 @@
 
 - **超轻量级**: 无需预装任何组件，一键部署，开箱即用。
 - **私有化部署**: 兼容云原生架构，支持多节点安装，私有化部署。
-- **可视化**: 基于Flink原生打造，快速执行Flink计算。
+- **可视化操作**: 基于Flink原生打造，快速执行Flink计算。
 
 ### 立即体验
 
-&nbsp;&nbsp;&nbsp;&nbsp; 演示地址：https://zhiliuyun-demo.isxcode.com </br>
-&nbsp;&nbsp;&nbsp;&nbsp; 体验账号：user001 </br>
-&nbsp;&nbsp;&nbsp;&nbsp; 账号密码：welcome1
+> 演示地址：https://zhiliuyun-demo.isxcode.com </br>
+> 体验账号：user001 </br>
+> 账号密码：welcome1
 
 ### 快速部署
 
@@ -80,7 +80,7 @@ cd flink-yun
 
 ### 联系我们
 
-邮箱：ispong@outlook.com
+邮箱：hello@isxcode.com
 
 ---
 

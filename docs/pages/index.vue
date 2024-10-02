@@ -41,21 +41,21 @@
           选择至流云
         </div>
         <div class="why-content">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算产品。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="why-content-mobile">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算产品。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、数据大屏等场景。助力企业实时分析数据，获得更多商业价值。
         </div>
         <div class="tech-title">
           相关技术
         </div>
         <div class="tech-img-div">
-          <img class="tech-img" @click="handleK8sClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
-          <img class="tech-img" @click="handleHadoopClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hadoop.png" alt="">
-          <img class="tech-img" @click="handleFlinkClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-flink.png" alt="">
-          <img class="tech-img" @click="handleDorisClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-doris.png" alt="">
-          <img class="tech-img" @click="handleHiveClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hive.png" alt="">
-          <img class="tech-img" @click="handleEsClick" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-es.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hadoop.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-flink.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-doris.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-hive.png" alt="">
+          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-es.png" alt="">
         </div>
       </div>
     </div>
@@ -98,8 +98,8 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">自定义接口，千变万化</div>
-          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在数据下放场景中的多样化需求。</div>
+          <div class="line-1">多平台部署，从不娇生惯养</div>
+          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、Apache Hadoop、Flink Standalone、Flink Cluster等。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
@@ -128,8 +128,8 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">多平台部署，从不娇生惯养</div>
-          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、Flink Standalone、Flink Cluster等。</div>
+          <div class="line-1">自定义接口，千变万化</div>
+          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在复杂数据下的多样化需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
         <div class="right">
@@ -235,30 +235,6 @@ function handleQuickClick() {
   window.open("https://zhiliuyun-demo.isxcode.com");
 }
 
-function handleFlinkClick() {
-  window.open("https://flink.apache.org/");
-}
-
-function handleEsClick() {
-  window.open("https://www.elastic.co/elasticsearch");
-}
-
-function handleDorisClick() {
-  window.open("https://doris.apache.org/");
-}
-
-function handleHiveClick() {
-  window.open("https://hive.apache.org/");
-}
-
-function handleK8sClick() {
-  window.open("https://kubernetes.io/");
-}
-
-function handleHadoopClick() {
-  window.open("https://hadoop.apache.org/");
-}
-
 function handleCommandCopyClick() {
   const codeBlock = document.getElementById("command-shell");
   const codeBlockText = codeBlock?.innerText;
@@ -285,14 +261,14 @@ const copyContent = async (text: string) => {
 <style lang="scss" scoped>
 
 @font-face {
-  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/g6I3FTsV0Grv.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/suHrbUaSmK9Z.woff") format("woff");
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/VX9qBaLUFoBT.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/DJ2j7WUGu0q4.woff") format("woff");
   font-display: swap;
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/arDgoLSU6MPO.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/ENdaHGMvBbvD.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/VX8eC5HGvEWl.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/fCnSwlbEZ18R.woff") format("woff");
   font-display: swap;
 }
 
