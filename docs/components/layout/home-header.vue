@@ -281,8 +281,8 @@ function handleMenuClick(menuItem: MenuData) {
   }
 
 @font-face {
-  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/g6I3FTsV0Grv.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/suHrbUaSmK9Z.woff") format("woff");
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/VX9qBaLUFoBT.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/DJ2j7WUGu0q4.woff") format("woff");
   font-display: swap;
 }
 
@@ -400,8 +400,8 @@ function handleMenuClick(menuItem: MenuData) {
     }
 
 @font-face {
-  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/g6I3FTsV0Grv.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/suHrbUaSmK9Z.woff") format("woff");
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/VX9qBaLUFoBT.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/DJ2j7WUGu0q4.woff") format("woff");
   font-display: swap;
 }
 
