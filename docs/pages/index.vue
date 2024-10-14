@@ -430,7 +430,7 @@ $module-intro-img-width: 600px;
       .why-content {
         margin: 25px auto auto;
         text-indent: 2em;
-        width: 810px;
+        width: 850px;
         line-height: 26px;
         font-size: 18px;
       }
@@ -764,10 +764,9 @@ $module-intro-img-width: 600px;
         .why-content-mobile {
           display: block;
           margin: 25px auto auto;
-          text-indent: 2em;
           width: 300px;
-          line-height: 22px;
-          font-size: 18px;
+          line-height: 25px;
+          font-size: 19px;
         }
 
         .why-content {
@@ -866,7 +865,8 @@ $module-intro-img-width: 600px;
           height: 100px;
           width: 300px;
           margin-top: 30px;
-          line-height: 22px;
+          line-height: 25px;
+          font-size: 18px;
         }
 
         .line-3 {
@@ -918,7 +918,8 @@ $module-intro-img-width: 600px;
           height: 100px;
           width: 300px;
           margin-top: 30px;
-          line-height: 22px;
+          line-height: 25px;
+          font-size: 18px;
         }
 
         .line-3 {
