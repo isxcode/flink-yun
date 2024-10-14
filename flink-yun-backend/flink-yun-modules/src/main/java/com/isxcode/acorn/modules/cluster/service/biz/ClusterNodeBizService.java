@@ -133,8 +133,8 @@ public class ClusterNodeBizService {
 
         // 如果是默认安装flink,设置默认路径
         if (updateClusterNodeReq.getInstallFlinkLocal() || !AgentType.StandAlone.equals(cluster.getClusterType())) {
-            clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + File.separator + PathConstants.AGENT_PATH_NAME
-                + File.separator + PathConstants.FLINK_MIN_HOME);
+            clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME
+                + "/" + PathConstants.FLINK_MIN_HOME);
         } else {
             clusterNode.setFlinkHomePath(updateClusterNodeReq.getFlinkHomePath());
         }
