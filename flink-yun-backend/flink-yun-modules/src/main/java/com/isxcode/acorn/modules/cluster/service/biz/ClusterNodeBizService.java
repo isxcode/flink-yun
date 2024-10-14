@@ -24,7 +24,6 @@ import com.isxcode.acorn.modules.cluster.run.*;
 import com.isxcode.acorn.modules.cluster.service.ClusterNodeService;
 import com.isxcode.acorn.modules.cluster.service.ClusterService;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
@@ -133,8 +132,8 @@ public class ClusterNodeBizService {
 
         // 如果是默认安装flink,设置默认路径
         if (updateClusterNodeReq.getInstallFlinkLocal() || !AgentType.StandAlone.equals(cluster.getClusterType())) {
-            clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME
-                + "/" + PathConstants.FLINK_MIN_HOME);
+            clusterNode.setFlinkHomePath(clusterNode.getAgentHomePath() + "/" + PathConstants.AGENT_PATH_NAME + "/"
+                + PathConstants.FLINK_MIN_HOME);
         } else {
             clusterNode.setFlinkHomePath(updateClusterNodeReq.getFlinkHomePath());
         }
