@@ -267,8 +267,8 @@ const copyContent = async (text: string) => {
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/VX8eC5HGvEWl.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/fCnSwlbEZ18R.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/knrL9RLkzyKs.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/XHEuLnz6dujW.woff") format("woff");
   font-display: swap;
 }
 
@@ -843,6 +843,7 @@ $module-intro-img-width: 600px;
       .left-phone{
         display: block;
         width: 300px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 
         img {
           width: 300px;
