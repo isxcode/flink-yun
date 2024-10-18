@@ -3,32 +3,43 @@ package com.isxcode.acorn.agent.run.impl;
 import com.alibaba.fastjson2.JSON;
 import com.isxcode.acorn.agent.run.AgentService;
 import com.isxcode.acorn.api.agent.constants.AgentType;
-import com.isxcode.acorn.api.agent.pojos.dto.FlinkVerticesDto;
-import com.isxcode.acorn.api.agent.pojos.req.*;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkInfoReq;
+import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
+import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
+import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
 import com.isxcode.acorn.api.agent.pojos.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.*;
+import org.apache.flink.api.common.JobID;
+import org.apache.flink.api.common.JobStatus;
+import org.apache.flink.client.deployment.StandaloneClusterDescriptor;
+import org.apache.flink.client.deployment.StandaloneClusterId;
+import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.client.program.PackagedProgram;
+import org.apache.flink.client.program.PackagedProgramUtils;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.RestOptions;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.messages.Acknowledge;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class StandaloneAgentService implements AgentService {
 
-    public String getRestUrl(String flinkHome) {
+    public Configuration genConfiguration(String flinkHome) {
 
         // 获取本地flink的配置，并从中获取rest.port、rest.address，如果获取不到默认8081、localhost
         String flinkConfigPath = flinkHome + File.separator + "conf" + File.separator + "flink-conf.yaml";
@@ -36,40 +47,18 @@ public class StandaloneAgentService implements AgentService {
         try (InputStream inputStream = Files.newInputStream(new File(flinkConfigPath).toPath())) {
             Yaml yaml = new Yaml();
             Map<String, Object> flinkYaml = yaml.load(inputStream);
-
             String restAddress = String.valueOf(flinkYaml.getOrDefault("rest.address", "localhost"));
             String restPort = String.valueOf(flinkYaml.getOrDefault("rest.port", "8081"));
-            return restAddress + ":" + restPort;
+
+            // 添加配置
+            Configuration configuration = new Configuration();
+            configuration.setString(RestOptions.ADDRESS, restAddress);
+            configuration.setInteger(RestOptions.PORT, Integer.parseInt(restPort));
+            return configuration;
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException("获取flink配置文件异常", e);
         }
-    }
-
-    public String uploadAppResource(SubmitWorkReq submitWorkReq, String restUrl) {
-
-        String uploadUrl = "http://" + restUrl + "/jars/upload";
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("jarfile", new FileSystemResource(new File(submitWorkReq.getAgentHomePath() + File.separator
-            + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource())));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(param, headers);
-
-        ResponseEntity<FlinkRestUploadRes> result =
-            restTemplate.exchange(uploadUrl, HttpMethod.POST, requestEntity, FlinkRestUploadRes.class);
-        if (!HttpStatus.OK.equals(result.getStatusCode())) {
-            throw new IsxAppException("提交资源文件异常");
-        }
-        if (result.getBody() == null || result.getBody().getFilename() == null) {
-            throw new IsxAppException("提交资源文件异常");
-        }
-        String[] sub = result.getBody().getFilename().split("/");
-        return sub[sub.length - 1];
     }
 
     @Override
@@ -81,59 +70,80 @@ public class StandaloneAgentService implements AgentService {
     @Override
     public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
-        String restUrl = getRestUrl(submitWorkReq.getFlinkHome());
-        String fileName = uploadAppResource(submitWorkReq, restUrl);
+        Configuration configuration = genConfiguration(submitWorkReq.getFlinkHome());
 
-        // 提交作业
-        String submitUrl = "http://" + restUrl + "/jars/" + fileName + "/run";
-        FlinkRestRunReq flinkRestRunReq = FlinkRestRunReq.builder()
-            .entryClass(submitWorkReq.getFlinkSubmit().getEntryClass())
-            .programArgs(Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-            .flinkConfiguration(submitWorkReq.getFlinkSubmit().getConf()).build();
+        List<URL> userClassPaths = new ArrayList<>();
 
-        ResponseEntity<FlinkRestRunRes> flinkRestRunResResult =
-            new RestTemplate().postForEntity(submitUrl, flinkRestRunReq, FlinkRestRunRes.class);
-        if (!HttpStatus.OK.equals(flinkRestRunResResult.getStatusCode()) || flinkRestRunResResult.getBody() == null
-            || flinkRestRunResResult.getBody().getJobid() == null) {
-            throw new Exception("提交作业失败");
+        // 添加自定义依赖
+        if (submitWorkReq.getLibConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
+                userClassPaths.add(new File(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getLibConfig().get(i) + ".jar").toURI().toURL());
+            }
         }
-        return SubmitWorkRes.builder().appId(flinkRestRunResResult.getBody().getJobid()).build();
+
+        PackagedProgram program = PackagedProgram.newBuilder()
+            .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
+                + submitWorkReq.getFlinkSubmit().getAppResource())))
+            .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+            .setArguments(
+                Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
+            .setUserClassPaths(userClassPaths).build();
+
+        try (
+            StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
+            ClusterClient<StandaloneClusterId> clusterClient =
+                standaloneClusterDescriptor.retrieve(StandaloneClusterId.getInstance()).getClusterClient();
+
+            JobGraph jobGraph = PackagedProgramUtils.createJobGraph(program, configuration, 1, false);
+            JobID jobID = clusterClient.submitJob(jobGraph).get();
+            return SubmitWorkRes.builder().appId(jobID.toHexString()).build();
+        } catch (Exception e) {
+            throw new Exception(e.getCause().getCause().getMessage());
+        }
     }
 
     @Override
     public GetWorkInfoRes getWorkInfo(GetWorkInfoReq getWorkInfoReq) throws Exception {
 
-        String restUrl = getRestUrl(getWorkInfoReq.getFlinkHome());
+        Configuration configuration = genConfiguration(getWorkInfoReq.getFlinkHome());
 
-        String getStatusUrl = "http://" + restUrl + "/jobs/" + getWorkInfoReq.getAppId();
-        ResponseEntity<FlinkRestJobRes> result = new RestTemplate().getForEntity(getStatusUrl, FlinkRestJobRes.class);
+        try (
+            StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
+            ClusterClient<StandaloneClusterId> clusterClient =
+                standaloneClusterDescriptor.retrieve(StandaloneClusterId.getInstance()).getClusterClient();
 
-        if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null) {
-            throw new IsxAppException("提交作业失败");
+            CompletableFuture<JobStatus> jobStatus =
+                clusterClient.getJobStatus(JobID.fromHexString(getWorkInfoReq.getAppId()));
+
+            return GetWorkInfoRes.builder().appId(getWorkInfoReq.getAppId()).status(jobStatus.get().name()).build();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
-
-        List<String> vertices =
-            result.getBody().getVertices().stream().map(FlinkVerticesDto::getId).collect(Collectors.toList());
-
-        return GetWorkInfoRes.builder().appId(result.getBody().getJid()).vertices(vertices)
-            .status(result.getBody().getState()).build();
     }
 
     @Override
     public GetWorkLogRes getWorkLog(GetWorkLogReq getWorkLogReq) throws Exception {
 
-        String restUrl = getRestUrl(getWorkLogReq.getFlinkHome());
+        Configuration configuration = genConfiguration(getWorkLogReq.getFlinkHome());
+        String restUrl =
+            configuration.getString(RestOptions.ADDRESS) + ":" + configuration.getInteger(RestOptions.PORT);
 
         // 判断作业是否成功
-        String getStatusUrl = "http://" + restUrl + "/jobs/" + getWorkLogReq.getAppId() + "/status";
-        ResponseEntity<FlinkRestStatusRes> result =
-            new RestTemplate().getForEntity(getStatusUrl, FlinkRestStatusRes.class);
-        if (!HttpStatus.OK.equals(result.getStatusCode()) || result.getBody() == null
-            || result.getBody().getStatus() == null) {
-            throw new IsxAppException("获取作业状态失败");
+        String status;
+        try (
+            StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
+            ClusterClient<StandaloneClusterId> clusterClient =
+                standaloneClusterDescriptor.retrieve(StandaloneClusterId.getInstance()).getClusterClient();
+
+            CompletableFuture<JobStatus> jobStatus =
+                clusterClient.getJobStatus(JobID.fromHexString(getWorkLogReq.getAppId()));
+            status = jobStatus.get().name();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
 
-        if ("FAILED".equals(result.getBody().getStatus())) {
+        if ("FAILED".equals(status)) {
             String getExceptionUrl = "http://" + restUrl + "/jobs/" + getWorkLogReq.getAppId() + "/exceptions";
             ResponseEntity<FlinkRestExceptionRes> exceptionResult =
                 new RestTemplate().getForEntity(getExceptionUrl, FlinkRestExceptionRes.class);
@@ -146,16 +156,12 @@ public class StandaloneAgentService implements AgentService {
             return GetWorkLogRes.builder().log(exceptionResult.getBody().getRootException()).build();
         } else {
 
-            GetWorkInfoRes jobInfo = getWorkInfo(GetWorkInfoReq.builder().appId(getWorkLogReq.getAppId())
-                .flinkHome(getWorkLogReq.getFlinkHome()).clusterType(getWorkLogReq.getClusterType()).build());
-
-            String getVerticesUrl =
-                "http://" + restUrl + "/jobs/" + getWorkLogReq.getAppId() + "/vertices/" + jobInfo.getVertices().get(0);
-            ResponseEntity<FlinkRestVerticesRes> forEntity =
-                new RestTemplate().getForEntity(getVerticesUrl, FlinkRestVerticesRes.class);
+            String taskManagersUrl = "http://" + restUrl + "/taskmanagers";
+            ResponseEntity<FlinkGetTaskManagerRes> forEntity =
+                new RestTemplate().getForEntity(taskManagersUrl, FlinkGetTaskManagerRes.class);
 
             // 查询taskmanager的日志
-            String taskmanagerId = forEntity.getBody().getSubtasks().get(0).getTaskmanagerId();
+            String taskmanagerId = forEntity.getBody().getTaskManagers().get(0).getId();
             String getLogUrl = "http://" + restUrl + "/taskmanagers/" + taskmanagerId + "/log";
             ResponseEntity<String> log = new RestTemplate().getForEntity(getLogUrl, String.class);
 
@@ -175,20 +181,17 @@ public class StandaloneAgentService implements AgentService {
     @Override
     public StopWorkRes stopWork(StopWorkReq stopWorkReq) throws Exception {
 
-        String restUrl = getRestUrl(stopWorkReq.getFlinkHome());
+        Configuration configuration = genConfiguration(stopWorkReq.getFlinkHome());
 
-        // 判断作业是否成功
-        String stopJobUrl = "http://" + restUrl + "/jobs/" + stopWorkReq.getAppId() + "/yarn-cancel";
-        ResponseEntity<FlinkRestStopRes> result;
-        try {
-            result = new RestTemplate().getForEntity(stopJobUrl, FlinkRestStopRes.class);
-        } catch (HttpClientErrorException exception) {
-            if (HttpStatus.NOT_FOUND.equals(exception.getStatusCode())) {
-                throw new Exception("作业已停止");
-            }
-            throw new Exception("停止作业失败");
+        try (
+            StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
+            ClusterClient<StandaloneClusterId> clusterClient =
+                standaloneClusterDescriptor.retrieve(StandaloneClusterId.getInstance()).getClusterClient();
+
+            CompletableFuture<Acknowledge> cancel = clusterClient.cancel(JobID.fromHexString(stopWorkReq.getAppId()));
+            return StopWorkRes.builder().requestId(cancel.toString()).build();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
-
-        return StopWorkRes.builder().requestId(result.getBody().getRequestId()).build();
     }
 }
