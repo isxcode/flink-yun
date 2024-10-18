@@ -49,6 +49,9 @@ cp -r ${agent_path}/lib/fastjson* ${agent_path}/flink-min/lib
 cp -r ${agent_path}/lib/flink* ${agent_path}/flink-min/lib
 cp -r ${agent_path}/lib/*connector* ${agent_path}/flink-min/lib
 
+# 再给flink-min授权755
+chmod -R 755 ${agent_path}/flink-min
+
 # 进入代理目录,防止logs文件夹生成错位
 cd ${agent_path}
 
@@ -68,6 +71,9 @@ echo $! >${agent_path}/zhiliuyun-agent.pid
 
 # 如果用户需要默认flink
 if [ ${flink_local} = "true" ]; then
+  # 修改flink-conf.yaml文件
+  sed -i 's/rest.bind-address: localhost/rest.bind-address: 0.0.0.0/' ${agent_path}/flink-min/conf/flink-conf.yaml
+  sed -i 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: 10/' ${agent_path}/flink-min/conf/flink-conf.yaml
   nohup bash ${agent_path}/flink-min/bin/start-cluster.sh > /dev/null 2>&1 &
 fi
 
