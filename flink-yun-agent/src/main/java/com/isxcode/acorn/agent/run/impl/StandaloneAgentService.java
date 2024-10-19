@@ -8,6 +8,7 @@ import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
 import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
 import com.isxcode.acorn.api.agent.pojos.res.*;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.JobID;
@@ -82,13 +83,22 @@ public class StandaloneAgentService implements AgentService {
             }
         }
 
-        PackagedProgram program = PackagedProgram.newBuilder()
-            .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
-                + submitWorkReq.getFlinkSubmit().getAppResource())))
-            .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
-            .setArguments(
-                Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-            .setUserClassPaths(userClassPaths).build();
+        PackagedProgram program;
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            program = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(submitWorkReq.getPluginReq().getArgs()).setUserClassPaths(userClassPaths).build();
+        } else {
+            program = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(
+                    Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
+                .setUserClassPaths(userClassPaths).build();
+        }
 
         try (
             StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
