@@ -8,6 +8,7 @@ import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
 import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
 import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
 import com.isxcode.acorn.api.agent.pojos.res.*;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.JobID;
@@ -82,13 +83,22 @@ public class StandaloneAgentService implements AgentService {
             }
         }
 
-        PackagedProgram program = PackagedProgram.newBuilder()
-            .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
-                + submitWorkReq.getFlinkSubmit().getAppResource())))
-            .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
-            .setArguments(
-                Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-            .setUserClassPaths(userClassPaths).build();
+        PackagedProgram program;
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            program = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(submitWorkReq.getPluginReq().getArgs()).setUserClassPaths(userClassPaths).build();
+        } else {
+            program = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(
+                    Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
+                .setUserClassPaths(userClassPaths).build();
+        }
 
         try (
             StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
@@ -99,7 +109,12 @@ public class StandaloneAgentService implements AgentService {
             JobID jobID = clusterClient.submitJob(jobGraph).get();
             return SubmitWorkRes.builder().appId(jobID.toHexString()).build();
         } catch (Exception e) {
-            throw new Exception(e.getCause().getCause().getMessage());
+            log.error(e.getMessage(), e);
+            if (e.getCause() != null && e.getCause().getCause() != null
+                && e.getCause().getCause().getMessage() != null) {
+                throw new Exception(e.getCause().getCause().getMessage());
+            }
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -118,6 +133,7 @@ public class StandaloneAgentService implements AgentService {
 
             return GetWorkInfoRes.builder().appId(getWorkInfoReq.getAppId()).status(jobStatus.get().name()).build();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
     }
@@ -140,6 +156,7 @@ public class StandaloneAgentService implements AgentService {
                 clusterClient.getJobStatus(JobID.fromHexString(getWorkLogReq.getAppId()));
             status = jobStatus.get().name();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
 
@@ -191,6 +208,7 @@ public class StandaloneAgentService implements AgentService {
             CompletableFuture<Acknowledge> cancel = clusterClient.cancel(JobID.fromHexString(stopWorkReq.getAppId()));
             return StopWorkRes.builder().requestId(cancel.toString()).build();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
     }

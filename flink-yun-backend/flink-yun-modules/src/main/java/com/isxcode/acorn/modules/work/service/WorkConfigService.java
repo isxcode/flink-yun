@@ -44,6 +44,9 @@ public class WorkConfigService {
 
         switch (workType) {
             case WorkType.FLINK_SQL:
+                workConfig.setScript("CREATE TABLE print_sink ( \n" + "    print_date timestamp \n" + ") WITH ( \n"
+                    + "    'connector' = 'print' \n" + ");\n" + "\n" + "INSERT INTO print_sink SELECT now();");
+                break;
             case WorkType.QUERY_JDBC_SQL:
             case WorkType.EXECUTE_JDBC_SQL:
             case WorkType.FLINK_CONTAINER_SQL:

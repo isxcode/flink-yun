@@ -32,7 +32,7 @@ if [ ! -f logs/flink-yun.log ]; then
 fi
 
 # 运行至流云程序
-if ! command -v java &>/dev/null; then
+if [ -n "$JAVA_HOME" ]; then
   nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhiliuyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 else
   nohup java -jar -Xmx2048m lib/zhiliuyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &

@@ -8,7 +8,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
+import com.isxcode.acorn.api.instance.pojos.req.GetWorkflowInstanceReq;
 import com.isxcode.acorn.api.instance.pojos.req.QueryWorkFlowInstancesReq;
+import com.isxcode.acorn.api.instance.pojos.res.GetWorkflowInstanceRes;
 import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.work.constants.SetMode;
 import com.isxcode.acorn.api.work.constants.WorkLog;
@@ -800,6 +802,25 @@ public class WorkflowBizService {
             PageRequest.of(queryWorkFlowInstancesReq.getPage(), queryWorkFlowInstancesReq.getPageSize()));
 
         return workflowInstanceAoPage.map(workflowMapper::wfiWorkflowInstanceAo2WfiQueryWorkFlowInstancesRes);
+    }
+
+    public GetWorkflowInstanceRes getWorkflowInstance(GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
+
+        GetWorkflowInstanceRes result = new GetWorkflowInstanceRes();
+
+        // 获取实例中的webConfig
+        WorkflowInstanceEntity workflowInstance =
+            workflowInstanceRepository.findById(wfiGetWorkflowInstanceReq.getWorkflowInstanceId()).get();
+        result.setWebConfig(workflowInstance.getWebConfig());
+
+        // 查看其他实例的状态
+        List<WorkInstanceEntity> workInstances =
+            workInstanceRepository.findAllByWorkflowInstanceId(workflowInstance.getId());
+        result.setWorkInstances(
+            workInstances.stream().map(workflowMapper::workInstanceEntity2WorkInstanceVo).collect(Collectors.toList()));
+
+        // 返回结果
+        return result;
     }
 
 }
