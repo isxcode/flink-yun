@@ -46,4 +46,6 @@ public class PluginReq {
     private String csvFileName;
 
     private String agentType;
+
+    private String[] args;
 }

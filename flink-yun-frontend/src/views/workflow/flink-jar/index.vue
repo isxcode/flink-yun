@@ -188,11 +188,6 @@ const tabList = reactive([
         hide: false
     },
     {
-        name: '数据返回',
-        code: 'ReturnData',
-        hide: true
-    },
-    {
         name: '运行日志',
         code: 'RunningLog',
         hide: true
