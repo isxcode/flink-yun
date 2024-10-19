@@ -99,7 +99,12 @@ public class StandaloneAgentService implements AgentService {
             JobID jobID = clusterClient.submitJob(jobGraph).get();
             return SubmitWorkRes.builder().appId(jobID.toHexString()).build();
         } catch (Exception e) {
-            throw new Exception(e.getCause().getCause().getMessage());
+            log.error(e.getMessage(), e);
+            if (e.getCause() != null && e.getCause().getCause() != null
+                && e.getCause().getCause().getMessage() != null) {
+                throw new Exception(e.getCause().getCause().getMessage());
+            }
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -118,6 +123,7 @@ public class StandaloneAgentService implements AgentService {
 
             return GetWorkInfoRes.builder().appId(getWorkInfoReq.getAppId()).status(jobStatus.get().name()).build();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
     }
@@ -140,6 +146,7 @@ public class StandaloneAgentService implements AgentService {
                 clusterClient.getJobStatus(JobID.fromHexString(getWorkLogReq.getAppId()));
             status = jobStatus.get().name();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
 
@@ -191,6 +198,7 @@ public class StandaloneAgentService implements AgentService {
             CompletableFuture<Acknowledge> cancel = clusterClient.cancel(JobID.fromHexString(stopWorkReq.getAppId()));
             return StopWorkRes.builder().requestId(cancel.toString()).build();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new Exception(e.getMessage());
         }
     }
