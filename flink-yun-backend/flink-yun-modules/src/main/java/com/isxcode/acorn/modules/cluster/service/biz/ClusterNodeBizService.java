@@ -263,13 +263,6 @@ public class ClusterNodeBizService {
         // 获取节点信息
         ClusterNodeEntity engineNode = clusterNodeService.getClusterNode(removeAgentReq.getEngineNodeId());
 
-        // 如果是安装中等状态，需要等待运行结束
-        if (ClusterNodeStatus.CHECKING.equals(engineNode.getStatus())
-            || ClusterNodeStatus.INSTALLING.equals(engineNode.getStatus())
-            || ClusterNodeStatus.REMOVING.equals(engineNode.getStatus())) {
-            throw new IsxAppException("当前状态无法操作，请稍后再试");
-        }
-
         // 将节点信息转成工具类识别对象
         ScpFileEngineNodeDto scpFileEngineNodeDto = engineNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));

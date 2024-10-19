@@ -7,7 +7,7 @@
             至流云
           </div>
           <div class="slogan">
-            企业级流式计算平台
+            轻量级流式计算平台
           </div>
           <div class="command">
             <p id="command-shell">docker run -p 8080:8080 isxcode/zhiliuyun</p>
@@ -41,10 +41,10 @@
           选择至流云
         </div>
         <div class="why-content">
-          至流云是一款超轻量级、企业级流式计算产品。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、数据大屏、自定义表单等场景。助力企业实时分析数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、自定义表单、数据大屏等场景。助力企业分析流式数据，获得更多商业价值。
         </div>
         <div class="why-content-mobile">
-          至流云是一款超轻量级、企业级流式计算产品。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、数据大屏、自定义表单等场景。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、自定义表单、数据大屏等场景。
         </div>
         <div class="tech-title">
           相关技术
@@ -129,7 +129,7 @@
         </div>
         <div class="left">
           <div class="line-1">自定义接口，千变万化</div>
-          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在复杂数据下的多样化需求。</div>
+          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在复杂场景下的多样化需求。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
         <div class="right">
@@ -147,7 +147,7 @@
         </div>
         <div class="right">
           <div class="line-1">数据大屏，实时展示数据</div>
-          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业决策，灵活适应行业内需求。</div>
+          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业高效决策。</div>
           <div class="line-3" @click="handleQuickClick">立即体验</div>
         </div>
       </div>
@@ -767,6 +767,7 @@ $module-intro-img-width: 600px;
           width: 300px;
           line-height: 25px;
           font-size: 19px;
+          text-indent: 2em;
         }
 
         .why-content {
