@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpJar;
 
 @Service
@@ -181,7 +180,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
             clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-            + File.separator + TENANT_ID.get();
+            + File.separator + engineNode.getTenantId();
 
         // 上传依赖到制定节点路径
         if (workRunContext.getLibConfig() != null) {
@@ -191,7 +190,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
                     scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getId(),
                         engineNode.getAgentHomePath() + "/zhiliuyun-agent/file/" + e.getId() + ".jar");
                 } catch (JSchException | SftpException | InterruptedException | IOException ex) {
-                    throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "jar文件上传失败\n");
+                    throw new WorkRunException(
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "自定义依赖jar文件上传失败，请检查文件是否上传或者重新上传\n");
                 }
             });
             submitJobReq.setLibConfig(workRunContext.getLibConfig());

@@ -62,7 +62,7 @@ if [ ! -f "${agent_path}/logs/zhiliuyun-agent.log" ]; then
 fi
 
 # 运行代理程序
-if ! command -v java &>/dev/null; then
+if [ -n "$JAVA_HOME" ]; then
   nohup $JAVA_HOME/bin/java -jar -Xmx2048m ${agent_path}/lib/zhiliuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
 else
   nohup java -jar -Xmx2048m ${agent_path}/lib/zhiliuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
