@@ -44,6 +44,29 @@ public class WorkConfigService {
 
         switch (workType) {
             case WorkType.FLINK_SQL:
+                workConfig.setScript(
+                    "CREATE TABLE datagen_table(\n" +
+                    "    id INT,\n" +
+                    "    name STRING\n" +
+                    ") WITH (\n" +
+                    "    'connector' = 'datagen',  \n" +
+                    "    'rows-per-second' = '10', \n" +
+                    "    'fields.id.kind' = 'sequence',  \n" +
+                    "    'fields.id.start' = '1',  \n" +
+                    "    'fields.id.end' = '100',  \n" +
+                    "    'fields.name.kind' = 'random',  \n" +
+                    "    'fields.name.length' = '10'  \n" +
+                    ");\n" +
+                    "\n" +
+                    "CREATE TABLE print_sink ( \n" +
+                    "    id INT, \n" +
+                    "    name STRING \n" +
+                    ") WITH ( \n" +
+                    "    'connector' = 'print' \n" +
+                    ");\n" +
+                    "\n" +
+                    "INSERT INTO print_sink SELECT * FROM datagen_table;");
+                break;
             case WorkType.QUERY_JDBC_SQL:
             case WorkType.EXECUTE_JDBC_SQL:
             case WorkType.FLINK_CONTAINER_SQL:
