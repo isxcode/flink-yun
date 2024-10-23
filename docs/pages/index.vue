@@ -41,10 +41,10 @@
           选择至流云
         </div>
         <div class="why-content">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、自定义表单、数据大屏等场景。助力企业分析流式数据，获得更多商业价值。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业流可视化调度、自定义接口、自定义表单、数据大屏等场景。助力企业分析流式数据，获得更多商业价值。
         </div>
         <div class="why-content-mobile">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业可视化调度、自定义接口、自定义表单、数据大屏等场景。
+          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业流可视化调度、自定义接口、自定义表单、数据大屏等场景。
         </div>
         <div class="tech-title">
           相关技术
@@ -267,8 +267,8 @@ const copyContent = async (text: string) => {
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/jyWBWNO7DxnD.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/fEsSSuWh2mtc.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/j3YfOavgnq2J.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/80CqzKRIDmbo.woff") format("woff");
   font-display: swap;
 }
 
