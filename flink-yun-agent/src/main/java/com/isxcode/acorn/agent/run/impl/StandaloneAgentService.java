@@ -83,6 +83,14 @@ public class StandaloneAgentService implements AgentService {
             }
         }
 
+        // 添加自定义函数
+        if (submitWorkReq.getFuncConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getFuncConfig().size(); i++) {
+                userClassPaths.add(new File(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFuncConfig().get(i).getFileId() + ".jar").toURI().toURL());
+            }
+        }
+
         PackagedProgram program;
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
             program = PackagedProgram.newBuilder()
