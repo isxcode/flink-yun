@@ -44,19 +44,6 @@ export const colConfigs: colConfig[] = [
     showOverflowTooltip: true
   },
   {
-    prop: 'type',
-    title: '类型',
-    minWidth: 80,
-    // formatter: (data: any) => {
-    //   const obj = {
-    //     JOB: '作业',
-    //     FUNC: '函数',
-    //     LIB: '依赖'
-    //   }
-    //   return obj[data.cellValue]
-    // }
-  },
-  {
     prop: 'fileName',
     title: '资源文件',
     minWidth: 140,
@@ -65,12 +52,6 @@ export const colConfigs: colConfig[] = [
   {
     prop: 'className',
     title: '类名',
-    minWidth: 100,
-    showOverflowTooltip: true
-  },
-  {
-    prop: 'resultType',
-    title: '结果类型',
     minWidth: 100,
     showOverflowTooltip: true
   },

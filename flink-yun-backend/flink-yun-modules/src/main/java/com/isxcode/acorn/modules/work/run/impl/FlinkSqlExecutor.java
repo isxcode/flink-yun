@@ -32,6 +32,7 @@ import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.datasource.service.DatasourceService;
 import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.file.repository.FileRepository;
+import com.isxcode.acorn.modules.func.entity.FuncEntity;
 import com.isxcode.acorn.modules.func.mapper.FuncMapper;
 import com.isxcode.acorn.modules.func.repository.FuncRepository;
 import com.isxcode.acorn.modules.work.entity.WorkConfigEntity;
@@ -195,6 +196,23 @@ public class FlinkSqlExecutor extends WorkExecutor {
                 }
             });
             submitJobReq.setLibConfig(workRunContext.getLibConfig());
+        }
+
+        // 上传自定义函数
+        if (workRunContext.getFuncConfig() != null) {
+            List<FuncEntity> allFunc = funcRepository.findAllById(workRunContext.getFuncConfig());
+            allFunc.forEach(e -> {
+                try {
+                    scpJar(scpFileEngineNodeDto, fileDir + File.separator + e.getFileId(),
+                        engineNode.getAgentHomePath() + "/zhiliuyun-agent/file/" + e.getFileId() + ".jar");
+                } catch (JSchException | SftpException | InterruptedException | IOException ex) {
+                    log.error(ex.getMessage(), ex);
+                    throw new WorkRunException(
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "自定义函数jar文件上传失败，请检查文件是否上传或者重新上传\n");
+                }
+            });
+            pluginReq.setFuncInfoList(funcMapper.funcEntityListToFuncInfoList(allFunc));
+            submitJobReq.setFuncConfig(funcMapper.funcEntityListToFuncInfoList(allFunc));
         }
 
         // 构建作业完成，并打印作业配置信息

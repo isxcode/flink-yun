@@ -13,15 +13,11 @@ public class PageFuncRes {
 
     private String id;
 
-    private String type;
-
     private String fileId;
 
     private String funcName;
 
     private String className;
-
-    private String resultType;
 
     private String remark;
 
