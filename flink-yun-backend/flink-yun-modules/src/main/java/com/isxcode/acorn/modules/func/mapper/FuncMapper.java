@@ -15,10 +15,8 @@ public interface FuncMapper {
 
     FuncEntity addFuncReqToFuncEntity(AddFuncReq addFuncReq);
 
-    @Mapping(source = "updateFuncReq.type", target = "type")
     @Mapping(source = "updateFuncReq.funcName", target = "funcName")
     @Mapping(source = "updateFuncReq.className", target = "className")
-    @Mapping(source = "updateFuncReq.resultType", target = "resultType")
     @Mapping(source = "updateFuncReq.id", target = "id")
     @Mapping(source = "updateFuncReq.remark", target = "remark")
     @Mapping(source = "updateFuncReq.fileId", target = "fileId")
