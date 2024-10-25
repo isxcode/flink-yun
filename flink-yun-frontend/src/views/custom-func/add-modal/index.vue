@@ -4,11 +4,6 @@
       <el-form-item label="名称" prop="funcName">
         <el-input v-model="formData.funcName" maxlength="200" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="formData.type" placeholder="请选择">
-          <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="资源文件" prop="fileId">
         <el-select v-model="formData.fileId" placeholder="请选择">
           <el-option v-for="item in fileIdList" :key="item.value" :label="item.label" :value="item.value" />
@@ -16,11 +11,6 @@
       </el-form-item>
       <el-form-item label="类名" prop="className">
         <el-input v-model="formData.className" maxlength="200" placeholder="请输入" />
-      </el-form-item>
-      <el-form-item label="结果类型" prop="resultType">
-        <el-select v-model="formData.resultType" placeholder="请选择">
-          <el-option v-for="item in resultTypeList" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="formData.remark" type="textarea" maxlength="200" :autosize="{ minRows: 4, maxRows: 4 }"
@@ -37,46 +27,6 @@ import { GetFileCenterList } from '@/services/file-center.service'
 
 const form = ref<FormInstance>()
 const callback = ref<any>()
-const typeList = ref([
-  {
-    label: 'UDF',
-    value: 'UDF'
-  },
-  {
-    label: 'UDAF',
-    value: 'UDAF'
-  }
-])
-const resultTypeList = ref([
-  {
-    label: 'string',
-    value: 'string',
-  },
-  {
-    label: 'int',
-    value: 'int',
-  },
-  {
-    label: 'long',
-    value: 'long',
-  },
-  {
-    label: 'double',
-    value: 'double'
-  },
-  {
-    label: 'boolean',
-    value: 'boolean',
-  },
-  {
-    label: 'date',
-    value: 'date',
-  },
-  {
-    label: 'timestamp',
-    value: 'timestamp',
-  }
-])
 const fileIdList = ref([])
 const modelConfig = reactive({
   title: '添加函数',
@@ -148,20 +98,16 @@ function showModal(cb: () => void, data: any): void {
   getFileCenterList()
 
   if (data) {
-    formData.type = data.type
     formData.fileId = data.fileId
     formData.funcName = data.funcName
     formData.className = data.className
-    formData.resultType = data.resultType
     formData.remark = data.remark
     formData.id = data.id
     modelConfig.title = '编辑'
   } else {
-    formData.type = ''
     formData.fileId = ''
     formData.funcName = ''
     formData.className = ''
-    formData.resultType = ''
     formData.remark = ''
     modelConfig.title = '添加'
   }
