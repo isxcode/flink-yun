@@ -2,6 +2,7 @@ package com.isxcode.acorn.modules.work.service.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
 import com.isxcode.acorn.api.instance.pojos.req.QueryInstanceReq;
@@ -26,7 +27,6 @@ import com.isxcode.acorn.modules.work.service.WorkConfigService;
 import com.isxcode.acorn.modules.work.service.WorkService;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowConfigEntity;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowEntity;
-import com.isxcode.acorn.modules.workflow.run.WorkflowUtils;
 import com.isxcode.acorn.modules.workflow.service.WorkflowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +42,7 @@ import java.util.Optional;
 
 import static com.isxcode.acorn.common.config.CommonConfig.JPA_TENANT_MODE;
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
+import static com.isxcode.acorn.modules.workflow.run.WorkflowUtils.genWorkRunContext;
 
 @Service
 @RequiredArgsConstructor
@@ -247,7 +248,7 @@ public class WorkBizService {
         WorkConfigEntity workConfig = workConfigBizService.getWorkConfigEntity(work.getConfigId());
 
         // 初始化作业运行上下文
-        WorkRunContext workRunContext = WorkflowUtils.genWorkRunContext(workInstance.getId(), work, workConfig);
+        WorkRunContext workRunContext = genWorkRunContext(workInstance.getId(), work, workConfig);
 
         // 异步运行作业
         WorkExecutor workExecutor = workExecutorFactory.create(work.getWorkType());
@@ -383,7 +384,8 @@ public class WorkBizService {
         if (!Strings.isEmpty(workConfig.getSyncRule())) {
             getWorkRes.setSyncRule(JSON.parseObject(workConfig.getSyncRule(), SyncRule.class));
             if (getWorkRes.getSyncRule().getSqlConfig() != null) {
-                getWorkRes.getSyncRule().setSqlConfigJson(JSON.toJSONString(getWorkRes.getSyncRule().getSqlConfig()));
+                getWorkRes.getSyncRule().setSqlConfigJson(
+                    JSON.toJSONString(getWorkRes.getSyncRule().getSqlConfig(), SerializerFeature.MapSortField));
             }
         }
 

@@ -4,6 +4,7 @@ import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import com.isxcode.acorn.modules.datasource.mapper.DatasourceMapper;
@@ -107,6 +108,8 @@ public class ExecuteSqlExecutor extends WorkExecutor {
         try (Connection connection = datasource.getConnection(connectInfo);
             Statement statement = connection.createStatement()) {
 
+            statement.setQueryTimeout(1800);
+
             // 去掉sql中的注释
             String sqlNoComment = sqlCommentService.removeSqlComment(workRunContext.getScript());
 
@@ -118,7 +121,7 @@ public class ExecuteSqlExecutor extends WorkExecutor {
 
             // 清除脚本中的脏数据
             List<String> sqls =
-                Arrays.stream(script.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
+                Arrays.stream(script.split(";")).filter(Strings::isNotBlank).collect(Collectors.toList());
 
             // 逐条执行sql
             for (String sql : sqls) {
@@ -135,7 +138,7 @@ public class ExecuteSqlExecutor extends WorkExecutor {
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("SQL执行成功  \n");
                 workInstance = updateInstance(workInstance, logBuilder);
             }
-        } catch (WorkRunException e) {
+        } catch (WorkRunException | IsxAppException e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + e.getMsg() + "\n");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
