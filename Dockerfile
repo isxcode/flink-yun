@@ -11,7 +11,7 @@ ARG LOG_LEVEL='info'
 
 COPY ./flink-yun-backend/flink-yun-main/build/libs/zhiliuyun.jar /opt/zhiliuyun/zhiliuyun.jar
 COPY ./flink-yun-backend/flink-yun-main/src/main/resources/application-docker.yml /etc/zhiliuyun/conf/
-COPY ./resources/jdbc/system /var/lib/zhiliuyun/jdbc/system
+COPY ./resources/jdbc/system /var/lib/zhiliuyun-system
 
 EXPOSE 8080
 
