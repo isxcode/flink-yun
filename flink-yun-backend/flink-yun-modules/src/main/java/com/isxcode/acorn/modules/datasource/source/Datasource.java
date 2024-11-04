@@ -79,6 +79,11 @@ public abstract class Datasource {
                     ? driverEntity.getTenantId() + File.separator + driverEntity.getFileName()
                     : "system" + File.separator + driverEntity.getFileName());
 
+            // 如果docker部署，使用指定目录获取系统驱动
+            if (isxAppProperties.isDockerMode()) {
+                driverPath = "/var/lib/zhiqingyun-system/" + driverEntity.getFileName();
+            }
+
             // 先加载驱动到ALL_EXIST_DRIVER
             URL url;
             try {
@@ -123,8 +128,8 @@ public abstract class Datasource {
             properties.put("password", aesUtils.decrypt(connectInfo.getPasswd()));
         }
 
-        // 数据源连接超时时间设定，600秒，10分钟
-        DriverManager.setLoginTimeout(600);
+        // 数据源连接超时时间设定，默认600秒，10分钟
+        DriverManager.setLoginTimeout(connectInfo.getLoginTimeout() == null ? 600 : connectInfo.getLoginTimeout());
         try {
             return driver.connect(connectInfo.getJdbcUrl(), properties);
         } catch (SQLException e) {
@@ -166,7 +171,19 @@ public abstract class Datasource {
 
     public String parseDbName(String jdbcUrl) {
 
-        Pattern pattern = Pattern.compile("jdbc:\\w+://\\S+/(\\w+)");
+        String regex = "jdbc:\\w+://\\S+/(\\w+)";
+
+        // sqlserver databaseName in jdbcUrl is different
+        if (jdbcUrl.contains("jdbc:sqlserver://")) {
+            if (jdbcUrl.toLowerCase().contains(";databasename=")) {
+                regex = "databasename=([^;&]+)";
+            }
+            if (jdbcUrl.toLowerCase().contains(";database=")) {
+                regex = "database=([^;&]+)";
+            }
+        }
+
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(jdbcUrl);
         if (matcher.find()) {
             return matcher.group(1);
@@ -224,8 +241,11 @@ public abstract class Datasource {
             preparedStatement.executeQuery();
             return true;
         } catch (SQLException e) {
+            if (e.getMessage().contains("doesn't exist")) {
+                return false;
+            }
             log.error(e.getMessage(), e);
-            return false;
+            throw new IsxAppException("判断表是否存在异常");
         }
     }
 
