@@ -11,7 +11,8 @@ interface SerchParams {
   page: number;
   pageSize: number;
   searchKeyWord: string;
-  executeStatus: string
+  executeStatus: string;
+  workflowId?: string
 }
 
 interface LogParam {
