@@ -89,8 +89,8 @@
 }
 
 @font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/ZluNSZ10rnKR.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/ADm74pBC0zsx.woff") format("woff");
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/uEMghNaZwbpH.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/J4rzlepLH0p4.woff") format("woff");
   font-display: swap;
 }
 
