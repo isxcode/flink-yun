@@ -45,7 +45,7 @@
         </div>
         <div class="column">
           <div class="title">联系我们</div>
-          <div class="link">电话: 400-8848-170</div>
+          <div class="link">电话: 189-9459-1261</div>
           <div class="link">邮箱: hello@isxcode.com</div>
           <div class="link">地址: 上海市徐汇区中山西路2020号501室</div>
         </div>
@@ -56,7 +56,7 @@
   <div class="org-info">
     <div class="content">
       <div class="link">公司: 上海至爻数据有限公司</div>
-      <div class="link">电话: 400-8848-170</div>
+      <div class="link">电话: 189-9459-1261</div>
       <div class="link">邮箱: hello@isxcode.com</div>
       <div class="link">地址: 上海市徐汇区中山西路2020号501室</div>
     </div>
@@ -82,7 +82,17 @@
 
 <style lang="scss" scoped>
 
-$primary-color: #7573d1;
+@font-face {
+  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/OobtoafRisR7.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/YMgEswp0IFDQ.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/uEMghNaZwbpH.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/J4rzlepLH0p4.woff") format("woff");
+  font-display: swap;
+}
 
 .footer {
   font-family: "阿里巴巴普惠体 2.0 45 Light", sans-serif;
@@ -182,7 +192,7 @@ $primary-color: #7573d1;
   display: none;
 }
 
-.org-info{
+.org-info {
   display: none;
 }
 
@@ -198,7 +208,7 @@ $primary-color: #7573d1;
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #f5f3fe;
+    background: #ffccb4;
 
     .content {
       width: 130px;
@@ -214,7 +224,7 @@ $primary-color: #7573d1;
       .phone-text {
         margin-left: 10px;
         font-size: 1.25rem;
-        color: $primary-color;
+        color: #e25a1b;
       }
     }
   }
@@ -403,7 +413,7 @@ function clickIcp() {
 }
 
 function callPhoneNumber() {
-  window.location.href = `tel:4008848170`;
+  window.location.href = `tel:18994591261`;
 }
 
 function aboutUs(){

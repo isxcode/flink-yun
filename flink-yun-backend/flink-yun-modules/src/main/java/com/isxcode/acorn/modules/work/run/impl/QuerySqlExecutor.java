@@ -1,10 +1,12 @@
 package com.isxcode.acorn.modules.work.run.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.isxcode.acorn.api.datasource.constants.DatasourceConfig;
 import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import com.isxcode.acorn.modules.datasource.mapper.DatasourceMapper;
@@ -126,7 +128,7 @@ public class QuerySqlExecutor extends WorkExecutor {
 
             // 清除脚本中的脏数据
             List<String> sqls =
-                Arrays.stream(script.split(";")).filter(e -> !Strings.isEmpty(e)).collect(Collectors.toList());
+                Arrays.stream(script.split(";")).filter(Strings::isNotBlank).collect(Collectors.toList());
 
             // 执行每条sql，除了最后一条
             for (int i = 0; i < sqls.size() - 1; i++) {
@@ -147,19 +149,27 @@ public class QuerySqlExecutor extends WorkExecutor {
             // 执行查询sql，给lastSql添加查询条数限制
             String lastSql = sqls.get(sqls.size() - 1);
 
+            // 特殊查询语句直接跳过
+            if (!lastSql.toUpperCase().trim().startsWith("SHOW")
+                && !lastSql.toUpperCase().trim().startsWith("DESCRIBE")) {
+
+                // 判断返回结果的条数，超过200条，则提出警告
+                String countSql = String.format("SELECT COUNT(*) FROM ( %s ) temp", lastSql);
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行条数检测SQL: \n")
+                    .append(countSql).append(" \n");
+                workInstance = updateInstance(workInstance, logBuilder);
+                ResultSet countResultSet = statement.executeQuery(countSql);
+                while (countResultSet.next()) {
+                    if (countResultSet.getInt(1) > DatasourceConfig.LIMIT_NUMBER) {
+                        throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "条数大于200条，请添加sql行数限制 \n");
+                    }
+                }
+            }
+
             // 执行最后一句查询语句
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: \n").append(lastSql)
                 .append(" \n");
             workInstance = updateInstance(workInstance, logBuilder);
-
-            if (!datasourceService.isQueryStatement(lastSql)) {
-                throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "最后sql不是查询语句 \n");
-            }
-
-            if (!datasourceService.hasLimit(lastSql)) {
-                lastSql = lastSql + datasourceService.getSqlLimitSql(datasourceEntityOptional.get().getDbType(),
-                    datasourceService.hasWhere(lastSql));
-            }
 
             ResultSet resultSet = statement.executeQuery(lastSql);
 
@@ -191,7 +201,7 @@ public class QuerySqlExecutor extends WorkExecutor {
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("数据保存成功  \n");
             workInstance.setResultData(JSON.toJSONString(result));
             updateInstance(workInstance, logBuilder);
-        } catch (WorkRunException e) {
+        } catch (WorkRunException | IsxAppException e) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + e.getMsg() + "\n");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
