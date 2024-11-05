@@ -176,11 +176,11 @@ export const TypeList = [
     value: 'FLINK_SQL'
   },
   {
-    label: 'bash作业',
+    label: 'Bash作业',
     value: 'BASH'
   },
   {
-    label: 'python作业',
+    label: 'Python作业',
     value: 'PYTHON'
   },
   {
