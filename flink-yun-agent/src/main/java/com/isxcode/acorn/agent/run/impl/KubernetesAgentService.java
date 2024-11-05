@@ -94,7 +94,8 @@ public class KubernetesAgentService implements AgentService {
 
         // flink的args配置
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
-            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitWorkReq.getFlinkSubmit().getProgramArgs());
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS,
+                Arrays.asList(submitWorkReq.getPluginReq().getArgs()));
         } else {
             flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
                 Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
