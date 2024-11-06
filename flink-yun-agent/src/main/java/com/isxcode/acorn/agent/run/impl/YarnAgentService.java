@@ -11,6 +11,7 @@ import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
 import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
 import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
 import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
+import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,14 +53,21 @@ public class YarnAgentService implements AgentService {
     public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
-
+        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
             submitWorkReq.getFlinkSubmit().getEntryClass());
-        flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
-            Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
-        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
-        flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator
-            + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator
+                + "file" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS,
+                Arrays.asList(submitWorkReq.getPluginReq().getArgs()));
+        } else {
+            flinkConfig.set(PipelineOptions.JARS, singletonList(submitWorkReq.getAgentHomePath() + File.separator
+                + "plugins" + File.separator + submitWorkReq.getFlinkSubmit().getAppResource()));
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, singletonList(
+                Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
+        }
+
         flinkConfig.set(DeploymentOptions.TARGET, YarnDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
@@ -106,6 +111,14 @@ public class YarnAgentService implements AgentService {
             for (int i = 0; i < submitWorkReq.getLibConfig().size(); i++) {
                 libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
                     + submitWorkReq.getLibConfig().get(i) + ".jar");
+            }
+        }
+
+        // 添加自定义函数
+        if (submitWorkReq.getFuncConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getFuncConfig().size(); i++) {
+                libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFuncConfig().get(i).getFileId() + ".jar");
             }
         }
 

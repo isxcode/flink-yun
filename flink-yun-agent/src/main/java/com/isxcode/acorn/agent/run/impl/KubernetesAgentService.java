@@ -94,7 +94,8 @@ public class KubernetesAgentService implements AgentService {
 
         // flink的args配置
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
-            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, submitWorkReq.getFlinkSubmit().getProgramArgs());
+            flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS,
+                Arrays.asList(submitWorkReq.getPluginReq().getArgs()));
         } else {
             flinkConfig.set(ApplicationConfiguration.APPLICATION_ARGS, Collections.singletonList(
                 Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
@@ -164,6 +165,16 @@ public class KubernetesAgentService implements AgentService {
                     "/opt/flink/lib/" + submitWorkReq.getLibConfig().get(i) + ".jar"));
                 volumes.add(String.format(volumeTemplate, "lib-" + i, submitWorkReq.getAgentHomePath() + File.separator
                     + "file" + File.separator + submitWorkReq.getLibConfig().get(i) + ".jar"));
+            }
+        }
+
+        // 自定义函数
+        if (submitWorkReq.getFuncConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getFuncConfig().size(); i++) {
+                volumeMounts.add(String.format(volumeMountsTemplate, "func-" + i,
+                    "/opt/flink/lib/" + submitWorkReq.getFuncConfig().get(i) + ".jar"));
+                volumes.add(String.format(volumeTemplate, "func-" + i, submitWorkReq.getAgentHomePath() + File.separator
+                    + "file" + File.separator + submitWorkReq.getFuncConfig().get(i).getFileId() + ".jar"));
             }
         }
 
