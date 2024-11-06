@@ -114,6 +114,14 @@ public class YarnAgentService implements AgentService {
             }
         }
 
+        // 添加自定义函数
+        if (submitWorkReq.getFuncConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getFuncConfig().size(); i++) {
+                libFile.add(submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFuncConfig().get(i).getFileId() + ".jar");
+            }
+        }
+
         flinkConfig.set(YarnConfigOptions.SHIP_FILES, libFile);
 
         // 提交作业到yarn中

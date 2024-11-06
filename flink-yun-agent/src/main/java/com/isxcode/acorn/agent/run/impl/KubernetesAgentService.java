@@ -168,6 +168,16 @@ public class KubernetesAgentService implements AgentService {
             }
         }
 
+        // 自定义函数
+        if (submitWorkReq.getFuncConfig() != null) {
+            for (int i = 0; i < submitWorkReq.getFuncConfig().size(); i++) {
+                volumeMounts.add(String.format(volumeMountsTemplate, "func-" + i,
+                    "/opt/flink/lib/" + submitWorkReq.getFuncConfig().get(i) + ".jar"));
+                volumes.add(String.format(volumeTemplate, "func-" + i, submitWorkReq.getAgentHomePath() + File.separator
+                    + "file" + File.separator + submitWorkReq.getFuncConfig().get(i).getFileId() + ".jar"));
+            }
+        }
+
         // 生成pod文件
         generatePodTemplate(volumeMounts, volumes, submitWorkReq.getAgentHomePath(), submitWorkReq.getWorkInstanceId());
 
