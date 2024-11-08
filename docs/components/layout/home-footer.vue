@@ -208,7 +208,7 @@
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #ffccb4;
+    background: #f5f3fe;
 
     .content {
       width: 130px;
@@ -224,7 +224,7 @@
       .phone-text {
         margin-left: 10px;
         font-size: 1.25rem;
-        color: #e25a1b;
+        color: #7573d1;
       }
     }
   }
