@@ -12,6 +12,7 @@ export interface colConfig {
   customSlot?: string;
   width?: number;
   minWidth?: number;
+  fixed?: string;
 }
 
 export interface Pagination {
@@ -50,7 +51,7 @@ export const colConfigs: colConfig[] = [
   {
     prop: 'name',
     title: '名称',
-    minWidth: 120,
+    minWidth: 180,
     customSlot: 'nameSlot',
     showOverflowTooltip: true
   },
@@ -86,7 +87,8 @@ export const colConfigs: colConfig[] = [
     title: '操作',
     align: 'center',
     customSlot: 'options',
-    width: 80
+    width: 80,
+    fixed: 'right'
   }
 ]
 
@@ -138,7 +140,8 @@ export const DetailColConfigs: colConfig[] = [
     title: '操作',
     align: 'center',
     customSlot: 'options',
-    width: 80
+    width: 80,
+    fixed: 'right'
   }
 ]
 

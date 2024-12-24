@@ -78,7 +78,7 @@ function getShareFormUrl() {
         // }
         url.value = `${location.origin}/share/${res.data.formLinkId}`
     }).catch(() => {
-      loading.value = false
+        loading.value = false
     })
 }
 

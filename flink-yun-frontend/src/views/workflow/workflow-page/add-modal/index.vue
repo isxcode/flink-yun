@@ -126,6 +126,7 @@ import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { GetComputerGroupList, GetComputerPointData } from '@/services/computer-group.service'
 import { GetDatasourceList } from '@/services/datasource.service'
+import { GetSparkContainerList } from '@/services/spark-container.service'
 import { TypeList } from '../../workflow.config'
 
 const form = ref<FormInstance>()
@@ -327,18 +328,18 @@ function getDataSourceList(e: boolean, searchType?: string) {
             page: 0,
             pageSize: 10000,
             searchKeyWord: searchType || ''
+        }).then((res: any) => {
+            dataSourceList.value = res.data.content
+            .filter((item: any) => !(item.dbType === 'KAFKA' && ['EXE_JDBC', 'QUERY_JDBC'].includes(formData.workType)))
+            .map((item: any) => {
+                return {
+                    label: item.name,
+                    value: item.id
+                }
+            })
+        }).catch(() => {
+            dataSourceList.value = []
         })
-            .then((res: any) => {
-                dataSourceList.value = res.data.content.map((item: any) => {
-                    return {
-                        label: item.name,
-                        value: item.id
-                    }
-                })
-            })
-            .catch(() => {
-                dataSourceList.value = []
-            })
     }
 }
 function getSparkContainerList(e: boolean, searchType?: string) {
