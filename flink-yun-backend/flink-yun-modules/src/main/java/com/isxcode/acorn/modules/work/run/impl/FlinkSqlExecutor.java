@@ -291,7 +291,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
             // 如果状态是运行中，更新日志，继续执行
             List<String> runningStatus = Arrays.asList("RUNNING", "UNDEFINED", "SUBMITTED", "CONTAINERCREATING",
-                "PENDING", "TERMINATING", "INITIALIZING");
+                "PENDING", "TERMINATING", "INITIALIZING", "RESTARTING");
             if (runningStatus.contains(getJobInfoRes.getStatus().toUpperCase())) {
                 try {
                     Thread.sleep(4000);
