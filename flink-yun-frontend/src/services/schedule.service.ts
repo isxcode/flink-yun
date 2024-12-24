@@ -11,7 +11,7 @@ interface SerchParams {
   page: number;
   pageSize: number;
   searchKeyWord: string;
-  executeStatus: string;
+  executeStatus: string
   workflowId?: string
 }
 
@@ -45,7 +45,7 @@ export function GetScheduleWorkFlowList(params: SerchParams): Promise<any> {
 export function GetScheduleDetail(params: workflowInstanceId): Promise<any> {
   return http.request({
     method: 'post',
-    url: '/workflow/getWorkflowInstance',
+    url: '/work/getWorkflowInstance',
     params: params
   })
 }

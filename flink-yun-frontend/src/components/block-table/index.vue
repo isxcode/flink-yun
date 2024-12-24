@@ -4,6 +4,7 @@
     :class="{ 'block-table__empty': !tableConfig.tableData?.length }"
     :row-config="{ isHover: true }"
     :data="tableConfig.tableData"
+    :seq-config="{ seqMethod }"
     :loading="tableConfig.loading"
   >
     <vxe-column
@@ -20,6 +21,7 @@
         :width="colConfig.width"
         :field="colConfig.prop"
         :fixed="colConfig.fixed"
+        :resizable="colIndex < tableConfig.colConfigs.length - 1"
         :show-header-overflow="colConfig.showHeaderOverflow || false"
         :show-overflow="colConfig.showOverflowTooltip || false"
         v-bind="colConfig"
@@ -40,6 +42,7 @@
         :show-header-overflow="colConfig.showHeaderOverflow || false"
         :width="colConfig.width"
         :field="colConfig.prop"
+        :resizable="colIndex < tableConfig.colConfigs.length - 1"
         :show-overflow="colConfig.showOverflowTooltip || false"
         v-bind="colConfig"
       />
@@ -66,8 +69,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, reactive } from 'vue'
 import EmptyPage from '@/components/empty-page/index.vue'
+import { VxeTablePropTypes } from 'vxe-table'
 
 interface Pagination {
   currentPage: number;
@@ -94,7 +98,7 @@ interface TableConfig {
   loading?: boolean; // 表格loading
 }
 
-defineProps<{
+const props = defineProps<{
   tableConfig: TableConfig;
 }>()
 
@@ -105,6 +109,14 @@ const handleSizeChange = (e: number) => {
 }
 const handleCurrentChange = (e: number) => {
   emit('current-change', e)
+}
+
+function seqMethod({ rowIndex }):number {
+  if (props.tableConfig && props.tableConfig.pagination) {
+    return (props.tableConfig?.pagination.currentPage - 1) * props.tableConfig.pagination.pageSize + rowIndex + 1
+  } else {
+    return rowIndex + 1
+  }
 }
 
 function columnSlotAdapter(column: any, colConfig: any) {
@@ -155,6 +167,22 @@ function columnSlotAdapter(column: any, colConfig: any) {
   .vxe-loading {
     .vxe-loading--chunk {
       color: getCssVar('color', 'primary');
+    }
+  }
+  .vxe-table--fixed-wrapper {
+    .vxe-table--fixed-left-wrapper {
+      .vxe-table--body-wrapper {
+        &.fixed-left--wrapper {
+          bottom: 0;
+        }
+      }
+    }
+    .vxe-table--fixed-right-wrapper {
+      .vxe-table--body-wrapper {
+        &.fixed-right--wrapper {
+          bottom: 0;
+        }
+      }
     }
   }
 }

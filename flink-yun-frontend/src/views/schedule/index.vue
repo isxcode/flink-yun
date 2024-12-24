@@ -11,7 +11,7 @@
           v-model="executeStatus"
           clearable
           placeholder="请选择状态进行搜索"
-          @change="initData(false)"
+          @change="initPageTable"
         >
           <el-option
             v-for="item in typeList"
@@ -26,7 +26,7 @@
           v-model="workflowId"
           clearable
           placeholder="请选择工作流进行搜索"
-          @change="initData(false)"
+          @change="initPageTable"
         >
           <el-option
             v-for="item in workFlowList"
@@ -43,14 +43,14 @@
           :maxlength="200"
           clearable
           @input="inputEvent"
-          @keyup.enter="initData(false)"
+          @keyup.enter="initPageTable"
         />
       </div>
     </div>
     <LoadingPage
       :visible="loading"
       :network-error="networkError"
-      @loading-refresh="initData(false)"
+      @loading-refresh="initPageTable"
     >
       <div class="zqy-table">
         <BlockTable
@@ -96,54 +96,7 @@
             {{ scopeSlot.row.duration !== undefined && scopeSlot.row.duration !== null ? formatSeconds(scopeSlot.row.duration) : '-' }}
           </template>
           <template #statusTag="scopeSlot">
-            <div class="btn-group">
-              <el-tag
-                v-if="scopeSlot.row.status === 'SUCCESS'"
-                class="ml-2"
-                type="success"
-              >
-                成功
-              </el-tag>
-              <el-tag
-                v-if="scopeSlot.row.status === 'FAIL'"
-                class="ml-2"
-                type="danger"
-              >
-                失败
-              </el-tag>
-              <el-tag
-                v-if="scopeSlot.row.status === 'ABORT'"
-                class="ml-2"
-                type="warning"
-              >
-                已中止
-              </el-tag>
-              <el-tag
-                v-if="scopeSlot.row.status === 'ABORTING'"
-                class="ml-2"
-              >
-                中止中
-              </el-tag>
-              <el-tag
-                v-if="scopeSlot.row.status === 'RUNNING'"
-                class="ml-2"
-              >
-                运行中
-              </el-tag>
-              <el-tag
-                v-if="scopeSlot.row.status === 'PENDING'"
-                class="ml-2"
-              >
-                等待中
-              </el-tag>
-              <el-tag
-                v-if="!scopeSlot.row.status"
-                class="ml-2"
-                type="info"
-              >
-                未运行
-              </el-tag>
-            </div>
+            <ZStatusTag :status="scopeSlot.row.status"></ZStatusTag>
           </template>
           <template #options="scopeSlot">
             <div class="btn-group">
@@ -229,6 +182,7 @@ import { GetScheduleList, DeleteScheduleLog, ReStartRunning, GetScheduleWorkFlow
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { GetWorkflowList, ReRunWorkflow, StopWorkflowData, TerWorkItemConfig } from '@/services/workflow.service'
 import { TypeList } from '../workflow/workflow.config'
+import { nextTick } from 'process'
 
 const breadCrumbList = reactive(BreadCrumbList)
 const tableConfig: any = reactive(TableConfig)
@@ -286,6 +240,8 @@ function initData(tableLoading?: boolean, type?: string) {
           tableConfigWorkFlow.tableData.forEach((col: any) => {
             if (item.workflowInstanceId === col.workflowInstanceId) {
               col.status = item.status
+              col.planStartDateTime = item.planStartDateTime
+              col.nextPlanDateTime = item.nextPlanDateTime
             }
           })
         })
@@ -321,6 +277,8 @@ function initData(tableLoading?: boolean, type?: string) {
             tableConfig.tableData.forEach((col: any) => {
               if (item.id === col.id) {
                 col.status = item.status
+                col.planStartDateTime = item.planStartDateTime
+                col.nextPlanDateTime = item.nextPlanDateTime
               }
             })
           })
@@ -350,7 +308,10 @@ function initData(tableLoading?: boolean, type?: string) {
 function changeTypeEvent() {
   keyword.value = ''
   workflowId.value = ''
+  initPageTable()
+}
 
+function initPageTable() {
   tableConfigWorkFlow.pagination.currentPage = 1
   tableConfigWorkFlow.pagination.pageSize = 10
   tableConfig.pagination.currentPage = 1

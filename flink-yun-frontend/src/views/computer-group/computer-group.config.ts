@@ -10,6 +10,7 @@ export interface colConfig {
   align?: string;
   showOverflowTooltip?: boolean;
   customSlot?: string;
+  fixed?: string;
   width?: number;
   minWidth?: number;
 }
@@ -81,7 +82,7 @@ export const colConfigs: colConfig[] = [
   {
     prop: 'status',
     title: '状态',
-    minWidth: 80,
+    minWidth: 100,
     customSlot: 'statusTag'
   },
   {
@@ -105,7 +106,8 @@ export const colConfigs: colConfig[] = [
     title: '操作',
     align: 'center',
     customSlot: 'options',
-    width: 80
+    width: 80,
+    fixed: 'right'
   }
 ]
 
@@ -155,7 +157,7 @@ export const PointColConfigs: colConfig[] = [
   {
     prop: 'status',
     title: '状态',
-    minWidth: 60,
+    minWidth: 100,
     customSlot: 'statusTag'
   },
   // {
@@ -179,7 +181,8 @@ export const PointColConfigs: colConfig[] = [
     title: '操作',
     align: 'center',
     customSlot: 'options',
-    width: 80
+    width: 80,
+    fixed: 'right'
   }
 ]
 
