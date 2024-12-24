@@ -1,7 +1,6 @@
 package com.isxcode.acorn.modules.workflow.mapper;
 
 import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
-import com.isxcode.acorn.api.instance.pojos.dto.WorkInstanceDto;
 import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo;
 import com.isxcode.acorn.api.monitor.pojos.res.PageInstancesRes;

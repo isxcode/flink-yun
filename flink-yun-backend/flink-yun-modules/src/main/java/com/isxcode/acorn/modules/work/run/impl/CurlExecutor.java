@@ -30,8 +30,8 @@ public class CurlExecutor extends WorkExecutor {
     private final SqlFunctionService sqlFunctionService;
 
     public CurlExecutor(WorkInstanceRepository workInstanceRepository,
-                        WorkflowInstanceRepository workflowInstanceRepository, IsxAppProperties isxAppProperties,
-                        AlarmService alarmService, SqlFunctionService sqlFunctionService) {
+        WorkflowInstanceRepository workflowInstanceRepository, IsxAppProperties isxAppProperties,
+        AlarmService alarmService, SqlFunctionService sqlFunctionService) {
 
         super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.isxAppProperties = isxAppProperties;
