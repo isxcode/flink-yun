@@ -1,30 +1,26 @@
 <template>
   <main class="docs">
     <nav class="left-side">
-      <el-scrollbar
-        class="scroll-bar"
-        always
-        height="100%"
-        :scroll-bar="{
-          background: 'red',
-        }"
-        ref="scrollbarRef"
-      >
-        <ContentNavigation class="nav" v-slot="{ navigation }">
+      <NScrollbar class="scroll-bar" height="100%" :size="4" ref="scrollbarRef">
+        <ContentNavigation
+          :key="docsMenuKey"
+          class="nav"
+          v-slot="{ navigation }"
+        >
           <DocsMenuNode
             class="nav-tree"
             :treeData="processMenuData(navigation)"
             @item-click="handleMenuItemClick"
           ></DocsMenuNode>
         </ContentNavigation>
-      </el-scrollbar>
+      </NScrollbar>
     </nav>
     <article class="doc-content">
       <div class="content">
         <ContentRenderer :value="data">
           <ContentRendererMarkdown
             ref="markdownBodyRef"
-            class="markdown-body github-markdown-light"
+            class="markdown-content markdown-body"
             :value="data"
           />
           <template #empty>
