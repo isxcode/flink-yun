@@ -95,11 +95,12 @@ public class FlinkJarExecutor extends WorkExecutor {
     private final SqlFunctionService sqlFunctionService;
 
     public FlinkJarExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
-                            HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
-                            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-                            FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService, SqlFunctionService sqlFunctionService) {
+        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+        WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
+        HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
+        FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService,
+        SqlFunctionService sqlFunctionService) {
 
         super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.workInstanceRepository = workInstanceRepository;
