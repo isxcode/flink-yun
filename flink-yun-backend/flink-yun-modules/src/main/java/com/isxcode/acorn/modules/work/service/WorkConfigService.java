@@ -93,42 +93,17 @@ public class WorkConfigService {
         Map<String, String> flinkConfig = new HashMap<>();
         switch (resourceLevel) {
             case ResourceLevel.HIGH:
-                flinkConfig.put("flink.executor.instances", "10");
-                flinkConfig.put("flink.executor.cores", "4");
-                flinkConfig.put("flink.executor.memory", "4g");
-                flinkConfig.put("flink.driver.memory", "2g");
-                flinkConfig.put("flink.driver.cores", "1");
-                flinkConfig.put("flink.cores.max", "10");
+
                 break;
             case ResourceLevel.MEDIUM:
-                flinkConfig.put("flink.executor.instances", "5");
-                flinkConfig.put("flink.executor.cores", "2");
-                flinkConfig.put("flink.executor.memory", "2g");
-                flinkConfig.put("flink.driver.memory", "1g");
-                flinkConfig.put("flink.driver.cores", "1");
-                flinkConfig.put("flink.cores.max", "5");
+
                 break;
             case ResourceLevel.LOW:
-                flinkConfig.put("flink.executor.instances", "1");
-                flinkConfig.put("flink.executor.cores", "1");
-                flinkConfig.put("flink.executor.memory", "2g");
-                flinkConfig.put("flink.driver.memory", "1g");
-                flinkConfig.put("flink.driver.cores", "1");
-                flinkConfig.put("flink.cores.max", "1");
+
                 break;
         }
 
-        flinkConfig.put("flink.driver.extraJavaOptions", "-Dfile.encoding=utf-8");
-        flinkConfig.put("flink.executor.extraJavaOptions", "-Dfile.encoding=utf-8");
-        flinkConfig.put("flink.sql.storeAssignmentPolicy", "LEGACY");
-        flinkConfig.put("flink.sql.legacy.timeParserPolicy", "LEGACY");
-        flinkConfig.put("flink.sql.autoBroadcastJoinThreshold", "-1");
-        flinkConfig.put("flink.sql.parquet.writeLegacyFormat", "true");
-        flinkConfig.put("flink.sql.parquet.enableVectorizedReader", "false");
-        flinkConfig.put("flink.sql.parquet.int96RebaseModeInRead", "LEGACY");
-        flinkConfig.put("flink.sql.parquet.int96RebaseModeInWrite", "LEGACY");
-        flinkConfig.put("flink.sql.parquet.datetimeRebaseModeInRead", "LEGACY");
-        flinkConfig.put("flink.sql.parquet.datetimeRebaseModeInWrite", "LEGACY");
+
         return flinkConfig;
     }
 }

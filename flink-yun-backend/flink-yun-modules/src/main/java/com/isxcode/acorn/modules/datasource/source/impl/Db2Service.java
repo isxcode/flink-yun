@@ -6,6 +6,7 @@ import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
 import com.isxcode.acorn.api.datasource.pojos.dto.QueryColumnDto;
 import com.isxcode.acorn.api.datasource.pojos.dto.QueryTableDto;
 import com.isxcode.acorn.api.work.pojos.res.GetDataSourceDataRes;
+import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
 import com.isxcode.acorn.common.utils.AesUtils;
 import com.isxcode.acorn.modules.datasource.service.DatabaseDriverService;
@@ -56,6 +57,11 @@ public class Db2Service extends Datasource {
     @Override
     public Long getTableColumnCount(ConnectInfo connectInfo) {
         return 0L;
+    }
+
+    @Override
+    public String getPageSql(String sql) throws IsxAppException {
+        return "";
     }
 
     @Override

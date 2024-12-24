@@ -8,6 +8,7 @@ import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
+import com.isxcode.acorn.modules.work.sql.SqlFunctionService;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowInstanceEntity;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 import static com.isxcode.acorn.common.config.CommonConfig.USER_ID;
@@ -34,6 +33,8 @@ public abstract class WorkExecutor {
     private final WorkflowInstanceRepository workflowInstanceRepository;
 
     private final AlarmService alarmService;
+
+    private final SqlFunctionService sqlFunctionService;
 
     public abstract String getWorkType();
 
@@ -164,5 +165,29 @@ public abstract class WorkExecutor {
     public void syncAbort(WorkInstanceEntity workInstance) {
 
         this.abort(workInstance);
+    }
+
+    /**
+     * 翻译上游的jsonPath.
+     */
+    public String parseJsonPath(String value, WorkInstanceEntity workInstance) {
+
+        if (workInstance.getWorkflowInstanceId() == null) {
+            return value.replace("get_json_value", "get_json_default_value")
+                .replace("get_regex_value", "get_regex_default_value")
+                .replace("get_table_value", "get_table_default_value");
+        }
+
+        List<WorkInstanceEntity> allWorkflowInstance =
+            workInstanceRepository.findAllByWorkflowInstanceId(workInstance.getWorkflowInstanceId());
+
+        for (WorkInstanceEntity e : allWorkflowInstance) {
+            if (InstanceStatus.SUCCESS.equals(e.getStatus()) && e.getResultData() != null) {
+                value = value.replace("${qing." + e.getWorkId() + ".result_data}",
+                    Base64.getEncoder().encodeToString(e.getResultData().getBytes()));
+            }
+        }
+
+        return sqlFunctionService.parseSqlFunction(value);
     }
 }
