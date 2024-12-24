@@ -207,12 +207,4 @@ public class WorkflowController {
         return workflowBizService.queryWorkFlowInstances(queryWorkFlowInstancesReq);
     }
 
-    @Operation(summary = "查询单个作业流实例信息接口")
-    @PostMapping("/getWorkflowInstance")
-    @SuccessResponse("查询成功")
-    public GetWorkflowInstanceRes getWorkflowInstance(
-        @Valid @RequestBody GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
-
-        return workflowBizService.getWorkflowInstance(wfiGetWorkflowInstanceReq);
-    }
 }

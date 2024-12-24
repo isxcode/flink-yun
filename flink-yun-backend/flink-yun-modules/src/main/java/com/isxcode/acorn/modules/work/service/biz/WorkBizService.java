@@ -2,10 +2,14 @@ package com.isxcode.acorn.modules.work.service.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
-import com.isxcode.acorn.api.instance.pojos.req.QueryInstanceReq;
+import com.isxcode.acorn.api.instance.pojos.req.*;
+import com.isxcode.acorn.api.instance.pojos.res.GetWorkInstanceValuePathRes;
+import com.isxcode.acorn.api.instance.pojos.res.GetWorkflowInstanceRes;
 import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
 import com.isxcode.acorn.api.work.constants.WorkStatus;
 import com.isxcode.acorn.api.work.constants.WorkType;
@@ -27,6 +31,8 @@ import com.isxcode.acorn.modules.work.service.WorkConfigService;
 import com.isxcode.acorn.modules.work.service.WorkService;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowConfigEntity;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowEntity;
+import com.isxcode.acorn.modules.workflow.entity.WorkflowInstanceEntity;
+import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import com.isxcode.acorn.modules.workflow.service.WorkflowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +42,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.isxcode.acorn.common.config.CommonConfig.JPA_TENANT_MODE;
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
@@ -67,6 +74,8 @@ public class WorkBizService {
 
     private final WorkConfigService workConfigService;
 
+    private final WorkflowInstanceRepository workflowInstanceRepository;
+
     public GetWorkRes addWork(AddWorkReq addWorkReq) {
 
         // 校验作业名的唯一性
@@ -78,6 +87,15 @@ public class WorkBizService {
 
         // 将addWorkReq转成workEntity
         WorkEntity work = workMapper.addWorkReqToWorkEntity(addWorkReq);
+
+        // FlinkSql要是支持访问hive，必须填写datasourceId
+        if (WorkType.FLINK_SQL.equals(addWorkReq.getWorkType())) {
+            if (addWorkReq.getEnableHive()) {
+                if (Strings.isEmpty(addWorkReq.getDatasourceId())) {
+                    throw new IsxAppException("开启hive，必须配置hive数据源");
+                }
+            }
+        }
 
         // python作业和bash作业，必须选择服务器节点
         if (WorkType.PYTHON.equals(addWorkReq.getWorkType()) || WorkType.BASH.equals(addWorkReq.getWorkType())) {
@@ -274,8 +292,18 @@ public class WorkBizService {
             throw new IsxAppException("请等待作业运行完毕或者对应作业无返回结果");
         }
 
-        if (Strings.isEmpty(workInstanceEntity.getJobManagerLog())) {
-            return new GetDataRes(JSON.parseArray(workInstanceEntity.getResultData()));
+        // 根据作业类型返回结果
+        WorkEntity workEntity = workService.getWorkEntity(workInstanceEntity.getWorkId());
+        if (WorkType.API.equals(workEntity.getWorkType()) || WorkType.CURL.equals(workEntity.getWorkType())) {
+            return new GetDataRes(null, JSON.toJSONString(JSON.parse(workInstanceEntity.getResultData()), true), null);
+        }
+
+        if (WorkType.BASH.equals(workEntity.getWorkType()) || WorkType.PYTHON.equals(workEntity.getWorkType())) {
+            return new GetDataRes(null, null, workInstanceEntity.getResultData());
+        }
+
+        if (Strings.isEmpty(workInstanceEntity.getTaskManagerLog())) {
+            return new GetDataRes(JSON.parseArray(workInstanceEntity.getResultData()), null, null);
         }
         return JSON.parseObject(workInstanceEntity.getResultData(), GetDataRes.class);
     }
@@ -427,9 +455,8 @@ public class WorkBizService {
         }
         WorkInstanceEntity workInstanceEntity = workInstanceEntityOptional.get();
 
-        return GetSubmitLogRes.builder()
-            .log(workInstanceEntity.getSubmitLog().replace("\\n", "\n").replace("\\t", "\t"))
-            .status(workInstanceEntity.getStatus()).build();
+        return GetSubmitLogRes.builder().log(workInstanceEntity.getSubmitLog()).status(workInstanceEntity.getStatus())
+            .build();
     }
 
     public void renameWork(RenameWorkReq wokRenameWorkReq) {
@@ -486,5 +513,134 @@ public class WorkBizService {
         JPA_TENANT_MODE.set(true);
 
         return instancePage.map(workMapper::mapToWoiQueryInstanceRes);
+    }
+
+    public GetWorkflowInstanceRes getWorkflowInstance(GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
+
+        GetWorkflowInstanceRes result = new GetWorkflowInstanceRes();
+
+        // 获取实例中的webConfig
+        WorkflowInstanceEntity workflowInstance =
+            workflowInstanceRepository.findById(wfiGetWorkflowInstanceReq.getWorkflowInstanceId()).get();
+        result.setWebConfig(workflowInstance.getWebConfig());
+
+        // 查看其他实例的状态
+        List<WorkInstanceEntity> workInstances =
+            workInstanceRepository.findAllByWorkflowInstanceId(workflowInstance.getId());
+        result.setWorkInstances(
+            workInstances.stream().map(workMapper::workInstanceEntity2WorkInstanceVo).collect(Collectors.toList()));
+
+        // 返回结果
+        return result;
+    }
+
+    public List<GetWorkInstanceValuePathRes> getWorkInstanceJsonPath(
+        GetWorkInstanceJsonPathReq getWorkInstanceJsonPathReq) {
+
+        // 获取实例的结果
+        WorkInstanceEntity workInstanceEntity =
+            workInstanceRepository.findById(getWorkInstanceJsonPathReq.getWorkInstanceId()).get();
+
+        if (!InstanceStatus.SUCCESS.equals(workInstanceEntity.getStatus())) {
+            throw new IsxAppException("只有成功的实例可以查询");
+        }
+
+        // 判断作业类型
+        WorkEntity workEntity = workService.getWorkEntity(workInstanceEntity.getWorkId());
+
+        if (!WorkType.API.equals(workEntity.getWorkType()) && !WorkType.CURL.equals(workEntity.getWorkType())) {
+            throw new IsxAppException("只支持API作业和Curl作业");
+        }
+
+        List<GetWorkInstanceValuePathRes> result = new ArrayList<>();
+        Map<String, Object> allItemPaths =
+            JSONPath.paths(JSON.parseObject(workInstanceEntity.getResultData(), Map.class));
+        allItemPaths.forEach((k, v) -> {
+            GetWorkInstanceValuePathRes metaWorkInstance = new GetWorkInstanceValuePathRes();
+            metaWorkInstance.setJsonPath(k);
+            metaWorkInstance.setValue(String.valueOf(v));
+            metaWorkInstance.setCopyValue("#[[get_json_value('${qing." + workEntity.getId() + ".result_data}','" + k
+                + "','" + Base64.getEncoder().encodeToString(String.valueOf(v).getBytes()) + "')]]");
+            result.add(metaWorkInstance);
+        });
+        return result;
+    }
+
+    public GetWorkInstanceValuePathRes getWorkInstanceRegexPath(
+        GetWorkInstanceRegexPathReq getWorkInstanceRegexPathReq) {
+
+        // 获取实例
+        WorkInstanceEntity workInstanceEntity =
+            workInstanceRepository.findById(getWorkInstanceRegexPathReq.getWorkInstanceId()).get();
+
+        if (!InstanceStatus.SUCCESS.equals(workInstanceEntity.getStatus())) {
+            throw new IsxAppException("只有成功的实例可以查询");
+        }
+
+        // 判断作业类型
+        WorkEntity workEntity = workService.getWorkEntity(workInstanceEntity.getWorkId());
+
+        if (!WorkType.BASH.equals(workEntity.getWorkType()) && !WorkType.PYTHON.equals(workEntity.getWorkType())) {
+            throw new IsxAppException("只支持Bash作业和Python作业");
+        }
+
+        // 返回结果
+        GetWorkInstanceValuePathRes result = new GetWorkInstanceValuePathRes();
+        Pattern pattern = Pattern.compile(getWorkInstanceRegexPathReq.getRegexStr());
+        Matcher matcher = pattern.matcher(workInstanceEntity.getResultData());
+        if (matcher.find()) {
+            result.setValue(matcher.group(1));
+        } else {
+            result.setValue("");
+        }
+        result.setCopyValue("#[[get_regex_value('${qing." + workEntity.getId() + ".result_data}','"
+            + Base64.getEncoder().encodeToString(getWorkInstanceRegexPathReq.getRegexStr().getBytes()) + "','"
+            + Base64.getEncoder().encodeToString(result.getValue().getBytes()) + "')]]");
+        return result;
+    }
+
+    public GetWorkInstanceValuePathRes getWorkInstanceTablePath(
+        GetWorkInstanceTablePathReq getWorkInstanceTablePathReq) {
+
+        // 获取实例的结果
+        WorkInstanceEntity workInstanceEntity =
+            workInstanceRepository.findById(getWorkInstanceTablePathReq.getWorkInstanceId()).get();
+
+        if (!InstanceStatus.SUCCESS.equals(workInstanceEntity.getStatus())) {
+            throw new IsxAppException("只有成功的实例可以查询");
+        }
+
+        // 判断作业类型
+        WorkEntity workEntity = workService.getWorkEntity(workInstanceEntity.getWorkId());
+
+        if (!WorkType.PRQL.equals(workEntity.getWorkType()) && !WorkType.QUERY_JDBC_SQL.equals(workEntity.getWorkType())
+            && !WorkType.FLINK_SQL.equals(workEntity.getWorkType())
+            && !WorkType.FLINK_CONTAINER_SQL.equals(workEntity.getWorkType())) {
+            throw new IsxAppException("只支持查询作业");
+        }
+
+        // 返回结果
+        GetWorkInstanceValuePathRes result = new GetWorkInstanceValuePathRes();
+
+        List<List<String>> data;
+        if (WorkType.FLINK_SQL.equals(workEntity.getWorkType())) {
+            data = JSON.parseObject(JSON.toJSONString(JSON.parseObject(workInstanceEntity.getResultData()).get("data")),
+                new TypeReference<List<List<String>>>() {});
+        } else {
+            data = JSON.parseObject(workInstanceEntity.getResultData(), new TypeReference<List<List<String>>>() {});
+        }
+
+        try {
+            result.setValue(
+                data.get(getWorkInstanceTablePathReq.getTableRow()).get(getWorkInstanceTablePathReq.getTableCol() - 1));
+        } catch (Exception e) {
+            result.setValue("");
+        }
+
+        result.setCopyValue("#[[get_table_value('${qing." + workEntity.getId() + ".result_data}',"
+            + getWorkInstanceTablePathReq.getTableRow() + "," + getWorkInstanceTablePathReq.getTableCol() + ",'"
+            + Base64.getEncoder().encodeToString(result.getValue().getBytes()) + "')]]");
+
+        return result;
     }
 }

@@ -7,6 +7,7 @@ import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.instance.constants.InstanceType;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.workflow.pojos.dto.WorkflowToken;
+import com.isxcode.acorn.api.workflow.pojos.req.GetInvokeUrlReq;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
 import com.isxcode.acorn.common.utils.jwt.JwtUtils;
@@ -83,21 +84,19 @@ public class WorkflowService {
     /**
      * 生成外部调用的链接.
      */
-    public String getInvokeUrl(String workflowId) {
+    public String getInvokeUrl(GetInvokeUrlReq getInvokeUrlReq) {
 
         String httpProtocol = isxAppProperties.isUseSsl() ? "https://" : "http://";
-        int port = isxAppProperties.isDockerMode() ? 8080 : serverProperties.getPort();
-        StringBuilder httpUrlBuilder =
-            new StringBuilder(httpProtocol + "127.0.0.1:" + port + "/workflow/open/invokeWorkflow");
+        String httpUrlBuilder = httpProtocol + getInvokeUrlReq.getOuterAddress() + "/workflow/open/invokeWorkflow";
 
         WorkflowToken workflowToken = WorkflowToken.builder().userId(USER_ID.get()).tenantId(TENANT_ID.get())
-            .workflowId(workflowId).type("WORKFLOW_INVOKE").build();
+            .workflowId(getInvokeUrlReq.getWorkflowId()).type("WORKFLOW_INVOKE").build();
         String token =
             JwtUtils.encrypt(isxAppProperties.getAesSlat(), workflowToken, isxAppProperties.getJwtKey(), 365 * 24 * 60);
 
         return "curl -s '" + httpUrlBuilder + "' \\\n" + "   -H 'Content-Type: application/json;charset=UTF-8' \\\n"
             + "   -H 'Accept: application/json, text/plain, */*' \\\n" + "   --data-raw '{\"workflowId\":\""
-            + workflowId + "\",\"token\":\"" + token + "\"}'";
+            + getInvokeUrlReq.getWorkflowId() + "\",\"token\":\"" + token + "\"}'";
     }
 
     /**
@@ -173,7 +172,7 @@ public class WorkflowService {
         workflowInstance = workflowInstanceRepository.saveAndFlush(workflowInstance);
 
         // 初始化作业实例
-        List<String> nodeList = JSON.parseArray(workflowVersion.getNodeList(), String.class);
+        List<String> nodeList = com.alibaba.fastjson.JSON.parseArray(workflowVersion.getNodeList(), String.class);
         List<WorkInstanceEntity> workInstances = new ArrayList<>();
         List<WorkEntity> allWorks = workRepository.findAllById(nodeList);
         for (WorkEntity metaWork : allWorks) {
@@ -186,10 +185,10 @@ public class WorkflowService {
         workInstanceRepository.saveAllAndFlush(workInstances);
 
         // 直接执行一次作业流的点击
-        List<String> startNodes = JSON.parseArray(workflowVersion.getDagStartList(), String.class);
-        List<String> endNodes = JSON.parseArray(workflowVersion.getDagEndList(), String.class);
-        List<List<String>> nodeMapping =
-            JSON.parseObject(workflowVersion.getNodeMapping(), new TypeReference<List<List<String>>>() {});
+        List<String> startNodes = com.alibaba.fastjson.JSON.parseArray(workflowVersion.getDagStartList(), String.class);
+        List<String> endNodes = com.alibaba.fastjson.JSON.parseArray(workflowVersion.getDagEndList(), String.class);
+        List<List<String>> nodeMapping = com.alibaba.fastjson.JSON.parseObject(workflowVersion.getNodeMapping(),
+            new TypeReference<List<List<String>>>() {});
 
         // 封装event推送时间，开始执行任务
         // 异步触发工作流

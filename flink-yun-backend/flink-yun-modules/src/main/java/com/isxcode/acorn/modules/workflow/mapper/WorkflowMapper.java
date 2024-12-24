@@ -45,9 +45,4 @@ public interface WorkflowMapper {
     @Mapping(target = "planStartDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     QueryWorkFlowInstancesRes wfiWorkflowInstanceAo2WfiQueryWorkFlowInstancesRes(
         WorkflowInstanceAo workflowInstanceAoPage);
-
-    @Mapping(target = "startDateTime", source = "execStartDateTime")
-    @Mapping(target = "endDateTime", source = "execEndDateTime")
-    @Mapping(target = "type", source = "instanceType")
-    WorkInstanceDto workInstanceEntity2WorkInstanceVo(WorkInstanceEntity workInstanceEntity);
 }

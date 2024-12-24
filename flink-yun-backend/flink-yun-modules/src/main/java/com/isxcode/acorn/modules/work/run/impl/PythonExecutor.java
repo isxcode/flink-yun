@@ -55,7 +55,7 @@ public class PythonExecutor extends WorkExecutor {
         ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, ClusterRepository clusterRepository,
         SqlValueService sqlValueService, SqlFunctionService sqlFunctionService, AlarmService alarmService) {
 
-        super(workInstanceRepository, workflowInstanceRepository, alarmService);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
         this.aesUtils = aesUtils;
@@ -113,8 +113,11 @@ public class PythonExecutor extends WorkExecutor {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "检测集群失败 : 指定运行节点不存在  \n");
         }
 
+        // 解析上游参数
+        String jsonPathSql = parseJsonPath(workRunContext.getScript(), workInstance);
+
         // 翻译脚本中的系统变量
-        String parseValueSql = sqlValueService.parseSqlValue(workRunContext.getScript());
+        String parseValueSql = sqlValueService.parseSqlValue(jsonPathSql);
 
         // 翻译脚本中的系统函数
         String script = sqlFunctionService.parseSqlFunction(parseValueSql);
@@ -153,6 +156,7 @@ public class PythonExecutor extends WorkExecutor {
 
         // 提交作业成功后，开始循环判断状态
         String getPidStatusCommand = "ps -p " + workInstance.getWorkPid();
+        String oldStatus = "";
         while (true) {
 
             String pidStatus;
@@ -167,6 +171,14 @@ public class PythonExecutor extends WorkExecutor {
                 throw new WorkRunException(
                     LocalDateTime.now() + WorkLog.ERROR_INFO + "获取pid状态异常 : " + e.getMessage() + "\n");
             }
+
+            // 状态发生变化，则添加日志状态
+            if (!oldStatus.equals(pidStatus)) {
+                logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:").append(pidStatus)
+                    .append("\n");
+            }
+            oldStatus = pidStatus;
+            workInstance = updateInstance(workInstance, logBuilder);
 
             // 保存作业运行状体
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("运行状态:").append(pidStatus)
@@ -195,7 +207,9 @@ public class PythonExecutor extends WorkExecutor {
                 }
 
                 // 保存运行日志
-                workInstance.setTaskManagerLog(logCommand.replace("zhiliuyun_success", ""));
+                String backStr = logCommand.replace("zhiliuyun", "");
+                workInstance.setTaskManagerLog(backStr);
+                workInstance.setResultData(backStr.substring(0, backStr.length() - 2));
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存日志成功 \n");
                 updateInstance(workInstance, logBuilder);
 

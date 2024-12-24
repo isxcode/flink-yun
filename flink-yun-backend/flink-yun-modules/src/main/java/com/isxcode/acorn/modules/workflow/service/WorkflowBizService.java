@@ -271,7 +271,7 @@ public class WorkflowBizService {
         // 启动外部调用处理
         wofGetWorkflowRes.setInvokeStatus(workflowConfig.getInvokeStatus());
         if (ON.equals(workflowConfig.getInvokeStatus())) {
-            wofGetWorkflowRes.setInvokeUrl(workflowService.getInvokeUrl(getWorkflowReq.getWorkflowId()));
+            wofGetWorkflowRes.setInvokeUrl(workflowConfig.getInvokeUrl());
         }
 
         return wofGetWorkflowRes;
@@ -802,7 +802,7 @@ public class WorkflowBizService {
 
         workflowService.getWorkflow(getInvokeUrlReq.getWorkflowId());
 
-        String invokeUrl = workflowService.getInvokeUrl(getInvokeUrlReq.getWorkflowId());
+        String invokeUrl = workflowService.getInvokeUrl(getInvokeUrlReq);
 
         return GetInvokeUrlRes.builder().url(invokeUrl).build();
     }
@@ -818,24 +818,4 @@ public class WorkflowBizService {
 
         return workflowInstanceAoPage.map(workflowMapper::wfiWorkflowInstanceAo2WfiQueryWorkFlowInstancesRes);
     }
-
-    public GetWorkflowInstanceRes getWorkflowInstance(GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
-
-        GetWorkflowInstanceRes result = new GetWorkflowInstanceRes();
-
-        // 获取实例中的webConfig
-        WorkflowInstanceEntity workflowInstance =
-            workflowInstanceRepository.findById(wfiGetWorkflowInstanceReq.getWorkflowInstanceId()).get();
-        result.setWebConfig(workflowInstance.getWebConfig());
-
-        // 查看其他实例的状态
-        List<WorkInstanceEntity> workInstances =
-            workInstanceRepository.findAllByWorkflowInstanceId(workflowInstance.getId());
-        result.setWorkInstances(
-            workInstances.stream().map(workflowMapper::workInstanceEntity2WorkInstanceVo).collect(Collectors.toList()));
-
-        // 返回结果
-        return result;
-    }
-
 }
