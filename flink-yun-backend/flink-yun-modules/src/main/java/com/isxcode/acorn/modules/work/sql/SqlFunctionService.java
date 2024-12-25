@@ -24,7 +24,7 @@ public class SqlFunctionService {
     private final ResourceLoader resourceLoader;
 
     /**
-     * 解析函数 #{ add_date(${qing.currentDate},1) }.
+     * 解析函数 #{ add_date(${liu.currentDate},1) }.
      */
     public String parseSqlFunction(String sql) {
 

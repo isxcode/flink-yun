@@ -183,7 +183,7 @@ public abstract class WorkExecutor {
 
         for (WorkInstanceEntity e : allWorkflowInstance) {
             if (InstanceStatus.SUCCESS.equals(e.getStatus()) && e.getResultData() != null) {
-                value = value.replace("${qing." + e.getWorkId() + ".result_data}",
+                value = value.replace("${liu." + e.getWorkId() + ".result_data}",
                     Base64.getEncoder().encodeToString(e.getResultData().getBytes()));
             }
         }

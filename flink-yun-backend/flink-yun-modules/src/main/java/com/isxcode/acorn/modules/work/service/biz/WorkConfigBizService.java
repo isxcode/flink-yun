@@ -137,7 +137,7 @@ public class WorkConfigBizService {
             workConfig.setCronConfig(JSON.toJSONString(wocConfigWorkReq.getCronConfig()));
         }
 
-        // 设置hive.metastore.uris的值,要么是sparkSql支持hive，要是数据同步中有hive数据源
+        // 设置hive.metastore.uris的值,要么是flinkSql支持hive，要是数据同步中有hive数据源
         if (!Strings.isEmpty(workConfig.getClusterConfig())) {
             workConfig.setClusterConfig(JSON.toJSONString(getHiveStoreUri(workConfig)));
         }
@@ -184,7 +184,7 @@ public class WorkConfigBizService {
         String hiveMetaStoreUris = null;
         ClusterConfig clusterConfig = JSON.parseObject(workConfig.getClusterConfig(), ClusterConfig.class);
 
-        // 如果是sparkSql作业，且开启hive数据源
+        // 如果是flinkSql作业，且开启hive数据源
         if (clusterConfig.getEnableHive() != null && clusterConfig.getEnableHive()) {
             Optional<DatasourceEntity> datasourceEntity = datasourceRepository.findById(workConfig.getDatasourceId());
             if (datasourceEntity.isPresent()) {

@@ -559,7 +559,7 @@ public class WorkBizService {
             GetWorkInstanceValuePathRes metaWorkInstance = new GetWorkInstanceValuePathRes();
             metaWorkInstance.setJsonPath(k);
             metaWorkInstance.setValue(String.valueOf(v));
-            metaWorkInstance.setCopyValue("#[[get_json_value('${qing." + workEntity.getId() + ".result_data}','" + k
+            metaWorkInstance.setCopyValue("#[[get_json_value('${liu." + workEntity.getId() + ".result_data}','" + k
                 + "','" + Base64.getEncoder().encodeToString(String.valueOf(v).getBytes()) + "')]]");
             result.add(metaWorkInstance);
         });
@@ -593,7 +593,7 @@ public class WorkBizService {
         } else {
             result.setValue("");
         }
-        result.setCopyValue("#[[get_regex_value('${qing." + workEntity.getId() + ".result_data}','"
+        result.setCopyValue("#[[get_regex_value('${liu." + workEntity.getId() + ".result_data}','"
             + Base64.getEncoder().encodeToString(getWorkInstanceRegexPathReq.getRegexStr().getBytes()) + "','"
             + Base64.getEncoder().encodeToString(result.getValue().getBytes()) + "')]]");
         return result;
@@ -637,7 +637,7 @@ public class WorkBizService {
             result.setValue("");
         }
 
-        result.setCopyValue("#[[get_table_value('${qing." + workEntity.getId() + ".result_data}',"
+        result.setCopyValue("#[[get_table_value('${liu." + workEntity.getId() + ".result_data}',"
             + getWorkInstanceTablePathReq.getTableRow() + "," + getWorkInstanceTablePathReq.getTableCol() + ",'"
             + Base64.getEncoder().encodeToString(result.getValue().getBytes()) + "')]]");
 
