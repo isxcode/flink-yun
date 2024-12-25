@@ -15,7 +15,7 @@ import static java.util.regex.Pattern.compile;
 public class SqlValueService {
 
     /**
-     * 变量值为 ${qing.currentDate}.
+     * 变量值为 ${liu.currentDate}.
      */
     public String parseSqlValue(String sql) {
 
@@ -39,10 +39,10 @@ public class SqlValueService {
     public Map<String, String> getValueMap() {
 
         Map<String, String> valueMap = new HashMap<>();
-        valueMap.put("${qing.current_date}", getCurrentDate());
-        valueMap.put("${qing.current_year}", getCurrentYear());
-        valueMap.put("${qing.current_month}", getCurrentMonth());
-        valueMap.put("${qing.current_date1}", getCurrentDate1());
+        valueMap.put("${liu.current_date}", getCurrentDate());
+        valueMap.put("${liu.current_year}", getCurrentYear());
+        valueMap.put("${liu.current_month}", getCurrentMonth());
+        valueMap.put("${liu.current_date1}", getCurrentDate1());
         return valueMap;
     }
 

@@ -309,14 +309,14 @@ public class AlarmService {
         WorkflowEntity workflow = workflowService.getWorkflow(work.getWorkflowId());
 
         Map<String, String> valueMap = new HashMap<>();
-        valueMap.put("${qing.work_name}", work.getName());
-        valueMap.put("${qing.work_id}", work.getId());
-        valueMap.put("${qing.workflow_name}", workflow.getName());
-        valueMap.put("${qing.workflow_id}", workflow.getId());
-        valueMap.put("${qing.work_instance_id}", workInstance.getId());
-        valueMap.put("${qing.workflow_instance_id}", workInstance.getWorkflowInstanceId());
-        valueMap.put("${qing.current_datetime}", getCurrentDateTime());
-        valueMap.put("${qing.current_date}", getCurrentDate());
+        valueMap.put("${liu.work_name}", work.getName());
+        valueMap.put("${liu.work_id}", work.getId());
+        valueMap.put("${liu.workflow_name}", workflow.getName());
+        valueMap.put("${liu.workflow_id}", workflow.getId());
+        valueMap.put("${liu.work_instance_id}", workInstance.getId());
+        valueMap.put("${liu.workflow_instance_id}", workInstance.getWorkflowInstanceId());
+        valueMap.put("${liu.current_datetime}", getCurrentDateTime());
+        valueMap.put("${liu.current_date}", getCurrentDate());
         return valueMap;
     }
 
@@ -326,11 +326,11 @@ public class AlarmService {
         WorkflowEntity workflow = workflowService.getWorkflow(workflowVersion.getWorkflowId());
 
         Map<String, String> valueMap = new HashMap<>();
-        valueMap.put("${qing.workflow_name}", workflow.getName());
-        valueMap.put("${qing.workflow_id}", workflow.getId());
-        valueMap.put("${qing.workflow_instance_id}", workflowInstance.getId());
-        valueMap.put("${qing.current_datetime}", getCurrentDateTime());
-        valueMap.put("${qing.current_date}", getCurrentDate());
+        valueMap.put("${liu.workflow_name}", workflow.getName());
+        valueMap.put("${liu.workflow_id}", workflow.getId());
+        valueMap.put("${liu.workflow_instance_id}", workflowInstance.getId());
+        valueMap.put("${liu.current_datetime}", getCurrentDateTime());
+        valueMap.put("${liu.current_date}", getCurrentDate());
         return valueMap;
     }
 }
