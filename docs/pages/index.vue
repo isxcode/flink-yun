@@ -4,50 +4,50 @@
       <div class="content">
         <div class="left">
           <div class="name">
-            至流云
+            {{ $t("zhi_qing_yun") }}
           </div>
           <div class="slogan">
-            轻量级流式计算平台
+            {{ $t("enterprise_data_platform") }}
           </div>
           <div class="command">
             <p id="command-shell">docker run -p 8080:8080 isxcode/zhiliuyun</p>
             <SvgIcon
-              class="copy-icon"
-              name="copy"
-              @click="handleCommandCopyClick"
+                class="copy-icon"
+                name="copy"
+                @click="handleCommandCopyClick"
             ></SvgIcon>
           </div>
           <div class="btn-div">
             <div class="guide-btn" @click="handleGuideClick">
-              <p>快速入门</p>
+              <p>{{ $t("quick_start") }}</p>
             </div>
             <div class="quick-btn" @click="handleQuickClick">
-              <p>立即体验</p>
+              <p>{{ $t("experience_now") }}</p>
               <SvgIcon name="arrow-right" class="link-right-svg"></SvgIcon>
             </div>
             <div class="movie-btn" @click="toggleVideo">
-              <p>视频介绍</p>
+              <p>{{ $t("video_introduction") }}</p>
             </div>
           </div>
         </div>
         <div class="right">
-          <div v-show="!isMobile||showVideo" class="artplayer-app"></div>
+          <div v-show="!isMobile || showVideo" class="artplayer-app"></div>
         </div>
       </div>
     </div>
     <div class="module-about">
       <div class="content">
         <div class="why-title">
-          选择至流云
+          {{ $t("choose_light_cloud") }}
         </div>
         <div class="why-content">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业流可视化调度、自定义接口、自定义表单、数据大屏等场景。助力企业分析实时性数据，获得更多商业价值。
+          {{ $t("light_cloud_description") }}
         </div>
         <div class="why-content-mobile">
-          至流云是一款超轻量级、企业级流式计算平台。一键部署，开箱即用。可快速实现Flink作业部署、作业流可视化调度、自定义接口、自定义表单、数据大屏等场景。
+          {{ $t("light_cloud_description_mobile") }}
         </div>
         <div class="tech-title">
-          相关技术
+          {{ $t("related_technologies") }}
         </div>
         <div class="tech-img-div">
           <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/tech-img/t-k8s.png" alt="">
@@ -68,9 +68,11 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-1.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">能写代码？不单单只有Sql</div>
-          <div class="line-2">支持超多作业类型，包括FlinkSql、FlinkJar、JdbcSql、Prql、Python脚本、Bash脚本、Curl脚本、接口调用等。</div>
-          <div class="line-3" @click="handleQuickClick">立即体验</div>
+          <div class="line-1">{{ $t("coding_capability") }}</div>
+          <div class="line-2">{{ $t("job_types_supported") }}</div>
+          <div class="line-3" @click="handleQuickClick">
+            {{ $t("experience_now") }}
+          </div>
         </div>
       </div>
     </div>
@@ -80,9 +82,11 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">作业调度，横竖都能拖拽</div>
-          <div class="line-2">支持全量的作业生命周期指令，包括运行、中止、中断、下线、发布、重跑、重跑下游、重跑当前、外部调用等。</div>
-          <div class="line-3" @click="handleQuickClick">立即体验</div>
+          <div class="line-1">{{ $t("job_orchestration") }}</div>
+          <div class="line-2">{{ $t("job_support") }}</div>
+          <div class="line-3" @click="handleQuickClick">
+            {{ $t("experience_now") }}
+          </div>
         </div>
         <div class="right">
           <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-2.jpg" alt="">
@@ -98,16 +102,18 @@
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-3.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">多平台部署，从不娇生惯养</div>
-          <div class="line-2">支持多种资源调度平台，如Kubernetes、Yarn、CDH、Apache Hadoop、Flink Standalone、Flink Cluster等。</div>
-          <div class="line-3" @click="handleQuickClick">立即体验</div>
+          <div class="line-1">{{ $t("real_work") }}</div>
+          <div class="line-2">
+            {{ $t("real_work_description") }}
+          </div>
+          <div class="line-3" @click="handleQuickClick"> {{ $t("experience_now") }}</div>
         </div>
       </div>
     </div>
     <div class="module-business">
       <div class="content">
-        <div class="line-1">流式计算，让数据分析更高效</div>
-        <div class="line-2">至流云与您携手实现企业级流式计算平台落地</div>
+        <div class="line-1">{{ $t("data_drives_value") }}</div>
+        <div class="line-2">{{ $t("data_drives_value_description") }}</div>
         <div class="business-img">
           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-1.png" alt="">
           <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/business-img/b-2.png" alt="">
@@ -128,9 +134,11 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
         </div>
         <div class="left">
-          <div class="line-1">自定义接口，千变万化</div>
-          <div class="line-2">支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在复杂场景下的多样化需求。</div>
-          <div class="line-3" @click="handleQuickClick">立即体验</div>
+          <div class="line-1">{{ $t("multi_platform_deployment") }}</div>
+          <div class="line-2">{{ $t("multi_platform_description") }}</div>
+          <div class="line-3" @click="handleQuickClick">
+            {{ $t("experience_now") }}
+          </div>
         </div>
         <div class="right">
           <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-4.jpg" alt="">
@@ -146,16 +154,20 @@
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/product-img/p-5.jpg" alt="">
         </div>
         <div class="right">
-          <div class="line-1">数据大屏，实时展示数据</div>
-          <div class="line-2">强大的数据处理和可视化技术，将复杂数据转化为直观图表，支持实时监控和分析，助力企业高效决策。</div>
-          <div class="line-3" @click="handleQuickClick">立即体验</div>
+          <div class="line-1">{{ $t("data_view") }}</div>
+          <div class="line-2">{{ $t("data_view_description") }}</div>
+          <div class="line-3" @click="handleQuickClick">
+            {{ $t("experience_now") }}
+          </div>
         </div>
       </div>
     </div>
     <div class="module-end">
       <div class="content">
-        <div class="line-1">开源助力企业探索流式计算</div>
-        <div class="end-btn" @click="handleQuickClick">免费试用</div>
+        <div class="line-1">{{ $t("opensource_value") }}</div>
+        <div class="end-btn" @click="handleQuickClick">
+          {{ $t("free_trial") }}
+        </div>
       </div>
     </div>
   </div>
@@ -163,46 +175,50 @@
 </template>
 
 <script lang="ts" setup>
-import {ElMessage} from 'element-plus'
+import {ElMessage} from "element-plus";
 import Artplayer from "artplayer";
 import {defineProps} from "vue";
+import {useI18n} from "vue-i18n";
 import mediumZoom from "medium-zoom";
 
 onMounted(async () => {
-    await nextTick()
-    mediumZoom(document.querySelectorAll('#zoom'),{
-       margin: 100,
-       scrollOffset: 1,
-       background: '#fffaf8',
-    })
+  await nextTick()
+  mediumZoom(document.querySelectorAll('#zoom'), {
+    margin: 100,
+    scrollOffset: 1,
+    background: '#fffaf8',
+  })
 })
 
+const $t = useI18n().t;
+
 definePageMeta({
-  title: "首页",
+  title: $t("home"),
   layout: "home",
 });
 
 useSeoMeta({
-  title: "至流云",
-  ogTitle: "至爻数据",
-  description: "企业级流式计算平台",
-  ogDescription: "打造企业级开源软件全家桶"
+  title: $t("zhi_qing_yun"),
+  ogTitle: $t("zhi_yao_shu_ju"),
+  description: $t("enterprise_data_platform"),
+  ogDescription: $t("build_enterprise_open_source_software"),
 });
 
-const isMobile = useMediaQuery('(max-width: 767px)')
+const isMobile = useMediaQuery("(max-width: 767px)");
+const {locale} = useI18n();
 
 const props = defineProps({
   showVideo: {
     type: Boolean,
-    default: false,
+    default: true,
   },
-})
+});
 
-const showVideo = ref(props.showVideo)
+const showVideo = ref(props.showVideo);
 
 const toggleVideo = () => {
-  showVideo.value = !showVideo.value
-}
+  showVideo.value = !showVideo.value;
+};
 
 onMounted(() => {
   const art = new Artplayer({
@@ -214,11 +230,15 @@ onMounted(() => {
     pip: true,
     autoplay: false,
     theme: '#7573d1',
-    muted: false,
+    muted: true,
     autoSize: true
   });
   window.addEventListener("scroll", handleScroll);
-})
+  definePageMeta({
+    title: "home_title",
+    layout: "home",
+  });
+});
 
 function handleScroll() {
   if (window.scrollY > 50) {
@@ -228,7 +248,8 @@ function handleScroll() {
 
 function handleGuideClick() {
   const router = useRouter();
-  router.push("/docs/zh/0/0");
+  const langPrefix = locale.value;
+  router.push(`/${langPrefix}/docs/${langPrefix}/0/0`);
 }
 
 function handleQuickClick() {
@@ -248,29 +269,16 @@ const copyContent = async (text: string) => {
     await navigator.clipboard.writeText(text);
     ElMessage({
       duration: 800,
-      message: '复制成功',
-      type: 'success',
+      message: $t("copy_success"),
+      type: "success",
     });
   } catch (err) {
     console.error("Failed to copy: ", err);
   }
 };
-
 </script>
 
 <style lang="scss" scoped>
-
-@font-face {
-  font-family: "阿里妈妈数黑体 Bold";font-weight: 700;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/Y9QHTv8rTHOy.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/Mf9XWKxjdl3z.woff") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "阿里巴巴普惠体 2.0 45 Light";font-weight: 300;src: url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/uEMghNaZwbpH.woff2") format("woff2"),
-  url("//at.alicdn.com/wf/webfont/UMV2yX61q8rB/J4rzlepLH0p4.woff") format("woff");
-  font-display: swap;
-}
 
 $font-size: 14px;
 // 介绍的高度
@@ -294,11 +302,8 @@ $primary-width: 1200px;
 // 产品介绍图片大小
 $module-intro-img-width: 600px;
 
-
 .main {
-
   font-family: "阿里巴巴普惠体 2.0 45 Light", sans-serif;
-
   .module-intro {
     width: 100%;
     height: $module-intro-height;
@@ -325,7 +330,7 @@ $module-intro-img-width: 600px;
       display: flex;
 
       .left {
-        width: 600px;;
+        width: 600px;
 
         .name {
           margin-top: 120px;
@@ -353,7 +358,7 @@ $module-intro-img-width: 600px;
 
           .copy-icon {
             cursor: pointer;
-            margin-left: 15px;
+            margin-left: 20px;
             margin-top: 6px;
             width: 24px;
             height: 24px;
@@ -448,7 +453,6 @@ $module-intro-img-width: 600px;
       }
 
       .tech-img-div {
-
         .tech-img {
           cursor: pointer;
         }
@@ -525,7 +529,7 @@ $module-intro-img-width: 600px;
     }
 
     .left {
-      width: 600px;;
+      width: 600px;
 
       img {
         width: 450px;
@@ -536,7 +540,7 @@ $module-intro-img-width: 600px;
     .right {
       margin-left: 100px;
       margin-top: 50px;
-      width: 600px;;
+      width: 600px;
 
       .line-1 {
         font-family: "阿里妈妈数黑体 Bold", sans-serif;
@@ -559,7 +563,6 @@ $module-intro-img-width: 600px;
       }
     }
   }
-
 }
 
 .module-feat-right {
@@ -588,7 +591,7 @@ $module-intro-img-width: 600px;
     }
 
     .left {
-      width: 600px;;
+      width: 600px;
       margin-top: 50px;
 
       .line-1 {
@@ -657,9 +660,7 @@ $module-intro-img-width: 600px;
 // ------------------------------------------------------- 移动端 ----------------------------------------------------------------------
 
 @media (max-width: 768px) {
-
   .main {
-
     .module-intro {
       width: 100%;
       height: 850px;
@@ -841,7 +842,7 @@ $module-intro-img-width: 600px;
         display: none;
       }
 
-      .left-phone{
+      .left-phone {
         display: block;
         width: 300px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -876,11 +877,9 @@ $module-intro-img-width: 600px;
         }
       }
     }
-
   }
 
   .module-feat-right {
-
     width: 100%;
     height: 480px;
     display: flex;
@@ -961,6 +960,5 @@ $module-intro-img-width: 600px;
     margin: auto;
     width: 300px;
   }
-
 }
 </style>

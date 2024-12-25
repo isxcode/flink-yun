@@ -1,28 +1,30 @@
-<!--
- * @Author: fanciNate
- * @Date: 2023-05-26 16:35:28
- * @LastEditTime: 2023-06-18 15:48:24
- * @LastEditors: fanciNate
- * @Description: In User Settings Edit
- * @FilePath: /flink-yun/flink-yun-website/src/views/workflow/work-item/running-log.vue
--->
 <template>
-  <div
-    id="content"
-    class="running-log"
-  >
-    <LogContainer v-if="logMsg" :logMsg="logMsg" :status="true"></LogContainer>
-    <EmptyPage v-else />
+  <div id="content" class="running-log">
+    <LoadingPage :visible="loading">
+      <LogContainer
+        v-if="logMsg"
+        :logMsg="logMsg"
+        :status="true"
+        :showResult="false"
+      ></LogContainer>
+      <EmptyPage v-else />
+    </LoadingPage>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, defineExpose } from 'vue'
 import EmptyPage from '@/components/empty-page/index.vue'
-import { GetTaskManagerLogData } from '@/services/schedule.service'
+import { GetYarnLogData } from '@/services/schedule.service'
+import LoadingPage from '@/components/loading/index.vue'
 
 const logMsg = ref('')
 const pubId = ref('')
+const loading = ref<boolean>(false)
+
+const props = defineProps<{
+  showParse: boolean
+}>()
 
 function initData(id: string): void {
   pubId.value = id
@@ -35,15 +37,14 @@ function getLogData(id: string) {
     logMsg.value = ''
     return
   }
-  GetTaskManagerLogData({
-    instanceId: id
+  loading.value = true
+  GetYarnLogData({ instanceId: id}).then((res: any) => {
+    logMsg.value = res.data.yarnLog
+    loading.value = false
+  }).catch(() => {
+    logMsg.value = ''
+    loading.value = false
   })
-    .then((res: any) => {
-      logMsg.value = res.data.log
-    })
-    .catch(() => {
-      logMsg.value = ''
-    })
 }
 
 defineExpose({
@@ -56,6 +57,27 @@ defineExpose({
   height: 100%;
   .empty-page {
     height: 100%;
+  }
+  .zqy-loading {
+    position: static;
+    height: 100% !important;
+    padding: 0 !important;
+    margin-top: 0 !important;
+    overflow: auto;
+  }
+}
+.zqy-json-parse {
+  font-size: 12px;
+  color: getCssVar('color', 'primary');
+  cursor: pointer;
+  position: absolute;
+  right: 40px;
+  top: 12px;
+  &.zqy-json-parse__log {
+    right: 98px;
+  }
+  &:hover {
+      text-decoration: underline;
   }
 }
 </style>

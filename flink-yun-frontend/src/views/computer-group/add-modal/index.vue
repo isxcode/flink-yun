@@ -88,7 +88,7 @@ const typeList = reactive([
     value: 'yarn',
   },
   {
-    label: 'Standalone',
+    label: 'StandAlone',
     value: 'standalone',
   },
 ]);

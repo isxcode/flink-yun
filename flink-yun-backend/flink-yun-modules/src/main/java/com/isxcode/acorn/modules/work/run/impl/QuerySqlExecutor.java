@@ -11,7 +11,6 @@ import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import com.isxcode.acorn.modules.datasource.mapper.DatasourceMapper;
 import com.isxcode.acorn.modules.datasource.repository.DatasourceRepository;
-import com.isxcode.acorn.modules.datasource.service.DatasourceService;
 import com.isxcode.acorn.modules.datasource.source.DataSourceFactory;
 import com.isxcode.acorn.modules.datasource.source.Datasource;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
@@ -42,8 +41,6 @@ public class QuerySqlExecutor extends WorkExecutor {
 
     private final DatasourceRepository datasourceRepository;
 
-    private final DatasourceService datasourceService;
-
     private final SqlCommentService sqlCommentService;
 
     private final SqlFunctionService sqlFunctionService;
@@ -55,13 +52,12 @@ public class QuerySqlExecutor extends WorkExecutor {
     private final DatasourceMapper datasourceMapper;
 
     public QuerySqlExecutor(DatasourceRepository datasourceRepository, WorkInstanceRepository workInstanceRepository,
-        WorkflowInstanceRepository workflowInstanceRepository, DatasourceService datasourceService,
-        SqlCommentService sqlCommentService, SqlFunctionService sqlFunctionService, SqlValueService sqlValueService,
-        AlarmService alarmService, DataSourceFactory dataSourceFactory, DatasourceMapper datasourceMapper) {
+        WorkflowInstanceRepository workflowInstanceRepository, SqlCommentService sqlCommentService,
+        SqlFunctionService sqlFunctionService, SqlValueService sqlValueService, AlarmService alarmService,
+        DataSourceFactory dataSourceFactory, DatasourceMapper datasourceMapper) {
 
-        super(workInstanceRepository, workflowInstanceRepository, alarmService);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.datasourceRepository = datasourceRepository;
-        this.datasourceService = datasourceService;
         this.sqlCommentService = sqlCommentService;
         this.sqlFunctionService = sqlFunctionService;
         this.sqlValueService = sqlValueService;
@@ -120,8 +116,11 @@ public class QuerySqlExecutor extends WorkExecutor {
             // 去掉sql中的注释
             String sqlNoComment = sqlCommentService.removeSqlComment(workRunContext.getScript());
 
+            // 解析上游参数
+            String jsonPathSql = parseJsonPath(sqlNoComment, workInstance);
+
             // 翻译sql中的系统变量
-            String parseValueSql = sqlValueService.parseSqlValue(sqlNoComment);
+            String parseValueSql = sqlValueService.parseSqlValue(jsonPathSql);
 
             // 翻译sql中的系统函数
             String script = sqlFunctionService.parseSqlFunction(parseValueSql);
@@ -150,8 +149,8 @@ public class QuerySqlExecutor extends WorkExecutor {
             String lastSql = sqls.get(sqls.size() - 1);
 
             // 特殊查询语句直接跳过
-            if (!lastSql.toUpperCase().trim().startsWith("SHOW")
-                && !lastSql.toUpperCase().trim().startsWith("DESCRIBE")) {
+            if (!lastSql.toUpperCase().trim().startsWith("SHOW") && !lastSql.toUpperCase().trim().startsWith("DESCRIBE")
+                && !lastSql.replace(" ", "").toLowerCase().startsWith("selectcount")) {
 
                 // 判断返回结果的条数，超过200条，则提出警告
                 String countSql = String.format("SELECT COUNT(*) FROM ( %s ) temp", lastSql);
@@ -170,7 +169,6 @@ public class QuerySqlExecutor extends WorkExecutor {
             logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("执行查询SQL: \n").append(lastSql)
                 .append(" \n");
             workInstance = updateInstance(workInstance, logBuilder);
-
             ResultSet resultSet = statement.executeQuery(lastSql);
 
             // 记录结束执行时间

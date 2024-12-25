@@ -42,9 +42,9 @@
             </el-form-item>
             <el-form-item label="模式" prop="createMode" v-if="!isEdit">
                 <el-radio-group :disabled="isEdit" v-model="formData.createMode" @change="dataSourceChange">
-                  <el-radio label="AUTO_TABLE">自动创建表</el-radio>
-                  <el-radio label="EXIST_TABLE">选择已有表</el-radio>
-                  <el-radio label="CREATE_TABLE">创建新表</el-radio>
+                    <el-radio label="AUTO_TABLE">自动创建表</el-radio>
+                    <el-radio label="EXIST_TABLE">选择已有表</el-radio>
+                    <el-radio label="CREATE_TABLE">创建新表</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item v-if="formData.createMode === 'EXIST_TABLE'" prop="mainTable" label="表（选择已有表名）">

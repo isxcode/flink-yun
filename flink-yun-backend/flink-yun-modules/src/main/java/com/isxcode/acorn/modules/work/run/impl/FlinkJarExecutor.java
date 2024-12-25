@@ -43,6 +43,7 @@ import com.isxcode.acorn.modules.work.repository.WorkInstanceRepository;
 import com.isxcode.acorn.modules.work.repository.WorkRepository;
 import com.isxcode.acorn.modules.work.run.WorkExecutor;
 import com.isxcode.acorn.modules.work.run.WorkRunContext;
+import com.isxcode.acorn.modules.work.sql.SqlFunctionService;
 import com.isxcode.acorn.modules.workflow.repository.WorkflowInstanceRepository;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -91,14 +92,17 @@ public class FlinkJarExecutor extends WorkExecutor {
 
     private final DatasourceService datasourceService;
 
+    private final SqlFunctionService sqlFunctionService;
+
     public FlinkJarExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
         ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
         WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
         HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
         ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-        FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService) {
+        FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService,
+        SqlFunctionService sqlFunctionService) {
 
-        super(workInstanceRepository, workflowInstanceRepository, alarmService);
+        super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.workInstanceRepository = workInstanceRepository;
         this.clusterRepository = clusterRepository;
         this.clusterNodeRepository = clusterNodeRepository;
@@ -113,6 +117,7 @@ public class FlinkJarExecutor extends WorkExecutor {
         this.isxAppProperties = isxAppProperties;
         this.fileRepository = fileRepository;
         this.datasourceService = datasourceService;
+        this.sqlFunctionService = sqlFunctionService;
     }
 
     @Override

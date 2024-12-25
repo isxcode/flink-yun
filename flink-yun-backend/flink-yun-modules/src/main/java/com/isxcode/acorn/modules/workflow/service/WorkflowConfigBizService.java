@@ -1,6 +1,7 @@
 package com.isxcode.acorn.modules.workflow.service;
 
 import com.alibaba.fastjson.JSON;
+import com.isxcode.acorn.api.workflow.constants.WorkflowExternalCallStatus;
 import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowReq;
 import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowSettingReq;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
@@ -95,6 +96,9 @@ public class WorkflowConfigBizService {
         }
 
         workflowConfig.setInvokeStatus(configWorkflowSettingReq.getInvokeStatus());
+        if (WorkflowExternalCallStatus.ON.equals(workflowConfig.getInvokeStatus())) {
+            workflowConfig.setInvokeUrl(configWorkflowSettingReq.getInvokeUrl());
+        }
         workflowConfigRepository.save(workflowConfig);
     }
 }

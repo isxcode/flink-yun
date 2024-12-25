@@ -1,7 +1,6 @@
 package com.isxcode.acorn.modules.workflow.mapper;
 
 import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
-import com.isxcode.acorn.api.instance.pojos.dto.WorkInstanceDto;
 import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo;
 import com.isxcode.acorn.api.monitor.pojos.res.PageInstancesRes;
@@ -45,9 +44,4 @@ public interface WorkflowMapper {
     @Mapping(target = "planStartDateTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     QueryWorkFlowInstancesRes wfiWorkflowInstanceAo2WfiQueryWorkFlowInstancesRes(
         WorkflowInstanceAo workflowInstanceAoPage);
-
-    @Mapping(target = "startDateTime", source = "execStartDateTime")
-    @Mapping(target = "endDateTime", source = "execEndDateTime")
-    @Mapping(target = "type", source = "instanceType")
-    WorkInstanceDto workInstanceEntity2WorkInstanceVo(WorkInstanceEntity workInstanceEntity);
 }

@@ -1,8 +1,6 @@
 package com.isxcode.acorn.modules.workflow.controller;
 
-import com.isxcode.acorn.api.instance.pojos.req.GetWorkflowInstanceReq;
 import com.isxcode.acorn.api.instance.pojos.req.QueryWorkFlowInstancesReq;
-import com.isxcode.acorn.api.instance.pojos.res.GetWorkflowInstanceRes;
 import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
@@ -207,12 +205,4 @@ public class WorkflowController {
         return workflowBizService.queryWorkFlowInstances(queryWorkFlowInstancesReq);
     }
 
-    @Operation(summary = "查询单个作业流实例信息接口")
-    @PostMapping("/getWorkflowInstance")
-    @SuccessResponse("查询成功")
-    public GetWorkflowInstanceRes getWorkflowInstance(
-        @Valid @RequestBody GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
-
-        return workflowBizService.getWorkflowInstance(wfiGetWorkflowInstanceReq);
-    }
 }

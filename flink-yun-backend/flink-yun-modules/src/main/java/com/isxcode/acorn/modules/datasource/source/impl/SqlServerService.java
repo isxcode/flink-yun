@@ -47,8 +47,6 @@ public class SqlServerService extends Datasource {
     @Override
     public List<QueryTableDto> queryTable(ConnectInfo connectInfo) throws IsxAppException {
 
-        Assert.notNull(connectInfo.getDatabase(), "datasbase不能为空");
-
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
             List<QueryTableDto> result = qr.query(connection, "SELECT '" + connectInfo.getDatasourceId()
@@ -71,7 +69,6 @@ public class SqlServerService extends Datasource {
     @Override
     public List<QueryColumnDto> queryColumn(ConnectInfo connectInfo) throws IsxAppException {
 
-        Assert.notNull(connectInfo.getDatabase(), "datasource不能为空");
         Assert.notNull(connectInfo.getTableName(), "tableName不能为空");
 
         String[] names = connectInfo.getTableName().split("\\.");
@@ -158,6 +155,24 @@ public class SqlServerService extends Datasource {
             log.error(e.getMessage(), e);
             throw new IsxAppException(e.getMessage());
         }
+    }
+
+    @Override
+    public String getPageSql(String sql) throws IsxAppException {
+
+        if (sql.toLowerCase().contains("order by")) {
+            throw new IsxAppException("sqlserver不支持order by语法，默认select后面第一个字段升序分页");
+        }
+
+        // 以第一个字段作为排序字段
+        String[] split = sql.split(",");
+        if (split.length < 1 || split[0].length() < 6 || !"select".equals(split[0].substring(0, 6))) {
+            throw new IsxAppException("需要首单词为select的查询语句");
+        }
+        String firstCol = split[0].toLowerCase().trim().substring(7);
+        String firstKey = "ROW_NUMBER() OVER (ORDER BY " + firstCol + " ASC) AS FY_ROW_NUM";
+        return "SELECT * FROM (" + sql.replace(split[0], split[0] + "," + firstKey)
+            + ") AS SubQuery WHERE FY_ROW_NUM BETWEEN '${page}' AND '${pageSize}'";
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.isxcode.acorn.modules.work.controller;
 
-import com.isxcode.acorn.api.instance.pojos.req.QueryInstanceReq;
+import com.isxcode.acorn.api.instance.pojos.req.*;
+import com.isxcode.acorn.api.instance.pojos.res.GetWorkInstanceValuePathRes;
+import com.isxcode.acorn.api.instance.pojos.res.GetWorkflowInstanceRes;
 import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "作业模块")
 @RequestMapping(ModuleCode.WORK)
@@ -225,4 +228,41 @@ public class WorkController {
 
         return workBizService.queryInstance(woiQueryInstanceReq);
     }
+
+    @Operation(summary = "查询单个作业流实例信息接口")
+    @PostMapping("/getWorkflowInstance")
+    @SuccessResponse("查询成功")
+    public GetWorkflowInstanceRes getWorkflowInstance(
+        @Valid @RequestBody GetWorkflowInstanceReq wfiGetWorkflowInstanceReq) {
+
+        return workBizService.getWorkflowInstance(wfiGetWorkflowInstanceReq);
+    }
+
+    @Operation(summary = "获取作业返回的jsonPath接口")
+    @PostMapping("/getWorkInstanceJsonPath")
+    @SuccessResponse("查询成功")
+    public List<GetWorkInstanceValuePathRes> getWorkInstanceJsonPath(
+        @Valid @RequestBody GetWorkInstanceJsonPathReq getWorkInstanceJsonPathReq) {
+
+        return workBizService.getWorkInstanceJsonPath(getWorkInstanceJsonPathReq);
+    }
+
+    @Operation(summary = "获取作业返回的正则解析结果接口")
+    @PostMapping("/getWorkInstanceRegexPath")
+    @SuccessResponse("查询成功")
+    public GetWorkInstanceValuePathRes getWorkInstanceRegexPath(
+        @Valid @RequestBody GetWorkInstanceRegexPathReq getWorkInstanceJsonPathReq) {
+
+        return workBizService.getWorkInstanceRegexPath(getWorkInstanceJsonPathReq);
+    }
+
+    @Operation(summary = "获取作业返回的几行几列结果接口")
+    @PostMapping("/getWorkInstanceTablePath")
+    @SuccessResponse("查询成功")
+    public GetWorkInstanceValuePathRes getWorkInstanceTablePath(
+        @Valid @RequestBody GetWorkInstanceTablePathReq getWorkInstanceTablePathReq) {
+
+        return workBizService.getWorkInstanceTablePath(getWorkInstanceTablePathReq);
+    }
+
 }

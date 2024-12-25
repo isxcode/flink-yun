@@ -10,7 +10,10 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [ 
+  server: {
+    host: '0.0.0.0'
+  },
+  plugins: [
     vue(), 
     vueJsx(), 
     viteStaticCopy({

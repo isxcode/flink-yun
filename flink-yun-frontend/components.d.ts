@@ -66,9 +66,11 @@ declare module 'vue' {
     EmptyPage: typeof import('./src/components/empty-page/index.vue')['default']
     Loading: typeof import('./src/components/loading/index.vue')['default']
     LogContainer: typeof import('./src/components/log-container/index.vue')['default']
+    ParseModal: typeof import('./src/components/log-container/parse-modal/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ZqyLog: typeof import('./src/components/zqy-log/index.vue')['default']
+    ZStatusTag: typeof import('./src/components/z-status-tag/index.vue')['default']
     ZSvgIcon: typeof import('./src/components/z-svg-icon/index.vue')['default']
   }
 }
