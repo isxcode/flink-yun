@@ -3,7 +3,7 @@
     <LoadingPage class="log-loading" :visible="loading">
       <div id="content" class="content-box">
         <!-- 日志展示 -->
-        <template v-if="['log', 'yarnLog'].includes(modalType)">
+        <template v-if="['log', 'TaskManagerLog'].includes(modalType)">
           <LogContainer v-if="logMsg" :logMsg="logMsg" :status="true"></LogContainer>
           <template v-else>
             <empty-page label="暂无日志"></empty-page>
