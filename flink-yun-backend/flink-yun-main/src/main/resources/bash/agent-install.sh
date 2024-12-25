@@ -73,7 +73,7 @@ echo $! >${agent_path}/zhiliuyun-agent.pid
 if [ ${flink_local} = "true" ]; then
   # 修改flink-conf.yaml文件
 
-  # 修改spark的配置文件,修改为内网ip
+  # 修改flink的配置文件,修改为内网ip
   if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' 's/rest.bind-address: localhost/rest.bind-address: 0.0.0.0/' ${agent_path}/flink-min/conf/flink-conf.yaml
     sed -i '' 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: 10/' ${agent_path}/flink-min/conf/flink-conf.yaml

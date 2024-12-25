@@ -68,7 +68,7 @@ if [ ! -f "${FLINK_MIN_DIR}"/README.txt ]; then
   rm "${FLINK_MIN_DIR}"/NOTICE
 fi
 
-# 下载spark的jars依赖
+# 下载flink的jars依赖
 FLINK_JAR_DIR="${FLINK_MIN_DIR}"/lib
 if [ ! -f "${FLINK_JAR_DIR}"/bcpkix-jdk18on-1.78.1.jar ]; then
   echo "bcpkix-jdk18on-1.78.1.jar开始下载"
