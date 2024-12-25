@@ -416,7 +416,7 @@ hdfs zkfc -formatZK
 # 2021-10-18 17:17:27,754 INFO ha.ActiveStandbyElector: Successfully created /hadoop-ha/ispong_cluster in ZK.
 
 # isxcode-main1节点执行 
-# 不可以直接执行stop-all.sh，与spark集群命令冲突
+# 不可以直接执行stop-all.sh，与flink集群命令冲突
 bash /opt/hadoop/sbin/stop-all.sh
 ```
 

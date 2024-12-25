@@ -170,7 +170,7 @@ let workConfig = reactive({
   workType: '',
   workflowId: '',
   applicationId: '',
-  sparkConfig: ''
+  flinkConfig: ''
 })
 
 const tabList = reactive([
@@ -367,7 +367,7 @@ function saveData() {
     script: sqltextData.value,
     workId: props.workItemConfig.id,
     datasourceId: workConfig.datasourceId,
-    // sparkConfig: workConfig.sparkConfig,
+    // flinkConfig: workConfig.flinkConfig,
     // clusterId: workConfig.clusterId,
     // corn: workConfig.corn
   })
