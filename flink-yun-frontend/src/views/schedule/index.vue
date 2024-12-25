@@ -106,13 +106,13 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item
-                      v-if="['FLINK_SQL', 'DATA_SYNC_JDBC', 'BASH', 'PYTHON', 'EXCEL_SYNC_JDBC'].includes(scopeSlot.row.workType)"
+                      v-if="['FLINK_SQL','FLINK_JAR','DATA_SYNC_JDBC', 'BASH','CURL', 'PYTHON', 'EXCEL_SYNC_JDBC'].includes(scopeSlot.row.workType)"
                       @click="showDetailModal(scopeSlot.row, 'TaskManagerLog')"
                     >
                       运行日志
                     </el-dropdown-item>
                     <el-dropdown-item
-                        v-if="scopeSlot.row.status === 'SUCCESS' && scopeSlot.row.workType !== 'EXE_JDBC'"
+                        v-if="scopeSlot.row.status === 'SUCCESS' && scopeSlot.row.workType !== 'EXE_JDBC' && scopeSlot.row.workType !== 'FLINK_SQL'"
                         @click="showDetailModal(scopeSlot.row, 'result')"
                     >
                       运行结果
