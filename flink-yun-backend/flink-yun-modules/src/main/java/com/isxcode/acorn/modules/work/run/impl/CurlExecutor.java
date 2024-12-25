@@ -81,7 +81,7 @@ public class CurlExecutor extends WorkExecutor {
 
         // 保存运行日志
         String yarnLog = result.replace("&& echo 'zhiliuyun_success'", "").replace("zhiliuyun_success", "");
-        workInstance.setJobManagerLog(yarnLog);
+        workInstance.setTaskManagerLog(yarnLog);
         workInstance.setResultData(yarnLog.substring(0, yarnLog.length() - 4));
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存结果成功 \n");
         updateInstance(workInstance, logBuilder);

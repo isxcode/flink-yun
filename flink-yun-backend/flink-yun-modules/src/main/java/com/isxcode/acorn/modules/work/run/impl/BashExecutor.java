@@ -135,8 +135,8 @@ public class BashExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, script + "\necho 'zhiqingyun_success'",
-                clusterNode.getAgentHomePath() + "/zhiqingyun-agent/works/" + workInstance.getId() + ".sh");
+            scpText(scpFileEngineNodeDto, script + "\necho 'zhiliuyun_success'",
+                clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".sh");
 
             // 执行命令获取pid
             String executeBashWorkCommand = "nohup sh " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
