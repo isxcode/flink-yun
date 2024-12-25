@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { ref, defineExpose } from 'vue'
 import EmptyPage from '@/components/empty-page/index.vue'
-import { GetYarnLogData } from '@/services/schedule.service'
+import { GetTaskManagerLogData } from '@/services/schedule.service'
 import LoadingPage from '@/components/loading/index.vue'
 
 const logMsg = ref('')
@@ -38,7 +38,7 @@ function getLogData(id: string) {
     return
   }
   loading.value = true
-  GetYarnLogData({ instanceId: id}).then((res: any) => {
+  GetTaskManagerLogData({ instanceId: id}).then((res: any) => {
     logMsg.value = res.data.yarnLog
     loading.value = false
   }).catch(() => {
