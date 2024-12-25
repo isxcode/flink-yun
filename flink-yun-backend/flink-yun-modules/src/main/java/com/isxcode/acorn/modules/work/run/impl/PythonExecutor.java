@@ -207,7 +207,7 @@ public class PythonExecutor extends WorkExecutor {
                 }
 
                 // 保存运行日志
-                String backStr = logCommand.replace("zhiliuyun", "");
+                String backStr = logCommand.replace("zhiliuyun_success", "");
                 workInstance.setTaskManagerLog(backStr);
                 workInstance.setResultData(backStr.substring(0, backStr.length() - 2));
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存日志成功 \n");

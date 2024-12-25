@@ -39,7 +39,7 @@ function getLogData(id: string) {
   }
   loading.value = true
   GetTaskManagerLogData({ instanceId: id}).then((res: any) => {
-    logMsg.value = res.data.yarnLog
+    logMsg.value = res.data.log
     loading.value = false
   }).catch(() => {
     logMsg.value = ''
