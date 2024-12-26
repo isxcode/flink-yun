@@ -312,7 +312,7 @@ public class AlarmService {
     }
 
     public Map<String, String> getWorkflowAlarmValueMap(WorkflowInstanceEntity workflowInstance,
-                                                        WorkflowVersionEntity workflowVersion) {
+        WorkflowVersionEntity workflowVersion) {
 
         WorkflowEntity workflow = workflowService.getWorkflow(workflowVersion.getWorkflowId());
 
