@@ -175,7 +175,11 @@ public class FlinkSqlExecutor extends WorkExecutor {
         submitJobReq.setWorkInstanceId(workInstance.getId());
         submitJobReq.setWorkType(workRunContext.getWorkType());
 
-        PluginReq pluginReq = PluginReq.builder().sql(workRunContext.getScript()).build();
+        String jsonPathSql = parseJsonPath(workRunContext.getScript(), workInstance);
+
+        String flinkSql = sqlFunctionService.parseSqlFunction(jsonPathSql);
+
+        PluginReq pluginReq = PluginReq.builder().sql(flinkSql).build();
         submitJobReq.setPluginReq(pluginReq);
 
         FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName("zhiliuyun-job")
