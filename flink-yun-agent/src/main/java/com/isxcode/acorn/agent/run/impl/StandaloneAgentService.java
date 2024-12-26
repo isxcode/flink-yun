@@ -108,6 +108,8 @@ public class StandaloneAgentService implements AgentService {
                 .setUserClassPaths(userClassPaths).build();
         }
 
+        submitWorkReq.getFlinkSubmit().getConf().forEach(configuration::setString);
+
         try (
             StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
             ClusterClient<StandaloneClusterId> clusterClient =
