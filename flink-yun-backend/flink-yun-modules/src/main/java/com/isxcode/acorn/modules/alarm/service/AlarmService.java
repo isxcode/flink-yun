@@ -42,11 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
-import static java.util.regex.Pattern.compile;
 
 @Service
 @RequiredArgsConstructor
