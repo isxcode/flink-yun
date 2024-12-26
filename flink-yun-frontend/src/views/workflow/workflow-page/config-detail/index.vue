@@ -86,7 +86,7 @@
                   <el-icon class="modal-full-screen" @click="fullScreenEvent('flinkJsonFullStatus')"><FullScreen v-if="!flinkJsonFullStatus" /><Close v-else /></el-icon>
                   <code-mirror v-model="clusterConfig.flinkConfigJson" basic :lang="lang"/>
                 </el-form-item>
-                <el-form-item label="资源等级" v-else>
+                <el-form-item label="资源等级" v-else-if="!['BASH', 'PYTHON'].includes(workItemConfig.workType)">
                   <el-select v-model="clusterConfig.resourceLevel" placeholder="请选择">
                     <el-option
                       v-for="item in resourceLevelOptions"
