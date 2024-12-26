@@ -47,7 +47,7 @@ def String get_regex_value(String strValue, String patternStr, String value) {
 
     try {
         Pattern pattern = Pattern.compile(new String(Base64.getDecoder().decode(patternStr)))
-      Matcher matcher = pattern.matcher(new String(Base64.getDecoder().decode(strValue)))
+        Matcher matcher = pattern.matcher(new String(Base64.getDecoder().decode(strValue)))
         if (matcher.find()) {
             return matcher.group(1);
         }
