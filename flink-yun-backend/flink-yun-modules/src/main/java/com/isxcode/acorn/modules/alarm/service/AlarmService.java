@@ -136,17 +136,8 @@ public class AlarmService {
                     Map<String, String> valueMap = getWorkAlarmValueMap(workInstance, workVersionEntity);
 
                     // 翻译模版
-                    String content = alarm.getAlarmTemplate();
-                    Pattern pattern = compile("(\\$\\{).+?}");
-                    Matcher matcher = pattern.matcher(content);
-
-                    // 替换正则
-                    while (matcher.find()) {
-                        String group = matcher.group();
-                        if (valueMap.get(group.trim()) != null) {
-                            content = content.replace(group, valueMap.get(group.trim()));
-                        }
-                    }
+                    final String[] content = {alarm.getAlarmTemplate()};
+                    valueMap.forEach((k, v) -> content[0] = content[0].replace(k, v));
 
                     // 获取告警中当消息体
                     if (!Strings.isEmpty(alarm.getMsgId())) {
@@ -159,7 +150,7 @@ public class AlarmService {
                         MessageRunner messageRunner = messageFactory.getMessageAction(message.getMsgType());
                         MessageContext messageContext = MessageContext.builder().alarmType(alarm.getAlarmType())
                             .alarmId(alarmId).alarmEvent(alarmEvent).msgId(alarm.getMsgId())
-                            .messageConfig(messageConfig).tenantId(message.getTenantId()).content(content)
+                            .messageConfig(messageConfig).tenantId(message.getTenantId()).content(content[0])
                             .instanceId(workInstance.getId()).build();
 
                         // 获取需要发送的人
@@ -321,7 +312,7 @@ public class AlarmService {
     }
 
     public Map<String, String> getWorkflowAlarmValueMap(WorkflowInstanceEntity workflowInstance,
-        WorkflowVersionEntity workflowVersion) {
+                                                        WorkflowVersionEntity workflowVersion) {
 
         WorkflowEntity workflow = workflowService.getWorkflow(workflowVersion.getWorkflowId());
 
