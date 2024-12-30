@@ -1,11 +1,8 @@
 package com.isxcode.acorn.api.monitor.pojos.res;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.isxcode.acorn.backend.api.base.serializer.LocalDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 public class PageInstancesRes {
