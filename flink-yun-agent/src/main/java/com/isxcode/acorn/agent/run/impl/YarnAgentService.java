@@ -75,6 +75,22 @@ public class YarnAgentService implements AgentService {
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
         flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitWorkReq.getFlinkSubmit().getAppName());
 
+        submitWorkReq.getFlinkSubmit().getConf().forEach((k, v) -> {
+            if (v instanceof String) {
+                flinkConfig.setString(k, String.valueOf(v));
+            } else if (v instanceof Boolean) {
+                flinkConfig.setBoolean(k, Boolean.parseBoolean(String.valueOf(v)));
+            } else if (v instanceof Double) {
+                flinkConfig.setDouble(k, Double.parseDouble(String.valueOf(v)));
+            } else if (v instanceof Integer) {
+                flinkConfig.setInteger(k, Integer.parseInt(String.valueOf(v)));
+            } else if (v instanceof Long) {
+                flinkConfig.setLong(k, Long.parseLong(String.valueOf(v)));
+            } else {
+                throw new IllegalArgumentException("Unsupported type for key: " + k + ", value: " + v);
+            }
+        });
+
         // 加载yarn配置文件
         String hadoopConfDir = System.getenv("HADOOP_CONF_DIR");
         if (hadoopConfDir == null) {
