@@ -126,6 +126,22 @@ public class KubernetesAgentService implements AgentService {
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
         flinkConfig.set(RestartStrategyOptions.RESTART_STRATEGY, "disable");
 
+        submitWorkReq.getFlinkSubmit().getConf().forEach((k, v) -> {
+            if (v instanceof String) {
+                flinkConfig.setString(k, String.valueOf(v));
+            } else if (v instanceof Boolean) {
+                flinkConfig.setBoolean(k, Boolean.parseBoolean(String.valueOf(v)));
+            } else if (v instanceof Double) {
+                flinkConfig.setDouble(k, Double.parseDouble(String.valueOf(v)));
+            } else if (v instanceof Integer) {
+                flinkConfig.setInteger(k, Integer.parseInt(String.valueOf(v)));
+            } else if (v instanceof Long) {
+                flinkConfig.setLong(k, Long.parseLong(String.valueOf(v)));
+            } else {
+                throw new IllegalArgumentException("Unsupported type for key: " + k + ", value: " + v);
+            }
+        });
+
         // 映射文件路径
         List<String> volumeMounts = new ArrayList<>();
         String volumeTemplate = "   - name: %s\n      hostPath:\n        path: %s\n";
