@@ -21,6 +21,8 @@ import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.RestoreMode;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.messages.Acknowledge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,8 +107,26 @@ public class StandaloneAgentService implements AgentService {
                 .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
                 .setArguments(
                     Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
+                .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                    "file:///Users/ispong/flink/1fc34e690fa256810bc489659f4e69f2/chk-15", false, RestoreMode.CLAIM))
                 .setUserClassPaths(userClassPaths).build();
         }
+
+        submitWorkReq.getFlinkSubmit().getConf().forEach((k, v) -> {
+            if (v instanceof String) {
+                configuration.setString(k, String.valueOf(v));
+            } else if (v instanceof Boolean) {
+                configuration.setBoolean(k, Boolean.parseBoolean(String.valueOf(v)));
+            } else if (v instanceof Double) {
+                configuration.setDouble(k, Double.parseDouble(String.valueOf(v)));
+            } else if (v instanceof Integer) {
+                configuration.setInteger(k, Integer.parseInt(String.valueOf(v)));
+            } else if (v instanceof Long) {
+                configuration.setLong(k, Long.parseLong(String.valueOf(v)));
+            } else {
+                throw new IllegalArgumentException("Unsupported type for key: " + k + ", value: " + v);
+            }
+        });
 
         try (
             StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {

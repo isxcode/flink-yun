@@ -21,7 +21,7 @@ public class ClusterConfig {
 
     private String clusterNodeId;
 
-    private Map<String, String> flinkConfig;
+    private Map<String, Object> flinkConfig;
 
     private String flinkConfigJson;
 

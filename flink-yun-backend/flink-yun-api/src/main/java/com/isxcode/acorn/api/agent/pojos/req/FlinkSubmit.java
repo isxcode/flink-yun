@@ -36,5 +36,5 @@ public class FlinkSubmit {
 
     private boolean verbose;
 
-    private Map<String, String> conf;
+    private Map<String, Object> conf;
 }
