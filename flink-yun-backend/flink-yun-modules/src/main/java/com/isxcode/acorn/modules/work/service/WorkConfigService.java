@@ -67,7 +67,7 @@ public class WorkConfigService {
     public void initClusterConfig(WorkConfigEntity workConfig, String clusterId, String clusterNodeId,
         Boolean enableHive, String datasourceId) {
 
-        Map<String, String> flinkConfig = initFlinkConfig(ResourceLevel.LOW);
+        Map<String, Object> flinkConfig = initFlinkConfig(ResourceLevel.LOW);
         if (enableHive) {
             DatasourceEntity datasource = datasourceService.getDatasource(datasourceId);
             flinkConfig.put("hive.metastore.uris", datasource.getMetastoreUris());
@@ -88,9 +88,9 @@ public class WorkConfigService {
             JSON.toJSONString(CronConfig.builder().setMode(SetMode.SIMPLE).type("ALL").enable(false).build()));
     }
 
-    public Map<String, String> initFlinkConfig(String resourceLevel) {
+    public Map<String, Object> initFlinkConfig(String resourceLevel) {
 
-        Map<String, String> flinkConfig = new HashMap<>();
+        Map<String, Object> flinkConfig = new HashMap<>();
         switch (resourceLevel) {
             case ResourceLevel.HIGH:
 
