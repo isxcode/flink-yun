@@ -11,7 +11,7 @@
 </h1>
 
 <h3 align="center">
-  超轻量级流式计算平台/数据同步
+  超轻量级流式计算平台/实时同步
 </h3>
 
 <div align="center">
@@ -27,7 +27,7 @@
 
 ### 产品介绍
   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据计算平台，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现数据实时同步、Flink计算、可视化调度、流数据ETL、自定义接口、数据大屏等多种功能，为企业提供高效便捷的数据解决方案。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据分析平台，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现数据实时同步、Flink计算、可视化调度、流数据ETL、自定义接口、数据大屏等多种功能，为企业提供高效便捷的数据解决方案。
 
 ### 功能特点
 
@@ -76,7 +76,7 @@ cd flink-yun
 
 ##### Windows10/11
 
-> 注意！！！请使用Git Bash工具执行以下命令
+> 注意！！！请使用Git Bash终端工具执行以下命令
 
 ```bash
 git clone https://github.com/isxcode/flink-yun.git

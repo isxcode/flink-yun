@@ -17,7 +17,7 @@
   "real_work": "多平台部署，从不娇生惯养",
   "real_work_description": "支持多种资源调度平台，如Kubernetes、Yarn、CDH、Apache Hadoop、Flink Standalone、Flink Cluster等。",
   "data_drives_value": "流式计算，让数据分析更高效",
-  "data_drives_value_description": "至流云与您携手实现企业级流式计算平台落地",
+  "data_drives_value_description": "AI已至，至流云与您携手实现企业级流式分析平台落地",
   "multi_platform_deployment": "自定义接口，千变万化",
   "multi_platform_description": "支持高度灵活的接口定义，可配置多种结构的请求体和响应体，以满足用户在复杂场景下的多样化需求。",
   "data_view": "数据大屏，实时展示数据",
