@@ -53,9 +53,9 @@ docker run -p 8080:8080 -d isxcode/zhiliuyun
 
 ### 相关文档
 
-- [快速入门](https://zhiliuyun.isxcode.com/docs/zh/0/0)
-- [产品手册](https://zhiliuyun.isxcode.com/docs/zh/2/0)
-- [开发手册](https://zhiliuyun.isxcode.com/docs/zh/1/0-docker)
+- [快速入门](https://zhiliuyun.isxcode.com/zh/docs/zh/0/0)
+- [产品手册](https://zhiliuyun.isxcode.com/zh/docs/zh/2/0)
+- [开发手册](https://zhiliuyun.isxcode.com/zh/docs/zh/6/0)
 - [博客](https://ispong.isxcode.com/tags/flink/)
 
 ### 源码构建
