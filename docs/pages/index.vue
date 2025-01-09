@@ -186,7 +186,7 @@ onMounted(async () => {
   mediumZoom(document.querySelectorAll('#zoom'), {
     margin: 100,
     scrollOffset: 1,
-    background: '#fffaf8',
+    background: '#efeffb',
   })
 })
 
