@@ -10,6 +10,10 @@ title: "Mysql实时同步"
 
 > Mysql中将cdc_source中的数据实时同步到cdc_target中
 
+#### 前提
+
+- 需要开启binlog服务
+
 #### 解决方案
 
 > 创建FlinkSql作业类型，添加flink-connector-jdbc和flink-sql-connector-mysql-cdc依赖
