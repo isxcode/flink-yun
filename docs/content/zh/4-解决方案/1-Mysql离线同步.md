@@ -1,20 +1,20 @@
 ---
-title: "离线同步"
+title: "Mysql离线同步"
 ---
 
-## 离线同步
+## Mysql离线同步
 
-> 实现结果表向目标表中离线同步数据
+> 实现在mysql中结果表向目标表中离线同步数据
 
 #### 案例
 
-> Mysql中将cdc_source中的数据离线同步到cdc_target中
+> Mysql中将t_source中的数据离线同步到t_target中
 
 #### 解决方案
 
 > 创建FlinkSql作业类型，添加flink-connector-jdbc依赖
 
-- [flink-connector-jdbc-3.1.2-1.18.jar](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
+- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
 
 ![20241230183025](https://img.isxcode.com/picgo/20241230183025.png)
 
@@ -26,7 +26,7 @@ CREATE TABLE from_table(
     'connector'='jdbc',
     'url'='jdbc:mysql://localhost:30306/isxcode_db',
     'driver'='com.mysql.cj.jdbc.Driver',
-    'table-name'='cdc_source',
+    'table-name'='t_source',
     'username'='root',
     'password'='root123',
 	'scan.fetch-size'= '1'
@@ -39,7 +39,7 @@ CREATE TABLE target_table(
     'connector'='jdbc',
     'url'='jdbc:mysql://localhost:30306/isxcode_db',
     'driver'='com.mysql.cj.jdbc.Driver',
-    'table-name'='cdc_target',
+    'table-name'='t_target',
     'username'='root',
     'password'='root123',
     'sink.buffer-flush.max-rows'='1'); 

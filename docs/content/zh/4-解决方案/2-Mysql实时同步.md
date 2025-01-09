@@ -1,10 +1,10 @@
 ---
-title: "实时同步"
+title: "Mysql实时同步"
 ---
 
 ## 实时同步
 
-> 实现结果表向目标表中实时同步数据
+> 实现Mysql中结果表向目标表中实时同步数据
 
 #### 案例
 
@@ -14,8 +14,8 @@ title: "实时同步"
 
 > 创建FlinkSql作业类型，添加flink-connector-jdbc和flink-sql-connector-mysql-cdc依赖
 
-- [flink-connector-jdbc-3.1.2-1.18.jar](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
-- [flink-sql-connector-mysql-cdc-3.2.1.jar](https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-mysql-cdc/3.2.1/flink-sql-connector-mysql-cdc-3.2.1.jar)
+- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
+- [flink-sql-connector-mysql-cdc-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-mysql-cdc/3.2.1/flink-sql-connector-mysql-cdc-3.2.1.jar)
 
 ![20241230183511](https://img.isxcode.com/picgo/20241230183511.png)
 
