@@ -107,8 +107,6 @@ public class StandaloneAgentService implements AgentService {
                 .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
                 .setArguments(
                     Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-                .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                    "file:///Users/ispong/flink/1fc34e690fa256810bc489659f4e69f2/chk-15", false, RestoreMode.CLAIM))
                 .setUserClassPaths(userClassPaths).build();
         }
 
