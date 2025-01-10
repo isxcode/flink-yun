@@ -21,8 +21,6 @@ import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.RestoreMode;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.messages.Acknowledge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,8 +105,6 @@ public class StandaloneAgentService implements AgentService {
                 .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
                 .setArguments(
                     Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-                .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                    "file:///Users/ispong/flink/1fc34e690fa256810bc489659f4e69f2/chk-15", false, RestoreMode.CLAIM))
                 .setUserClassPaths(userClassPaths).build();
         }
 

@@ -186,7 +186,7 @@ onMounted(async () => {
   mediumZoom(document.querySelectorAll('#zoom'), {
     margin: 100,
     scrollOffset: 1,
-    background: '#fffaf8',
+    background: '#efeffb',
   })
 })
 
@@ -249,7 +249,7 @@ function handleScroll() {
 function handleGuideClick() {
   const router = useRouter();
   const langPrefix = locale.value;
-  router.push(`/${langPrefix}/docs/${langPrefix}/0/0`);
+  router.push(`/${langPrefix}/docs/${langPrefix}/1/0`);
 }
 
 function handleQuickClick() {
