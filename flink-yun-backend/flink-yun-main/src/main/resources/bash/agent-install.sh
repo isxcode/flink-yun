@@ -48,6 +48,7 @@ tar -xf ${BASE_PATH}/zhiliuyun-agent.tar.gz -C ${home_path} > /dev/null
 cp -r ${agent_path}/lib/fastjson* ${agent_path}/flink-min/lib
 cp -r ${agent_path}/lib/flink* ${agent_path}/flink-min/lib
 cp -r ${agent_path}/lib/*connector* ${agent_path}/flink-min/lib
+cp -r ${agent_path}/lib/*ojdbc8* ${agent_path}/flink-min/lib
 
 # 再给flink-min授权755
 chmod -R 755 ${agent_path}/flink-min
