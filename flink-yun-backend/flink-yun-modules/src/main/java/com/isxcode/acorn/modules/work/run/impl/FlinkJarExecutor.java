@@ -189,8 +189,9 @@ public class FlinkJarExecutor extends WorkExecutor {
         }
         FileEntity jarFile = fileEntityOptional.get();
 
-        FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName(jarJobConfig.getAppName())
-            .entryClass(jarJobConfig.getMainClass()).appResource(jarFile.getId() + ".jar").build();
+        FlinkSubmit flinkSubmit =
+            FlinkSubmit.builder().appName(jarJobConfig.getAppName()).entryClass(jarJobConfig.getMainClass())
+                .appResource(jarFile.getId() + ".jar").conf(workRunContext.getClusterConfig().getFlinkConfig()).build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
 
         // 上传文件到制定节点路径 /file/id.jar
