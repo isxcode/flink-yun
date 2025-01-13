@@ -51,7 +51,7 @@ CREATE TABLE target_table(
     'table-name'='CDC_SINK',
     'username'='root',
     'password'='root123',
-    'sink.buffer-flush.interval' = '200ms'); 
+    'sink.buffer-flush.max-rows' = '0'); 
 
 INSERT INTO target_table select * from from_table;
 ```
