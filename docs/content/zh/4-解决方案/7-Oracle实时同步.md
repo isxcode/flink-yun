@@ -21,7 +21,6 @@ title: "Oracle实时同步"
 - [flink-sql-connector-oracle-cdc-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-oracle-cdc/3.2.1/flink-sql-connector-oracle-cdc-3.2.1.jar)
 - [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
 - [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
-- [ojdbc6-11.2.0.4.jar下载](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar)
 
 ![20250113160944](https://img.isxcode.com/picgo/20250113160944.png)
 
