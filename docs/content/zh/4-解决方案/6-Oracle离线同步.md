@@ -15,6 +15,7 @@ title: "Oracle离线同步"
 > 创建FlinkSql作业类型，添加以下依赖
 
 - [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
+- [ojdbc6-11.2.0.4.jar下载](https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc6/11.2.0.4/ojdbc6-11.2.0.4.jar)
 
 ![20250113152417](https://img.isxcode.com/picgo/20250113152417.png)
 
