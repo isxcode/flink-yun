@@ -23,7 +23,7 @@ title: "Sqlserver实时同步"
 - [mssql-jdbc-11.2.3.jre8.jar下载](https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/11.2.3.jre8/mssql-jdbc-11.2.3.jre8.jar)
 - [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
 
-![20250113160944](https://img.isxcode.com/picgo/20250113160944.png)
+![20250120162447](https://img.isxcode.com/picgo/20250120162447.png)
 
 ```sql
 CREATE TABLE from_table
