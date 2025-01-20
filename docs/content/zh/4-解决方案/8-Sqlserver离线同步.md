@@ -26,13 +26,13 @@ CREATE TABLE from_table
     age      INT
 ) WITH (
       'connector' = 'jdbc',
-      'url' = 'jdbc:sqlserver://47.92.168.116:30103;database=ispong_db',
+      'url' = 'jdbc:sqlserver://127.0.0.1:3030;database=ispong_db;trustServerCertificate=true',
       'driver' = 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
       'table-name' = 't_source',
       'username' = 'SA',
       'password' = 'ispong123',
       'scan.fetch-size' = '1'
-      );
+);
 
 CREATE TABLE target_table
 (
@@ -40,16 +40,17 @@ CREATE TABLE target_table
     age      INT
 ) WITH (
       'connector' = 'jdbc',
-      'url' = 'jdbc:sqlserver://47.92.168.116:30103;database=ispong_db',
+      'url' = 'jdbc:sqlserver://127.0.0.1:3030;database=ispong_db;trustServerCertificate=true',
       'driver' = 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
       'table-name' = 't_sink',
       'username' = 'SA',
       'password' = 'ispong123',
-      'sink.buffer-flush.max-rows' = '1');
+      'sink.buffer-flush.max-rows' = '1'
+);
 
 INSERT INTO target_table
-select *
-from from_table;
+SELECT *
+FROM from_table;
 ```
 
 | 配置项                        | 说明            |
