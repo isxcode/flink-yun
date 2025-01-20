@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.functions.UserDefinedFunction;
+import org.mapstruct.ap.internal.util.Strings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
@@ -32,8 +33,14 @@ public class Job {
             }
         }
 
-        for (String s : acornPluginReq.getSql().split(";")) {
-            streamTableEnvironment.executeSql(s);
+        // 打个补丁，兼容sqlserver数据库
+        String replaceSql = acornPluginReq.getSql().replace(";database", "$zhiliuyun.specialCode1")
+            .replace(";trustServerCertificate", "$zhiliuyun.specialCode2");
+        for (String sql : replaceSql.split(";")) {
+            if (!Strings.isEmpty(sql)) {
+                streamTableEnvironment.executeSql(sql.replace("$zhiliuyun.specialCode1", ";database")
+                    .replace("$zhiliuyun.specialCode2", ";trustServerCertificate"));
+            }
         }
     }
 }
