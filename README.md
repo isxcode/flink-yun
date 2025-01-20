@@ -1,20 +1,6 @@
-<div align="center">
-    <a href="https://zhiliuyun.isxcode.com">
-        <img width="600" alt="image" src="https://img.isxcode.com/picgo/20240929113526.png">
-    </a>
-</div>
+# 至流云
 
----
-
-<h1 align="center">
-  至流云
-</h1>
-
-<h3 align="center">
-  超轻量级流式计算平台/实时同步/数据同步
-</h3>
-
-<div align="center">
+### 超轻量级流式计算平台/实时同步/数据同步
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)](https://hub.docker.com/r/isxcode/zhiliuyun)
 [![Build](https://github.com/isxcode/flink-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build.yml)
@@ -23,10 +9,20 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_shield&issueType=license)
 [![GitHub License](https://img.shields.io/github/license/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/blob/main/LICENSE)
 
-</div>
+|           |                                                                         |
+|-----------|-------------------------------------------------------------------------|
+| 官网地址:     | https://zhiliuyun.isxcode.com                                           |
+| 源码地址:     | https://github.com/isxcode/flink-yun                                    |
+| 演示环境:     | https://zhiliuyun-demo.isxcode.com                                      |
+| 安装包下载:    | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz |
+| 许可证下载:    | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/license.lic      |
+| docker镜像: | https://hub.docker.com/r/isxcode/zhiliuyun                              |
+| 阿里云镜像:    | https://zhiliuyun.isxcode.com/zh/docs/zh/1/1-docker                     |
+| 关键词:      | 实时分析平台, 数据同步, 实时同步, 数据采集, Flink, Hadoop, Docker                         |
+|           |                                                                         |
 
 ### 产品介绍
-  
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据分析平台，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现数据实时同步、离线同步、Flink计算、可视化调度、流数据ETL、自定义接口等多种功能，为企业提供高效便捷的数据解决方案。
 
 ### 功能特点
