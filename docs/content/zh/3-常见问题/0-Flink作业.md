@@ -139,3 +139,16 @@ Caused by: org.apache.flink.table.api.TableException: Column 'username' is NOT N
   "table.exec.sink.not-null-enforcer": "DROP"
 }
 ```
+
+#### 问题7
+
+```wikitext
+k8s集群无法找到镜像
+```
+
+> 可能k8s指定了固定镜像前缀，需要手动修改镜像名，推送到指定路径
+
+```bash
+docker tag flink:1.18.1-scala_2.12 isxcode:8443/library/flink:1.18.1-scala_2.12
+docker push isxcode:8443/library/flink:1.18.1-scala_2.12
+```
