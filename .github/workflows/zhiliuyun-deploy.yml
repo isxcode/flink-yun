@@ -47,33 +47,8 @@ jobs:
             rm -rf /tmp/zhiliuyun.tar.gz
             curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz -o /tmp/zhiliuyun.tar.gz
 
-  ssl:
-    needs: download
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-
-    steps:
-
-      - name: config ssl
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          script_stop: true
-          script: |
-            rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
-            rm -rf /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
-            cp /root/zhiliuyun-demo.isxcode.com.pem /data/nginx/ssl/zhiliuyun-demo.isxcode.com.pem
-            cp /root/zhiliuyun-demo.isxcode.com.key /data/nginx/ssl/zhiliuyun-demo.isxcode.com.key
-            nginx -s reload
-
   deploy:
-    needs: ssl
+    needs: download
     runs-on: ubuntu-latest
 
     permissions:

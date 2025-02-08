@@ -111,8 +111,3 @@ jobs:
             tar -vzxf /tmp/website.tar.gz -C /opt/
             rm /tmp/website.tar.gz
             pm2 start /opt/.output/server/index.mjs
-            rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.pem
-            rm -rf /data/nginx/ssl/zhiliuyun.isxcode.com.key
-            cp /root/zhiliuyun.isxcode.com.pem /data/nginx/ssl/zhiliuyun.isxcode.com.pem
-            cp /root/zhiliuyun.isxcode.com.key /data/nginx/ssl/zhiliuyun.isxcode.com.key
-            nginx -s reload
