@@ -48,6 +48,7 @@ jobs:
             curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz -o /tmp/zhiliuyun.tar.gz
 
   deploy:
+    needs: download
     runs-on: ubuntu-latest
 
     permissions:
