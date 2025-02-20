@@ -85,6 +85,17 @@ if [ ! -f "${FLINK_JAR_DIR}"/flink-connector-jdbc-3.1.2-1.18.jar ]; then
   curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-jdbc-3.1.2-1.18.jar -o ${FLINK_JAR_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
   echo "flink-connector-jdbc-3.1.2-1.18.jar下载成功"
 fi
+if [ ! -f "${FLINK_JAR_DIR}"/bson-5.2.1.jar ]; then
+  echo "bson-5.2.1.jar开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/bson-5.2.1.jar -o ${FLINK_JAR_DIR}/bson-5.2.1.jar
+  echo "bson-5.2.1.jar下载成功"
+fi
+if [ ! -f "${FLINK_JAR_DIR}"/flink-connector-base-1.18.1.jar ]; then
+  echo "flink-connector-base-1.18.1.jar开始下载"
+  curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-base-1.18.1.jar -o ${FLINK_JAR_DIR}/flink-connector-base-1.18.1.jar
+  echo "flink-connector-base-1.18.1.jar下载成功"
+fi
+
 
 # 创建系统驱动目录
 JDBC_DIR="${BASE_PATH}"/resources/jdbc/system
