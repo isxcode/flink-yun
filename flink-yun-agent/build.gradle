@@ -9,6 +9,12 @@ dependencies {
 
     implementation "org.apache.flink:flink-yarn:${FLINK_VERSION}"
 
+    implementation "org.apache.flink:flink-connector-jdbc:3.1.2-1.18"
+
+    implementation "org.apache.flink:flink-connector-base:1.18.1"
+
+    implementation "org.mongodb:bson:5.2.1"
+
     implementation "org.apache.flink:flink-kubernetes:${FLINK_VERSION}"
 
     implementation "org.apache.flink:flink-streaming-java:${FLINK_VERSION}"
