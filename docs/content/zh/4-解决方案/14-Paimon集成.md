@@ -14,7 +14,6 @@ title: "Paimon集成"
 
 - [paimon-flink-1.18-1.1-20250124.002530-34.jar下载](https://repository.apache.org/content/groups/snapshots/org/apache/paimon/paimon-flink-1.18/1.1-SNAPSHOT/paimon-flink-1.18-1.1-20250124.002530-34.jar)
 - [flink-shaded-hadoop-2-uber-2.8.3-10.0.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/2.8.3-10.0/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar)
-- [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
 
 ![20250124171455](https://img.isxcode.com/picgo/20250124171455.png)
 

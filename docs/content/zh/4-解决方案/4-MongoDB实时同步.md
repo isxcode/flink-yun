@@ -19,9 +19,7 @@ title: "MongoDB实时同步"
 > 创建FlinkSql作业类型，添加以下依赖
 
 - [flink-sql-connector-mongodb-cdc-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-mongodb-cdc/3.2.1/flink-sql-connector-mongodb-cdc-3.2.1.jar)
-- [bson-5.2.1.jar下载](https://repo1.maven.org/maven2/org/mongodb/bson/5.2.1/bson-5.2.1.jar)
 - [mongodb-driver-core-5.2.1.jar下载](https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-core/5.2.1/mongodb-driver-core-5.2.1.jar)
-- [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
 - [flink-connector-mongodb-1.2.0-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-mongodb/1.2.0-1.18/flink-connector-mongodb-1.2.0-1.18.jar)
 - [mongodb-driver-sync-5.2.1.jar下载](https://repo1.maven.org/maven2/org/mongodb/mongodb-driver-sync/5.2.1/mongodb-driver-sync-5.2.1.jar)
 

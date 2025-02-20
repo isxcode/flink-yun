@@ -19,7 +19,6 @@ title: "Postgresql实时同步"
 > 创建FlinkSql作业类型，添加以下依赖
 
 - [flink-connector-postgres-cdc-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-postgres-cdc/3.2.1/flink-connector-postgres-cdc-3.2.1.jar)
-- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
 - [postgresql-42.7.2.jar下载](https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.2/postgresql-42.7.2.jar)
 - [flink-cdc-base-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-cdc-base/3.2.1/flink-cdc-base-3.2.1.jar)
 - [flink-connector-debezium-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-debezium/3.2.1/flink-connector-debezium-3.2.1.jar)
@@ -37,7 +36,6 @@ title: "Postgresql实时同步"
 - [connect-json-3.2.0.jar下载](https://repo1.maven.org/maven2/org/apache/kafka/connect-json/3.2.0/connect-json-3.2.0.jar)
 - [HikariCP-4.0.3.jar下载](https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3.jar)
 - [protobuf-java-3.21.9.jar下载](https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.21.9/protobuf-java-3.21.9.jar)
-- [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
 
 ![20250120182130](https://img.isxcode.com/picgo/20250120182130.png)
 
