@@ -14,7 +14,6 @@ title: "Sqlserver离线同步"
 
 > 创建FlinkSql作业类型，添加以下依赖
 
-- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
 - [mssql-jdbc-11.2.3.jre8.jar下载](https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/11.2.3.jre8/mssql-jdbc-11.2.3.jre8.jar)
 
 ![20250120154153](https://img.isxcode.com/picgo/20250120154153.png)

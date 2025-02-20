@@ -12,12 +12,6 @@ title: "Mysql离线同步"
 
 #### 解决方案
 
-> 创建FlinkSql作业类型，添加flink-connector-jdbc依赖
-
-- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
-
-![20241230183025](https://img.isxcode.com/picgo/20241230183025.png)
-
 ```sql
 CREATE TABLE from_table(
     username STRING,

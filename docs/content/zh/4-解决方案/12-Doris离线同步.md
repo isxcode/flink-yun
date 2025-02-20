@@ -15,7 +15,6 @@ title: "Doris离线同步"
 > 创建FlinkSql作业类型，添加以下依赖
 
 - [flink-doris-connector-1.16-24.0.1.jar下载](https://repo1.maven.org/maven2/org/apache/doris/flink-doris-connector-1.16/24.0.1/flink-doris-connector-1.16-24.0.1.jar)
-- [flink-connector-base-1.18.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-base/1.18.1/flink-connector-base-1.18.1.jar)
 
 ![20250124154311](https://img.isxcode.com/picgo/20250124154311.png)
 

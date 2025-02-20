@@ -12,12 +12,6 @@ title: "Oracle离线同步"
 
 #### 解决方案
 
-> 创建FlinkSql作业类型，添加以下依赖
-
-- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
-
-![20250113152417](https://img.isxcode.com/picgo/20250113152417.png)
-
 ```sql
 CREATE TABLE from_table(
     username STRING,

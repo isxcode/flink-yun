@@ -14,7 +14,6 @@ title: "Postgresql离线同步"
 
 > 创建FlinkSql作业类型，添加以下依赖
 
-- [flink-connector-jdbc-3.1.2-1.18.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-connector-jdbc/3.1.2-1.18/flink-connector-jdbc-3.1.2-1.18.jar)
 - [postgresql-42.7.2.jar下载](https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.2/postgresql-42.7.2.jar)
 
 ![20250120164839](https://img.isxcode.com/picgo/20250120164839.png)
