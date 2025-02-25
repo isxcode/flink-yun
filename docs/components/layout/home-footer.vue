@@ -8,7 +8,7 @@
         <div class="logo-name">
           {{ $t("company_name") }}
         </div>
-        <img class="wechat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiyao/qrcode_for_12.jpg" alt=""/>
+        <img class="wechat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/website/web-img/qrcode.jpg" alt=""/>
         <div class="wechat-name">
           {{ $t("wechat_official_account") }}
         </div>
