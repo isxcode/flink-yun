@@ -4,7 +4,7 @@
 
     <div class="content">
       <div class="left">
-        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/web-img/logo.jpg" alt=""/>
+        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/website/web-img/logo.jpg" alt=""/>
         <div class="logo-name">
           {{ $t("company_name") }}
         </div>
