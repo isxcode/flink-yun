@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.functions.UserDefinedFunction;
-import org.mapstruct.ap.internal.util.Strings;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
