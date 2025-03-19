@@ -13,6 +13,13 @@ title: "Mysql实时同步"
 #### 前提
 
 - 需要开启binlog服务
+- 用户授权
+
+```sql
+GRANT SELECT, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'ispong'@'%';  
+GRANT RELOAD ON *.* TO 'ispong'@'%';  
+FLUSH PRIVILEGES;  
+```
 
 #### 解决方案
 
@@ -23,35 +30,37 @@ title: "Mysql实时同步"
 ![20241230183511](https://img.isxcode.com/picgo/20241230183511.png)
 
 ```sql
-CREATE TABLE from_table(
+CREATE TABLE from_table
+(
     username STRING,
-    age INT
-) WITH (
-    'connector'='mysql-cdc',
-    'hostname' = 'localhost',
-    'port' = '30306',
-    'username' = 'root',
-    'password' = 'root123',
-    'database-name' = 'isxcode_db',
-    'table-name' = 'cdc_source',
-    'scan.incremental.snapshot.enabled'='false',
-    'server-time-zone'='UTC',
-	'scan.startup.mode'='latest-offset'
-); 
+    age      INT
+) WITH ( 'connector' = 'mysql-cdc',
+      'hostname' = 'localhost',
+      'port' = '30306',
+      'username' = 'ispong',
+      'password' = 'ispong123',
+      'database-name' = 'isxcode_db',
+      'table-name' = 'cdc_source',
+      'scan.incremental.snapshot.enabled' = 'false',
+      'server-time-zone' = 'UTC',
+      'scan.startup.mode' = 'latest-offset'
+      );
 
-CREATE TABLE target_table(
+CREATE TABLE target_table
+(
     username STRING,
-    age INT,
-    PRIMARY KEY(username) NOT ENFORCED
-) WITH (
-    'connector'='jdbc',
-    'url'='jdbc:mysql://localhost:30306/isxcode_db',
-    'driver'='com.mysql.cj.jdbc.Driver',
-    'table-name'='cdc_target',
-    'username'='root',
-    'password'='root123'); 
+    age      INT,
+    PRIMARY KEY (username) NOT ENFORCED
+) WITH ( 'connector' = 'jdbc',
+      'url' = 'jdbc:mysql://localhost:30306/isxcode_db?useSSL=false&allowPublicKeyRetrieval=true',
+      'driver' = 'com.mysql.cj.jdbc.Driver',
+      'table-name' = 'cdc_target',
+      'username' = 'ispong',
+      'password' = 'ispong123');
 
-INSERT INTO target_table select * from from_table;
+INSERT INTO target_table
+select *
+from from_table;
 ```
 
 | 配置项               | 说明                 |
