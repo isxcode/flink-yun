@@ -21,6 +21,8 @@ import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.messages.Acknowledge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,23 +93,6 @@ public class StandaloneAgentService implements AgentService {
             }
         }
 
-        PackagedProgram program;
-        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
-            program = PackagedProgram.newBuilder()
-                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
-                    + submitWorkReq.getFlinkSubmit().getAppResource())))
-                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
-                .setArguments(submitWorkReq.getPluginReq().getArgs()).setUserClassPaths(userClassPaths).build();
-        } else {
-            program = PackagedProgram.newBuilder()
-                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
-                    + submitWorkReq.getFlinkSubmit().getAppResource())))
-                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
-                .setArguments(
-                    Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
-                .setUserClassPaths(userClassPaths).build();
-        }
-
         submitWorkReq.getFlinkSubmit().getConf().forEach((k, v) -> {
             if (v instanceof String) {
                 configuration.setString(k, String.valueOf(v));
@@ -123,6 +108,38 @@ public class StandaloneAgentService implements AgentService {
                 throw new IllegalArgumentException("Unsupported type for key: " + k + ", value: " + v);
             }
         });
+
+        PackagedProgram program;
+        if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
+            PackagedProgram.Builder builder = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "file" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(submitWorkReq.getPluginReq().getArgs()).setUserClassPaths(userClassPaths);
+            if (configuration.get(SavepointConfigOptions.SAVEPOINT_PATH) != null) {
+                program = builder
+                    .setSavepointRestoreSettings(
+                        SavepointRestoreSettings.forPath(configuration.get(SavepointConfigOptions.SAVEPOINT_PATH)))
+                    .build();
+            } else {
+                program = builder.build();
+            }
+        } else {
+            PackagedProgram.Builder builder = PackagedProgram.newBuilder()
+                .setJarFile(new File((submitWorkReq.getAgentHomePath() + File.separator + "plugins" + File.separator
+                    + submitWorkReq.getFlinkSubmit().getAppResource())))
+                .setEntryPointClassName(submitWorkReq.getFlinkSubmit().getEntryClass()).setConfiguration(configuration)
+                .setArguments(
+                    Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes()))
+                .setUserClassPaths(userClassPaths);
+            if (configuration.get(SavepointConfigOptions.SAVEPOINT_PATH) != null) {
+                program = builder.setSavepointRestoreSettings(
+                    SavepointRestoreSettings.forPath(configuration.getString(SavepointConfigOptions.SAVEPOINT_PATH)))
+                    .build();
+            } else {
+                program = builder.build();
+            }
+        }
 
         try (
             StandaloneClusterDescriptor standaloneClusterDescriptor = new StandaloneClusterDescriptor(configuration);) {
