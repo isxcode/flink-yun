@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@CacheConfig(cacheNames = {"SY_VIEW"})
+@CacheConfig(cacheNames = {"FY_VIEW"})
 public interface ViewLinkRepository extends JpaRepository<ViewLinkEntity, String> {
 
     List<ViewLinkEntity> findAllByInvalidDateTimeBefore(LocalDateTime localDateTime);

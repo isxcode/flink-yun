@@ -19,7 +19,7 @@ import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 @Data
 @Entity
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "SY_META_COLUMN_INFO")
+@Table(name = "FY_META_COLUMN_INFO")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 @Builder(toBuilder = true)

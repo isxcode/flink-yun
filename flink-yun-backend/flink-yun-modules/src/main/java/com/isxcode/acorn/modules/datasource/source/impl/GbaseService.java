@@ -136,7 +136,7 @@ public class GbaseService extends Datasource {
 
     @Override
     public String getPageSql(String sql) throws IsxAppException {
-        return "SELECT * FROM (" + sql + ") AS SY_TMP LIMIT '${page}' , '${pageSize}' ";
+        return "SELECT * FROM (" + sql + ") AS FY_TMP LIMIT '${page}' , '${pageSize}' ";
     }
 
     @Override

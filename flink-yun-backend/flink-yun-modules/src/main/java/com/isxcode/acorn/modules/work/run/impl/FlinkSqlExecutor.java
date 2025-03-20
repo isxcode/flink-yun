@@ -19,7 +19,7 @@ import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.pojos.BaseResponse;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
 import com.isxcode.acorn.common.locker.Locker;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.common.utils.http.HttpUrlUtils;
 import com.isxcode.acorn.common.utils.http.HttpUtils;
 import com.isxcode.acorn.common.utils.path.PathUtils;

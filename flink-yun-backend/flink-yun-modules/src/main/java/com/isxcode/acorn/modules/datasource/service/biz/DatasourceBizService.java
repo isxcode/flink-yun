@@ -9,7 +9,7 @@ import com.isxcode.acorn.api.datasource.req.*;
 import com.isxcode.acorn.api.datasource.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.common.utils.path.PathUtils;
 import com.isxcode.acorn.modules.datasource.entity.DatabaseDriverEntity;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
