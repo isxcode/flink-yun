@@ -2,8 +2,8 @@ package com.isxcode.acorn.modules.workflow.service;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.workflow.constants.WorkflowExternalCallStatus;
-import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowReq;
-import com.isxcode.acorn.api.workflow.pojos.req.ConfigWorkflowSettingReq;
+import com.isxcode.acorn.api.workflow.req.ConfigWorkflowReq;
+import com.isxcode.acorn.api.workflow.req.ConfigWorkflowSettingReq;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.work.entity.WorkEntity;
 import com.isxcode.acorn.modules.work.repository.WorkRepository;

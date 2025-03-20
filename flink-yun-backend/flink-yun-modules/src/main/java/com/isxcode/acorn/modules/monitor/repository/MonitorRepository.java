@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.monitor.repository;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
-import com.isxcode.acorn.api.monitor.pojos.ao.MonitorLineAo;
+import com.isxcode.acorn.api.monitor.ao.MonitorLineAo;
 import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.monitor.entity.MonitorEntity;
 import org.springframework.cache.annotation.CacheConfig;

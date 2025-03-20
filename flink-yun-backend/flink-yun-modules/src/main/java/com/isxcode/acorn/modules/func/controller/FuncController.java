@@ -1,11 +1,11 @@
 package com.isxcode.acorn.modules.func.controller;
 
-import com.isxcode.acorn.api.func.pojos.req.UpdateFuncReq;
-import com.isxcode.acorn.api.func.pojos.res.PageFuncRes;
+import com.isxcode.acorn.api.func.req.UpdateFuncReq;
+import com.isxcode.acorn.api.func.res.PageFuncRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
-import com.isxcode.acorn.api.func.pojos.req.AddFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.DeleteFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.PageFuncReq;
+import com.isxcode.acorn.api.func.req.AddFuncReq;
+import com.isxcode.acorn.api.func.req.DeleteFuncReq;
+import com.isxcode.acorn.api.func.req.PageFuncReq;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.func.service.FuncBizService;

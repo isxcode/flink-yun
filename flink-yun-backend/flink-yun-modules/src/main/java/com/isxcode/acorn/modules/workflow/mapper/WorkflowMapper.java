@@ -1,13 +1,13 @@
 package com.isxcode.acorn.modules.workflow.mapper;
 
-import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
-import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
-import com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo;
-import com.isxcode.acorn.api.monitor.pojos.res.PageInstancesRes;
-import com.isxcode.acorn.api.workflow.pojos.dto.WorkInstanceInfo;
-import com.isxcode.acorn.api.workflow.pojos.req.AddWorkflowReq;
-import com.isxcode.acorn.api.workflow.pojos.req.UpdateWorkflowReq;
-import com.isxcode.acorn.api.workflow.pojos.res.PageWorkflowRes;
+import com.isxcode.acorn.api.instance.ao.WorkflowInstanceAo;
+import com.isxcode.acorn.api.instance.res.QueryWorkFlowInstancesRes;
+import com.isxcode.acorn.api.monitor.ao.WorkflowMonitorAo;
+import com.isxcode.acorn.api.monitor.res.PageInstancesRes;
+import com.isxcode.acorn.api.workflow.dto.WorkInstanceInfo;
+import com.isxcode.acorn.api.workflow.req.AddWorkflowReq;
+import com.isxcode.acorn.api.workflow.req.UpdateWorkflowReq;
+import com.isxcode.acorn.api.workflow.res.PageWorkflowRes;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowEntity;
 

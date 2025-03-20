@@ -1,8 +1,8 @@
 package com.isxcode.acorn.modules.tenant.controller;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
-import com.isxcode.acorn.api.tenant.pojos.req.*;
-import com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes;
+import com.isxcode.acorn.api.tenant.req.*;
+import com.isxcode.acorn.api.tenant.res.PageTenantUserRes;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.tenant.service.biz.TenantUserBizService;

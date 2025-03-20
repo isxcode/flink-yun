@@ -2,7 +2,7 @@ package com.isxcode.acorn.api.alarm.res;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.isxcode.acorn.api.user.pojos.dto.UserInfo;
+import com.isxcode.acorn.api.user.dto.UserInfo;
 import com.isxcode.acorn.backend.api.base.serializer.LocalDateTimeSerializer;
 import lombok.Data;
 

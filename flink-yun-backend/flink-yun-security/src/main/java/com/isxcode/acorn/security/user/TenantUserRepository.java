@@ -1,7 +1,7 @@
 package com.isxcode.acorn.security.user;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
-import com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes;
+import com.isxcode.acorn.api.tenant.res.PageTenantUserRes;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.cache.annotation.CacheConfig;

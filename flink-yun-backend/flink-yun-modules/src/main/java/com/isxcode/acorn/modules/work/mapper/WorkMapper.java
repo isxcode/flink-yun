@@ -1,11 +1,11 @@
 package com.isxcode.acorn.modules.work.mapper;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.acorn.api.instance.pojos.dto.WorkInstanceDto;
-import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
-import com.isxcode.acorn.api.work.pojos.req.AddWorkReq;
-import com.isxcode.acorn.api.work.pojos.req.UpdateWorkReq;
-import com.isxcode.acorn.api.work.pojos.res.PageWorkRes;
+import com.isxcode.acorn.api.instance.dto.WorkInstanceDto;
+import com.isxcode.acorn.api.instance.res.QueryInstanceRes;
+import com.isxcode.acorn.api.work.req.AddWorkReq;
+import com.isxcode.acorn.api.work.req.UpdateWorkReq;
+import com.isxcode.acorn.api.work.res.PageWorkRes;
 import com.isxcode.acorn.modules.work.entity.WorkEntity;
 import com.isxcode.acorn.modules.work.entity.WorkInstanceEntity;
 import org.mapstruct.Mapper;

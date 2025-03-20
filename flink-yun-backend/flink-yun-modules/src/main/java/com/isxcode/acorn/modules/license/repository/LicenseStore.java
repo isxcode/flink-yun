@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.license.repository;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.acorn.api.license.pojos.req.LicenseReq;
+import com.isxcode.acorn.api.license.req.LicenseReq;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.stereotype.Component;
 

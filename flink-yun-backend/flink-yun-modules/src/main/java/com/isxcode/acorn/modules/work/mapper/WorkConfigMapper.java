@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.work.mapper;
 
-import com.isxcode.acorn.api.work.pojos.dto.SyncWorkConfig;
-import com.isxcode.acorn.api.work.pojos.res.GetSyncWorkConfigRes;
+import com.isxcode.acorn.api.work.dto.SyncWorkConfig;
+import com.isxcode.acorn.api.work.res.GetSyncWorkConfigRes;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

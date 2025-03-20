@@ -1,9 +1,9 @@
 package com.isxcode.acorn.modules.cluster.controller;
 
-import com.isxcode.acorn.api.cluster.pojos.req.*;
-import com.isxcode.acorn.api.cluster.pojos.res.QueryNodeRes;
-import com.isxcode.acorn.api.cluster.pojos.res.GetClusterNodeRes;
-import com.isxcode.acorn.api.cluster.pojos.res.TestAgentRes;
+import com.isxcode.acorn.api.cluster.req.*;
+import com.isxcode.acorn.api.cluster.res.QueryNodeRes;
+import com.isxcode.acorn.api.cluster.res.GetClusterNodeRes;
+import com.isxcode.acorn.api.cluster.res.TestAgentRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;

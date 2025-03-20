@@ -27,15 +27,12 @@ public class CurlExecutor extends WorkExecutor {
 
     private final IsxAppProperties isxAppProperties;
 
-    private final SqlFunctionService sqlFunctionService;
-
     public CurlExecutor(WorkInstanceRepository workInstanceRepository,
         WorkflowInstanceRepository workflowInstanceRepository, IsxAppProperties isxAppProperties,
         AlarmService alarmService, SqlFunctionService sqlFunctionService) {
 
         super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.isxAppProperties = isxAppProperties;
-        this.sqlFunctionService = sqlFunctionService;
     }
 
     @Override
@@ -69,14 +66,13 @@ public class CurlExecutor extends WorkExecutor {
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 将脚本推送到本地
-        String bashFile = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "work"
-            + File.separator + workRunContext.getTenantId() + File.separator + workInstance.getId() + ".sh";
+        String bashFile = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + "/work/"
+            + workRunContext.getTenantId() + "/" + workInstance.getId() + ".sh";
         FileUtil.writeUtf8String(workRunContext.getScript() + " \\\n && echo 'zhiliuyun_success'", bashFile);
 
         // 执行命令
-        String executeBashWorkCommand =
-            "bash " + PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "work"
-                + File.separator + workRunContext.getTenantId() + File.separator + workInstance.getId() + ".sh";
+        String executeBashWorkCommand = "bash " + PathUtils.parseProjectPath(isxAppProperties.getResourcesPath())
+            + "/work/" + workRunContext.getTenantId() + "/" + workInstance.getId() + ".sh";
         String result = RuntimeUtil.execForStr(executeBashWorkCommand);
 
         // 保存运行日志

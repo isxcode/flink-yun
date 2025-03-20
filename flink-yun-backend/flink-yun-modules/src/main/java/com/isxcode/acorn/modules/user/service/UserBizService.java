@@ -2,16 +2,15 @@ package com.isxcode.acorn.modules.user.service;
 
 import static com.isxcode.acorn.common.config.CommonConfig.USER_ID;
 
+import cn.hutool.crypto.SecureUtil;
 import com.isxcode.acorn.api.tenant.constants.TenantStatus;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.api.user.constants.UserStatus;
-import com.isxcode.acorn.api.user.pojos.req.*;
-import com.isxcode.acorn.api.user.pojos.req.UpdateUserReq;
-import com.isxcode.acorn.api.user.pojos.res.*;
+import com.isxcode.acorn.api.user.req.*;
+import com.isxcode.acorn.api.user.res.*;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
 import com.isxcode.acorn.common.utils.jwt.JwtUtils;
-import com.isxcode.acorn.common.utils.md5.Md5Utils;
 import com.isxcode.acorn.modules.tenant.entity.TenantEntity;
 import com.isxcode.acorn.modules.tenant.repository.TenantRepository;
 import com.isxcode.acorn.modules.user.mapper.UserMapper;
@@ -62,12 +61,12 @@ public class UserBizService {
 
         // 如果是系统管理员，首次登录，插入配置的密码并保存
         if (RoleType.SYS_ADMIN.equals(userEntity.getRoleCode()) && Strings.isEmpty(userEntity.getPasswd())) {
-            userEntity.setPasswd(Md5Utils.hashStr(isxAppProperties.getAdminPasswd()));
+            userEntity.setPasswd(SecureUtil.md5(isxAppProperties.getAdminPasswd()));
             userRepository.save(userEntity);
         }
 
         // 判断密码是否合法
-        if (!Md5Utils.hashStr(usrLoginReq.getPasswd()).equals(userEntity.getPasswd())) {
+        if (!SecureUtil.md5(usrLoginReq.getPasswd()).equals(userEntity.getPasswd())) {
             throw new IsxAppException("账号或者密码不正确");
         }
 
@@ -210,7 +209,7 @@ public class UserBizService {
         UserEntity userEntity = userMapper.addUserReqToUserEntity(usrAddUserReq);
         userEntity.setStatus(UserStatus.ENABLE);
         userEntity.setRoleCode(RoleType.NORMAL_MEMBER);
-        userEntity.setPasswd(Md5Utils.hashStr(userEntity.getPasswd()));
+        userEntity.setPasswd(SecureUtil.md5(userEntity.getPasswd()));
 
         // 数据持久化
         userRepository.save(userEntity);
@@ -295,7 +294,7 @@ public class UserBizService {
 
     public GetAnonymousTokenRes getAnonymousToken(GetAnonymousTokenReq getAnonymousTokenReq) {
 
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "fy_anonymous", isxAppProperties.getJwtKey(),
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "sy_anonymous", isxAppProperties.getJwtKey(),
             getAnonymousTokenReq.getValidDay() * 24 * 60);
 
         return GetAnonymousTokenRes.builder().token(jwtToken).build();

@@ -1,9 +1,9 @@
 package com.isxcode.acorn.modules.api.mapper;
 
-import com.isxcode.acorn.api.api.pojos.req.AddApiReq;
-import com.isxcode.acorn.api.api.pojos.req.UpdateApiReq;
-import com.isxcode.acorn.api.api.pojos.res.GetApiRes;
-import com.isxcode.acorn.api.api.pojos.res.PageApiRes;
+import com.isxcode.acorn.api.api.req.AddApiReq;
+import com.isxcode.acorn.api.api.req.UpdateApiReq;
+import com.isxcode.acorn.api.api.res.GetApiRes;
+import com.isxcode.acorn.api.api.res.PageApiRes;
 import com.isxcode.acorn.modules.api.entity.ApiEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -7,10 +7,11 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
-import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.AgentInfo;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.common.utils.os.OsUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterService;
@@ -75,7 +76,7 @@ public class RunAgentRemoveService {
 
         // 获取返回结果
         String executeLog =
-            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, removeCommand), false);
+            executeCommand(scpFileEngineNodeDto, OsUtils.fixWindowsChar(bashFilePath, removeCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentStartInfo = JSON.parseObject(executeLog, AgentInfo.class);
@@ -85,5 +86,8 @@ public class RunAgentRemoveService {
         engineNode.setAgentLog(agentStartInfo.getLog());
         engineNode.setCheckDateTime(LocalDateTime.now());
         clusterNodeRepository.saveAndFlush(engineNode);
+
+        // 刷新集群信息
+        clusterService.checkCluster(engineNode.getClusterId());
     }
 }

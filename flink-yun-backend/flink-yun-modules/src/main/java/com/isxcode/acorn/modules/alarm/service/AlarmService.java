@@ -217,10 +217,8 @@ public class AlarmService {
                 // 满足当前事件当发送
                 if (alarmEvent.equals(alarm.getAlarmEvent())) {
 
-                    // 获取环境参数
-                    Map<String, String> valueMap = getWorkflowAlarmValueMap(workflowInstance, workflowVersionEntity);
-
                     // 拼接消息内容
+                    Map<String, String> valueMap = getWorkflowAlarmValueMap(workflowInstance, workflowVersionEntity);
                     final String[] content = {alarm.getAlarmTemplate()};
                     valueMap.forEach((k, v) -> content[0] = content[0].replace(k, v));
 

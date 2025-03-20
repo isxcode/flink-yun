@@ -1,13 +1,13 @@
 package com.isxcode.acorn.agent.run;
 
-import com.isxcode.acorn.api.agent.pojos.req.GetWorkInfoReq;
-import com.isxcode.acorn.api.agent.pojos.req.GetWorkLogReq;
-import com.isxcode.acorn.api.agent.pojos.req.StopWorkReq;
-import com.isxcode.acorn.api.agent.pojos.req.SubmitWorkReq;
-import com.isxcode.acorn.api.agent.pojos.res.GetWorkInfoRes;
-import com.isxcode.acorn.api.agent.pojos.res.GetWorkLogRes;
-import com.isxcode.acorn.api.agent.pojos.res.StopWorkRes;
-import com.isxcode.acorn.api.agent.pojos.res.SubmitWorkRes;
+import com.isxcode.acorn.api.agent.req.GetWorkInfoReq;
+import com.isxcode.acorn.api.agent.req.GetWorkLogReq;
+import com.isxcode.acorn.api.agent.req.StopWorkReq;
+import com.isxcode.acorn.api.agent.req.SubmitWorkReq;
+import com.isxcode.acorn.api.agent.res.GetWorkInfoRes;
+import com.isxcode.acorn.api.agent.res.GetWorkLogRes;
+import com.isxcode.acorn.api.agent.res.StopWorkRes;
+import com.isxcode.acorn.api.agent.res.SubmitWorkRes;
 
 public interface AgentService {
 

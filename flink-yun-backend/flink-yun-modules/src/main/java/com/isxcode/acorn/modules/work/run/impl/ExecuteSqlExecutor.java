@@ -1,6 +1,6 @@
 package com.isxcode.acorn.modules.work.run.impl;
 
-import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
+import com.isxcode.acorn.api.datasource.dto.ConnectInfo;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;

@@ -1,8 +1,8 @@
 package com.isxcode.acorn.modules.workflow.repository;
 
-import com.isxcode.acorn.api.instance.pojos.ao.WorkflowInstanceAo;
+import com.isxcode.acorn.api.instance.ao.WorkflowInstanceAo;
 import com.isxcode.acorn.api.main.constants.ModuleVipCode;
-import com.isxcode.acorn.api.monitor.pojos.ao.WorkflowMonitorAo;
+import com.isxcode.acorn.api.monitor.ao.WorkflowMonitorAo;
 import com.isxcode.acorn.modules.workflow.entity.WorkflowInstanceEntity;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;

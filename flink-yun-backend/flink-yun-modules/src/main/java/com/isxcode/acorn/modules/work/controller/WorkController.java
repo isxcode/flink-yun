@@ -1,13 +1,13 @@
 package com.isxcode.acorn.modules.work.controller;
 
-import com.isxcode.acorn.api.instance.pojos.req.*;
-import com.isxcode.acorn.api.instance.pojos.res.GetWorkInstanceValuePathRes;
-import com.isxcode.acorn.api.instance.pojos.res.GetWorkflowInstanceRes;
-import com.isxcode.acorn.api.instance.pojos.res.QueryInstanceRes;
+import com.isxcode.acorn.api.instance.req.*;
+import com.isxcode.acorn.api.instance.res.GetWorkInstanceValuePathRes;
+import com.isxcode.acorn.api.instance.res.GetWorkflowInstanceRes;
+import com.isxcode.acorn.api.instance.res.QueryInstanceRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
-import com.isxcode.acorn.api.work.pojos.req.*;
-import com.isxcode.acorn.api.work.pojos.res.*;
+import com.isxcode.acorn.api.work.req.*;
+import com.isxcode.acorn.api.work.res.*;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.work.service.ExcelSyncService;
 import com.isxcode.acorn.modules.work.service.biz.SyncWorkBizService;
