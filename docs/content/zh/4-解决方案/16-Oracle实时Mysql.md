@@ -15,8 +15,13 @@ title: "Oracle实时Mysql"
 - 启用Oracle的logminer
 - 赋权
 
-```sql
+> 登录sysdba
 
+```sql
+GRANT SELECT ON SYS.V_$DATABASE TO ispong;
+GRANT create session, alter session, execute_catalog_role, select any dictionary, select any transaction, select any table, create any table, create any index, unlimited tablespace to ispong;
+SELECT supplemental_log_data_min, supplemental_log_data_pk, supplemental_log_data_all
+FROM v$database;
 ```
 
 #### 解决方案
@@ -33,39 +38,38 @@ CREATE TABLE from_table
     USERNAME STRING,
     AGE      INT,
     PRIMARY KEY (USERNAME) NOT ENFORCED
-) WITH (
-      'connector' = 'oracle-cdc',
+) WITH ( 'connector' = 'oracle-cdc',
       'hostname' = 'localhost',
-      'port' = '30110',
-      'username' = 'root',
-      'password' = 'root123',
-      'database-name' = 'PUBLIC',
-      'schema-name' = 'root',
+      'port' = '15201',
+      'username' = 'ispong',
+      'password' = 'ispong123',
+      'database-name' = 'helowin',
+      'schema-name' = 'ispong',
       'table-name' = 'CDC_SOURCE',
       'scan.startup.mode' = 'latest-offset'
-);
+      );
 
 CREATE TABLE target_table
 (
-    USERNAME STRING,
-    AGE      INT,
-    PRIMARY KEY (USERNAME) NOT ENFORCED
-) WITH (
-      'connector' = 'doris',
-      'fenodes' = 'localhost:8030',
-      'table.identifier' = 'ispong_db.cdc_target',
-      'username' = 'root',
-      'password' = 'root123')
-;
+    username STRING,
+    age      INT,
+    PRIMARY KEY (username) NOT ENFORCED
+) WITH ( 'connector' = 'jdbc',
+      'url' = 'jdbc:mysql://localhost:30306/isxcode_db?useSSL=false&allowPublicKeyRetrieval=true',
+      'driver' = 'com.mysql.cj.jdbc.Driver',
+      'table-name' = 'cdc_source',
+      'username' = 'ispong',
+      'password' = 'ispong123');
 
-INSERT INTO target_table (USERNAME, AGE)
+INSERT INTO target_table (username, age)
 select USERNAME, AGE
 from from_table;
 ```
 
-| 配置项           | 说明       |
-|---------------|----------|
-| connector     | 连接方式     |
-| uri           | 数据库连接url |
-| table-name    | 表名       |
-| database-name | 库名****   
+| 配置项           | 说明         |
+|---------------|------------|
+| connector     | 连接方式       |
+| uri           | 数据库连接url   |
+| table-name    | 表名         |
+| database-name | oracle的sid |
+| schema-name   | 用户名        |
