@@ -1,7 +1,7 @@
 application:
   title: 至流云
   website: https://zhiliuyun.isxcode.com
-  describe: 打造企业级流式计算平台
+  describe: 打造企业级实时分析平台
 
 server:
   tomcat:
@@ -134,6 +134,7 @@ isx-app:
     - /login # 放行登录接口
     - /auth # 放行登录接口
     - /share/** # 分享表单
+    - /dashboard/** # 分享大屏
     - /**/open/** # 放行所有的开放接口
     - /vip/**/open/** # 放行所有的开放接口
     - /**/api/** # 放行所有自定义接口

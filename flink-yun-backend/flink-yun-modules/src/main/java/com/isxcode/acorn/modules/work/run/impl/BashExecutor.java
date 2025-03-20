@@ -1,11 +1,11 @@
 package com.isxcode.acorn.modules.work.run.impl;
 
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.common.utils.ssh.SshUtils;
 import com.isxcode.acorn.modules.alarm.service.AlarmService;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
@@ -139,9 +139,9 @@ public class BashExecutor extends WorkExecutor {
                 clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".sh");
 
             // 执行命令获取pid
-            String executeBashWorkCommand = "nohup sh " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
-                + workInstance.getId() + ".sh >> " + clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/"
-                + workInstance.getId() + ".log 2>&1 & echo $!";
+            String executeBashWorkCommand = "source /etc/profile && nohup sh " + clusterNode.getAgentHomePath()
+                + "/zhiliuyun-agent/works/" + workInstance.getId() + ".sh >> " + clusterNode.getAgentHomePath()
+                + "/zhiliuyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
 
             // 保存pid

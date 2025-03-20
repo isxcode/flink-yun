@@ -1,0 +1,86 @@
+name: deploy zhiliuyun
+
+on:
+  workflow_dispatch:
+    inputs:
+      admin_github_token:
+        description: '管理员密钥'
+        required: true
+        type: string
+
+env:
+  ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
+
+jobs:
+
+  download:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+
+      - name: Checkout flink-yun
+        uses: actions/checkout@v4
+        with:
+          token: ${{ env.ADMIN_GITHUB_TOKEN }}
+          repository: "isxcode/flink-yun"
+          ref: 'main'
+
+      - name: Download zhiliuyun
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          timeout: 1800s
+          script: |
+            rm -rf /tmp/zhiliuyun.tar.gz
+            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz -o /tmp/zhiliuyun.tar.gz
+
+  deploy:
+    needs: download
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+
+      - name: Deploy zhiliuyun
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          timeout: 1800s
+          script: |
+            tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
+            rm /tmp/zhiliuyun.tar.gz
+            bash /opt/zhiliuyun/bin/stop.sh
+            rm -rf /opt/zhiliuyun/conf/application-local.yml
+            cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
+            cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
+            bash /opt/zhiliuyun/bin/start.sh --print-log=false
+            sleep 120
+            until curl -s https://zhiliuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
+              echo "Waiting for service to be available..."
+              sleep 1
+            done

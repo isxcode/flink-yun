@@ -7,14 +7,12 @@ import static com.isxcode.acorn.common.utils.ssh.SshUtils.scpFile;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
-import com.isxcode.acorn.api.cluster.constants.ClusterStatus;
-import com.isxcode.acorn.api.cluster.pojos.dto.AgentInfo;
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.AgentInfo;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
-import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
+import com.isxcode.acorn.common.utils.os.OsUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.repository.ClusterNodeRepository;
-import com.isxcode.acorn.modules.cluster.repository.ClusterRepository;
 import com.isxcode.acorn.modules.cluster.service.ClusterNodeService;
 import com.isxcode.acorn.modules.cluster.service.ClusterService;
 import com.jcraft.jsch.*;
@@ -38,8 +36,6 @@ public class RunAgentInstallService {
     private final FlinkYunProperties flinkYunProperties;
 
     private final ClusterNodeRepository clusterNodeRepository;
-
-    private final ClusterRepository clusterRepository;
 
     private final ClusterService clusterService;
 
@@ -87,7 +83,7 @@ public class RunAgentInstallService {
 
         // 获取返回结果
         String executeLog =
-            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashInstallFilePath, envCommand), false);
+            executeCommand(scpFileEngineNodeDto, OsUtils.fixWindowsChar(bashInstallFilePath, envCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentEnvInfo = JSON.parseObject(executeLog, AgentInfo.class);
@@ -126,8 +122,7 @@ public class RunAgentInstallService {
 
         log.debug("执行远程安装命令:{}", installCommand);
 
-        executeLog =
-            executeCommand(scpFileEngineNodeDto, clusterService.fixWindowsChar(bashFilePath, installCommand), false);
+        executeLog = executeCommand(scpFileEngineNodeDto, OsUtils.fixWindowsChar(bashFilePath, installCommand), false);
         log.debug("远程安装返回值:{}", executeLog);
 
         AgentInfo agentInstallInfo = JSON.parseObject(executeLog, AgentInfo.class);
@@ -142,13 +137,7 @@ public class RunAgentInstallService {
         engineNode.setCheckDateTime(LocalDateTime.now());
         clusterNodeRepository.saveAndFlush(engineNode);
 
-        // 如果状态是成功的话,将集群改为启用
-        if (ClusterNodeStatus.RUNNING.equals(agentInstallInfo.getStatus())) {
-            Optional<ClusterEntity> byId = clusterRepository.findById(engineNode.getClusterId());
-            ClusterEntity clusterEntity = byId.get();
-            clusterEntity.setStatus(ClusterStatus.ACTIVE);
-            clusterRepository.saveAndFlush(clusterEntity);
-        }
-
+        // 刷新集群信息
+        clusterService.checkCluster(engineNode.getClusterId());
     }
 }

@@ -1,11 +1,11 @@
 package com.isxcode.acorn.modules.user.mapper;
 
-import com.isxcode.acorn.api.user.pojos.dto.UserInfo;
-import com.isxcode.acorn.api.user.pojos.req.AddUserReq;
-import com.isxcode.acorn.api.user.pojos.req.UpdateUserReq;
-import com.isxcode.acorn.api.user.pojos.req.UpdateUserInfoReq;
-import com.isxcode.acorn.api.user.pojos.res.PageEnableUserRes;
-import com.isxcode.acorn.api.user.pojos.res.PageUserRes;
+import com.isxcode.acorn.api.user.dto.UserInfo;
+import com.isxcode.acorn.api.user.req.AddUserReq;
+import com.isxcode.acorn.api.user.req.UpdateUserReq;
+import com.isxcode.acorn.api.user.req.UpdateUserInfoReq;
+import com.isxcode.acorn.api.user.res.PageEnableUserRes;
+import com.isxcode.acorn.api.user.res.PageUserRes;
 import com.isxcode.acorn.security.user.UserEntity;
 import java.util.List;
 import org.mapstruct.Mapper;

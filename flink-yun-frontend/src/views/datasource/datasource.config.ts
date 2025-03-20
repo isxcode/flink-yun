@@ -99,6 +99,22 @@ export const typeList = [
     label: 'StarRocks',
     value: 'STAR_ROCKS',
   },
+  {
+    label: 'Greenplum',
+    value: 'GREENPLUM',
+  },
+  {
+    label: 'Gbase',
+    value: 'GBASE',
+  },
+  {
+    label: 'Sybase',
+    value: 'SYBASE',
+  },
+  {
+    label: 'Db2',
+    value: 'DB2',
+  },
 ]
 export const colConfigs: colConfig[] = [
   {
@@ -128,7 +144,7 @@ export const colConfigs: colConfig[] = [
   {
     prop: 'status',
     title: '状态',
-    minWidth: 60,
+    minWidth: 80,
     customSlot: 'statusTag'
   },
   {

@@ -1,10 +1,16 @@
 package com.isxcode.acorn.modules.work.service.biz;
 
 import com.isxcode.acorn.api.datasource.constants.DatasourceType;
-import com.isxcode.acorn.api.datasource.pojos.dto.ColumnMetaDto;
-import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
-import com.isxcode.acorn.api.work.pojos.req.*;
-import com.isxcode.acorn.api.work.pojos.res.*;
+import com.isxcode.acorn.api.datasource.dto.ColumnMetaDto;
+import com.isxcode.acorn.api.datasource.dto.ConnectInfo;
+import com.isxcode.acorn.api.work.req.GetCreateTableSqlReq;
+import com.isxcode.acorn.api.work.req.GetDataSourceColumnsReq;
+import com.isxcode.acorn.api.work.req.GetDataSourceDataReq;
+import com.isxcode.acorn.api.work.req.GetDataSourceTablesReq;
+import com.isxcode.acorn.api.work.res.GetCreateTableSqlRes;
+import com.isxcode.acorn.api.work.res.GetDataSourceColumnsRes;
+import com.isxcode.acorn.api.work.res.GetDataSourceDataRes;
+import com.isxcode.acorn.api.work.res.GetDataSourceTablesRes;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import com.isxcode.acorn.modules.datasource.mapper.DatasourceMapper;
 import com.isxcode.acorn.modules.datasource.service.DatasourceService;

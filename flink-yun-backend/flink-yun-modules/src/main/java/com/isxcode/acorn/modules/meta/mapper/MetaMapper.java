@@ -1,7 +1,9 @@
 package com.isxcode.acorn.modules.meta.mapper;
 
-import com.isxcode.acorn.api.datasource.pojos.dto.QueryColumnDto;
-import com.isxcode.acorn.api.datasource.pojos.dto.QueryTableDto;
+import com.isxcode.acorn.api.datasource.dto.QueryColumnDto;
+import com.isxcode.acorn.api.datasource.dto.QueryTableDto;
+import com.isxcode.acorn.api.meta.ao.MetaColumnAo;
+import com.isxcode.acorn.api.meta.ao.MetaTableAo;
 import com.isxcode.acorn.api.meta.req.AddMetaWokReq;
 import com.isxcode.acorn.api.meta.res.*;
 import com.isxcode.acorn.modules.meta.entity.*;
@@ -16,7 +18,7 @@ public interface MetaMapper {
 
     PageMetaDatabaseRes metaDatabaseEntityToPageMetaDatabaseRes(MetaDatabaseEntity metaDatabaseEntity);
 
-    PageMetaTableRes metaTableEntityToPageMetaTableRes(MetaTableEntity metaTableEntity);
+    PageMetaTableRes metaTableEntityToPageMetaTableRes(MetaTableAo metaTableAo);
 
     @Mapping(target = "cronConfig", ignore = true)
     MetaWorkEntity addMetaWorkToMetaWorkEntity(AddMetaWokReq addMetaWokReq);
@@ -33,7 +35,7 @@ public interface MetaMapper {
 
     List<MetaColumnEntity> queryColumnDtoListToMetaColumnEntityList(List<QueryColumnDto> queryColumnDtos);
 
-    PageMetaColumnRes metaColumnEntityToPageMetaColumnRes(MetaColumnEntity metaColumnEntity);
+    PageMetaColumnRes metaColumnEntityToPageMetaColumnRes(MetaColumnAo metaColumnAo);
 
     PageMetaWorkInstanceRes metaInstanceEntityToPageMetaWorkInstanceRes(MetaInstanceEntity metaInstanceEntity);
 
@@ -50,5 +52,5 @@ public interface MetaMapper {
 
     QueryColumnDto metaColumnEntityToQueryColumnDto(MetaColumnEntity metaColumnEntity);
 
-    List<QueryColumnDto> metaColumnEntitiesToQueryColumnDtoList(List<MetaColumnEntity> metaColumnEntities);
+    List<QueryColumnDto> metaColumnEntitiesToQueryColumnDtoList(List<MetaColumnAo> metaColumnEntities);
 }

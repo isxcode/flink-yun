@@ -1,7 +1,7 @@
 package com.isxcode.acorn.plugin.sql.execute;
 
 import com.alibaba.fastjson2.JSON;
-import com.isxcode.acorn.api.agent.pojos.req.PluginReq;
+import com.isxcode.acorn.api.agent.req.PluginReq;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;

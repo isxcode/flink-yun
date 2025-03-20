@@ -1,9 +1,9 @@
 package com.isxcode.acorn.modules.func.mapper;
 
-import com.isxcode.acorn.api.func.pojos.dto.FuncInfo;
-import com.isxcode.acorn.api.func.pojos.req.AddFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.UpdateFuncReq;
-import com.isxcode.acorn.api.func.pojos.res.PageFuncRes;
+import com.isxcode.acorn.api.func.dto.FuncInfo;
+import com.isxcode.acorn.api.func.req.AddFuncReq;
+import com.isxcode.acorn.api.func.req.UpdateFuncReq;
+import com.isxcode.acorn.api.func.res.PageFuncRes;
 import com.isxcode.acorn.modules.func.entity.FuncEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

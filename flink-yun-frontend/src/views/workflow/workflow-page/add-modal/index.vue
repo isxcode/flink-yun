@@ -126,7 +126,6 @@ import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { GetComputerGroupList, GetComputerPointData } from '@/services/computer-group.service'
 import { GetDatasourceList } from '@/services/datasource.service'
-import { GetSparkContainerList } from '@/services/spark-container.service'
 import { TypeList } from '../../workflow.config'
 
 const form = ref<FormInstance>()

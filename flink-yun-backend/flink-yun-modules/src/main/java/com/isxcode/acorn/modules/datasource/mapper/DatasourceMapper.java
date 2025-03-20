@@ -1,12 +1,12 @@
 package com.isxcode.acorn.modules.datasource.mapper;
 
-import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
-import com.isxcode.acorn.api.datasource.pojos.req.AddDatasourceReq;
-import com.isxcode.acorn.api.datasource.pojos.req.CheckConnectReq;
-import com.isxcode.acorn.api.datasource.pojos.req.UpdateDatasourceReq;
-import com.isxcode.acorn.api.datasource.pojos.res.GetDefaultDatabaseDriverRes;
-import com.isxcode.acorn.api.datasource.pojos.res.PageDatabaseDriverRes;
-import com.isxcode.acorn.api.datasource.pojos.res.PageDatasourceRes;
+import com.isxcode.acorn.api.datasource.dto.ConnectInfo;
+import com.isxcode.acorn.api.datasource.req.AddDatasourceReq;
+import com.isxcode.acorn.api.datasource.req.CheckConnectReq;
+import com.isxcode.acorn.api.datasource.req.UpdateDatasourceReq;
+import com.isxcode.acorn.api.datasource.res.GetDefaultDatabaseDriverRes;
+import com.isxcode.acorn.api.datasource.res.PageDatabaseDriverRes;
+import com.isxcode.acorn.api.datasource.res.PageDatasourceRes;
 import com.isxcode.acorn.modules.datasource.entity.DatabaseDriverEntity;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
 import org.mapstruct.Mapper;

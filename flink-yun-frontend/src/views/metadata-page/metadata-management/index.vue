@@ -40,10 +40,12 @@
                     :is="tabComponent"
                     ref="currentTabRef"
                     @redirectToTable="redirectToTable"
+                    @editEvent="editEvent"
                 ></component>
             </div>
         </LoadingPage>
         <AddModal ref="addModalRef" />
+        <RemarkModal ref="remarkModalRef"></RemarkModal>
     </div>
 </template>
 
@@ -57,12 +59,16 @@ import tableList from './table-list.vue'
 import codeList from './code-list.vue'
 import {
   AddMetadataTaskData,
+  CodeRemarkEdit,
+  DatasourceRemarkEdit,
   FastTriggerMetadataTaskData,
-  RefreshMetadataManagementList
+  GetMetadataManagementList,
+  RefreshMetadataManagementList,
+TableRemarkEdit
 } from '@/services/metadata-page.service'
-import { GetDatasourceList } from '@/services/datasource.service'
 import { ElMessage } from 'element-plus'
 import AddModal from './add-modal/index.vue'
+import RemarkModal from './remark-modal/index.vue'
 
 const breadCrumbList = reactive(BreadCrumbList)
 const keyword = ref('')
@@ -73,10 +79,11 @@ const tabComponent = ref()
 const currentTabRef = ref()
 const refreshLoading = ref<boolean>(false)
 const addModalRef = ref<any>(null)
+const remarkModalRef = ref<any>(null)
 
 const datasourceId = ref('')
 const dbType = ref('')
-const dataSourceList = ref([])
+const dataSourceList = ref<any[]>([])
 
 function initData(tableLoading?: boolean) {
     loading.value = tableLoading ? false : true
@@ -138,6 +145,66 @@ function acquisetionTriggerEvent() {
     })
 }
 
+function editEvent(e: any) {
+    const remark = e.dbComment || e.tableComment || e.columnComment
+    remarkModalRef.value.showModal((data: any) => {
+        return new Promise((resolve, reject) => {
+            if (e.pageType === 'datasource') {
+                DatasourceRemarkEdit({
+                    datasourceId: e.datasourceId,
+                    comment: data.remark
+                }).then((res: any) => {
+                    ElMessage.success(res.msg)
+                    initData()
+                    resolve()
+                }).catch((error: any) => {
+                    reject(error)
+                })
+            } else if (e.pageType === 'table') {
+                TableRemarkEdit({
+                    datasourceId: e.datasourceId,
+                    tableName: e.tableName,
+                    comment: data.remark
+                }).then((res: any) => {
+                    ElMessage.success(res.msg)
+                    initData()
+                    resolve()
+                }).catch((error: any) => {
+                    reject(error)
+                })
+            } else if (e.pageType === 'code') {
+                CodeRemarkEdit({
+                    datasourceId: e.datasourceId,
+                    tableName: e.tableName,
+                    columnName: e.columnName,
+                    comment: data.remark
+                }).then((res: any) => {
+                    ElMessage.success(res.msg)
+                    initData()
+                    resolve()
+                }).catch((error: any) => {
+                    reject(error)
+                })
+            } else if (e.pageType === 'code_pre') {
+                CodeRemarkEdit({
+                    datasourceId: e.datasourceId,
+                    tableName: e.tableName,
+                    columnName: e.columnName,
+                    comment: data.remark
+                }).then((res: any) => {
+                    ElMessage.success(res.msg)
+                    if (e.callback && e.callback instanceof Function) {
+                        e.callback()
+                    }
+                    resolve()
+                }).catch((error: any) => {
+                    reject(error)
+                })
+            }
+        })
+    }, { remark: remark })
+}
+
 function refreshDataEvent() {
     refreshLoading.value = true
     RefreshMetadataManagementList().then((res: any) => {
@@ -150,7 +217,7 @@ function refreshDataEvent() {
 }
 
 function getDataSourceList() {
-    GetDatasourceList({
+    GetMetadataManagementList({
         page: 0,
         pageSize: 10000,
         searchKeyWord: ''
@@ -158,7 +225,7 @@ function getDataSourceList() {
         dataSourceList.value = res.data.content.filter((item: any) => item.dbType !== 'KAFKA').map((item: any) => {
             return {
                 label: item.name,
-                value: item.id
+                value: item.datasourceId
             }
         })
     }).catch(() => {

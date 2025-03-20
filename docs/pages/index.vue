@@ -150,7 +150,7 @@
         <div class="left">
           <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/website/product-img/p-5.jpg" alt="">
         </div>
-         <div class="left-phone">
+        <div class="left-phone">
           <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/website/product-img/p-5.jpg" alt="">
         </div>
         <div class="right">

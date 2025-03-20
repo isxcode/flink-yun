@@ -2,10 +2,10 @@ package com.isxcode.acorn.modules.file.service;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
-import com.isxcode.acorn.api.file.pojos.req.DeleteFileReq;
-import com.isxcode.acorn.api.file.pojos.req.DownloadFileReq;
-import com.isxcode.acorn.api.file.pojos.req.PageFileReq;
-import com.isxcode.acorn.api.file.pojos.res.PageFileRes;
+import com.isxcode.acorn.api.file.req.DeleteFileReq;
+import com.isxcode.acorn.api.file.req.DownloadFileReq;
+import com.isxcode.acorn.api.file.req.PageFileReq;
+import com.isxcode.acorn.api.file.res.PageFileRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
 import com.isxcode.acorn.common.utils.path.PathUtils;

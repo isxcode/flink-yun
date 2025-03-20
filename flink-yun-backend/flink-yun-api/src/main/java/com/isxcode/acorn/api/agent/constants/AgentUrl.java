@@ -2,6 +2,9 @@ package com.isxcode.acorn.api.agent.constants;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 
+/**
+ * 代理接口访问地址.
+ */
 public interface AgentUrl {
 
     String SUBMIT_WORK_URL = "/" + ModuleCode.FLINK_YUN_AGENT + "/submitWork";

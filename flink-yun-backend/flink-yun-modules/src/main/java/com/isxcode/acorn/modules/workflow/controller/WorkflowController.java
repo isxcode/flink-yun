@@ -1,16 +1,16 @@
 package com.isxcode.acorn.modules.workflow.controller;
 
-import com.isxcode.acorn.api.instance.pojos.req.QueryWorkFlowInstancesReq;
-import com.isxcode.acorn.api.instance.pojos.res.QueryWorkFlowInstancesRes;
+import com.isxcode.acorn.api.instance.req.QueryWorkFlowInstancesReq;
+import com.isxcode.acorn.api.instance.res.QueryWorkFlowInstancesRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
-import com.isxcode.acorn.api.work.pojos.req.GetWorkflowDefaultClusterReq;
-import com.isxcode.acorn.api.work.pojos.res.GetWorkflowDefaultClusterRes;
-import com.isxcode.acorn.api.workflow.pojos.req.*;
-import com.isxcode.acorn.api.workflow.pojos.res.GetRunWorkInstancesRes;
-import com.isxcode.acorn.api.workflow.pojos.res.GetWorkflowRes;
-import com.isxcode.acorn.api.workflow.pojos.res.GetInvokeUrlRes;
-import com.isxcode.acorn.api.workflow.pojos.res.PageWorkflowRes;
+import com.isxcode.acorn.api.work.req.GetWorkflowDefaultClusterReq;
+import com.isxcode.acorn.api.work.res.GetWorkflowDefaultClusterRes;
+import com.isxcode.acorn.api.workflow.req.*;
+import com.isxcode.acorn.api.workflow.res.GetRunWorkInstancesRes;
+import com.isxcode.acorn.api.workflow.res.GetWorkflowRes;
+import com.isxcode.acorn.api.workflow.res.GetInvokeUrlRes;
+import com.isxcode.acorn.api.workflow.res.PageWorkflowRes;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.workflow.service.WorkflowBizService;
 import com.isxcode.acorn.modules.workflow.service.WorkflowConfigBizService;

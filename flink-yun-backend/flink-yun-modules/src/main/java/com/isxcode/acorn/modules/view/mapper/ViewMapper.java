@@ -1,13 +1,15 @@
 package com.isxcode.acorn.modules.view.mapper;
 
-import com.isxcode.acorn.api.view.pojo.dto.CardInfo;
-import com.isxcode.acorn.api.view.pojo.req.AddViewCardReq;
-import com.isxcode.acorn.api.view.pojo.req.AddViewReq;
-import com.isxcode.acorn.api.view.pojo.res.AddViewRes;
-import com.isxcode.acorn.api.view.pojo.res.PageViewCardRes;
-import com.isxcode.acorn.api.view.pojo.res.PageViewRes;
+import com.isxcode.acorn.api.view.dto.CardInfo;
+import com.isxcode.acorn.api.view.req.AddViewCardReq;
+import com.isxcode.acorn.api.view.req.AddViewReq;
+import com.isxcode.acorn.api.view.res.AddViewRes;
+import com.isxcode.acorn.api.view.res.GetViewLinkInfoRes;
+import com.isxcode.acorn.api.view.res.PageViewCardRes;
+import com.isxcode.acorn.api.view.res.PageViewRes;
 import com.isxcode.acorn.modules.view.entity.ViewCardEntity;
 import com.isxcode.acorn.modules.view.entity.ViewEntity;
+import com.isxcode.acorn.modules.view.entity.ViewLinkEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -27,4 +29,6 @@ public interface ViewMapper {
     ViewEntity addViewReqToViewEntity(AddViewReq addViewReq);
 
     AddViewRes viewEntityToAddViewRes(ViewEntity viewEntity);
+
+    GetViewLinkInfoRes viewLinkEntityToGetFormLinkInfoRes(ViewLinkEntity viewLinkEntity);
 }

@@ -17,6 +17,14 @@ export function CreateReportComponentData(params: any): Promise<any> {
         params: params
     })
 }
+// 报表组件-编辑组件
+export function EditReportComponent(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/vip/view/editViewCard',
+        params: params
+    })
+}
 // 报表组件-删除组件
 export function DeleteReportComponentData(params: any): Promise<any> {
     return http.request({
@@ -91,12 +99,23 @@ export function AddReportView(params: any): Promise<any> {
         params: params
     })
 }
+// 报表大屏展示-编辑视图
+export function EditReportView(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/vip/view/editView',
+        params: params
+    })
+}
 // 报表大屏展示-获取详情视图数据
-export function GetReportViewDetail(params: any): Promise<any> {
+export function GetReportViewDetail(params: any, config?: any): Promise<any> {
     return http.request({
         method: 'post',
         url: '/vip/view/getView',
-        params: params
+        params: params,
+        headers: {
+            ...config
+        }
     })
 }
 
@@ -110,11 +129,14 @@ export function SaveReportViewDetail(params: any): Promise<any> {
 }
 
 // 报表大屏展示-刷新真实数据接口
-export function RefreshReportViewItemData(params: any): Promise<any> {
+export function RefreshReportViewItemData(params: any, config?: any): Promise<any> {
     return http.request({
         method: 'post',
         url: '/vip/view/getViewCardDataById',
-        params: params
+        params: params,
+        headers: {
+            ...config
+        }
     })
 }
 
@@ -139,6 +161,24 @@ export function DeleteReportViewData(params: any): Promise<any> {
     return http.request({
         method: 'post',
         url: '/vip/view/deleteView',
+        params: params
+    })
+}
+
+// 获取分享大屏链接的id接口
+export function GetChartsLinkConfig(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/vip/view/getViewLink',
+        params: params
+    })
+}
+
+// 根据linkId 获取相关配置接口
+export function GetChartsLinkInfoConfig(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/vip/view/open/getViewLinkInfo',
         params: params
     })
 }

@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.monitor.repository;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
-import com.isxcode.acorn.api.monitor.pojos.ao.MonitorLineAo;
+import com.isxcode.acorn.api.monitor.ao.MonitorLineAo;
 import com.isxcode.acorn.modules.file.entity.FileEntity;
 import com.isxcode.acorn.modules.monitor.entity.MonitorEntity;
 import org.springframework.cache.annotation.CacheConfig;
@@ -18,7 +18,7 @@ import java.util.List;
 @CacheConfig(cacheNames = {ModuleCode.FILE})
 public interface MonitorRepository extends JpaRepository<MonitorEntity, String>, JpaSpecificationExecutor<FileEntity> {
 
-    @Query("select new com.isxcode.acorn.api.monitor.pojos.ao.MonitorLineAo ( count(1),M.clusterId, M.createDateTime,sum(M.cpuPercent) / count(1),sum(M.diskIoReadSpeed) / count(1),sum(M.networkIoReadSpeed) / count(1),sum(M.diskIoWriteSpeed) / count(1),sum(M.networkIoWriteSpeed) / count(1), sum(M.usedMemorySize) / count(1), sum(M.usedStorageSize) / count(1) ) from MonitorEntity M where M.clusterId=:clusterId and M.createDateTime between :startDateTime and :endDateTime group by M.clusterId, M.createDateTime ")
+    @Query("select new com.isxcode.acorn.api.monitor.ao.MonitorLineAo ( count(1),M.clusterId, M.createDateTime,sum(M.cpuPercent) / count(1),sum(M.diskIoReadSpeed) / count(1),sum(M.networkIoReadSpeed) / count(1),sum(M.diskIoWriteSpeed) / count(1),sum(M.networkIoWriteSpeed) / count(1), sum(M.usedMemorySize) / count(1), sum(M.usedStorageSize) / count(1) ) from MonitorEntity M where M.clusterId=:clusterId and M.createDateTime between :startDateTime and :endDateTime group by M.clusterId, M.createDateTime ")
     List<MonitorLineAo> queryMonitorLine(@Param("clusterId") String clusterId,
         @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
