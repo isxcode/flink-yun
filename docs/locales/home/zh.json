@@ -14,7 +14,7 @@
   "job_types_supported": "支持超多作业类型，包括FlinkSql、FlinkJar、JdbcSql、Prql、Python脚本、Bash脚本、Curl脚本、接口调用等。",
   "job_orchestration": "作业调度，横竖都能拖拽",
   "job_support": "支持全量的作业生命周期指令，包括运行、中止、中断、下线、发布、重跑、重跑下游、重跑当前、外部调用等。",
-  "real_work": "分享表单，轻松自定义",
+  "real_work": "分享表单，自定义更轻松",
   "real_work_description": "支持用户自定义拖拽构建业务表单，表单具备新增、查询、更新、删除数据的功能，并支持通过二维码分享表单，实现便捷的数据采集。",
   "data_drives_value": "实时分析，让数据计算更高效",
   "data_drives_value_description": "AI已至，至流云与您携手实现企业级流式分析平台落地",
