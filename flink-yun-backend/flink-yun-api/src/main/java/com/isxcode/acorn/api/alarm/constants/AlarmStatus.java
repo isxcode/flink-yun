@@ -1,5 +1,8 @@
 package com.isxcode.acorn.api.alarm.constants;
 
+/**
+ * 基线告警启动状态.
+ */
 public interface AlarmStatus {
 
     /**
