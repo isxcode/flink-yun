@@ -83,7 +83,7 @@ public class RunAgentInstallService {
 
         // 获取返回结果
         String executeLog =
-            executeCommand(scpFileEngineNodeDto, OsUtils.fixWindowsChar(installBashFilePath, envCommand), false);
+            executeCommand(scpFileEngineNodeDto, OsUtils.fixWindowsChar(bashInstallFilePath, envCommand), false);
         log.debug("远程返回值:{}", executeLog);
 
         AgentInfo agentEnvInfo = JSON.parseObject(executeLog, AgentInfo.class);
