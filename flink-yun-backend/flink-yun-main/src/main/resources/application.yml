@@ -1,7 +1,7 @@
 application:
   title: 至流云
   website: https://zhiliuyun.isxcode.com
-  describe: 打造企业级流式计算平台
+  describe: 打造企业级实时分析平台
 
 server:
   tomcat:
