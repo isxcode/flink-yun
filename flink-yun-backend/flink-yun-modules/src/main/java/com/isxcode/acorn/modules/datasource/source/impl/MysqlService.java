@@ -8,7 +8,7 @@ import com.isxcode.acorn.api.datasource.dto.QueryTableDto;
 import com.isxcode.acorn.api.work.res.GetDataSourceDataRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.modules.datasource.service.DatabaseDriverService;
 import com.isxcode.acorn.modules.datasource.source.Datasource;
 import lombok.extern.slf4j.Slf4j;
@@ -136,7 +136,7 @@ public class MysqlService extends Datasource {
 
     @Override
     public String getPageSql(String sql) throws IsxAppException {
-        return "SELECT * FROM (" + sql + ") AS SY_TMP LIMIT '${page}' , '${pageSize}' ";
+        return "SELECT * FROM (" + sql + ") AS FY_TMP LIMIT '${page}' , '${pageSize}' ";
     }
 
     @Override

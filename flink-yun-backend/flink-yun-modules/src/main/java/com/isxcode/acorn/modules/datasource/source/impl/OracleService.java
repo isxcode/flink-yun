@@ -8,7 +8,7 @@ import com.isxcode.acorn.api.datasource.dto.QueryTableDto;
 import com.isxcode.acorn.api.work.res.GetDataSourceDataRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.modules.datasource.service.DatabaseDriverService;
 import com.isxcode.acorn.modules.datasource.source.Datasource;
 import lombok.extern.slf4j.Slf4j;
@@ -151,8 +151,8 @@ public class OracleService extends Datasource {
         }
         String firstCol = split[0].toLowerCase().trim().substring(7);
         String firstKey = "ROW_NUMBER() OVER (ORDER BY " + firstCol + " ) AS FY_ROW_NUM";
-        return "SELECT * FROM ( SELECT SY_TMP.* ," + firstKey + " FROM (" + sql
-            + ") SY_TMP ) WHERE FY_ROW_NUM BETWEEN '${page}' AND '${pageSize}'";
+        return "SELECT * FROM ( SELECT FY_TMP.* ," + firstKey + " FROM (" + sql
+            + ") FY_TMP ) WHERE FY_ROW_NUM BETWEEN '${page}' AND '${pageSize}'";
     }
 
     @Override

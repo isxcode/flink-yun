@@ -5,7 +5,7 @@ import com.isxcode.acorn.api.cluster.req.*;
 import com.isxcode.acorn.api.cluster.res.PageClusterRes;
 import com.isxcode.acorn.api.cluster.res.QueryAllClusterRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.acorn.modules.cluster.mapper.ClusterMapper;

@@ -1,7 +1,6 @@
 package com.isxcode.acorn.api.work.req;
 
 import com.isxcode.acorn.api.work.dto.*;
-import com.isxcode.acorn.api.work.pojos.dto.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;

@@ -13,7 +13,7 @@ import com.isxcode.acorn.api.cluster.res.QueryNodeRes;
 import com.isxcode.acorn.api.cluster.res.GetClusterNodeRes;
 import com.isxcode.acorn.api.cluster.res.TestAgentRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.common.utils.ssh.SshUtils;
 import com.isxcode.acorn.modules.cluster.entity.ClusterEntity;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
