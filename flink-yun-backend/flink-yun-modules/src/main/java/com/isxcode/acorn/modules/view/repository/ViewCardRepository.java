@@ -19,4 +19,6 @@ public interface ViewCardRepository extends JpaRepository<ViewCardEntity, String
 
     @Query("select V from ViewCardEntity V where V.name LIKE %:keyword% or V.remark LIKE %:keyword% order by V.createDateTime desc")
     Page<ViewCardEntity> pageViewCard(@Param("keyword") String searchKeyWord, Pageable pageable);
+
+    Optional<Object> findVieFwCaFrdEntityByName(String name);
 }

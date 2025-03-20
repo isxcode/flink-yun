@@ -1,6 +1,6 @@
 package com.isxcode.acorn.modules.work.run.impl;
 
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.instance.constants.InstanceStatus;
 import com.isxcode.acorn.api.work.constants.WorkLog;
 import com.isxcode.acorn.api.work.constants.WorkType;
@@ -140,7 +140,7 @@ public class PythonExecutor extends WorkExecutor {
                 clusterNode.getAgentHomePath() + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py");
 
             // 执行命令获取pid
-            String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath()
+            String executeBashWorkCommand = "source /etc/profile && nohup python3 " + clusterNode.getAgentHomePath()
                 + "/zhiliuyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
                 + "/zhiliuyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
@@ -204,6 +204,11 @@ public class PythonExecutor extends WorkExecutor {
                 } catch (JSchException | InterruptedException | IOException e) {
                     throw new WorkRunException(
                         LocalDateTime.now() + WorkLog.ERROR_INFO + "获取日志异常 : " + e.getMessage() + "\n");
+                }
+
+                if (!logCommand.contains("zhiliuyun_success")) {
+                    throw new WorkRunException(
+                        LocalDateTime.now() + WorkLog.ERROR_INFO + "获取日志异常 : " + logCommand + "\n");
                 }
 
                 // 保存运行日志

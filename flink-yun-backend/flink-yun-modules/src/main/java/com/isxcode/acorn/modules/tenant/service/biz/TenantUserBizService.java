@@ -3,8 +3,8 @@ package com.isxcode.acorn.modules.tenant.service.biz;
 import static com.isxcode.acorn.common.config.CommonConfig.TENANT_ID;
 import static com.isxcode.acorn.common.config.CommonConfig.USER_ID;
 
-import com.isxcode.acorn.api.tenant.pojos.req.*;
-import com.isxcode.acorn.api.tenant.pojos.res.PageTenantUserRes;
+import com.isxcode.acorn.api.tenant.req.*;
+import com.isxcode.acorn.api.tenant.res.PageTenantUserRes;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.api.user.constants.UserStatus;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;

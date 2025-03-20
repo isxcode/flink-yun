@@ -1,6 +1,6 @@
 package com.isxcode.acorn.modules.work.run;
 
-import com.isxcode.acorn.api.work.pojos.dto.*;
+import com.isxcode.acorn.api.work.dto.*;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package com.isxcode.acorn.modules.datasource.controller;
 
-import com.isxcode.acorn.api.datasource.pojos.req.*;
-import com.isxcode.acorn.api.datasource.pojos.res.*;
+import com.isxcode.acorn.api.datasource.req.*;
+import com.isxcode.acorn.api.datasource.res.*;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;

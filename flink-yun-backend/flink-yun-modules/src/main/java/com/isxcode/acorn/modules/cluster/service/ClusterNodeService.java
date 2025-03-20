@@ -1,6 +1,6 @@
 package com.isxcode.acorn.modules.cluster.service;
 
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.acorn.api.main.properties.FlinkYunProperties;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.common.utils.AesUtils;

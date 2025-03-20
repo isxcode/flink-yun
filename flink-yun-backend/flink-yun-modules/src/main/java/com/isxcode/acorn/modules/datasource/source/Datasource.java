@@ -2,14 +2,14 @@ package com.isxcode.acorn.modules.datasource.source;
 
 import com.isxcode.acorn.api.datasource.constants.ColumnType;
 import com.isxcode.acorn.api.datasource.constants.DatasourceType;
-import com.isxcode.acorn.api.datasource.pojos.dto.ConnectInfo;
-import com.isxcode.acorn.api.datasource.pojos.dto.QueryColumnDto;
-import com.isxcode.acorn.api.datasource.pojos.dto.QueryTableDto;
-import com.isxcode.acorn.api.datasource.pojos.dto.SecurityColumnDto;
-import com.isxcode.acorn.api.work.pojos.res.GetDataSourceDataRes;
+import com.isxcode.acorn.api.datasource.dto.ConnectInfo;
+import com.isxcode.acorn.api.datasource.dto.QueryColumnDto;
+import com.isxcode.acorn.api.datasource.dto.QueryTableDto;
+import com.isxcode.acorn.api.datasource.dto.SecurityColumnDto;
+import com.isxcode.acorn.api.work.res.GetDataSourceDataRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.backend.api.base.properties.IsxAppProperties;
-import com.isxcode.acorn.common.utils.AesUtils;
+import com.isxcode.acorn.common.utils.aes.AesUtils;
 import com.isxcode.acorn.common.utils.path.PathUtils;
 import com.isxcode.acorn.modules.datasource.entity.DatabaseDriverEntity;
 import com.isxcode.acorn.modules.datasource.service.DatabaseDriverService;
@@ -219,12 +219,9 @@ public abstract class Datasource {
         }
     }
 
-    public ResultSet securityQuerySql(ConnectInfo connectInfo, String securityExecuteSql,
-        List<SecurityColumnDto> securityColumns) throws IsxAppException {
-
+    public ResultSet securityQuerySql(PreparedStatement statement, List<SecurityColumnDto> securityColumns)
+        throws IsxAppException {
         try {
-            Connection connection = getConnection(connectInfo);
-            PreparedStatement statement = connection.prepareStatement(securityExecuteSql);
             for (int i = 0; i < securityColumns.size(); i++) {
                 this.transAndSetParameter(statement, securityColumns.get(i), i);
             }

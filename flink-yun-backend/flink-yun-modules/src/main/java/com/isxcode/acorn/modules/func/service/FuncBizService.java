@@ -1,10 +1,10 @@
 package com.isxcode.acorn.modules.func.service;
 
-import com.isxcode.acorn.api.func.pojos.req.AddFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.DeleteFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.PageFuncReq;
-import com.isxcode.acorn.api.func.pojos.req.UpdateFuncReq;
-import com.isxcode.acorn.api.func.pojos.res.PageFuncRes;
+import com.isxcode.acorn.api.func.req.AddFuncReq;
+import com.isxcode.acorn.api.func.req.DeleteFuncReq;
+import com.isxcode.acorn.api.func.req.PageFuncReq;
+import com.isxcode.acorn.api.func.req.UpdateFuncReq;
+import com.isxcode.acorn.api.func.res.PageFuncRes;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.file.service.FileService;
 import com.isxcode.acorn.modules.func.entity.FuncEntity;

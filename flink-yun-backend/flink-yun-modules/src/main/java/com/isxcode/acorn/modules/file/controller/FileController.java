@@ -1,9 +1,9 @@
 package com.isxcode.acorn.modules.file.controller;
 
-import com.isxcode.acorn.api.file.pojos.req.DeleteFileReq;
-import com.isxcode.acorn.api.file.pojos.req.DownloadFileReq;
-import com.isxcode.acorn.api.file.pojos.req.PageFileReq;
-import com.isxcode.acorn.api.file.pojos.res.PageFileRes;
+import com.isxcode.acorn.api.file.req.DeleteFileReq;
+import com.isxcode.acorn.api.file.req.DownloadFileReq;
+import com.isxcode.acorn.api.file.req.PageFileReq;
+import com.isxcode.acorn.api.file.res.PageFileRes;
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;

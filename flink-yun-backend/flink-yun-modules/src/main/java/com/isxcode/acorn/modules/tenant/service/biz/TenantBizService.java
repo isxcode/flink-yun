@@ -4,10 +4,10 @@ import static com.isxcode.acorn.common.config.CommonConfig.JPA_TENANT_MODE;
 import static com.isxcode.acorn.common.config.CommonConfig.USER_ID;
 
 import com.isxcode.acorn.api.tenant.constants.TenantStatus;
-import com.isxcode.acorn.api.tenant.pojos.req.*;
-import com.isxcode.acorn.api.tenant.pojos.res.GetTenantRes;
-import com.isxcode.acorn.api.tenant.pojos.res.PageTenantRes;
-import com.isxcode.acorn.api.tenant.pojos.res.QueryUserTenantRes;
+import com.isxcode.acorn.api.tenant.req.*;
+import com.isxcode.acorn.api.tenant.res.GetTenantRes;
+import com.isxcode.acorn.api.tenant.res.PageTenantRes;
+import com.isxcode.acorn.api.tenant.res.QueryUserTenantRes;
 import com.isxcode.acorn.api.user.constants.RoleType;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.license.repository.LicenseStore;

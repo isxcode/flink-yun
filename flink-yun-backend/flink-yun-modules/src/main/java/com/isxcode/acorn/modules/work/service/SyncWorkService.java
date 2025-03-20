@@ -1,6 +1,6 @@
 package com.isxcode.acorn.modules.work.service;
 
-import com.isxcode.acorn.api.datasource.pojos.dto.ColumnMetaDto;
+import com.isxcode.acorn.api.datasource.dto.ColumnMetaDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,10 +1,10 @@
 package com.isxcode.acorn.modules.cluster.mapper;
 
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
-import com.isxcode.acorn.api.cluster.pojos.req.AddClusterNodeReq;
-import com.isxcode.acorn.api.cluster.pojos.req.UpdateClusterNodeReq;
-import com.isxcode.acorn.api.cluster.pojos.res.QueryNodeRes;
-import com.isxcode.acorn.api.cluster.pojos.res.GetClusterNodeRes;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.req.AddClusterNodeReq;
+import com.isxcode.acorn.api.cluster.req.UpdateClusterNodeReq;
+import com.isxcode.acorn.api.cluster.res.QueryNodeRes;
+import com.isxcode.acorn.api.cluster.res.GetClusterNodeRes;
 import com.isxcode.acorn.modules.cluster.entity.ClusterNodeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

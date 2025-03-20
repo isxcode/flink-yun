@@ -1,8 +1,8 @@
 package com.isxcode.acorn.modules.datasource.service;
 
 import com.isxcode.acorn.api.datasource.constants.DatasourceType;
-import com.isxcode.acorn.api.datasource.pojos.dto.KafkaConfig;
-import com.isxcode.acorn.api.datasource.pojos.dto.SecurityColumnDto;
+import com.isxcode.acorn.api.datasource.dto.KafkaConfig;
+import com.isxcode.acorn.api.datasource.dto.SecurityColumnDto;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;

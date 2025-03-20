@@ -1,6 +1,6 @@
 package com.isxcode.acorn.common.utils.ssh;
 
-import com.isxcode.acorn.api.cluster.pojos.dto.ScpFileEngineNodeDto;
+import com.isxcode.acorn.api.cluster.dto.ScpFileEngineNodeDto;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;

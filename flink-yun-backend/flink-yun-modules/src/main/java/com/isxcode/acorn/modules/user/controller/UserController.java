@@ -2,8 +2,8 @@ package com.isxcode.acorn.modules.user.controller;
 
 import com.isxcode.acorn.api.main.constants.ModuleCode;
 import com.isxcode.acorn.api.user.constants.RoleType;
-import com.isxcode.acorn.api.user.pojos.req.*;
-import com.isxcode.acorn.api.user.pojos.res.*;
+import com.isxcode.acorn.api.user.req.*;
+import com.isxcode.acorn.api.user.res.*;
 import com.isxcode.acorn.common.annotations.successResponse.SuccessResponse;
 import com.isxcode.acorn.modules.user.service.UserBizService;
 import io.swagger.v3.oas.annotations.Operation;
