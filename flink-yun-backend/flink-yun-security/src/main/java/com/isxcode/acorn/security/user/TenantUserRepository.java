@@ -20,8 +20,8 @@ public interface TenantUserRepository extends JpaRepository<TenantUserEntity, St
 
     List<TenantUserEntity> findAllByUserId(String userId);
 
-    @Query(value = "select " + "   new com.isxcode.acorn.api.tenant.res.PageTenantUserRes(T.id , "
-        + "   U.account , " + "   U.username , " + "   U.phone , " + "   U.email , " + "   T.roleCode,U.id) "
+    @Query(value = "select " + "   new com.isxcode.acorn.api.tenant.res.PageTenantUserRes(T.id , " + "   U.account , "
+        + "   U.username , " + "   U.phone , " + "   U.email , " + "   T.roleCode,U.id) "
         + "from TenantUserEntity T left join UserEntity U on T.userId = U.id  "
         + "WHERE U.roleCode != 'ROLE_SYS_ADMIN' " + "   and T.tenantId=:tenantId "
         + "   and (U.username LIKE %:searchKeyWord% " + "OR U.account LIKE %:searchKeyWord% "
