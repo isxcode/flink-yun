@@ -226,6 +226,7 @@ public class FlinkJarExecutor extends WorkExecutor {
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业 \n");
         workInstance = updateInstance(workInstance, logBuilder);
 
         // 开始提交作业
