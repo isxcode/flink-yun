@@ -3,7 +3,7 @@
 ### 超轻量级实时分析平台/实时同步/数据同步
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)](https://hub.docker.com/r/isxcode/zhiliuyun)
-[![Build](https://github.com/isxcode/flink-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build.yml)
+[![build](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/flink-yun)](https://github.com/isxcode/flink-yun)
 [![GitHub forks](https://img.shields.io/github/forks/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/fork)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_shield&issueType=license)
@@ -33,14 +33,16 @@
 
 ### 立即体验
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;演示地址：https://zhiliuyun-demo.isxcode.com  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;体验账号：user001  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号密码：welcome1
+> [!TIP]
+> 演示地址：https://zhiliuyun-demo.isxcode.com </br>
+> 体验账号：user001 </br>
+> 账号密码：welcome1
 
 ### 快速部署
 
-> 访问地址：http://localhost:8080 </br>
-> 管理员账号：admin </br>
+> [!NOTE]
+> 访问地址：http://localhost:8080 <br/>
+> 管理员账号：admin <br/>
 > 管理员密码：admin123
 
 ```bash
@@ -56,12 +58,14 @@ docker run -p 8080:8080 -d isxcode/zhiliuyun
 
 ### 源码构建
 
-> 注意！！！编译环境需访问外网，且需提前安装Nodejs和Java，推荐版本如下: </br>
+> [!WARNING]
+> 编译环境需访问外网，且需提前安装Nodejs和Java，推荐版本如下: </br>
 > Java: zulu8.78.0.19-ca-jdk8.0.412-x64 </br>
 > Nodejs: node-v18.20.3-x64
 
 ##### MacOS/Linux
 
+> [!IMPORTANT]
 > 安装包路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
 
 ```bash
@@ -72,7 +76,8 @@ cd flink-yun
 
 ##### Windows10/11
 
-> 注意！！！请使用Git Bash终端工具执行以下命令
+> [!CAUTION]
+> 请使用Git Bash终端工具执行以下命令
 
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
@@ -80,6 +85,6 @@ cd flink-yun
 ./gradlew.bat install clean package
 ```
 
-### 联系我们
+### 收藏历史
 
-邮箱：hello@isxcode.com
+[![Star History Chart](https://api.star-history.com/svg?repos=isxcode/flink-yun&type=Date)](https://www.star-history.com/#isxcode/flink-yun&Date)
