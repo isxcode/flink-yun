@@ -3,7 +3,7 @@
 ### 超轻量级实时分析平台/实时同步/数据同步
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)](https://hub.docker.com/r/isxcode/zhiliuyun)
-[![build](https://github.com/isxcode/flink-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build.yml)
+[![build](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/flink-yun)](https://github.com/isxcode/flink-yun)
 [![GitHub forks](https://img.shields.io/github/forks/isxcode/flink-yun)](https://github.com/isxcode/flink-yun/fork)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fflink-yun?ref=badge_shield&issueType=license)
@@ -87,4 +87,4 @@ cd flink-yun
 
 ### 收藏历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=isxcode/flink-yun&type=Date)](https://star-history.com/#isxcode/flink-yun&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=isxcode/flink-yun&type=Date)](https://www.star-history.com/#isxcode/flink-yun&Date)
