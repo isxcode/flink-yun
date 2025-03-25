@@ -241,3 +241,47 @@ Caused by: java.sql.SQLSyntaxErrorException: Access denied; you need (at least o
 GRANT RELOAD ON *.* TO 'ispong'@'%';  
 FLUSH PRIVILEGES;
 ```
+
+#### 问题11 依赖缺少
+
+```log
+Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.mapred.JobConf
+hadoop-mapreduce-client-core-3.0.0.jar
+
+Caused by: java.lang.NoClassDefFoundError: org/apache/hadoop/fs/BatchListingOperations
+hadoop-common-3.4.1.jar
+
+Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.hive.metastore.api.NoSuchObjectException
+hive-metastore.jar
+```
+
+#### 问题12 
+
+```log
+java.util.concurrent.CompletionException: org.apache.flink.client.deployment.application.ApplicationExecutionException: The application contains no execute() calls.
+	at java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:292) ~[?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:308) ~[?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture.uniCompose(CompletableFuture.java:943) ~[?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:926) ~[?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474) ~[?:1.8.0_202]
+	at java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:1977) ~[?:1.8.0_202]
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.runApplicationEntryPoint(ApplicationDispatcherBootstrap.java:309) ~[flink-dist-1.18.1.jar:1.18.1]
+	at org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap.lambda$runApplicationAsync$2(ApplicationDispatcherBootstrap.java:254) ~[flink-dist-1.18.1.jar:1.18.1]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) ~[?:1.8.0_202]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) ~[?:1.8.0_202]
+	at org.apache.flink.runtime.concurrent.pekko.ActorSystemScheduledExecutorAdapter$ScheduledFutureTask.run(ActorSystemScheduledExecutorAdapter.java:172) ~[?:?]
+	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.runWithContextClassLoader(ClassLoadingUtils.java:68) ~[flink-dist-1.18.1.jar:1.18.1]
+	at org.apache.flink.runtime.concurrent.ClassLoadingUtils.lambda$withContextClassLoader$0(ClassLoadingUtils.java:41) ~[flink-dist-1.18.1.jar:1.18.1]
+	at org.apache.pekko.dispatch.TaskInvocation.run(AbstractDispatcher.scala:59) [flink-rpc-akka878eb79e-f52f-45fd-948c-efa59f8e9145.jar:1.18.1]
+	at org.apache.pekko.dispatch.ForkJoinExecutorConfigurator$PekkoForkJoinTask.exec(ForkJoinExecutorConfigurator.scala:57) [flink-rpc-akka878eb79e-f52f-45fd-948c-efa59f8e9145.jar:1.18.1]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692) [?:1.8.0_202]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) [?:1.8.0_202]
+Caused by: org.apache.flink.client.deployment.application.ApplicationExecutionException: The application contains no execute() calls.
+	... 13 more
+```
+
+```text
+FlinkSql内容异常
+```
