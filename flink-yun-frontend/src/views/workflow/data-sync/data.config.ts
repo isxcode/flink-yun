@@ -63,6 +63,18 @@ export const DataSourceType = [
     label: 'Db2',
     value: 'DB2',
   },
+  {
+    label: 'H2',
+    value: 'H2',
+  },
+  {
+    label: 'Gauss',
+    value: 'GAUSS',
+  },
+  {
+    label: 'OpenGauss',
+    value: 'OPEN_GAUSS',
+  }
 ]
 export const OverModeList = [
   {
