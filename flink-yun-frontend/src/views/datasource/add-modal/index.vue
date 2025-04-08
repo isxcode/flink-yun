@@ -237,6 +237,10 @@ const typeList = reactive([
     value: 'HIVE',
   },
   {
+    label: 'H2',
+    value: 'H2',
+  },
+  {
     label: 'Kafka',
     value: 'KAFKA',
   },
@@ -280,6 +284,14 @@ const typeList = reactive([
     label: 'Db2',
     value: 'DB2',
   },
+  {
+    label: 'Gauss',
+    value: 'GAUSS',
+  },
+  {
+    label: 'OpenGauss',
+    value: 'OPEN_GAUSS',
+  }
 ]);
 const rules = reactive<FormRules>({
   name: [
