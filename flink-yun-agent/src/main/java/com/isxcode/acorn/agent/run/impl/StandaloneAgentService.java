@@ -136,7 +136,7 @@ public class StandaloneAgentService implements AgentService {
                 .setUserClassPaths(userClassPaths);
             if (configuration.get(SavepointConfigOptions.SAVEPOINT_PATH) != null) {
                 program = builder.setSavepointRestoreSettings(
-                        SavepointRestoreSettings.forPath(configuration.getString(SavepointConfigOptions.SAVEPOINT_PATH)))
+                    SavepointRestoreSettings.forPath(configuration.getString(SavepointConfigOptions.SAVEPOINT_PATH)))
                     .build();
             } else {
                 program = builder.build();
