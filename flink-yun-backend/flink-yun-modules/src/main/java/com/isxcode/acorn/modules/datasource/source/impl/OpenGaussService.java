@@ -136,7 +136,7 @@ public class OpenGaussService extends Datasource {
 
     @Override
     public String getPageSql(String sql) throws IsxAppException {
-        return "SELECT * FROM (" + sql + ") AS SY_TMP LIMIT '${pageSize}' OFFSET '${page}' ";
+        return "SELECT * FROM (" + sql + ") AS FY_TMP LIMIT '${pageSize}' OFFSET '${page}' ";
     }
 
     @Override
