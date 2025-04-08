@@ -107,6 +107,7 @@ public class PrqlExecutor extends WorkExecutor {
         // 开始执行sql
         ConnectInfo connectInfo = datasourceMapper.datasourceEntityToConnectInfo(datasourceEntity);
         Datasource datasource = dataSourceFactory.getDatasource(connectInfo.getDbType());
+        connectInfo.setLoginTimeout(5);
         try (Connection connection = datasource.getConnection(connectInfo);
             Statement statement = connection.createStatement()) {
 
@@ -201,7 +202,11 @@ public class PrqlExecutor extends WorkExecutor {
             case DatasourceType.CLICKHOUSE:
                 return "clickhouse";
             case DatasourceType.POSTGRE_SQL:
+            case DatasourceType.OPEN_GAUSS:
+            case DatasourceType.GAUSS:
                 return "postgres";
+            case DatasourceType.H2:
+                return "h2";
             default:
                 throw new IsxAppException("当前数据库类型不支持");
         }
