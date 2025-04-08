@@ -24,6 +24,7 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.messages.Acknowledge;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,7 @@ public class StandaloneAgentService implements AgentService {
     public Configuration genConfiguration(String flinkHome) {
 
         // 获取本地flink的配置，并从中获取rest.port、rest.address，如果获取不到默认8081、localhost
+        flinkHome = !Strings.isEmpty(flinkHome) ? flinkHome : System.getenv("FLINK_HOME");
         String flinkConfigPath = flinkHome + File.separator + "conf" + File.separator + "flink-conf.yaml";
 
         try (InputStream inputStream = Files.newInputStream(new File(flinkConfigPath).toPath())) {
@@ -134,7 +136,7 @@ public class StandaloneAgentService implements AgentService {
                 .setUserClassPaths(userClassPaths);
             if (configuration.get(SavepointConfigOptions.SAVEPOINT_PATH) != null) {
                 program = builder.setSavepointRestoreSettings(
-                    SavepointRestoreSettings.forPath(configuration.getString(SavepointConfigOptions.SAVEPOINT_PATH)))
+                        SavepointRestoreSettings.forPath(configuration.getString(SavepointConfigOptions.SAVEPOINT_PATH)))
                     .build();
             } else {
                 program = builder.build();
