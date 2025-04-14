@@ -1,6 +1,6 @@
 # 至流云
 
-### 超轻量级实时分析平台/实时同步/数据同步
+### 超轻量级实时流分析平台/实时同步/数据同步
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhiliuyun)](https://hub.docker.com/r/isxcode/zhiliuyun)
 [![build](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml/badge.svg?branch=main)](https://github.com/isxcode/flink-yun/actions/workflows/build-app.yml)
