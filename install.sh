@@ -44,7 +44,7 @@ fi
 
 # 下载flink二进制文件
 if [ ! -f "${TMP_DIR}"/"${FLINK_MIN_FILE}" ]; then
-    echo "flink-1.18.1开始下载，请耐心等待"
+    echo "flink-1.18.1二进制文件开始下载，请耐心等待"
     curl -ssL "${FLINK_MIN_DOWNLOAD_URL}" -o "${TMP_DIR}"/"${FLINK_MIN_FILE}"
     if [ $? -eq 0 ]; then
         echo "fink-1.18.1下载成功"
@@ -71,29 +71,29 @@ fi
 # 下载flink的jars依赖
 FLINK_JAR_DIR="${FLINK_MIN_DIR}"/lib
 if [ ! -f "${FLINK_JAR_DIR}"/bcpkix-jdk18on-1.78.1.jar ]; then
-  echo "bcpkix-jdk18on-1.78.1.jar开始下载"
+  echo "bcpkix-jdk18on-1.78.1.jar依赖开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/bcpkix-jdk18on-1.78.1.jar -o "${FLINK_JAR_DIR}"/bcpkix-jdk18on-1.78.1.jar
-  echo "bcpkix-jdk18on-1.78.1.jar下载成功"
+  echo "bcpkix-jdk18on-1.78.1.jar依赖下载成功"
 fi
 if [ ! -f "${FLINK_JAR_DIR}"/bcprov-jdk18on-1.78.1.jar ]; then
-  echo "bcprov-jdk18on-1.78.1.jar开始下载"
+  echo "bcprov-jdk18on-1.78.1.jar依赖开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/bcprov-jdk18on-1.78.1.jar -o "${FLINK_JAR_DIR}"/bcprov-jdk18on-1.78.1.jar
-  echo "bcprov-jdk18on-1.78.1.jar下载成功"
+  echo "bcprov-jdk18on-1.78.1.jar依赖下载成功"
 fi
 if [ ! -f "${FLINK_JAR_DIR}"/flink-connector-jdbc-3.1.2-1.18.jar ]; then
-  echo "flink-connector-jdbc-3.1.2-1.18.jar开始下载"
+  echo "flink-connector-jdbc-3.1.2-1.18.jar依赖开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-jdbc-3.1.2-1.18.jar -o ${FLINK_JAR_DIR}/flink-connector-jdbc-3.1.2-1.18.jar
-  echo "flink-connector-jdbc-3.1.2-1.18.jar下载成功"
+  echo "flink-connector-jdbc-3.1.2-1.18.jar依赖下载成功"
 fi
 if [ ! -f "${FLINK_JAR_DIR}"/bson-5.2.1.jar ]; then
-  echo "bson-5.2.1.jar开始下载"
+  echo "bson-5.2.1.jar依赖开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/bson-5.2.1.jar -o ${FLINK_JAR_DIR}/bson-5.2.1.jar
-  echo "bson-5.2.1.jar下载成功"
+  echo "bson-5.2.1.jar依赖下载成功"
 fi
 if [ ! -f "${FLINK_JAR_DIR}"/flink-connector-base-1.18.1.jar ]; then
-  echo "flink-connector-base-1.18.1.jar开始下载"
+  echo "flink-connector-base-1.18.1.jar依赖开始下载"
   curl -ssL "${OSS_DOWNLOAD_URL}"/flink-connector-base-1.18.1.jar -o ${FLINK_JAR_DIR}/flink-connector-base-1.18.1.jar
-  echo "flink-connector-base-1.18.1.jar下载成功"
+  echo "flink-connector-base-1.18.1.jar依赖下载成功"
 fi
 
 
@@ -186,26 +186,5 @@ if [ ! -d "${LIBS_DIR}" ]; then
     mkdir -p "${LIBS_DIR}"
 fi
 
-# 下载项目第三方依赖
-if [ ! -f "${LIBS_DIR}"/prql-java-0.5.2.jar ]; then
-  echo "prql-java-0.5.2.jar开始下载"
-  curl -ssL "${OSS_DOWNLOAD_URL}"/prql-java-0.5.2.jar -o ${LIBS_DIR}/prql-java-0.5.2.jar
-  echo "prql-java-0.5.2.jar下载成功"
-fi
-
-# 下载prql文件
-# prql 二进制文件(mac arm64)
-if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib ]; then
-  echo "prql_java-osx-arm64.dylib开始下载"
-  curl -ssL "${OSS_DOWNLOAD_URL}"/libprql_java-osx-arm64.dylib -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
-  echo "prql_java-osx-arm64.dylib下载成功"
-fi
-# prql 二进制文件(linux amd64)
-if [ ! -f "${BASE_PATH}"/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so ]; then
-  echo "prql_java-linux64.so开始下载"
-  curl -ssL "${OSS_DOWNLOAD_URL}"/libprql_java-linux64.so -o ${BASE_PATH}/flink-yun-backend/flink-yun-main/src/main/resources/libprql_java-linux64.so
-  echo "prql_java-linux64.so下载成功"
-fi
-
 # 返回状态
-echo "【安装结果】：安装成功"
+echo "【安装结果】：项目依赖安装成功"
