@@ -167,10 +167,6 @@ export const TypeList = [
     value: 'QUERY_JDBC'
   },
   {
-    label: 'Prql查询作业',
-    value: 'PRQL'
-  },
-  {
     label: 'Curl作业',
     value: 'CURL'
   },

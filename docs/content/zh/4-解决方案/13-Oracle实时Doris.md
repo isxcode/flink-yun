@@ -19,7 +19,7 @@ title: "Oracle实时Doris"
 > 创建FlinkSql作业类型，添加以下依赖
 
 - [flink-sql-connector-oracle-cdc-3.2.1.jar下载](https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-oracle-cdc/3.2.1/flink-sql-connector-oracle-cdc-3.2.1.jar)
-- [flink-doris-connector-1.16-24.0.1.jar下载](https://repo1.maven.org/maven2/org/apache/doris/flink-doris-connector-1.16/24.0.1/flink-doris-connector-1.16-24.0.1.jar)
+- [flink-doris-connector-1.18-25.0.0.jar下载](https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/jars/flink-doris-connector-1.18-25.0.0.jar)
 
 ![20250113160944](https://img.isxcode.com/picgo/20250113160944.png)
 

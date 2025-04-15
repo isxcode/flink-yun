@@ -117,8 +117,7 @@ public class WorkBizService {
 
         // 如果jdbc执行和jdbc查询 或者为prql查询，必填数据源
         if (WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType())
-            || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
-            || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
+            || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())) {
             if (Strings.isEmpty(addWorkReq.getDatasourceId())) {
                 throw new IsxAppException("数据源是必填项");
             }
@@ -135,8 +134,7 @@ public class WorkBizService {
             || WorkType.EXECUTE_JDBC_SQL.equals(addWorkReq.getWorkType())
             || WorkType.QUERY_JDBC_SQL.equals(addWorkReq.getWorkType())
             || WorkType.BASH.equals(addWorkReq.getWorkType()) || WorkType.PYTHON.equals(addWorkReq.getWorkType())
-            || WorkType.FLINK_CONTAINER_SQL.equals(addWorkReq.getWorkType())
-            || WorkType.PRQL.equals(addWorkReq.getWorkType())) {
+            || WorkType.FLINK_CONTAINER_SQL.equals(addWorkReq.getWorkType())) {
             workConfigService.initWorkScript(workConfig, addWorkReq.getWorkType());
         }
 
@@ -613,7 +611,7 @@ public class WorkBizService {
         // 判断作业类型
         WorkEntity workEntity = workService.getWorkEntity(workInstanceEntity.getWorkId());
 
-        if (!WorkType.PRQL.equals(workEntity.getWorkType()) && !WorkType.QUERY_JDBC_SQL.equals(workEntity.getWorkType())
+        if (!WorkType.QUERY_JDBC_SQL.equals(workEntity.getWorkType())
             && !WorkType.FLINK_SQL.equals(workEntity.getWorkType())
             && !WorkType.FLINK_CONTAINER_SQL.equals(workEntity.getWorkType())) {
             throw new IsxAppException("只支持查询作业");
