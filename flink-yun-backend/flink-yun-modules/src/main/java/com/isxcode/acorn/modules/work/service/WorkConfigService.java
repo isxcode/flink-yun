@@ -90,16 +90,24 @@ public class WorkConfigService {
         Map<String, Object> flinkConfig = new HashMap<>();
         switch (resourceLevel) {
             case ResourceLevel.HIGH:
-
+                flinkConfig.put("jobmanager.memory.process.size", "2g");
+                flinkConfig.put("taskmanager.memory.process.size", "8g");
+                flinkConfig.put("taskmanager.numberOfTaskSlots", 3);
+                flinkConfig.put("parallelism.default", 3);
                 break;
             case ResourceLevel.MEDIUM:
-
+                flinkConfig.put("jobmanager.memory.process.size", "1g");
+                flinkConfig.put("taskmanager.memory.process.size", "4g");
+                flinkConfig.put("taskmanager.numberOfTaskSlots", 2);
+                flinkConfig.put("parallelism.default", 2);
                 break;
             case ResourceLevel.LOW:
-
+                flinkConfig.put("jobmanager.memory.process.size", "1g");
+                flinkConfig.put("taskmanager.memory.process.size", "2g");
+                flinkConfig.put("taskmanager.numberOfTaskSlots", 1);
+                flinkConfig.put("parallelism.default", 1);
                 break;
         }
-
 
         return flinkConfig;
     }
