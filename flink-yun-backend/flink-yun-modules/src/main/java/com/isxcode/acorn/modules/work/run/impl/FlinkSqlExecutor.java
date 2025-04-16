@@ -191,6 +191,7 @@ public class FlinkSqlExecutor extends WorkExecutor {
             .entryClass("com.isxcode.acorn.plugin.sql.execute.Job").appResource("flink-sql-execute-plugin.jar")
             .conf(workRunContext.getClusterConfig().getFlinkConfig()).build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
+        submitJobReq.setWorkId(workInstance.getWorkId());
 
         ScpFileEngineNodeDto scpFileEngineNodeDto =
             clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);

@@ -193,6 +193,7 @@ public class FlinkJarExecutor extends WorkExecutor {
             FlinkSubmit.builder().appName(jarJobConfig.getAppName()).entryClass(jarJobConfig.getMainClass())
                 .appResource(jarFile.getId() + ".jar").conf(workRunContext.getClusterConfig().getFlinkConfig()).build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
+        submitJobReq.setWorkId(workInstance.getWorkId());
 
         // 上传文件到制定节点路径 /file/id.jar
         ScpFileEngineNodeDto scpFileEngineNodeDto =
