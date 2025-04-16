@@ -79,8 +79,8 @@ public class StandaloneAgentService implements AgentService {
         Configuration configuration = genConfiguration(submitWorkReq.getFlinkHome());
 
         // 设置作业名称
-        configuration.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName() + "-" + submitWorkReq.getWorkType() + "-"
-            + submitWorkReq.getWorkId() + "-" + submitWorkReq.getWorkInstanceId());
+        configuration.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName() + "-"
+            + submitWorkReq.getWorkType() + "-" + submitWorkReq.getWorkId() + "-" + submitWorkReq.getWorkInstanceId());
 
         List<URL> userClassPaths = new ArrayList<>();
 
