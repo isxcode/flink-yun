@@ -52,8 +52,11 @@ public class YarnAgentService implements AgentService {
     @Override
     public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
+        String appName = submitWorkReq.getFlinkSubmit().getAppName() + "-" + submitWorkReq.getWorkType() + "-"
+            + submitWorkReq.getWorkId() + "-" + submitWorkReq.getWorkInstanceId();
+
         Configuration flinkConfig = GlobalConfiguration.loadConfiguration();
-        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
+        flinkConfig.set(PipelineOptions.NAME, appName);
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
             submitWorkReq.getFlinkSubmit().getEntryClass());
         if (WorkType.FLINK_JAR.equals(submitWorkReq.getWorkType())) {
@@ -73,7 +76,7 @@ public class YarnAgentService implements AgentService {
         flinkConfig.set(JobManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.TOTAL_PROCESS_MEMORY, MemorySize.parse("1g"));
         flinkConfig.set(TaskManagerOptions.NUM_TASK_SLOTS, 1);
-        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, submitWorkReq.getFlinkSubmit().getAppName());
+        flinkConfig.set(YarnConfigOptions.APPLICATION_NAME, appName);
 
         submitWorkReq.getFlinkSubmit().getConf().forEach((k, v) -> {
             if (v instanceof String) {
