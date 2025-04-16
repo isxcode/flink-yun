@@ -101,12 +101,15 @@ public class KubernetesAgentService implements AgentService {
                 Base64.getEncoder().encodeToString(JSON.toJSONString(submitWorkReq.getPluginReq()).getBytes())));
         }
 
+        // 配置名称
+        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName() + "-"
+            + submitWorkReq.getWorkType() + "-" + submitWorkReq.getWorkId() + "-" + submitWorkReq.getWorkInstanceId());
+
         // flink on k8s配置
         flinkConfig.set(ApplicationConfiguration.APPLICATION_MAIN_CLASS,
             submitWorkReq.getFlinkSubmit().getEntryClass());
         flinkConfig.set(DeploymentOptions.TARGET, KubernetesDeploymentTarget.APPLICATION.getName());
         flinkConfig.set(DeploymentOptionsInternal.CONF_DIR, submitWorkReq.getFlinkHome() + "/conf");
-        flinkConfig.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName());
         flinkConfig.set(PipelineOptions.JARS, Collections.singletonList("local:///opt/flink/examples/app.jar"));
         flinkConfig.set(KubernetesConfigOptions.CLUSTER_ID, "zhiliuyun-cluster-" + System.currentTimeMillis());
         flinkConfig.set(KubernetesConfigOptions.REST_SERVICE_EXPOSED_TYPE,

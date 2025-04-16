@@ -179,13 +179,19 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
         String flinkSql = sqlFunctionService.parseSqlFunction(jsonPathSql);
 
+        // 打印sql日志
+        logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("FlinkSql:  \n").append(flinkSql)
+            .append("\n");
+        workInstance = updateInstance(workInstance, logBuilder);
+
         PluginReq pluginReq = PluginReq.builder().sql(flinkSql).build();
         submitJobReq.setPluginReq(pluginReq);
 
-        FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName("zhiliuyun-job")
+        FlinkSubmit flinkSubmit = FlinkSubmit.builder().appName("zhiliuyun")
             .entryClass("com.isxcode.acorn.plugin.sql.execute.Job").appResource("flink-sql-execute-plugin.jar")
             .conf(workRunContext.getClusterConfig().getFlinkConfig()).build();
         submitJobReq.setFlinkSubmit(flinkSubmit);
+        submitJobReq.setWorkId(workInstance.getWorkId());
 
         ScpFileEngineNodeDto scpFileEngineNodeDto =
             clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
@@ -227,6 +233,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
 
         // 构建作业完成，并打印作业配置信息
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("构建作业完成 \n");
+        workRunContext.getClusterConfig().getFlinkConfig().forEach((k, v) -> logBuilder.append(LocalDateTime.now())
+            .append(WorkLog.SUCCESS_INFO).append(k).append(":").append(v).append(" \n"));
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("开始提交作业 \n");
         workInstance = updateInstance(workInstance, logBuilder);
 

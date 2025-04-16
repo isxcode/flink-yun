@@ -44,10 +44,13 @@ CREATE TABLE target_table
       'table.identifier' = 'ispong_db.users',
       'username' = 'admin',
       'password' = '',
-      'sink.enable.batch-mode' = 'true'  
+      'sink.enable.batch-mode' = 'true',
+      'sink.buffer-flush.max-bytes' = '50MB'
   );
 
 INSERT INTO target_table (username, age)
 select username, age
 from from_table;
 ```
+
+- 官方文档： https://doris.apache.org/docs/ecosystem/flink-doris-connector
