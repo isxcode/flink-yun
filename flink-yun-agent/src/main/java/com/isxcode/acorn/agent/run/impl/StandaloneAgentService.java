@@ -19,6 +19,7 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
@@ -76,6 +77,10 @@ public class StandaloneAgentService implements AgentService {
     public SubmitWorkRes submitWork(SubmitWorkReq submitWorkReq) throws Exception {
 
         Configuration configuration = genConfiguration(submitWorkReq.getFlinkHome());
+
+        // 设置作业名称
+        configuration.set(PipelineOptions.NAME, submitWorkReq.getFlinkSubmit().getAppName() + "-" + submitWorkReq.getWorkType() + "-"
+            + submitWorkReq.getWorkId() + "-" + submitWorkReq.getWorkInstanceId());
 
         List<URL> userClassPaths = new ArrayList<>();
 
