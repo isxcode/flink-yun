@@ -99,12 +99,12 @@ public class FlinkSqlExecutor extends WorkExecutor {
     private final SecretKeyRepository secretKeyRepository;
 
     public FlinkSqlExecutor(WorkInstanceRepository workInstanceRepository, ClusterRepository clusterRepository,
-                            ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
-                            WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
-                            HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
-                            ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
-                            FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService,
-                            SqlFunctionService sqlFunctionService, SecretKeyRepository secretKeyRepository) {
+        ClusterNodeRepository clusterNodeRepository, WorkflowInstanceRepository workflowInstanceRepository,
+        WorkRepository workRepository, WorkConfigRepository workConfigRepository, Locker locker,
+        HttpUrlUtils httpUrlUtils, FuncRepository funcRepository, FuncMapper funcMapper,
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, IsxAppProperties isxAppProperties,
+        FileRepository fileRepository, DatasourceService datasourceService, AlarmService alarmService,
+        SqlFunctionService sqlFunctionService, SecretKeyRepository secretKeyRepository) {
 
         super(workInstanceRepository, workflowInstanceRepository, alarmService, sqlFunctionService);
         this.workInstanceRepository = workInstanceRepository;
@@ -188,7 +188,8 @@ public class FlinkSqlExecutor extends WorkExecutor {
         // 翻译全局变量
         List<SecretKeyEntity> allKey = secretKeyRepository.findAll();
         for (SecretKeyEntity secretKeyEntity : allKey) {
-            flinkSql = flinkSql.replace("${{ secret." + secretKeyEntity.getKeyName() + " }}", secretKeyEntity.getSecretValue());
+            flinkSql = flinkSql.replace("${{ secret." + secretKeyEntity.getKeyName() + " }}",
+                secretKeyEntity.getSecretValue());
             printSql = printSql.replace("${{ secret." + secretKeyEntity.getKeyName() + " }}", "******");
         }
 
