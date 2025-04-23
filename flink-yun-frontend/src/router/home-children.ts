@@ -8,6 +8,7 @@ import WorkflowDetail from '@/views/workflow/workflow-detail/index.vue'
 import WorkflowPage from '@/views/workflow/workflow-page/index.vue'
 import WorkItem from '@/views/workflow/work-item/index.vue'
 import Schedule from '@/views/schedule/index.vue'
+import GlobalVariables from '@/views/global-variables/index.vue'
 
 import UserCenter from '@/views/user-center/index.vue'
 import TenantList from '@/views/tenant-list/index.vue'
@@ -219,4 +220,9 @@ export default [
     name: 'metadata-management',
     component: MetadataManagement
   },
+  {
+    path: 'global-variables',
+    name: 'global-variables',
+    component: GlobalVariables
+  }
 ]
