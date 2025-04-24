@@ -54,4 +54,9 @@ public interface ModuleVipCode {
      * 元数据模块
      */
     String VIP_META = "/vip/meta";
+
+    /**
+     * 全局变量
+     */
+    String VIP_SECRET = "/vip/secret";
 }
