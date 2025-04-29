@@ -42,4 +42,6 @@ public interface DatasourceType {
     String GAUSS = "GAUSS";
 
     String OPEN_GAUSS = "OPEN_GAUSS";
+
+    String DERBY = "DERBY";
 }

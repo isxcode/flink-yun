@@ -258,6 +258,10 @@ const typeList = ref<Option[]>([
     label: 'StarRocks',
     value: 'STAR_ROCKS',
   },
+  {
+    label: 'DerbyDB',
+    value: 'DERBY',
+  }
 ])
 const scheduleRange = ref<Option[]>([
   {
