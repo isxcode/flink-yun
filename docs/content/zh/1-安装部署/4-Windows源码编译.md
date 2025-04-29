@@ -2,47 +2,47 @@
 title: "Windows源码编译"
 ---
 
-## 源码编译打包部署至流云
+## Windows系统源码编译
 
-#### 编译环境
+### 1. 安装Docker
 
-- Java: zulu8.78.0.19-ca-jdk8.0.412-x64 
-- Nodejs: node-v18.20.3-x64
+- [Docker Desktop 安装参考文档](https://docs.docker.com/desktop/setup/install/windows-install/)
 
-#### 源码下载
+### 2. 打开cmd下载代码
+
+![20250423204034](https://img.isxcode.com/picgo/20250423204034.png)
+
+> 下载源码
 
 ```bash
+cd C:\Users\ispong\Downloads
 git clone https://github.com/isxcode/flink-yun.git
 ```
 
-#### 安装项目依赖
+### 3. 使用镜像打包源码
+
+> 将${clone_path}替换成项目路径，例如：C:\Users\ispong\Downloads\flink-yun
 
 ```bash
-cd flink-yun
-./gradlew install
+docker run --rm ^
+  -v ${clone_path}\flink-yun:/flink-yun ^
+  -w /flink-yun ^
+  -it registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun-build:amd-latest ^
+  /bin/bash -c "source /etc/profile && gradle install clean package"
 ```
 
-#### 编译代码
+### 4. 解压安装包运行
+
+> 安装包路径：flink-yun\flink-yun-dist\build\distributions\zhiliuyun.tar.gz
 
 ```bash
-cd flink-yun
-./gradlew package
-```
-
-#### 打包路径
-
-```bash
-flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
-```
-
-#### 解压部署
-
-```bash
+cd C:\Users\ispong\Downloads\flink-yun\flink-yun-dist\build\distributions
 tar -vzxf zhiliuyun.tar.gz
-bash zhiliuyun/bin/start.sh
+cd zhiliuyun/lib
+java -jar zhiliuyun.jar
 ```
 
-#### 访问项目
+### 5. 访问系统
 
 - 访问地址: http://localhost:8080 
 - 管理员账号：`admin` 
