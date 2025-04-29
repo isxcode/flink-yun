@@ -74,6 +74,10 @@ export const DataSourceType = [
   {
     label: 'OpenGauss',
     value: 'OPEN_GAUSS',
+  },
+  {
+    label: 'DerbyDB',
+    value: 'DERBY',
   }
 ]
 export const CurrentSourceType = [
@@ -156,6 +160,10 @@ export const CurrentSourceType = [
   {
     label: 'OpenGauss',
     value: 'OPEN_GAUSS',
+  },
+  {
+    label: 'DerbyDB',
+    value: 'DERBY',
   }
 ]
 export const OverModeList = [
