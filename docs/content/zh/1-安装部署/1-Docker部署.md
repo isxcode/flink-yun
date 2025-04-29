@@ -6,7 +6,9 @@ title: "Docker部署"
 
 #### 镜像地址
 
-> 国内用户可以选择以下镜像，arm64多用于macOS用户，x86服务器架构选择`latest-amd64`版本 
+> 国内用户可选以下镜像  
+> latest-arm64多用于macOS用户，arm架构服务器  
+> latest-amd64多用于常见服务器，x86架构服务器
 
 ```bash
 registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun:latest-amd64 
