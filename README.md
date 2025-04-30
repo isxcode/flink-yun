@@ -24,7 +24,7 @@
 
 ### 产品介绍
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据分析平台，围绕Flink生态打造的数据分析平台。一键部署，开箱即用。可快速实现数据实时同步、离线同步、Flink计算、可视化调度、流数据ETL、自定义接口等多种功能，为企业提供高效便捷的数据解决方案。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据分析平台，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现数据实时同步、离线同步、Flink计算、可视化调度、流数据ETL、自定义接口等多种功能，为企业提供高效便捷的数据解决方案。
 
 ### 功能特点
 
@@ -54,36 +54,20 @@ docker run -p 8080:8080 -d isxcode/zhiliuyun
 
 - [快速入门](https://zhiliuyun.isxcode.com/zh/docs/zh/1/0)
 - [产品手册](https://zhiliuyun.isxcode.com/zh/docs/zh/2/0)
-- [开发手册](https://zhiliuyun.isxcode.com/zh/docs/zh/6/0)
+- [开发手册](https://zhiliuyun.isxcode.com/zh/docs/zh/5/0)
 - [博客](https://ispong.isxcode.com/tags/flink/)
 
 ### 源码构建
-
-> [!WARNING]
-> 编译环境需访问外网，且需提前安装Nodejs和Java，推荐版本如下: </br>
-> Java: zulu8.78.0.19-ca-jdk8.0.412-x64 </br>
-> Nodejs: node-v18.20.3-x64
-
-##### MacOS/Linux
 
 > [!IMPORTANT]
 > 安装包路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
 
 ```bash
 git clone https://github.com/isxcode/flink-yun.git
-cd flink-yun
-./gradlew install clean package
-```
-
-##### Windows10/11
-
-> [!CAUTION]
-> 请使用Git Bash终端工具执行以下命令
-
-```bash
-git clone https://github.com/isxcode/flink-yun.git
-cd flink-yun
-./gradlew.bat install clean package
+docker run --rm \
+  -v ${clone_path}/flink-yun:/flink-yun \
+  -w /flink-yun -it registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun-build:amd-latest \
+  /bin/bash -c "source /etc/profile && gradle install clean package"
 ```
 
 ### 收藏历史

@@ -353,12 +353,12 @@ function clickZhishuyun() {
 
 function joinUs() {
   const router = useRouter();
-  router.push("/zh/docs/zh/6/7");
+  router.push("/zh/docs/zh/5/7");
 }
 
 function aboutUs() {
   const router = useRouter();
-  router.push("/zh/docs/zh/7/0");
+  router.push("/zh/docs/zh/6/0");
 }
 
 function clickGithubProject() {
