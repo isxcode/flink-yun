@@ -105,16 +105,37 @@ function copyData(data: any) {
 }
 
 async function copyParse(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    ElMessage({
-      duration: 800,
-      message: '复制成功',
-      type: 'success',
-    });
-  } catch (err) {
-    console.error("Failed to copy: ", err);
-  }
+    if ("clipboard" in navigator) {
+        try {
+            await navigator.clipboard.writeText(text);
+            ElMessage({
+                duration: 800,
+                message: '复制成功',
+                type: 'success',
+            });
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+    } else {
+        // 回退方案：使用document.execCommand('copy')
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            const successful = document.execCommand("copy");
+            if (successful) {
+                ElMessage({
+                    duration: 800,
+                    message: '复制成功',
+                    type: 'success',
+                });
+            }
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+        document.body.removeChild(textArea);
+    }
 }
 
 // 删除
