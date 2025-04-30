@@ -19,7 +19,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -50,10 +49,10 @@ public class DerbyService extends Datasource {
         try (Connection connection = getConnection(connectInfo)) {
             String schema = connectInfo.getUsername().toUpperCase();
 
-            String sql = "SELECT '" + connectInfo.getDatasourceId() + "' AS datasourceId, t.tablename AS tableName, '' AS tableComment "
-                + "FROM SYS.SYSTABLES t "
-                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
-                + "WHERE s.schemaname = '" + schema + "' and t.TABLETYPE = 'T'";
+            String sql = "SELECT '" + connectInfo.getDatasourceId()
+                + "' AS datasourceId, t.tablename AS tableName, '' AS tableComment " + "FROM SYS.SYSTABLES t "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid " + "WHERE s.schemaname = '" + schema
+                + "' and t.TABLETYPE = 'T'";
 
             if (Strings.isNotEmpty(connectInfo.getTablePattern())) {
                 sql += " AND t.tablename LIKE '%" + connectInfo.getTablePattern() + "%'";
@@ -77,12 +76,11 @@ public class DerbyService extends Datasource {
             String schema = connectInfo.getUsername().toUpperCase();
             String table = connectInfo.getTableName();
 
-            String sql = "SELECT '" + connectInfo.getDatasourceId() + "' AS datasourceId, '"
-                + table + "' AS tableName, c.columnname AS columnName, CAST(columndatatype AS VARCHAR(255)) AS columnType, '' AS columnComment, false AS isPartitionColumn "
-                + "FROM SYS.SYSCOLUMNS c "
-                + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
-                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
-                + "WHERE s.schemaname = '" + schema + "' AND t.tablename = '" + table + "'";
+            String sql = "SELECT '" + connectInfo.getDatasourceId() + "' AS datasourceId, '" + table
+                + "' AS tableName, c.columnname AS columnName, CAST(columndatatype AS VARCHAR(255)) AS columnType, '' AS columnComment, false AS isPartitionColumn "
+                + "FROM SYS.SYSCOLUMNS c " + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid " + "WHERE s.schemaname = '" + schema
+                + "' AND t.tablename = '" + table + "'";
 
             return qr.query(connection, sql, new BeanListHandler<>(QueryColumnDto.class));
         } catch (SQLException e) {
@@ -98,12 +96,10 @@ public class DerbyService extends Datasource {
 
         String schemaName = connectInfo.getUsername().toUpperCase();
 
-        String sql = "SELECT *\n" +
-                "FROM SYS.SYSCONGLOMERATES c\n" +
-                "         JOIN SYS.SYSTABLES t ON c.TABLEID = t.TABLEID\n" +
-                "         JOIN SYS.SYSSCHEMAS s ON t.SCHEMAID = s.SCHEMAID\n" +
-                "WHERE s.schemaname = 'ISPONG'\n" +
-                "  AND t.tablename = 'USERS'";
+        String sql =
+            "SELECT *\n" + "FROM SYS.SYSCONGLOMERATES c\n" + "         JOIN SYS.SYSTABLES t ON c.TABLEID = t.TABLEID\n"
+                + "         JOIN SYS.SYSSCHEMAS s ON t.SCHEMAID = s.SCHEMAID\n" + "WHERE s.schemaname = 'ISPONG'\n"
+                + "  AND t.tablename = 'USERS'";
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
@@ -120,7 +116,8 @@ public class DerbyService extends Datasource {
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            String sql = "SELECT COUNT(*) FROM \"" + connectInfo.getUsername().toUpperCase() + "\".\"" + connectInfo.getTableName() + "\"";
+            String sql = "SELECT COUNT(*) FROM \"" + connectInfo.getUsername().toUpperCase() + "\".\""
+                + connectInfo.getTableName() + "\"";
             Object query = qr.query(connection, sql, new ScalarHandler<>());
             return Long.parseLong(String.valueOf(query));
         } catch (SQLException e) {
@@ -135,10 +132,9 @@ public class DerbyService extends Datasource {
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            String sql = "SELECT COUNT(*) FROM SYS.SYSCOLUMNS c "
-                + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
-                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
-                + "WHERE s.schemaname = '" + connectInfo.getUsername().toUpperCase() + "' AND t.tablename = '" + connectInfo.getTableName() + "'";
+            String sql = "SELECT COUNT(*) FROM SYS.SYSCOLUMNS c " + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid " + "WHERE s.schemaname = '"
+                + connectInfo.getUsername().toUpperCase() + "' AND t.tablename = '" + connectInfo.getTableName() + "'";
             Object query = qr.query(connection, sql, new ScalarHandler<>());
             return Long.parseLong(String.valueOf(query));
         } catch (SQLException e) {
@@ -158,8 +154,9 @@ public class DerbyService extends Datasource {
         Assert.notNull(connectInfo.getTableName(), "tableName不能为空");
         Assert.notNull(connectInfo.getRowNumber(), "rowNumber不能为空");
 
-        String getTableDataSql = "SELECT * FROM " + connectInfo.getTableName()
-            + ("ALL".equals(connectInfo.getRowNumber()) ? "" : " fetch first " + connectInfo.getRowNumber() + " rows only ");
+        String getTableDataSql =
+            "SELECT * FROM " + connectInfo.getTableName() + ("ALL".equals(connectInfo.getRowNumber()) ? ""
+                : " fetch first " + connectInfo.getRowNumber() + " rows only ");
         return getTableData(connectInfo, getTableDataSql);
     }
 
