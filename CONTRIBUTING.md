@@ -1,3 +1,3 @@
 ## CONTRIBUTING
 
-- https://zhiliuyun.isxcode.com/docs/zh/6/0
+- https://zhiliuyun.isxcode.com/docs/zh/5/0
