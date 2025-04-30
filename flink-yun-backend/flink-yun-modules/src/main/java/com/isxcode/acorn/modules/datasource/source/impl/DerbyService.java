@@ -19,6 +19,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -43,21 +44,21 @@ public class DerbyService extends Datasource {
 
     @Override
     public List<QueryTableDto> queryTable(ConnectInfo connectInfo) throws IsxAppException {
-
         Assert.notNull(connectInfo.getDatabase(), "数据库不能为空");
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            String sql;
+            String schema = connectInfo.getUsername().toUpperCase();
+
+            String sql = "SELECT '" + connectInfo.getDatasourceId() + "' AS datasourceId, t.tablename AS tableName, '' AS tableComment "
+                + "FROM SYS.SYSTABLES t "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
+                + "WHERE s.schemaname = '" + schema + "' and t.TABLETYPE = 'T'";
+
             if (Strings.isNotEmpty(connectInfo.getTablePattern())) {
-                sql = "SELECT '" + connectInfo.getDatasourceId()
-                    + "' AS datasourceId, TABLE_NAME AS tableName, '' AS tableComment "
-                    + "FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%" + connectInfo.getTablePattern() + "%'";
-            } else {
-                sql = "SELECT '" + connectInfo.getDatasourceId()
-                    + "' AS datasourceId, TABLE_NAME AS tableName, REMARKS AS tableComment "
-                    + "FROM INFORMATION_SCHEMA.TABLES";
+                sql += " AND t.tablename LIKE '%" + connectInfo.getTablePattern() + "%'";
             }
+
             return qr.query(connection, sql, new BeanListHandler<>(QueryTableDto.class));
         } catch (SQLException e) {
             log.error("Error querying tables: {}", e.getMessage(), e);
@@ -73,11 +74,16 @@ public class DerbyService extends Datasource {
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
+            String schema = connectInfo.getUsername().toUpperCase();
+            String table = connectInfo.getTableName();
+
             String sql = "SELECT '" + connectInfo.getDatasourceId() + "' AS datasourceId, '"
-                + connectInfo.getTableName()
-                + "' AS tableName, COLUMN_NAME AS columnName, DATA_TYPE AS columnType, REMARKS AS columnComment, false AS isPartitionColumn "
-                + "FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + connectInfo.getDatabase()
-                + "' AND TABLE_NAME = '" + connectInfo.getTableName() + "'";
+                + table + "' AS tableName, c.columnname AS columnName, CAST(columndatatype AS VARCHAR(255)) AS columnType, '' AS columnComment, false AS isPartitionColumn "
+                + "FROM SYS.SYSCOLUMNS c "
+                + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
+                + "WHERE s.schemaname = '" + schema + "' AND t.tablename = '" + table + "'";
+
             return qr.query(connection, sql, new BeanListHandler<>(QueryColumnDto.class));
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -87,30 +93,36 @@ public class DerbyService extends Datasource {
 
     @Override
     public Long getTableTotalSize(ConnectInfo connectInfo) throws IsxAppException {
+        Assert.notNull(connectInfo.getDatabase(), "数据库不能为空");
+        Assert.notNull(connectInfo.getTableName(), "表名不能为空");
 
-        Assert.notNull(connectInfo.getDatabase(), "datasource不能为空");
-        Assert.notNull(connectInfo.getTableName(), "tableName不能为空");
+        String schemaName = connectInfo.getUsername().toUpperCase();
+
+        String sql = "SELECT *\n" +
+                "FROM SYS.SYSCONGLOMERATES c\n" +
+                "         JOIN SYS.SYSTABLES t ON c.TABLEID = t.TABLEID\n" +
+                "         JOIN SYS.SYSSCHEMAS s ON t.SCHEMAID = s.SCHEMAID\n" +
+                "WHERE s.schemaname = 'ISPONG'\n" +
+                "  AND t.tablename = 'USERS'";
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            Long result = qr.query(connection,
-                "SELECT DISK_SPACE_USED ('\"" + connectInfo.getTableName() + "\"') FROM DUAL", new ScalarHandler<>());
-            return result;
+            Long size = qr.query(connection, sql, new ScalarHandler<>());
+            return size != null ? size : 0L;
         } catch (SQLException e) {
-            log.error(e.getMessage(), e);
             throw new IsxAppException(e.getMessage());
         }
     }
 
     @Override
     public Long getTableTotalRows(ConnectInfo connectInfo) throws IsxAppException {
-
         Assert.notNull(connectInfo.getTableName(), "表名不能为空");
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            String sql = "SELECT COUNT(*) FROM \"" + connectInfo.getTableName() + "\"";
-            return qr.query(connection, sql, new ScalarHandler<>());
+            String sql = "SELECT COUNT(*) FROM \"" + connectInfo.getUsername().toUpperCase() + "\".\"" + connectInfo.getTableName() + "\"";
+            Object query = qr.query(connection, sql, new ScalarHandler<>());
+            return Long.parseLong(String.valueOf(query));
         } catch (SQLException e) {
             log.error("Error querying table rows: {}", e.getMessage(), e);
             throw new IsxAppException(e.getMessage());
@@ -119,14 +131,16 @@ public class DerbyService extends Datasource {
 
     @Override
     public Long getTableColumnCount(ConnectInfo connectInfo) throws IsxAppException {
-
         Assert.notNull(connectInfo.getTableName(), "表名不能为空");
 
         QueryRunner qr = new QueryRunner();
         try (Connection connection = getConnection(connectInfo)) {
-            String sql = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"
-                + connectInfo.getDatabase() + "' AND TABLE_NAME = '" + connectInfo.getTableName() + "'";
-            return qr.query(connection, sql, new ScalarHandler<>());
+            String sql = "SELECT COUNT(*) FROM SYS.SYSCOLUMNS c "
+                + "JOIN SYS.SYSTABLES t ON c.referenceid = t.tableid "
+                + "JOIN SYS.SYSSCHEMAS s ON t.schemaid = s.schemaid "
+                + "WHERE s.schemaname = '" + connectInfo.getUsername().toUpperCase() + "' AND t.tablename = '" + connectInfo.getTableName() + "'";
+            Object query = qr.query(connection, sql, new ScalarHandler<>());
+            return Long.parseLong(String.valueOf(query));
         } catch (SQLException e) {
             log.error("Error querying table column count: {}", e.getMessage(), e);
             throw new IsxAppException(e.getMessage());
@@ -135,7 +149,7 @@ public class DerbyService extends Datasource {
 
     @Override
     public String getPageSql(String sql) throws IsxAppException {
-        return "SELECT * FROM (" + sql + ") AS FY_TMP LIMIT '${pageSize}' OFFSET '${page}' ";
+        return "SELECT * FROM (" + sql + ") AS FY_TMP LIMIT ${pageSize} OFFSET ${page}";
     }
 
     @Override
@@ -145,7 +159,7 @@ public class DerbyService extends Datasource {
         Assert.notNull(connectInfo.getRowNumber(), "rowNumber不能为空");
 
         String getTableDataSql = "SELECT * FROM " + connectInfo.getTableName()
-            + ("ALL".equals(connectInfo.getRowNumber()) ? "" : " LIMIT " + connectInfo.getRowNumber());
+            + ("ALL".equals(connectInfo.getRowNumber()) ? "" : " fetch first " + connectInfo.getRowNumber() + " rows only ");
         return getTableData(connectInfo, getTableDataSql);
     }
 
