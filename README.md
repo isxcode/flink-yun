@@ -18,7 +18,7 @@
 | 许可证下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/license.lic                                                                                      |
 | Docker Hub: | https://hub.docker.com/r/isxcode/zhiliuyun                                                                                                              |
 | 阿里云镜像:      | https://zhiliuyun.isxcode.com/zh/docs/zh/1/1-docker                                                                                                     |
-| 产品矩阵:       | [至轻云](https://zhiliuyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至慧云](https://zhihuiyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
+| 产品矩阵:       | [至轻云](https://zhiqingyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至慧云](https://zhihuiyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
 | 关键词:        | 流数据分析平台, 数据同步, 实时同步, 数据采集, Flink, Hadoop, Docker                                                                                                        |
 |             |                                                                                                                                                         |
 
