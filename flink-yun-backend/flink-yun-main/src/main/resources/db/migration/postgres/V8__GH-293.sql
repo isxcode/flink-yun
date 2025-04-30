@@ -1,27 +1,7 @@
-CREATE TABLE FY_SECRET_KEY
-(
-    ID                      VARCHAR(200) NOT NULL,
-    KEY_NAME                VARCHAR(200) NOT NULL,
-    SECRET_VALUE            VARCHAR(200) NOT NULL,
-    REMARK                  VARCHAR(500),
-    VERSION_NUMBER          INT          NOT NULL,
-    CREATE_BY               VARCHAR(200) NOT NULL,
-    CREATE_DATE_TIME        TIMESTAMP    NOT NULL,
-    LAST_MODIFIED_BY        VARCHAR(200) NOT NULL,
-    LAST_MODIFIED_DATE_TIME TIMESTAMP    NOT NULL,
-    DELETED                 INT          NOT NULL DEFAULT 0,
-    TENANT_ID               VARCHAR(200) NOT NULL,
-    CONSTRAINT pk_fy_secret_key PRIMARY KEY (ID)
-);
-
--- 为列添加注释
-COMMENT ON COLUMN FY_SECRET_KEY.ID IS '全局变量id';
-COMMENT ON COLUMN FY_SECRET_KEY.KEY_NAME IS '全局变量key';
-COMMENT ON COLUMN FY_SECRET_KEY.SECRET_VALUE IS '全局变量value';
-COMMENT ON COLUMN FY_SECRET_KEY.VERSION_NUMBER IS '版本号';
-COMMENT ON COLUMN FY_SECRET_KEY.CREATE_BY IS '创建人';
-COMMENT ON COLUMN FY_SECRET_KEY.CREATE_DATE_TIME IS '创建时间';
-COMMENT ON COLUMN FY_SECRET_KEY.LAST_MODIFIED_BY IS '更新人';
-COMMENT ON COLUMN FY_SECRET_KEY.LAST_MODIFIED_DATE_TIME IS '更新时间';
-COMMENT ON COLUMN FY_SECRET_KEY.DELETED IS '逻辑删除';
-COMMENT ON COLUMN FY_SECRET_KEY.TENANT_ID IS '租户id';
+ -- 插入Gauss驱动
+ INSERT INTO FY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time,
+                                 last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark,
+                                 is_default_driver)
+ VALUES ('derby-10.14.2.0', 'derby-10.14.2.0', 'DERBY', 'derbyclient-10.14.2.0.jar',
+         'SYSTEM_DRIVER', 'zhiqingyun',
+         '2023-11-01 16:54:34', 'zhiqingyun', '2023-11-01 16:54:39', 1, 0, 'zhiqingyun', '系统自带驱动', true);

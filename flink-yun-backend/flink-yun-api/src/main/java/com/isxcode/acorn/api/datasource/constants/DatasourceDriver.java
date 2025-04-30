@@ -41,5 +41,5 @@ public interface DatasourceDriver {
 
     String OPEN_GAUSS_DRIVER = "org.postgresql.Driver";
 
-    String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
 }
