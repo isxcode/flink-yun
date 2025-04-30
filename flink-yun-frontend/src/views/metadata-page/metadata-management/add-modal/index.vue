@@ -125,6 +125,10 @@ const typeList = ref<Option[]>([
   {
     label: 'OpenGauss',
     value: 'OPEN_GAUSS',
+  },
+  {
+    label: 'DerbyDB',
+    value: 'DERBY',
   }
 ])
 const renderSence = ref('new')

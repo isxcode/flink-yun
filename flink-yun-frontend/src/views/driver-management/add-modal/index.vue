@@ -176,6 +176,10 @@ const typeList = reactive([
   {
     label: 'OpenGauss',
     value: 'OPEN_GAUSS',
+  },
+  {
+    label: 'DerbyDB',
+    value: 'DERBY',
   }
 ]);
 const rules = reactive<FormRules>({
