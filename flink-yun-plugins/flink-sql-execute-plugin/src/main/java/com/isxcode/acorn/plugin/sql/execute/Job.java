@@ -33,13 +33,15 @@ public class Job {
             }
         }
 
-        // 打个补丁，兼容sqlserver数据库
-        String replaceSql = acornPluginReq.getSql().replace(";database", "$zhiliuyun.specialCode1")
-            .replace(";trustServerCertificate", "$zhiliuyun.specialCode2");
-        for (String sql : replaceSql.split(";")) {
-            if (!Strings.isEmpty(sql)) {
-                streamTableEnvironment.executeSql(sql.replace("$zhiliuyun.specialCode1", ";database")
-                    .replace("$zhiliuyun.specialCode2", ";trustServerCertificate"));
+        // 拆分sql
+        String[] sqlList = acornPluginReq.getSql().split("\\);");
+        for (int i = 0; i < sqlList.length; i++) {
+            String sql = sqlList[i];
+            if (!Strings.isEmpty(sqlList[i])) {
+                if (i < sqlList.length - 1) {
+                    sql = sql + ")";
+                }
+                streamTableEnvironment.executeSql(sql);
             }
         }
     }

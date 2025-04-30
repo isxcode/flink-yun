@@ -52,12 +52,11 @@ public class DerbyService extends Datasource {
             if (Strings.isNotEmpty(connectInfo.getTablePattern())) {
                 sql = "SELECT '" + connectInfo.getDatasourceId()
                     + "' AS datasourceId, TABLE_NAME AS tableName, '' AS tableComment "
-                    + "FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + connectInfo.getDatabase() + "' "
-                    + "AND TABLE_NAME LIKE '%" + connectInfo.getTablePattern() + "%'";
+                    + "FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%" + connectInfo.getTablePattern() + "%'";
             } else {
                 sql = "SELECT '" + connectInfo.getDatasourceId()
                     + "' AS datasourceId, TABLE_NAME AS tableName, REMARKS AS tableComment "
-                    + "FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC'";
+                    + "FROM INFORMATION_SCHEMA.TABLES";
             }
             return qr.query(connection, sql, new BeanListHandler<>(QueryTableDto.class));
         } catch (SQLException e) {
