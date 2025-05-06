@@ -91,23 +91,8 @@ public class DerbyService extends Datasource {
 
     @Override
     public Long getTableTotalSize(ConnectInfo connectInfo) throws IsxAppException {
-        Assert.notNull(connectInfo.getDatabase(), "数据库不能为空");
-        Assert.notNull(connectInfo.getTableName(), "表名不能为空");
 
-        String schemaName = connectInfo.getUsername().toUpperCase();
-
-        String sql =
-            "SELECT *\n" + "FROM SYS.SYSCONGLOMERATES c\n" + "         JOIN SYS.SYSTABLES t ON c.TABLEID = t.TABLEID\n"
-                + "         JOIN SYS.SYSSCHEMAS s ON t.SCHEMAID = s.SCHEMAID\n" + "WHERE s.schemaname = 'ISPONG'\n"
-                + "  AND t.tablename = 'USERS'";
-
-        QueryRunner qr = new QueryRunner();
-        try (Connection connection = getConnection(connectInfo)) {
-            Long size = qr.query(connection, sql, new ScalarHandler<>());
-            return size != null ? size : 0L;
-        } catch (SQLException e) {
-            throw new IsxAppException(e.getMessage());
-        }
+        return 0L;
     }
 
     @Override
