@@ -17,7 +17,6 @@
 | 安装包下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/zhiliuyun.tar.gz                                                                                 |
 | 许可证下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/license.lic                                                                                      |
 | Docker Hub: | https://hub.docker.com/r/isxcode/zhiliuyun                                                                                                              |
-| 阿里云镜像:      | https://zhiliuyun.isxcode.com/zh/docs/zh/1/1-docker                                                                                                     |
 | 产品矩阵:       | [至轻云](https://zhiqingyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至慧云](https://zhihuiyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
 | 关键词:        | 流数据分析平台, 数据同步, 实时同步, 数据采集, Flink, Hadoop, Docker                                                                                                        |
 |             |                                                                                                                                                         |
@@ -60,12 +59,13 @@ docker run -p 8080:8080 -d isxcode/zhiliuyun
 ### 源码构建
 
 > [!IMPORTANT]
-> 安装包路径: flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
+> 安装包路径: /tmp/flink-yun/flink-yun-dist/build/distributions/zhiliuyun.tar.gz
 
 ```bash
+cd /tmp
 git clone https://github.com/isxcode/flink-yun.git
 docker run --rm \
-  -v ${clone_path}/flink-yun:/flink-yun \
+  -v /tmp/flink-yun:/flink-yun \
   -w /flink-yun -it registry.cn-shanghai.aliyuncs.com/isxcode/zhiliuyun-build:amd-latest \
   /bin/bash -c "source /etc/profile && gradle install clean package"
 ```
