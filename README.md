@@ -18,25 +18,25 @@
 | 许可证下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhiliuyun/license.lic                                                                                      |
 | Docker Hub: | https://hub.docker.com/r/isxcode/zhiliuyun                                                                                                              |
 | 产品矩阵:       | [至轻云](https://zhiqingyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至慧云](https://zhihuiyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
-| 关键词:        | 流数据分析平台, 数据同步, 实时同步, 数据采集, Flink, Hadoop, Docker                                                                                                        |
+| 关键词:        | 流数据分析, 实时同步, 离线同步, 整库同步, 数据清洗, Flink, Hadoop, Kafka                                                                                                     |
 |             |                                                                                                                                                         |
 
 ### 产品介绍
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级流式数据分析平台，围绕Flink生态打造的数据计算平台。一键部署，开箱即用。可快速实现数据实时同步、离线同步、Flink计算、可视化调度、流数据ETL、自定义接口等多种功能，为企业提供高效便捷的数据解决方案。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至流云是一款超轻量级、企业级实时流分析平台，基于Flink生态打造。一键部署，开箱即用。可快速实现数据实时同步、离线同步、整库同步、数据清洗、可视化任务调度等功能，为企业提供高效便捷的数据解决方案。
 
 ### 功能特点
 
 - **轻量级产品**: 无需额外组件安装，一键部署，开箱即用。
 - **云原生私有化**: 兼容云原生架构，支持多节点安装与高可用集群部署。
-- **分布式实时计算**: 基于原生Flink分布式架构，高效地执行数据流实时计算。
+- **分布式实时计算**: 基于原生Flink分布式架构，高效执行数据流实时计算。
 
 ### 立即体验
 
 > [!TIP]
 > 演示地址：https://zhiliuyun-demo.isxcode.com </br>
-> 体验账号：user001 </br>
-> 账号密码：welcome1
+> 体验账号：zhiyao </br>
+> 账号密码：zhiyao123
 
 ### 快速部署
 
