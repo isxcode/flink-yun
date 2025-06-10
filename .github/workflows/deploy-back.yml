@@ -1,0 +1,47 @@
+name: deploy back
+
+on:
+  schedule:
+    - cron: '59 15 * * *'
+
+jobs:
+
+  download:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+
+      - name: Deploy zhiliuyun back
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          timeout: 1800s
+          script: |
+            bash /opt/zhiliuyun/bin/stop.sh
+            if [ -d "/opt/zhiliuyun/resources_back" ]; then
+              rm -rf /opt/zhiliuyun/resources/*
+              cp -r /opt/zhiliuyun/resources_back/* /opt/zhiliuyun/resources/
+            fi
+            if [ ! -d "/opt/zhiliuyun/resources_back" ]; then
+              mkdir -p /opt/zhiliuyun/resources_back
+              cp -r /opt/zhiliuyun/resources/* /opt/zhiliuyun/resources_back/
+            fi
+            bash /opt/zhiliuyun/bin/start.sh --print-log=false
+            sleep 120
+            until curl -s https://zhiliuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
+              echo "Waiting for service to be available..."
+              sleep 1
+            done
