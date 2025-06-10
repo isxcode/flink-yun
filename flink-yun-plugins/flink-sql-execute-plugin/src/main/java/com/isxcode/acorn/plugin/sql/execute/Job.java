@@ -35,12 +35,10 @@ public class Job {
 
         // 拆分sql
         String[] sqlList = acornPluginReq.getSql().split("\\);");
-        for (int i = 0; i < sqlList.length; i++) {
-            String sql = sqlList[i];
-            if (!Strings.isEmpty(sqlList[i])) {
-                if (i < sqlList.length - 1) {
-                    sql = sql + ")";
-                }
+        for (String s : sqlList) {
+            String sql = s;
+            if (!Strings.isEmpty(s)) {
+                sql = sql + ")";
                 streamTableEnvironment.executeSql(sql);
             }
         }
