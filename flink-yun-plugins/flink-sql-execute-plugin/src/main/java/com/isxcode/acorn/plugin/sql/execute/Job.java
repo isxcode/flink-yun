@@ -37,10 +37,10 @@ public class Job {
         String[] sqlList = acornPluginReq.getSql().split("\\);");
         for (String s : sqlList) {
             String sql = s;
-            if (!Strings.isEmpty(s)) {
+            if (!sql.endsWith(")") && !sql.endsWith(";")) {
                 sql = sql + ")";
-                streamTableEnvironment.executeSql(sql);
             }
+            streamTableEnvironment.executeSql(sql);
         }
     }
 }
