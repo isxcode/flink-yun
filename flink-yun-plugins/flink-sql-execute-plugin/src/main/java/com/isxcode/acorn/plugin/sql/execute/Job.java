@@ -6,6 +6,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.functions.UserDefinedFunction;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Base64;
@@ -32,14 +33,22 @@ public class Job {
             }
         }
 
+        // 如果最后字符是;,则移除符号
+        String flinkSql = acornPluginReq.getSql();
+        if (flinkSql.endsWith(";")) {
+            flinkSql = flinkSql.substring(0, flinkSql.length() - 1);
+        }
+
         // 拆分sql
-        String[] sqlList = acornPluginReq.getSql().split("\\);");
-        for (String s : sqlList) {
-            String sql = s;
-            if (!sql.endsWith(")") && !sql.endsWith(";")) {
-                sql = sql + ")";
+        String[] sqlList = flinkSql.split("\\);");
+        for (int i = 0; i < sqlList.length; i++) {
+            String sql = sqlList[i];
+            if (!Strings.isEmpty(sqlList[i])) {
+                if (i < sqlList.length - 1) {
+                    sql = sql + ")";
+                }
+                streamTableEnvironment.executeSql(sql);
             }
-            streamTableEnvironment.executeSql(sql);
         }
     }
 }
