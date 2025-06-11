@@ -327,7 +327,7 @@ public class MonitorBizService {
         String executeLog = executeCommand(scpFileEngineNodeDto, getMonitorCommand, false);
 
         // 日志打印
-        log.info("executeLog: {}", executeLog);
+        log.debug("executeLog: {}", executeLog);
 
         // 获取节点信息
         NodeMonitorInfo nodeMonitorInfo = JSON.parseObject(executeLog, NodeMonitorInfo.class);
