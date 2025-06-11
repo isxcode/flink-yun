@@ -5,7 +5,9 @@ import com.isxcode.acorn.api.datasource.dto.KafkaConfig;
 import com.isxcode.acorn.api.datasource.dto.SecurityColumnDto;
 import com.isxcode.acorn.api.work.exceptions.WorkRunException;
 import com.isxcode.acorn.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.acorn.modules.datasource.entity.DatabaseDriverEntity;
 import com.isxcode.acorn.modules.datasource.entity.DatasourceEntity;
+import com.isxcode.acorn.modules.datasource.repository.DatabaseDriverRepository;
 import com.isxcode.acorn.modules.datasource.repository.DatasourceRepository;
 import com.isxcode.acorn.modules.datasource.source.DataSourceFactory;
 import com.isxcode.acorn.modules.datasource.source.Datasource;
@@ -37,6 +39,8 @@ public class DatasourceService {
     private final DataSourceFactory dataSourceFactory;
 
     public final static Map<String, DriverShim> ALL_EXIST_DRIVER = new ConcurrentHashMap<>();
+
+    private final DatabaseDriverRepository databaseDriverRepository;
 
     public String getDriverClass(String datasourceType) {
 
@@ -169,5 +173,10 @@ public class DatasourceService {
             ListTopicsResult listTopicsResult = adminClient.listTopics();
             return listTopicsResult.names().get();
         }
+    }
+
+    public DatabaseDriverEntity getDatasourceDriver(String datasourceDriverId) {
+
+        return databaseDriverRepository.findById(datasourceDriverId).orElseThrow(() -> new IsxAppException("驱动不存在不存在"));
     }
 }
