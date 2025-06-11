@@ -74,6 +74,7 @@ jobs:
           script: |
             tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
             rm /tmp/zhiliuyun.tar.gz
+            rm -rf /opt/zhiliuyun/resources_back
             bash /opt/zhiliuyun/bin/stop.sh
             rm -rf /opt/zhiliuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
