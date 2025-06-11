@@ -27,12 +27,12 @@
             <div class="btn-group">
               <span v-if="!scopeSlot.row.isDefaultDriver" @click="setDefaultDriver(scopeSlot.row)">默认</span>
               <span v-else @click="setDefaultDriver(scopeSlot.row)">取消</span>
-               <el-dropdown trigger="click">Add commentMore actions
+               <el-dropdown trigger="click">
                 <span class="click-show-more">更多</span>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item @click="editData(scopeSlot.row)">
-                      备注Add commentMore actions
+                      备注
                     </el-dropdown-item>
                     <el-dropdown-item @click="deleteData(scopeSlot.row)">
                       删除
@@ -146,7 +146,7 @@ function deleteData(data: any) {
   })
 }
 
-// 修改备注Add commentMore actions
+// 修改备注
 function editData(data: any) {
   addModalRef.value.showModal((formData: any) => {
     return new Promise((resolve: any, reject: any) => {
