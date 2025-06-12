@@ -3,6 +3,8 @@ package com.isxcode.acorn.modules.monitor.service;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.unit.DataSize;
+import cn.hutool.core.io.unit.DataUnit;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.acorn.api.api.constants.ApiStatus;
 import com.isxcode.acorn.api.cluster.constants.ClusterNodeStatus;
@@ -56,6 +58,7 @@ import javax.transaction.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -192,8 +195,12 @@ public class MonitorBizService {
                 .cpuPercent(v.getCpuPercent() == null ? null : v.getCpuPercent() + "%")
                 .usedStorageSize(v.getUsedStorageSize() == null ? null : v.getUsedStorageSize() + "GB")
                 .usedMemorySize(v.getUsedMemorySize() == null ? null : v.getUsedMemorySize() + "GB")
-                .diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null : v.getDiskIoReadSpeed() + "KB/s")
-                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null : v.getDiskIoWriteSpeed() + "KB/s")
+                .diskIoReadSpeed(v.getDiskIoReadSpeed() == null ? null
+                    : DataSize.of(BigDecimal.valueOf(v.getDiskIoReadSpeed()), DataUnit.KILOBYTES).toMegabytes()
+                        + "MB/s")
+                .diskIoWriteSpeed(v.getDiskIoWriteSpeed() == null ? null
+                    : DataSize.of(BigDecimal.valueOf(v.getDiskIoWriteSpeed()), DataUnit.KILOBYTES).toMegabytes()
+                        + "MB/s")
                 .networkIoReadSpeed(v.getNetworkIoReadSpeed() == null ? null : v.getNetworkIoReadSpeed() + "KB/s")
                 .networkIoWriteSpeed(v.getNetworkIoWriteSpeed() == null ? null : v.getNetworkIoWriteSpeed() + "KB/s")
                 .build();
