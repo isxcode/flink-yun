@@ -17,6 +17,10 @@ public class PageSecretRes {
 
     private String remark;
 
+    private String createUsername;
+
+    private String createBy;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createDateTime;
 

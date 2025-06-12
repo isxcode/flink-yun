@@ -45,6 +45,11 @@ export const colConfigs: colConfig[] = [
     showOverflowTooltip: true
   },
   {
+    prop: 'createUsername',
+    title: '创建人',
+    minWidth: 140
+  },
+  {
     prop: 'createDateTime',
     title: '创建时间',
     minWidth: 140
