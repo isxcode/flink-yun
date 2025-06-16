@@ -365,7 +365,7 @@ function clickGithubProject() {
 }
 
 function clickGitee() {
-  window.open("https://gitee.com/isxcode/flink-yun");
+  window.open("https://gitee.com/isxcode/flink-yun/issues");
 }
 
 function clickGithub() {
