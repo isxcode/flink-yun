@@ -75,8 +75,10 @@ jobs:
             tar -vzxf /tmp/zhiliuyun.tar.gz -C /opt/
             rm /tmp/zhiliuyun.tar.gz
             bash /opt/zhiliuyun/bin/stop.sh
-            rm -rf /opt/zhiliuyun/resources
-            mv /opt/zhiliuyun/resources_back /opt/zhiliuyun/resources
+            if [ -d "/opt/zhiliuyun/resources_back" ]; then
+              rm -rf /opt/zhiliuyun/resources
+              mv /opt/zhiliuyun/resources_back /opt/zhiliuyun/resources
+            fi
             rm -rf /opt/zhiliuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhiliuyun/conf/application-local.yml
             cp -r /opt/zhiliuyun/resources /opt/zhiliuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
